@@ -86,14 +86,27 @@ export class RenderToTexture {
         this._renderableLayerIds = style._order.filter(id => !style._layers[id].isHidden(zoom));
 
         this._coordsAscending = {};
+        const isTerrainTileReady = this.painter._isTileIdReady(this.terrain.sourceCache.sourceCache);
         for (const id in style.sourceCaches) {
             this._coordsAscending[id] = {};
-            const tileIDs = style.sourceCaches[id].getVisibleCoordinates();
+            const sourceCache = style.sourceCaches[id];
+            let tileIDs = sourceCache.getVisibleCoordinates();
+
+            const sourceReady = this.painter._isTileIdReady(sourceCache);
+            tileIDs = tileIDs.filter(sourceReady);
+            // filter for coords that are already loaded in priorSource
+            const priorSourceId = sourceCache._source['_options'].priorSourceId;
+            const priorSource = sourceCache[priorSourceId];
+            if (priorSource) {
+                const priorSourceReady = this.painter._isTileIdReady(priorSource);
+                tileIDs =tileIDs.filter(priorSourceReady);
+            }
             const source = style.sourceCaches[id].getSource();
             const terrainTileRanges = source instanceof ImageSource ? source.terrainTileRanges : null;
             for (const tileID of tileIDs) {
                 const keys = this.terrain.sourceCache.getTerrainCoords(tileID, terrainTileRanges);
                 for (const key in keys) {
+                    if (!isTerrainTileReady(keys[key])) continue;
                     if (!this._coordsAscending[id][key]) this._coordsAscending[id][key] = [];
                     this._coordsAscending[id][key].push(keys[key]);
                 }
@@ -192,7 +205,7 @@ export class RenderToTexture {
             }
             drawTerrain(this.painter, this.terrain, this._rttTiles, options);
             this._rttTiles = [];
-            this.pool.freeAllObjects();
+            // this.pool.freeAllObjects();
 
             return LAYERS[type];
         }

@@ -352,7 +352,10 @@ function addFeature(bucket: SymbolBucket,
 
     if (symbolPlacement === 'line') {
         for (const line of clipLine(feature.geometry, 0, 0, EXTENT, EXTENT)) {
-            const subdividedLine = subdivideVertexLine(line, granularity);
+            // simplify the line geometry to not block text-max-angle
+            // keeping around to remember this
+            const sline = line;  // simplify(line, EXTENT / 128).map(x=>new Point(x.x, x.y));
+            const subdividedLine = subdivideVertexLine(sline, granularity);
             const anchors = getAnchors(
                 subdividedLine,
                 symbolMinDistance,

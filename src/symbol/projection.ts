@@ -16,6 +16,7 @@ import {WritingMode} from '../symbol/shaping';
 import {findLineIntersection} from '../util/util';
 import {type UnwrappedTileID} from '../source/tile_id';
 import {type StructArray} from '../util/struct_array';
+import { fitNaturalCubicSpline, interpolateSpline } from './cubic_spline';
 
 /**
  * The result of projecting a point to the screen, with some additional information about the projection.
@@ -474,6 +475,51 @@ function placeGlyphsAlongLine(args: GlyphLinePlacementArgs): GlyphLinePlacementR
             placedGlyphs.push(placedGlyph);
         }
         placedGlyphs.push(firstAndLastGlyph.last);
+
+        // fit the glyps with cubic splines
+        if (placedGlyphs.length >= 3) {
+            const cs : number[] = [];
+            const xs : number[] = [];
+            const ys : number[] = [];
+            const fitDistance = 40 * fontScale;
+            let last = Number.NEGATIVE_INFINITY;
+            for (let glyphIndex = 0; glyphIndex < placedGlyphs.length; glyphIndex++) {
+                const cx = fontScale * glyphOffsetArray.getoffsetX(glyphIndex + symbol.glyphStartIndex);
+                if (cx >= last + fitDistance) {
+                    last = cx;
+                    cs.push(fontScale * glyphOffsetArray.getoffsetX(glyphIndex + symbol.glyphStartIndex));
+                    xs.push(placedGlyphs[glyphIndex].point.x);
+                    ys.push(placedGlyphs[glyphIndex].point.y);
+                }
+            }
+            {
+                const cx = fontScale * glyphOffsetArray.getoffsetX(glyphEndIndex - 1);
+                if (cx - last < fitDistance/2) { cs.pop(); xs.pop(); ys.pop(); }
+                cs.push(cx);
+                xs.push(placedGlyphs[placedGlyphs.length - 1].point.x);
+                ys.push(placedGlyphs[placedGlyphs.length - 1].point.y);
+            }
+            const splinex = fitNaturalCubicSpline(cs, xs);
+            const spliney = fitNaturalCubicSpline(cs, ys);
+            const c : number[] = [];
+            for (let glyphIndex = 0; glyphIndex < placedGlyphs.length; glyphIndex++) {
+                c.push(fontScale * glyphOffsetArray.getoffsetX(glyphIndex + symbol.glyphStartIndex));
+            }
+            const ipx = interpolateSpline(c, splinex);
+            const ipy = interpolateSpline(c, spliney);
+            for (let glyphIndex = 0; glyphIndex < placedGlyphs.length; glyphIndex++) {
+                placedGlyphs[glyphIndex].point = new Point(ipx.y[glyphIndex], ipy.y[glyphIndex]);
+                const angle = Math.atan2(ipy.dy[glyphIndex], ipx.dy[glyphIndex]);
+                placedGlyphs[glyphIndex].angle = angle;
+            }
+            for (let glyphIndex = 1; glyphIndex < placedGlyphs.length; glyphIndex++) {
+                let desired = c[glyphIndex] - c[glyphIndex-1];
+                let got = placedGlyphs[glyphIndex].point.dist(placedGlyphs[glyphIndex-1].point);
+                if (got < desired * 0.8) {
+                    return {notEnoughRoom: true};
+                }
+            }
+        }
     } else {
         // Only a single glyph to place
         // So, determine whether to flip based on projected angle of the line segment it's on

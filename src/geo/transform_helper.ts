@@ -509,6 +509,8 @@ export class TransformHelper implements ITransformGetters {
      * Any derived `_calcMatrices` function should also call the base function first. The base function only depends on the `_width` and `_height` fields.
      */
     private _calcMatrices(): void {
+        this._pixelPerMeter = mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
+
         if (this._width && this._height) {
             this._pixelsToGLUnits = [2 / this._width, -2 / this._height];
 
@@ -523,7 +525,7 @@ export class TransformHelper implements ITransformGetters {
             mat4.scale(m, m, [2 / this._width, 2 / this._height, 1]);
             this._pixelsToClipSpaceMatrix = m;
             const halfFov = this.fovInRadians / 2;
-            this._cameraToCenterDistance = 0.5 / Math.tan(halfFov) * this._height;
+            this._cameraToCenterDistance = 0.5 / Math.tan(halfFov) * 800;
         }
         this._callbacks.calcMatrices();
     }
@@ -572,27 +574,28 @@ export class TransformHelper implements ITransformGetters {
         } while (Math.abs(distanceToCenterMeters - dMercator * metersPerMercUnit) > 1.0e-12);
 
         const center = centerMercator.toLngLat();
-        const zoom = scaleZoom(this.height / 2 / Math.tan(this.fovInRadians / 2) / dMercator / this.tileSize);
+        const zoom = scaleZoom(this.cameraToCenterDistance / dMercator / this.tileSize);
         return {center, elevation, zoom};
     }
 
+    // disabled, this is glitchy
     recalculateZoomAndCenter(elevation: number): void {
-        if (this.elevation - elevation === 0) return;
+        // if (this.elevation - elevation === 0) return;
 
-        // Find the current camera position
-        const originalPixelPerMeter = mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
-        const cameraToCenterDistanceMeters = this.cameraToCenterDistance / originalPixelPerMeter;
-        const origCenterMercator = MercatorCoordinate.fromLngLat(this.center, this.elevation);
-        const cameraMercator = cameraMercatorCoordinateFromCenterAndRotation(this.center, this.elevation, this.pitch, this.bearing, cameraToCenterDistanceMeters);
+        // // Find the current camera position
+        // const originalPixelPerMeter = mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
+        // const cameraToCenterDistanceMeters = this.cameraToCenterDistance / originalPixelPerMeter;
+        // const origCenterMercator = MercatorCoordinate.fromLngLat(this.center, this.elevation);
+        // const cameraMercator = cameraMercatorCoordinateFromCenterAndRotation(this.center, this.elevation, this.pitch, this.bearing, cameraToCenterDistanceMeters);
 
-        // update elevation to the new terrain intercept elevation and recalculate the center point
-        this._elevation = elevation;
-        const centerInfo = this.calculateCenterFromCameraLngLatAlt(cameraMercator.toLngLat(), altitudeFromMercatorZ(cameraMercator.z, origCenterMercator.y), this.bearing, this.pitch);
+        // // update elevation to the new terrain intercept elevation and recalculate the center point
+        // this._elevation = elevation;
+        // const centerInfo = this.calculateCenterFromCameraLngLatAlt(cameraMercator.toLngLat(), altitudeFromMercatorZ(cameraMercator.z, origCenterMercator.y), this.bearing, this.pitch);
 
-        // update matrices
-        this._elevation = centerInfo.elevation;
-        this._center = centerInfo.center;
-        this.setZoom(centerInfo.zoom);
+        // // update matrices
+        // this._elevation = centerInfo.elevation;
+        // this._center = centerInfo.center;
+        // this.setZoom(centerInfo.zoom);
     }
 
     getCameraPoint(): Point {

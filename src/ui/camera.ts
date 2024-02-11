@@ -225,12 +225,6 @@ export type AnimationOptions = {
      * [`prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/\@media/prefers-reduced-motion).
      */
     essential?: boolean;
-    /**
-     * Default false. Needed in 3D maps to let the camera stay in a constant
-     * height based on sea-level. After the animation finished the zoom-level will be recalculated in respect of
-     * the distance from the camera to the center-coordinate-altitude.
-     */
-    freezeElevation?: boolean;
 };
 
 /**
@@ -295,11 +289,6 @@ export abstract class Camera extends Evented {
      * so the linear interpolation between start and target keeps smooth and without jumps.
      */
     _elevationStart: number;
-    /**
-     * @internal
-     * Saves the current state of the elevation freeze - this is used during map movement to prevent "rocky" camera movement.
-     */
-    _elevationFreeze: boolean;
     /**
      * @internal
      * Used to track accumulated changes during continuous interaction
@@ -1147,12 +1136,11 @@ export abstract class Camera extends Evented {
         this._ease((k) => {
             easeHandler.easeFunc(k);
 
-            if (this.terrain && !options.freezeElevation) this._updateElevation(k);
+            if (this.terrain) this._updateElevation(k);
             this._applyUpdatedTransform(tr);
             this._fireMoveEvents(eventData);
 
         }, (interruptingEaseId?: string) => {
-            if (this.terrain && options.freezeElevation) this._finalizeElevation();
             this._afterEase(eventData, interruptingEaseId);
         }, options as any);
 
@@ -1183,7 +1171,6 @@ export abstract class Camera extends Evented {
         this._elevationCenter = center;
         this._elevationStart = this.transform.elevation;
         this._elevationTarget = this.terrain.getElevationForLngLatZoom(center, this.transform.tileZoom);
-        this._elevationFreeze = true;
     }
 
     _updateElevation(k: number) {
@@ -1197,13 +1184,6 @@ export abstract class Camera extends Evented {
             this._elevationTarget = elevation;
         }
         this.transform.setElevation(interpolates.number(this._elevationStart, this._elevationTarget, k));
-    }
-
-    _finalizeElevation() {
-        this._elevationFreeze = false;
-        if (this.getCenterClampedToGround()) {
-            this.transform.recalculateZoomAndCenter(this.terrain);
-        }
     }
 
     /**
@@ -1534,11 +1514,10 @@ export abstract class Camera extends Evented {
 
             flyToHandler.easeFunc(k, scale, centerFactor, pointAtOffset);
 
-            if (this.terrain && !options.freezeElevation) this._updateElevation(k);
+            if (this.terrain) this._updateElevation(k);
             this._applyUpdatedTransform(tr);
             this._fireMoveEvents(eventData);
         }, () => {
-            if (this.terrain && options.freezeElevation) this._finalizeElevation();
             this._afterEase(eventData);
         }, options);
 

@@ -2108,7 +2108,7 @@ export class Map extends Camera {
                 if (e.dataType === 'style') {
                     this.terrain.sourceCache.freeRtt();
                 } else if (e.dataType === 'source' && e.tile) {
-                    if (e.sourceId === options.source && !this._elevationFreeze) {
+                    if (e.sourceId === options.source) {
                         this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
                         if (this._centerClampedToGround) {
                             this.transform.setElevation(this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
@@ -3330,7 +3330,7 @@ export class Map extends Camera {
         if (this.terrain) {
             this.terrain.sourceCache.update(this.transform, this.terrain);
             this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
-            if (!this._elevationFreeze && this._centerClampedToGround) {
+            if (this._centerClampedToGround) {
                 this.transform.setElevation(this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
             }
         } else {

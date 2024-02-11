@@ -49,6 +49,8 @@ import {TwoFingersTouchPitchHandler, TwoFingersTouchRotateHandler, TwoFingersTou
 import {MessageType} from './util/actor_messages';
 import {createTileMesh} from './util/create_tile_mesh';
 import type {GeoJSONFeature} from './util/vectortile_to_geojson';
+import { OverscaledTileID } from './source/tile_id';
+import { Tile } from './source/tile';
 const version = packageJSON.version;
 
 export type * from '@maplibre/maplibre-gl-style-spec';
@@ -254,5 +256,7 @@ export {
     removeProtocol,
     addSourceType,
     importScriptInWorkers,
-    createTileMesh
+    createTileMesh,
+    OverscaledTileID,
+    Tile
 };

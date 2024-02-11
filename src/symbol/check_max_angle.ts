@@ -11,12 +11,13 @@ import type {Anchor} from './anchor';
  * @param windowSize - The check fails if the combined angles within a part of the line that is `windowSize` long is too big.
  * @param maxAngle - The maximum combined angle that any window along the label is allowed to have.
  *
- * @returns whether the label should be placed
+ * @returns object of {passed, maxAngleDelta}, where passed is a boolean whether the label should be placed 
+ *  and maxAngleDelta is either undefined or the maximum angle
  */
 export function checkMaxAngle(line: Array<Point>, anchor: Anchor, labelLength: number, windowSize: number, maxAngle: number) {
 
     // horizontal labels and labels with length 0 always pass
-    if (anchor.segment === undefined || labelLength === 0) return true;
+    if (anchor.segment === undefined || labelLength === 0) return { passed: true, maxAngleDelta: 0 };
 
     let p = anchor;
     let index = anchor.segment + 1;
@@ -27,7 +28,7 @@ export function checkMaxAngle(line: Array<Point>, anchor: Anchor, labelLength: n
         index--;
 
         // there isn't enough room for the label after the beginning of the line
-        if (index < 0) return false;
+        if (index < 0) return { passed: false };
 
         anchorDistance -= line[index].dist(p);
         p = line[index];
@@ -39,6 +40,7 @@ export function checkMaxAngle(line: Array<Point>, anchor: Anchor, labelLength: n
     // store recent corners and their total angle difference
     const recentCorners = [];
     let recentAngleDelta = 0;
+    let maxRecentAngleDelta = 0;
 
     // move forwards by the length of the label and check angles along the way
     while (anchorDistance < labelLength / 2) {
@@ -47,7 +49,7 @@ export function checkMaxAngle(line: Array<Point>, anchor: Anchor, labelLength: n
         const next = line[index + 1];
 
         // there isn't enough room for the label before the end of the line
-        if (!next) return false;
+        if (!next) return { passed: false };
 
         let angleDelta = prev.angleTo(current) - current.angleTo(next);
         // restrict angle to -pi..pi range
@@ -65,12 +67,13 @@ export function checkMaxAngle(line: Array<Point>, anchor: Anchor, labelLength: n
         }
 
         // the sum of angles within the window area exceeds the maximum allowed value. check fails.
-        if (recentAngleDelta > maxAngle) return false;
+        if (recentAngleDelta > maxAngle) return { passed: false };
+        if (recentAngleDelta > maxRecentAngleDelta) maxRecentAngleDelta = recentAngleDelta;
 
         index++;
         anchorDistance += current.dist(next);
     }
 
     // no part of the line had an angle greater than the maximum allowed. check passes.
-    return true;
+    return { passed: true, maxAngleDelta: maxRecentAngleDelta };
 }

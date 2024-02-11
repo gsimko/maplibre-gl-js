@@ -554,11 +554,10 @@ export class HandlerManager {
                 (combinedEventsInProgress.drag || combinedEventsInProgress.zoom)) {
                 // When starting to drag or move, flag it and register moveend to clear flagging
                 this._terrainMovement = true;
-                this._map._elevationFreeze = true;
                 this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
-            } else if (combinedEventsInProgress.drag && this._terrainMovement) {
-                // drag map
-                tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
+            // } else if (combinedEventsInProgress.drag && this._terrainMovement) {
+            //     // drag map
+            //     tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
             } else {
                 this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
             }
@@ -624,7 +623,6 @@ export class HandlerManager {
         const stillMoving = isMoving(this._eventsInProgress);
         const finishedMoving = (wasMoving || nowMoving) && !stillMoving;
         if (finishedMoving && this._terrainMovement) {
-            this._map._elevationFreeze = false;
             this._terrainMovement = false;
             const tr = this._map._getTransformForUpdate();
             if (this._map.getCenterClampedToGround()) {
@@ -642,7 +640,6 @@ export class HandlerManager {
                 if (shouldSnapToNorth(inertialEase.bearing || this._map.getBearing())) {
                     inertialEase.bearing = 0;
                 }
-                inertialEase.freezeElevation = true;
                 this._map.easeTo(inertialEase, {originalEvent: originalEndEvent});
             } else {
                 this._map.fire(new Event('moveend', {originalEvent: originalEndEvent}));

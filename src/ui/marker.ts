@@ -621,13 +621,6 @@ export class Marker extends Evented {
             pitch = `rotateX(${this._map.getPitch()}deg)`;
         }
 
-        // because rounding the coordinates at every `move` event causes stuttered zooming
-        // we only round them when _update is called with `moveend` or when its called with
-        // no arguments (when the Marker is initialized or Marker#setLngLat is invoked).
-        if (!this._subpixelPositioning && (!e || e.type === 'moveend')) {
-            this._pos = this._pos.round();
-        }
-
         DOM.setTransform(this._element, `${anchorTranslate[this._anchor]} translate(${this._pos.x}px, ${this._pos.y}px) ${pitch} ${rotation}`);
 
         browser.frameAsync(new AbortController()).then(() => { // Run _updateOpacity only after painter.render and drawDepth

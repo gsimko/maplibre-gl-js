@@ -382,6 +382,31 @@ function placeGlyphsAlongLine(projectionContext: SymbolProjectionContext, symbol
                 lineStartIndex, lineEndIndex, projectionContext, rotateToLine));
         }
         placedGlyphs.push(firstAndLastGlyph.last);
+
+        // smooth the angles by averaging over WIDTH glyphs angles
+        if (placedGlyphs.length >= 2) {
+            let xs = [];
+            let ys = [];
+            for (const glyph of placedGlyphs) {
+                const angle = glyph.angle;
+                xs.push(Math.cos(angle));
+                ys.push(Math.sin(angle));
+            }
+            placedGlyphs[0].angle = Math.atan2(
+                (ys[0] + ys[1]) / 2,
+                (xs[0] + xs[1]) / 2,
+            );
+            const l = placedGlyphs.length;
+            placedGlyphs[l-1].angle = Math.atan2(
+                (ys[l - 1] + ys[l - 2]) / 2,
+                (xs[l - 1] + xs[l - 2]) / 2,
+            );
+            for (let glyphIndex=1; glyphIndex < l - 1; glyphIndex++) {
+                const meanx = (xs[glyphIndex-1] + xs[glyphIndex] + xs[glyphIndex+1]) / 3;
+                const meany = (ys[glyphIndex-1] + ys[glyphIndex] + ys[glyphIndex+1]) / 3;
+                placedGlyphs[glyphIndex].angle = Math.atan2(meany, meanx);
+            }
+        }
     } else {
         // Only a single glyph to place
         // So, determine whether to flip based on projected angle of the line segment it's on

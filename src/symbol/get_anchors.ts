@@ -59,9 +59,11 @@ function getCenterAnchor(line: Array<Point>,
 
             const anchor = new Anchor(x, y, b.angleTo(a), i);
             anchor._round();
-            if (!angleWindowSize || checkMaxAngle(line, anchor, labelLength, angleWindowSize, maxAngle)) {
+            if (!angleWindowSize) {
                 return anchor;
             } else {
+                const { passed } = checkMaxAngle(line, anchor, labelLength, angleWindowSize, maxAngle);
+                if (passed) return anchor;
                 return;
             }
         }
@@ -117,9 +119,20 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
     const lineLength = getLineLength(line);
 
     let distance = 0,
-        markedDistance = offset - spacing;
+        subspacing = spacing / 4,  // the step size to look for best anchors
+        minSpacing = spacing - 1e-5,  // epsilon-adjusted to not worry about floating point inaccuracies
+        maxSpacing = 2 * spacing,
+        markedDistance = offset - subspacing;
 
     let anchors = [];
+
+    // We used to place anchors uniformly 'spacing' distance away from each other.
+    // This often led to selecting suboptimal places, hence now we do a limited subsearch around each possible location.
+    // We still guarantee that labels are at least 'spacing' away from each other.
+    let bestAnchor = undefined,  // best anchor since the last placed anchor
+        bestAngleDelta = Number.POSITIVE_INFINITY,  // corresponding max delta angle
+        bestDistance = undefined,  // corresponding distance
+        lastAnchorDistance = offset - spacing;  // distance at last placed anchor
 
     for (let i = 0; i < line.length - 1; i++) {
 
@@ -129,9 +142,18 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
         const segmentDist = a.dist(b),
             angle = b.angleTo(a);
 
-        while (markedDistance + spacing < distance + segmentDist) {
-            markedDistance += spacing;
-
+        while (markedDistance + subspacing < distance + segmentDist) {
+            markedDistance += subspacing;
+            // if we are at least maxSpacing away from the previous anchor and we have a best anchor, use it.
+            if (markedDistance - lastAnchorDistance >= maxSpacing && bestAnchor) {
+                anchors.push(bestAnchor);
+                lastAnchorDistance = bestDistance;
+                bestAnchor = undefined;
+                bestAngleDelta = Number.POSITIVE_INFINITY;
+            }
+            // skip while we are less than 'spacing' away from the previous anchor
+            if (markedDistance - lastAnchorDistance < minSpacing) continue;
+            
             const t = (markedDistance - distance) / segmentDist,
                 x = interpolates.number(a.x, b.x, t),
                 y = interpolates.number(a.y, b.y, t);
@@ -145,14 +167,24 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
                 const anchor = new Anchor(x, y, angle, i);
                 anchor._round();
 
-                if (!angleWindowSize || checkMaxAngle(line, anchor, labelLength, angleWindowSize, maxAngle)) {
+                if (!angleWindowSize) {
                     anchors.push(anchor);
+                    lastAnchorDistance = markedDistance;
+                } else {
+                    const { passed, maxAngleDelta } = checkMaxAngle(line, anchor, labelLength, angleWindowSize, maxAngle);
+                    if (passed && maxAngleDelta < bestAngleDelta) {
+                        // This is a better position than anything before
+                        bestAnchor = anchor;
+                        bestAngleDelta = maxAngleDelta;
+                        bestDistance = markedDistance;
+                    }
                 }
             }
         }
-
         distance += segmentDist;
     }
+    // if we have a left-over best anchor, use it.
+    if (bestAnchor) anchors.push(bestAnchor);
 
     if (!placeAtMiddle && !anchors.length && !isLineContinued) {
         // The first attempt at finding anchors at which labels can be placed failed.

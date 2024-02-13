@@ -16,6 +16,7 @@ import {WritingMode} from '../symbol/shaping';
 import {findLineIntersection} from '../util/util';
 import {UnwrappedTileID} from '../source/tile_id';
 import {Projection} from '../geo/projection/projection';
+import { fitNaturalCubicSpline, interpolateSpline } from './cubic_spline';
 
 export {
     updateLineLabels,
@@ -383,28 +384,48 @@ function placeGlyphsAlongLine(projectionContext: SymbolProjectionContext, symbol
         }
         placedGlyphs.push(firstAndLastGlyph.last);
 
-        // smooth the angles by averaging over WIDTH glyphs angles
-        if (placedGlyphs.length >= 2) {
-            let xs = [];
-            let ys = [];
-            for (const glyph of placedGlyphs) {
-                const angle = glyph.angle;
-                xs.push(Math.cos(angle));
-                ys.push(Math.sin(angle));
+        // fit the glyps with cubic splines
+        if (placedGlyphs.length >= 3) {
+            const cs : number[] = [];
+            const xs : number[] = [];
+            const ys : number[] = [];
+            const fitDistance = 40 * fontScale;
+            let last = Number.NEGATIVE_INFINITY;
+            for (let glyphIndex = 0; glyphIndex < placedGlyphs.length; glyphIndex++) {
+                const cx = fontScale * glyphOffsetArray.getoffsetX(glyphIndex + symbol.glyphStartIndex);
+                if (cx >= last + fitDistance) {
+                    last = cx;
+                    cs.push(fontScale * glyphOffsetArray.getoffsetX(glyphIndex + symbol.glyphStartIndex));
+                    xs.push(placedGlyphs[glyphIndex].point.x);
+                    ys.push(placedGlyphs[glyphIndex].point.y);
+                }
             }
-            placedGlyphs[0].angle = Math.atan2(
-                (ys[0] + ys[1]) / 2,
-                (xs[0] + xs[1]) / 2,
-            );
-            const l = placedGlyphs.length;
-            placedGlyphs[l-1].angle = Math.atan2(
-                (ys[l - 1] + ys[l - 2]) / 2,
-                (xs[l - 1] + xs[l - 2]) / 2,
-            );
-            for (let glyphIndex=1; glyphIndex < l - 1; glyphIndex++) {
-                const meanx = (xs[glyphIndex-1] + xs[glyphIndex] + xs[glyphIndex+1]) / 3;
-                const meany = (ys[glyphIndex-1] + ys[glyphIndex] + ys[glyphIndex+1]) / 3;
-                placedGlyphs[glyphIndex].angle = Math.atan2(meany, meanx);
+            {
+                const cx = fontScale * glyphOffsetArray.getoffsetX(glyphEndIndex - 1);
+                if (cx - last < fitDistance/2) { cs.pop(); xs.pop(); ys.pop(); }
+                cs.push(cx);
+                xs.push(placedGlyphs[placedGlyphs.length - 1].point.x);
+                ys.push(placedGlyphs[placedGlyphs.length - 1].point.y);
+            }
+            const splinex = fitNaturalCubicSpline(cs, xs);
+            const spliney = fitNaturalCubicSpline(cs, ys);
+            const c : number[] = [];
+            for (let glyphIndex = 0; glyphIndex < placedGlyphs.length; glyphIndex++) {
+                c.push(fontScale * glyphOffsetArray.getoffsetX(glyphIndex + symbol.glyphStartIndex));
+            }
+            const ipx = interpolateSpline(c, splinex);
+            const ipy = interpolateSpline(c, spliney);
+            for (let glyphIndex = 0; glyphIndex < placedGlyphs.length; glyphIndex++) {
+                placedGlyphs[glyphIndex].point = new Point(ipx.y[glyphIndex], ipy.y[glyphIndex]);
+                const angle = Math.atan2(ipy.dy[glyphIndex], ipx.dy[glyphIndex]);
+                placedGlyphs[glyphIndex].angle = angle;
+            }
+            for (let glyphIndex = 1; glyphIndex < placedGlyphs.length; glyphIndex++) {
+                let desired = c[glyphIndex] - c[glyphIndex-1];
+                let got = placedGlyphs[glyphIndex].point.dist(placedGlyphs[glyphIndex-1].point);
+                if (got < desired * 0.8) {
+                    return {notEnoughRoom: true};
+                }
             }
         }
     } else {

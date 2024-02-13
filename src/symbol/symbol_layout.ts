@@ -347,8 +347,8 @@ function addFeature(bucket: SymbolBucket,
 
     if (symbolPlacement === 'line') {
         for (const line of clipLine(feature.geometry, 0, 0, EXTENT, EXTENT)) {
-            // simplify the line geometry, we don't care that much about accuracy
-            const sline = simplify(line, EXTENT/64).map(x=>new Point(x.x, x.y));
+            // simplify the line geometry to not block text-max-angle
+            const sline = simplify(line, EXTENT / 128).map(x=>new Point(x.x, x.y));
             const anchors = getAnchors(
                 sline,
                 symbolMinDistance,

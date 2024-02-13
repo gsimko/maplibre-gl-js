@@ -32,6 +32,7 @@ import murmur3 from 'murmurhash-js';
 import {getIconPadding, SymbolPadding} from '../style/style_layer/symbol_style_layer';
 import {VariableAnchorOffsetCollection, classifyRings} from '@maplibre/maplibre-gl-style-spec';
 import {getTextVariableAnchorOffset, evaluateVariableOffset, INVALID_TEXT_OFFSET, TextAnchor, TextAnchorEnum} from '../style/style_layer/variable_text_anchor';
+import { simplify } from "./simplify";
 
 // The symbol layout process needs `text-size` evaluated at up to five different zoom levels, and
 // `icon-size` at up to three:
@@ -346,8 +347,10 @@ function addFeature(bucket: SymbolBucket,
 
     if (symbolPlacement === 'line') {
         for (const line of clipLine(feature.geometry, 0, 0, EXTENT, EXTENT)) {
+            // simplify the line geometry, we don't care that much about accuracy
+            const sline = simplify(line, EXTENT/64).map(x=>new Point(x.x, x.y));
             const anchors = getAnchors(
-                line,
+                sline,
                 symbolMinDistance,
                 textMaxAngle,
                 shapedTextOrientations.vertical || defaultHorizontalShaping,
@@ -360,7 +363,7 @@ function addFeature(bucket: SymbolBucket,
             for (const anchor of anchors) {
                 const shapedText = defaultHorizontalShaping;
                 if (!shapedText || !anchorIsTooClose(bucket, shapedText.text, textRepeatDistance, anchor)) {
-                    addSymbolAtAnchor(line, anchor);
+                    addSymbolAtAnchor(sline, anchor);
                 }
             }
         }

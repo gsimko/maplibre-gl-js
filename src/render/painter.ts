@@ -391,7 +391,6 @@ export class Painter {
                             if (!tile) return false;
                         }
                     }
-                    console.log('### include', coord)
                     return true;
                 });
             }

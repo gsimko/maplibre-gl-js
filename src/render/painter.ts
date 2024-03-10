@@ -340,8 +340,8 @@ export class Painter {
 
     /** Returns whether the tile ID (or any of its ancestors) is loaded */
     _isTileIdReady(sourceCache: SourceCache) {
-        return (id: OverscaledTileID) => {
-            while (true) {
+        return (id?: OverscaledTileID) => {
+            while (id) {
                 if (sourceCache._getLoadedTile(id)) return true;
                 const z = id.canonical.z - 1;
                 if (z === -1) return false;

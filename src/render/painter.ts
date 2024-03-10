@@ -376,7 +376,6 @@ export class Painter {
                             if (!loaded) return false;
                         }
                     }
-                    console.log('### include', coord)
                     return true;
                 });
             }
@@ -387,9 +386,9 @@ export class Painter {
                 coords = coords.filter(coord => {
                     for (const prior of priors) {
                         if (prior[0]===id) {
-                            let tile = sourceCaches[prior[1]]._tiles[coord.key];
-                            console.log('###', coord, prior[1], tile)
-                            if (tile && !tile.hasData()) return false;
+                            let tile = sourceCaches[prior[1]]._tiles[coord.key]?.hasData();
+                            console.log('###', coord, id, prior[1], tile)
+                            if (!tile) return false;
                         }
                     }
                     console.log('### include', coord)

@@ -431,7 +431,10 @@ declare class UnwrappedTileID {
 	key: string;
 	constructor(wrap: number, canonical: CanonicalTileID);
 }
-declare class OverscaledTileID {
+/**
+ * An overscaled tile identifier
+ */
+export declare class OverscaledTileID {
 	overscaledZ: number;
 	wrap: number;
 	canonical: CanonicalTileID;
@@ -4047,7 +4050,11 @@ declare class Transform {
  * - `expired` Tile data was previously loaded, but has expired per its HTTP headers and is in the process of refreshing.
  */
 export type TileState = "loading" | "loaded" | "reloading" | "unloaded" | "errored" | "expired";
-declare class Tile {
+/**
+ * A tile object is the combination of a Coordinate, which defines
+ * its place, as well as a unique ID and data tracking for its content
+ */
+export declare class Tile {
 	tileID: OverscaledTileID;
 	uid: number;
 	uses: number;

@@ -363,7 +363,32 @@ export class Painter {
                 sourceCache.prepare(this.context);
             }
 
-            coordsAscending[id] = sourceCache.getVisibleCoordinates();
+            let coords = sourceCache.getVisibleCoordinates();
+            if (location.search.includes('filter1')) {
+                // filter for coords that are loaded in all the sources
+                coords = coords.filter(coord => {
+                    for (const id in sourceCaches) {
+                        const loaded = sourceCaches[id]._getLoadedTile(coord);
+                        console.log('###', coord, id, loaded)
+                        if (!loaded) return false;
+                    }
+                    console.log('### include', coord)
+                    return true;
+                });
+            }
+            if (location.search.includes('filter2')) {
+                // filter for coords that are loaded in all the sources
+                coords = coords.filter(coord => {
+                    for (const id in sourceCaches) {
+                        let tile = sourceCaches[id]._tiles[coord.key];
+                        console.log('###', coord, id, tile)
+                        if (tile && !tile.hasData()) return false;
+                    }
+                    console.log('### include', coord)
+                    return true;
+                });
+            }
+            coordsAscending[id] = coords;
             coordsDescending[id] = coordsAscending[id].slice().reverse();
             coordsDescendingSymbol[id] = sourceCache.getVisibleCoordinates(true).reverse();
         }

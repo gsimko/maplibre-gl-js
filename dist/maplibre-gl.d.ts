@@ -3470,6 +3470,8 @@ declare class Painter {
 	colorModeForRenderPass(): Readonly<ColorMode>;
 	depthModeForSublayer(n: number, mask: DepthMaskType, func?: DepthFuncType | null): Readonly<DepthMode>;
 	opaquePassEnabledForLayer(): boolean;
+	/** Returns whether the tile ID (or any of its ancestors) is loaded */
+	_isTileIdReady(sourceCache: SourceCache): (id: OverscaledTileID) => boolean;
 	render(style: Style, options: PainterOptions): void;
 	renderLayer(painter: Painter, sourceCache: SourceCache, layer: StyleLayer, coords: Array<OverscaledTileID>): void;
 	/**

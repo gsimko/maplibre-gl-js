@@ -338,6 +338,20 @@ export class Painter {
         return this.currentLayer < this.opaquePassCutoff;
     }
 
+    /** Returns whether the tile ID (or any of its ancestors) is loaded */
+    _isTileIdReady(sourceCache: SourceCache) {
+        return (id: OverscaledTileID) => {
+            while (true) {
+                if (sourceCache._getLoadedTile(id)) return true;
+                const z = id.canonical.z - 1;
+                if (z === -1) return false;
+                const x = id.canonical.x >> 1;
+                const y = id.canonical.y >> 1;
+                id = new OverscaledTileID(z, id.wrap, z, x, y);
+            }
+        };
+    }
+
     render(style: Style, options: PainterOptions) {
         this.style = style;
         this.options = options;
@@ -364,35 +378,11 @@ export class Painter {
             }
 
             let coords = sourceCache.getVisibleCoordinates();
-            if (location.search.includes('filter1')) {
-                // filter for coords that are loaded in all the sources
-                const url = new URL(location.href);
-                const priors = url.searchParams.getAll('filter1').map(x=>x.split('+'));
-                coords = coords.filter(coord => {
-                    for (const prior of priors) {
-                        if (prior[0]===id) {
-                            const loaded = sourceCaches[prior[1]]._getLoadedTile(coord);
-                            console.log('###', coord, id, prior[1], loaded)
-                            if (!loaded) return false;
-                        }
-                    }
-                    return true;
-                });
-            }
-            if (location.search.includes('filter2')) {
-                // filter for coords that are loaded in all the sources
-                const url = new URL(location.href);
-                const priors = url.searchParams.getAll('filter2').map(x=>x.split('+'));
-                coords = coords.filter(coord => {
-                    for (const prior of priors) {
-                        if (prior[0]===id) {
-                            let tile = sourceCaches[prior[1]]._tiles[coord.key]?.hasData();
-                            console.log('###', coord, id, prior[1], tile)
-                            if (!tile) return false;
-                        }
-                    }
-                    return true;
-                });
+            // filter for coords that are already loaded in priorSource
+            const priorSourceId = sourceCache._source['_options'].priorSource;
+            const priorSource = sourceCaches[priorSourceId];
+            if (priorSource) {
+                coords = coords.filter(this._isTileIdReady(priorSource));
             }
             coordsAscending[id] = coords;
             coordsDescending[id] = coordsAscending[id].slice().reverse();

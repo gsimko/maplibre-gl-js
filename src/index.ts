@@ -46,6 +46,8 @@ import {DoubleClickZoomHandler} from './ui/handler/shim/dblclick_zoom';
 import {KeyboardHandler} from './ui/handler/keyboard';
 import {TwoFingersTouchPitchHandler, TwoFingersTouchRotateHandler, TwoFingersTouchZoomHandler} from './ui/handler/two_fingers_touch';
 import {MessageType} from './util/actor_messages';
+import { OverscaledTileID } from './source/tile_id';
+import { Tile } from './source/tile';
 const version = packageJSON.version;
 
 export type * from '@maplibre/maplibre-gl-style-spec';
@@ -246,5 +248,7 @@ export {
     addProtocol,
     removeProtocol,
     addSourceType,
-    importScriptInWorkers
+    importScriptInWorkers,
+    OverscaledTileID,
+    Tile
 };

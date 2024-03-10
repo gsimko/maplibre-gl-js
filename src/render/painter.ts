@@ -366,11 +366,15 @@ export class Painter {
             let coords = sourceCache.getVisibleCoordinates();
             if (location.search.includes('filter1')) {
                 // filter for coords that are loaded in all the sources
+                const url = new URL(location.href);
+                const priors = url.searchParams.getAll('filter1').map(x=>x.split('+'));
                 coords = coords.filter(coord => {
-                    for (const id in sourceCaches) {
-                        const loaded = sourceCaches[id]._getLoadedTile(coord);
-                        console.log('###', coord, id, loaded)
-                        if (!loaded) return false;
+                    for (const prior of priors) {
+                        if (prior[0]===id) {
+                            const loaded = sourceCaches[prior[1]]._getLoadedTile(coord);
+                            console.log('###', coord, id, prior[1], loaded)
+                            if (!loaded) return false;
+                        }
                     }
                     console.log('### include', coord)
                     return true;
@@ -378,11 +382,15 @@ export class Painter {
             }
             if (location.search.includes('filter2')) {
                 // filter for coords that are loaded in all the sources
+                const url = new URL(location.href);
+                const priors = url.searchParams.getAll('filter2').map(x=>x.split('+'));
                 coords = coords.filter(coord => {
-                    for (const id in sourceCaches) {
-                        let tile = sourceCaches[id]._tiles[coord.key];
-                        console.log('###', coord, id, tile)
-                        if (tile && !tile.hasData()) return false;
+                    for (const prior of priors) {
+                        if (prior[0]===id) {
+                            let tile = sourceCaches[prior[1]]._tiles[coord.key];
+                            console.log('###', coord, prior[1], tile)
+                            if (tile && !tile.hasData()) return false;
+                        }
                     }
                     console.log('### include', coord)
                     return true;

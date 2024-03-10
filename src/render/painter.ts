@@ -379,7 +379,7 @@ export class Painter {
 
             let coords = sourceCache.getVisibleCoordinates();
             // filter for coords that are already loaded in priorSource
-            const priorSourceId = sourceCache._source['_options'].priorSource;
+            const priorSourceId = sourceCache._source['_options'].priorSourceId;
             const priorSource = sourceCaches[priorSourceId];
             if (priorSource) {
                 coords = coords.filter(this._isTileIdReady(priorSource));

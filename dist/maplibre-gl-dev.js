@@ -2018,6 +2018,9 @@ var source_vector = {
 		type: "boolean",
 		"default": false
 	},
+	priorSourceId: {
+		type: "string"
+	},
 	"*": {
 		type: "*"
 	}
@@ -2078,6 +2081,9 @@ var source_raster = {
 	volatile: {
 		type: "boolean",
 		"default": false
+	},
+	priorSourceId: {
+		type: "string"
 	},
 	"*": {
 		type: "*"
@@ -2158,6 +2164,9 @@ var source_raster_dem = {
 		type: "boolean",
 		"default": false
 	},
+	priorSourceId: {
+		type: "string"
+	},
 	"*": {
 		type: "*"
 	}
@@ -2223,6 +2232,9 @@ var source_geojson = {
 	},
 	promoteId: {
 		type: "promoteId"
+	},
+	priorSourceId: {
+		type: "string"
 	}
 };
 var source_video = {
@@ -2248,6 +2260,9 @@ var source_video = {
 			length: 2,
 			value: "number"
 		}
+	},
+	priorSourceId: {
+		type: "string"
 	}
 };
 var source_image = {
@@ -2272,6 +2287,9 @@ var source_image = {
 			length: 2,
 			value: "number"
 		}
+	},
+	priorSourceId: {
+		type: "string"
 	}
 };
 var layer = {
@@ -35117,7 +35135,7 @@ var dependencies = {
 	"@mapbox/unitbezier": "^0.0.1",
 	"@mapbox/vector-tile": "^1.3.1",
 	"@mapbox/whoots-js": "^3.1.0",
-	"@maplibre/maplibre-gl-style-spec": "^20.1.1",
+	"@maplibre/maplibre-gl-style-spec": "github:gsimko/maplibre-style-spec",
 	"@types/geojson": "^7946.0.14",
 	"@types/geojson-vt": "3.2.5",
 	"@types/mapbox__point-geometry": "^0.1.4",
@@ -47790,6 +47808,33 @@ class Painter {
     opaquePassEnabledForLayer() {
         return this.currentLayer < this.opaquePassCutoff;
     }
+    /** Returns whether the tile ID (or any of its parent, grandparent or children) is loaded */
+    _isTileIdReady(sourceCache) {
+        return (id) => {
+            if (sourceCache._getLoadedTile(id))
+                return true;
+            if (id.canonical.z >= 1) {
+                const z = id.canonical.z - 1;
+                const x = id.canonical.x >> 1;
+                const y = id.canonical.y >> 1;
+                const p = new performance$1.OverscaledTileID(z, id.wrap, z, x, y);
+                if (sourceCache._getLoadedTile(p))
+                    return true;
+            }
+            const children = id.children(sourceCache._maxTileCacheZoomLevels);
+            if (children.every(x => sourceCache._getLoadedTile(x)))
+                return true;
+            if (id.canonical.z >= 2) {
+                const z = id.canonical.z - 2;
+                const x = id.canonical.x >> 2;
+                const y = id.canonical.y >> 2;
+                const p = new performance$1.OverscaledTileID(z, id.wrap, z, x, y);
+                if (sourceCache._getLoadedTile(p))
+                    return true;
+            }
+            return false;
+        };
+    }
     render(style, options) {
         this.style = style;
         this.options = options;
@@ -47809,31 +47854,11 @@ class Painter {
                 sourceCache.prepare(this.context);
             }
             let coords = sourceCache.getVisibleCoordinates();
-            if (location.search.includes('filter1')) {
-                // filter for coords that are loaded in all the sources
-                coords = coords.filter(coord => {
-                    for (const id in sourceCaches) {
-                        const loaded = sourceCaches[id]._getLoadedTile(coord);
-                        console.log('###', coord, id, loaded);
-                        if (!loaded)
-                            return false;
-                    }
-                    console.log('### include', coord);
-                    return true;
-                });
-            }
-            if (location.search.includes('filter2')) {
-                // filter for coords that are loaded in all the sources
-                coords = coords.filter(coord => {
-                    for (const id in sourceCaches) {
-                        let tile = sourceCaches[id]._tiles[coord.key];
-                        console.log('###', coord, id, tile);
-                        if (tile && !tile.hasData())
-                            return false;
-                    }
-                    console.log('### include', coord);
-                    return true;
-                });
+            // filter for coords that are already loaded in priorSource
+            const priorSourceId = sourceCache._source['_options'].priorSourceId;
+            const priorSource = sourceCaches[priorSourceId];
+            if (priorSource) {
+                coords = coords.filter(this._isTileIdReady(priorSource));
             }
             coordsAscending[id] = coords;
             coordsDescending[id] = coordsAscending[id].slice().reverse();
@@ -58851,6 +58876,7 @@ exports.AJAXError = performance$1.AJAXError;
 exports.Evented = performance$1.Evented;
 exports.LngLat = performance$1.LngLat;
 exports.MercatorCoordinate = performance$1.MercatorCoordinate;
+exports.OverscaledTileID = performance$1.OverscaledTileID;
 exports.Point = performance$1.Point;
 exports.addProtocol = performance$1.addProtocol;
 exports.config = performance$1.config;
@@ -58884,6 +58910,7 @@ exports.ScaleControl = ScaleControl;
 exports.ScrollZoomHandler = ScrollZoomHandler;
 exports.Style = Style;
 exports.TerrainControl = TerrainControl;
+exports.Tile = Tile;
 exports.TwoFingersTouchPitchHandler = TwoFingersTouchPitchHandler;
 exports.TwoFingersTouchRotateHandler = TwoFingersTouchRotateHandler;
 exports.TwoFingersTouchZoomHandler = TwoFingersTouchZoomHandler;

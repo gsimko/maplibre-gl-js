@@ -341,23 +341,12 @@ export class Painter {
     /** Returns whether the tile ID (or any of its parent, grandparent or children) is loaded */
     _isTileIdReady(sourceCache: SourceCache) {
         return (id: OverscaledTileID) => {
-            if (sourceCache._getLoadedTile(id)) return true;
-            if (id.canonical.z >= 1 ) {
-                const z = id.canonical.z - 1;
-                const x = id.canonical.x >> 1;
-                const y = id.canonical.y >> 1;
-                const p = new OverscaledTileID(z, id.wrap, z, x, y);
-                if (sourceCache._getLoadedTile(p)) return true;
+            if (id.canonical.z > sourceCache._source.maxzoom) {
+                id = id.scaledTo(sourceCache._source.maxzoom);
             }
+            if (sourceCache.findLoadedParent(id, 0)) return true;
             const children = id.children(sourceCache._maxTileCacheZoomLevels);
             if (children.every(x => sourceCache._getLoadedTile(x))) return true;
-            if (id.canonical.z >= 2 ) {
-                const z = id.canonical.z - 2;
-                const x = id.canonical.x >> 2;
-                const y = id.canonical.y >> 2;
-                const p = new OverscaledTileID(z, id.wrap, z, x, y);
-                if (sourceCache._getLoadedTile(p)) return true;
-            }
             return false;
         };
     }

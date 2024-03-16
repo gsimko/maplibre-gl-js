@@ -344,7 +344,7 @@ export class Painter {
             if (id.canonical.z > sourceCache._source.maxzoom) {
                 id = id.scaledTo(sourceCache._source.maxzoom);
             }
-            if (sourceCache.findLoadedParent(id, 0)) return true;
+            if (sourceCache._getLoadedTile(id) || sourceCache.findLoadedParent(id, 0)) return true;
             const children = id.children(sourceCache._maxTileCacheZoomLevels);
             if (children.every(x => sourceCache._getLoadedTile(x))) return true;
             return false;

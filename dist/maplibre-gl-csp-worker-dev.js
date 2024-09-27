@@ -1,6 +1,6 @@
 /**
  * MapLibre GL JS
- * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v4.0.0/LICENSE.txt
+ * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt
  */
 var maplibregl = (function () {
 'use strict';
@@ -19,7 +19,7 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-/* global Reflect, Promise, SuppressedError, Symbol */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
 var extendStatics = function(d, b) {
     extendStatics = Object.setPrototypeOf ||
@@ -130,8 +130,8 @@ function __awaiter(thisArg, _arguments, P, generator) {
 }
 
 function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -235,8 +235,9 @@ function __await(v) {
 function __asyncGenerator(thisArg, _arguments, generator) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function awaitReturn(f) { return function (v) { return Promise.resolve(v).then(f, reject); }; }
+    function verb(n, f) { if (g[n]) { i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; if (f) i[n] = f(i[n]); } }
     function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
     function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
     function fulfill(value) { resume("next", value); }
@@ -302,7 +303,7 @@ function __classPrivateFieldIn(state, receiver) {
 function __addDisposableResource(env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
+        var dispose, inner;
         if (async) {
             if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
             dispose = value[Symbol.asyncDispose];
@@ -310,14 +311,17 @@ function __addDisposableResource(env, value, async) {
         if (dispose === void 0) {
             if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
             dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
         }
         if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
         env.stack.push({ value: value, dispose: dispose, async: async });
     }
     else if (async) {
         env.stack.push({ async: true });
     }
     return value;
+
 }
 
 var _SuppressedError = typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
@@ -330,17 +334,22 @@ function __disposeResources(env) {
         env.error = env.hasError ? new _SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
     }
+    var r, s = 0;
     function next() {
-        while (env.stack.length) {
-            var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
             try {
-                var result = rec.dispose && rec.dispose.call(rec.value);
-                if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                if (r.dispose) {
+                    var result = r.dispose.call(r.value);
+                    if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                else s |= 1;
             }
             catch (e) {
                 fail(e);
             }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
     }
     return next();
@@ -415,401 +424,419 @@ function getAugmentedNamespace(n) {
 	return a;
 }
 
-'use strict';
+var pointGeometry;
+var hasRequiredPointGeometry;
 
-var pointGeometry = Point$2;
+function requirePointGeometry () {
+	if (hasRequiredPointGeometry) return pointGeometry;
+	hasRequiredPointGeometry = 1;
+	'use strict';
 
-/**
- * A standalone point geometry with useful accessor, comparison, and
- * modification methods.
- *
- * @class Point
- * @param {Number} x the x-coordinate. this could be longitude or screen
- * pixels, or any other sort of unit.
- * @param {Number} y the y-coordinate. this could be latitude or screen
- * pixels, or any other sort of unit.
- * @example
- * var point = new Point(-77, 38);
- */
-function Point$2(x, y) {
-    this.x = x;
-    this.y = y;
+	pointGeometry = Point;
+
+	/**
+	 * A standalone point geometry with useful accessor, comparison, and
+	 * modification methods.
+	 *
+	 * @class Point
+	 * @param {Number} x the x-coordinate. this could be longitude or screen
+	 * pixels, or any other sort of unit.
+	 * @param {Number} y the y-coordinate. this could be latitude or screen
+	 * pixels, or any other sort of unit.
+	 * @example
+	 * var point = new Point(-77, 38);
+	 */
+	function Point(x, y) {
+	    this.x = x;
+	    this.y = y;
+	}
+
+	Point.prototype = {
+
+	    /**
+	     * Clone this point, returning a new point that can be modified
+	     * without affecting the old one.
+	     * @return {Point} the clone
+	     */
+	    clone: function() { return new Point(this.x, this.y); },
+
+	    /**
+	     * Add this point's x & y coordinates to another point,
+	     * yielding a new point.
+	     * @param {Point} p the other point
+	     * @return {Point} output point
+	     */
+	    add:     function(p) { return this.clone()._add(p); },
+
+	    /**
+	     * Subtract this point's x & y coordinates to from point,
+	     * yielding a new point.
+	     * @param {Point} p the other point
+	     * @return {Point} output point
+	     */
+	    sub:     function(p) { return this.clone()._sub(p); },
+
+	    /**
+	     * Multiply this point's x & y coordinates by point,
+	     * yielding a new point.
+	     * @param {Point} p the other point
+	     * @return {Point} output point
+	     */
+	    multByPoint:    function(p) { return this.clone()._multByPoint(p); },
+
+	    /**
+	     * Divide this point's x & y coordinates by point,
+	     * yielding a new point.
+	     * @param {Point} p the other point
+	     * @return {Point} output point
+	     */
+	    divByPoint:     function(p) { return this.clone()._divByPoint(p); },
+
+	    /**
+	     * Multiply this point's x & y coordinates by a factor,
+	     * yielding a new point.
+	     * @param {Point} k factor
+	     * @return {Point} output point
+	     */
+	    mult:    function(k) { return this.clone()._mult(k); },
+
+	    /**
+	     * Divide this point's x & y coordinates by a factor,
+	     * yielding a new point.
+	     * @param {Point} k factor
+	     * @return {Point} output point
+	     */
+	    div:     function(k) { return this.clone()._div(k); },
+
+	    /**
+	     * Rotate this point around the 0, 0 origin by an angle a,
+	     * given in radians
+	     * @param {Number} a angle to rotate around, in radians
+	     * @return {Point} output point
+	     */
+	    rotate:  function(a) { return this.clone()._rotate(a); },
+
+	    /**
+	     * Rotate this point around p point by an angle a,
+	     * given in radians
+	     * @param {Number} a angle to rotate around, in radians
+	     * @param {Point} p Point to rotate around
+	     * @return {Point} output point
+	     */
+	    rotateAround:  function(a,p) { return this.clone()._rotateAround(a,p); },
+
+	    /**
+	     * Multiply this point by a 4x1 transformation matrix
+	     * @param {Array<Number>} m transformation matrix
+	     * @return {Point} output point
+	     */
+	    matMult: function(m) { return this.clone()._matMult(m); },
+
+	    /**
+	     * Calculate this point but as a unit vector from 0, 0, meaning
+	     * that the distance from the resulting point to the 0, 0
+	     * coordinate will be equal to 1 and the angle from the resulting
+	     * point to the 0, 0 coordinate will be the same as before.
+	     * @return {Point} unit vector point
+	     */
+	    unit:    function() { return this.clone()._unit(); },
+
+	    /**
+	     * Compute a perpendicular point, where the new y coordinate
+	     * is the old x coordinate and the new x coordinate is the old y
+	     * coordinate multiplied by -1
+	     * @return {Point} perpendicular point
+	     */
+	    perp:    function() { return this.clone()._perp(); },
+
+	    /**
+	     * Return a version of this point with the x & y coordinates
+	     * rounded to integers.
+	     * @return {Point} rounded point
+	     */
+	    round:   function() { return this.clone()._round(); },
+
+	    /**
+	     * Return the magitude of this point: this is the Euclidean
+	     * distance from the 0, 0 coordinate to this point's x and y
+	     * coordinates.
+	     * @return {Number} magnitude
+	     */
+	    mag: function() {
+	        return Math.sqrt(this.x * this.x + this.y * this.y);
+	    },
+
+	    /**
+	     * Judge whether this point is equal to another point, returning
+	     * true or false.
+	     * @param {Point} other the other point
+	     * @return {boolean} whether the points are equal
+	     */
+	    equals: function(other) {
+	        return this.x === other.x &&
+	               this.y === other.y;
+	    },
+
+	    /**
+	     * Calculate the distance from this point to another point
+	     * @param {Point} p the other point
+	     * @return {Number} distance
+	     */
+	    dist: function(p) {
+	        return Math.sqrt(this.distSqr(p));
+	    },
+
+	    /**
+	     * Calculate the distance from this point to another point,
+	     * without the square root step. Useful if you're comparing
+	     * relative distances.
+	     * @param {Point} p the other point
+	     * @return {Number} distance
+	     */
+	    distSqr: function(p) {
+	        var dx = p.x - this.x,
+	            dy = p.y - this.y;
+	        return dx * dx + dy * dy;
+	    },
+
+	    /**
+	     * Get the angle from the 0, 0 coordinate to this point, in radians
+	     * coordinates.
+	     * @return {Number} angle
+	     */
+	    angle: function() {
+	        return Math.atan2(this.y, this.x);
+	    },
+
+	    /**
+	     * Get the angle from this point to another point, in radians
+	     * @param {Point} b the other point
+	     * @return {Number} angle
+	     */
+	    angleTo: function(b) {
+	        return Math.atan2(this.y - b.y, this.x - b.x);
+	    },
+
+	    /**
+	     * Get the angle between this point and another point, in radians
+	     * @param {Point} b the other point
+	     * @return {Number} angle
+	     */
+	    angleWith: function(b) {
+	        return this.angleWithSep(b.x, b.y);
+	    },
+
+	    /*
+	     * Find the angle of the two vectors, solving the formula for
+	     * the cross product a x b = |a||b|sin(θ) for θ.
+	     * @param {Number} x the x-coordinate
+	     * @param {Number} y the y-coordinate
+	     * @return {Number} the angle in radians
+	     */
+	    angleWithSep: function(x, y) {
+	        return Math.atan2(
+	            this.x * y - this.y * x,
+	            this.x * x + this.y * y);
+	    },
+
+	    _matMult: function(m) {
+	        var x = m[0] * this.x + m[1] * this.y,
+	            y = m[2] * this.x + m[3] * this.y;
+	        this.x = x;
+	        this.y = y;
+	        return this;
+	    },
+
+	    _add: function(p) {
+	        this.x += p.x;
+	        this.y += p.y;
+	        return this;
+	    },
+
+	    _sub: function(p) {
+	        this.x -= p.x;
+	        this.y -= p.y;
+	        return this;
+	    },
+
+	    _mult: function(k) {
+	        this.x *= k;
+	        this.y *= k;
+	        return this;
+	    },
+
+	    _div: function(k) {
+	        this.x /= k;
+	        this.y /= k;
+	        return this;
+	    },
+
+	    _multByPoint: function(p) {
+	        this.x *= p.x;
+	        this.y *= p.y;
+	        return this;
+	    },
+
+	    _divByPoint: function(p) {
+	        this.x /= p.x;
+	        this.y /= p.y;
+	        return this;
+	    },
+
+	    _unit: function() {
+	        this._div(this.mag());
+	        return this;
+	    },
+
+	    _perp: function() {
+	        var y = this.y;
+	        this.y = this.x;
+	        this.x = -y;
+	        return this;
+	    },
+
+	    _rotate: function(angle) {
+	        var cos = Math.cos(angle),
+	            sin = Math.sin(angle),
+	            x = cos * this.x - sin * this.y,
+	            y = sin * this.x + cos * this.y;
+	        this.x = x;
+	        this.y = y;
+	        return this;
+	    },
+
+	    _rotateAround: function(angle, p) {
+	        var cos = Math.cos(angle),
+	            sin = Math.sin(angle),
+	            x = p.x + cos * (this.x - p.x) - sin * (this.y - p.y),
+	            y = p.y + sin * (this.x - p.x) + cos * (this.y - p.y);
+	        this.x = x;
+	        this.y = y;
+	        return this;
+	    },
+
+	    _round: function() {
+	        this.x = Math.round(this.x);
+	        this.y = Math.round(this.y);
+	        return this;
+	    }
+	};
+
+	/**
+	 * Construct a point from an array if necessary, otherwise if the input
+	 * is already a Point, or an unknown type, return it unchanged
+	 * @param {Array<Number>|Point|*} a any kind of input value
+	 * @return {Point} constructed point, or passed-through value.
+	 * @example
+	 * // this
+	 * var point = Point.convert([0, 1]);
+	 * // is equivalent to
+	 * var point = new Point(0, 1);
+	 */
+	Point.convert = function (a) {
+	    if (a instanceof Point) {
+	        return a;
+	    }
+	    if (Array.isArray(a)) {
+	        return new Point(a[0], a[1]);
+	    }
+	    return a;
+	};
+	return pointGeometry;
 }
 
-Point$2.prototype = {
+var pointGeometryExports = requirePointGeometry();
+var Point = /*@__PURE__*/getDefaultExportFromCjs$1(pointGeometryExports);
 
-    /**
-     * Clone this point, returning a new point that can be modified
-     * without affecting the old one.
-     * @return {Point} the clone
-     */
-    clone: function() { return new Point$2(this.x, this.y); },
+var unitbezier$1;
+var hasRequiredUnitbezier;
 
-    /**
-     * Add this point's x & y coordinates to another point,
-     * yielding a new point.
-     * @param {Point} p the other point
-     * @return {Point} output point
-     */
-    add:     function(p) { return this.clone()._add(p); },
+function requireUnitbezier () {
+	if (hasRequiredUnitbezier) return unitbezier$1;
+	hasRequiredUnitbezier = 1;
+	'use strict';
 
-    /**
-     * Subtract this point's x & y coordinates to from point,
-     * yielding a new point.
-     * @param {Point} p the other point
-     * @return {Point} output point
-     */
-    sub:     function(p) { return this.clone()._sub(p); },
+	unitbezier$1 = UnitBezier;
 
-    /**
-     * Multiply this point's x & y coordinates by point,
-     * yielding a new point.
-     * @param {Point} p the other point
-     * @return {Point} output point
-     */
-    multByPoint:    function(p) { return this.clone()._multByPoint(p); },
+	function UnitBezier(p1x, p1y, p2x, p2y) {
+	    // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
+	    this.cx = 3.0 * p1x;
+	    this.bx = 3.0 * (p2x - p1x) - this.cx;
+	    this.ax = 1.0 - this.cx - this.bx;
 
-    /**
-     * Divide this point's x & y coordinates by point,
-     * yielding a new point.
-     * @param {Point} p the other point
-     * @return {Point} output point
-     */
-    divByPoint:     function(p) { return this.clone()._divByPoint(p); },
+	    this.cy = 3.0 * p1y;
+	    this.by = 3.0 * (p2y - p1y) - this.cy;
+	    this.ay = 1.0 - this.cy - this.by;
 
-    /**
-     * Multiply this point's x & y coordinates by a factor,
-     * yielding a new point.
-     * @param {Point} k factor
-     * @return {Point} output point
-     */
-    mult:    function(k) { return this.clone()._mult(k); },
+	    this.p1x = p1x;
+	    this.p1y = p1y;
+	    this.p2x = p2x;
+	    this.p2y = p2y;
+	}
 
-    /**
-     * Divide this point's x & y coordinates by a factor,
-     * yielding a new point.
-     * @param {Point} k factor
-     * @return {Point} output point
-     */
-    div:     function(k) { return this.clone()._div(k); },
+	UnitBezier.prototype = {
+	    sampleCurveX: function (t) {
+	        // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
+	        return ((this.ax * t + this.bx) * t + this.cx) * t;
+	    },
 
-    /**
-     * Rotate this point around the 0, 0 origin by an angle a,
-     * given in radians
-     * @param {Number} a angle to rotate around, in radians
-     * @return {Point} output point
-     */
-    rotate:  function(a) { return this.clone()._rotate(a); },
+	    sampleCurveY: function (t) {
+	        return ((this.ay * t + this.by) * t + this.cy) * t;
+	    },
 
-    /**
-     * Rotate this point around p point by an angle a,
-     * given in radians
-     * @param {Number} a angle to rotate around, in radians
-     * @param {Point} p Point to rotate around
-     * @return {Point} output point
-     */
-    rotateAround:  function(a,p) { return this.clone()._rotateAround(a,p); },
+	    sampleCurveDerivativeX: function (t) {
+	        return (3.0 * this.ax * t + 2.0 * this.bx) * t + this.cx;
+	    },
 
-    /**
-     * Multiply this point by a 4x1 transformation matrix
-     * @param {Array<Number>} m transformation matrix
-     * @return {Point} output point
-     */
-    matMult: function(m) { return this.clone()._matMult(m); },
+	    solveCurveX: function (x, epsilon) {
+	        if (epsilon === undefined) epsilon = 1e-6;
 
-    /**
-     * Calculate this point but as a unit vector from 0, 0, meaning
-     * that the distance from the resulting point to the 0, 0
-     * coordinate will be equal to 1 and the angle from the resulting
-     * point to the 0, 0 coordinate will be the same as before.
-     * @return {Point} unit vector point
-     */
-    unit:    function() { return this.clone()._unit(); },
+	        if (x < 0.0) return 0.0;
+	        if (x > 1.0) return 1.0;
 
-    /**
-     * Compute a perpendicular point, where the new y coordinate
-     * is the old x coordinate and the new x coordinate is the old y
-     * coordinate multiplied by -1
-     * @return {Point} perpendicular point
-     */
-    perp:    function() { return this.clone()._perp(); },
+	        var t = x;
 
-    /**
-     * Return a version of this point with the x & y coordinates
-     * rounded to integers.
-     * @return {Point} rounded point
-     */
-    round:   function() { return this.clone()._round(); },
+	        // First try a few iterations of Newton's method - normally very fast.
+	        for (var i = 0; i < 8; i++) {
+	            var x2 = this.sampleCurveX(t) - x;
+	            if (Math.abs(x2) < epsilon) return t;
 
-    /**
-     * Return the magitude of this point: this is the Euclidean
-     * distance from the 0, 0 coordinate to this point's x and y
-     * coordinates.
-     * @return {Number} magnitude
-     */
-    mag: function() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
-    },
+	            var d2 = this.sampleCurveDerivativeX(t);
+	            if (Math.abs(d2) < 1e-6) break;
 
-    /**
-     * Judge whether this point is equal to another point, returning
-     * true or false.
-     * @param {Point} other the other point
-     * @return {boolean} whether the points are equal
-     */
-    equals: function(other) {
-        return this.x === other.x &&
-               this.y === other.y;
-    },
+	            t = t - x2 / d2;
+	        }
 
-    /**
-     * Calculate the distance from this point to another point
-     * @param {Point} p the other point
-     * @return {Number} distance
-     */
-    dist: function(p) {
-        return Math.sqrt(this.distSqr(p));
-    },
+	        // Fall back to the bisection method for reliability.
+	        var t0 = 0.0;
+	        var t1 = 1.0;
+	        t = x;
 
-    /**
-     * Calculate the distance from this point to another point,
-     * without the square root step. Useful if you're comparing
-     * relative distances.
-     * @param {Point} p the other point
-     * @return {Number} distance
-     */
-    distSqr: function(p) {
-        var dx = p.x - this.x,
-            dy = p.y - this.y;
-        return dx * dx + dy * dy;
-    },
+	        for (i = 0; i < 20; i++) {
+	            x2 = this.sampleCurveX(t);
+	            if (Math.abs(x2 - x) < epsilon) break;
 
-    /**
-     * Get the angle from the 0, 0 coordinate to this point, in radians
-     * coordinates.
-     * @return {Number} angle
-     */
-    angle: function() {
-        return Math.atan2(this.y, this.x);
-    },
+	            if (x > x2) {
+	                t0 = t;
+	            } else {
+	                t1 = t;
+	            }
 
-    /**
-     * Get the angle from this point to another point, in radians
-     * @param {Point} b the other point
-     * @return {Number} angle
-     */
-    angleTo: function(b) {
-        return Math.atan2(this.y - b.y, this.x - b.x);
-    },
+	            t = (t1 - t0) * 0.5 + t0;
+	        }
 
-    /**
-     * Get the angle between this point and another point, in radians
-     * @param {Point} b the other point
-     * @return {Number} angle
-     */
-    angleWith: function(b) {
-        return this.angleWithSep(b.x, b.y);
-    },
+	        return t;
+	    },
 
-    /*
-     * Find the angle of the two vectors, solving the formula for
-     * the cross product a x b = |a||b|sin(θ) for θ.
-     * @param {Number} x the x-coordinate
-     * @param {Number} y the y-coordinate
-     * @return {Number} the angle in radians
-     */
-    angleWithSep: function(x, y) {
-        return Math.atan2(
-            this.x * y - this.y * x,
-            this.x * x + this.y * y);
-    },
-
-    _matMult: function(m) {
-        var x = m[0] * this.x + m[1] * this.y,
-            y = m[2] * this.x + m[3] * this.y;
-        this.x = x;
-        this.y = y;
-        return this;
-    },
-
-    _add: function(p) {
-        this.x += p.x;
-        this.y += p.y;
-        return this;
-    },
-
-    _sub: function(p) {
-        this.x -= p.x;
-        this.y -= p.y;
-        return this;
-    },
-
-    _mult: function(k) {
-        this.x *= k;
-        this.y *= k;
-        return this;
-    },
-
-    _div: function(k) {
-        this.x /= k;
-        this.y /= k;
-        return this;
-    },
-
-    _multByPoint: function(p) {
-        this.x *= p.x;
-        this.y *= p.y;
-        return this;
-    },
-
-    _divByPoint: function(p) {
-        this.x /= p.x;
-        this.y /= p.y;
-        return this;
-    },
-
-    _unit: function() {
-        this._div(this.mag());
-        return this;
-    },
-
-    _perp: function() {
-        var y = this.y;
-        this.y = this.x;
-        this.x = -y;
-        return this;
-    },
-
-    _rotate: function(angle) {
-        var cos = Math.cos(angle),
-            sin = Math.sin(angle),
-            x = cos * this.x - sin * this.y,
-            y = sin * this.x + cos * this.y;
-        this.x = x;
-        this.y = y;
-        return this;
-    },
-
-    _rotateAround: function(angle, p) {
-        var cos = Math.cos(angle),
-            sin = Math.sin(angle),
-            x = p.x + cos * (this.x - p.x) - sin * (this.y - p.y),
-            y = p.y + sin * (this.x - p.x) + cos * (this.y - p.y);
-        this.x = x;
-        this.y = y;
-        return this;
-    },
-
-    _round: function() {
-        this.x = Math.round(this.x);
-        this.y = Math.round(this.y);
-        return this;
-    }
-};
-
-/**
- * Construct a point from an array if necessary, otherwise if the input
- * is already a Point, or an unknown type, return it unchanged
- * @param {Array<Number>|Point|*} a any kind of input value
- * @return {Point} constructed point, or passed-through value.
- * @example
- * // this
- * var point = Point.convert([0, 1]);
- * // is equivalent to
- * var point = new Point(0, 1);
- */
-Point$2.convert = function (a) {
-    if (a instanceof Point$2) {
-        return a;
-    }
-    if (Array.isArray(a)) {
-        return new Point$2(a[0], a[1]);
-    }
-    return a;
-};
-
-var Point$3 = /*@__PURE__*/getDefaultExportFromCjs$1(pointGeometry);
-
-'use strict';
-
-var unitbezier$1 = UnitBezier$2;
-
-function UnitBezier$2(p1x, p1y, p2x, p2y) {
-    // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
-    this.cx = 3.0 * p1x;
-    this.bx = 3.0 * (p2x - p1x) - this.cx;
-    this.ax = 1.0 - this.cx - this.bx;
-
-    this.cy = 3.0 * p1y;
-    this.by = 3.0 * (p2y - p1y) - this.cy;
-    this.ay = 1.0 - this.cy - this.by;
-
-    this.p1x = p1x;
-    this.p1y = p1y;
-    this.p2x = p2x;
-    this.p2y = p2y;
+	    solve: function (x, epsilon) {
+	        return this.sampleCurveY(this.solveCurveX(x, epsilon));
+	    }
+	};
+	return unitbezier$1;
 }
 
-UnitBezier$2.prototype = {
-    sampleCurveX: function (t) {
-        // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
-        return ((this.ax * t + this.bx) * t + this.cx) * t;
-    },
-
-    sampleCurveY: function (t) {
-        return ((this.ay * t + this.by) * t + this.cy) * t;
-    },
-
-    sampleCurveDerivativeX: function (t) {
-        return (3.0 * this.ax * t + 2.0 * this.bx) * t + this.cx;
-    },
-
-    solveCurveX: function (x, epsilon) {
-        if (epsilon === undefined) epsilon = 1e-6;
-
-        if (x < 0.0) return 0.0;
-        if (x > 1.0) return 1.0;
-
-        var t = x;
-
-        // First try a few iterations of Newton's method - normally very fast.
-        for (var i = 0; i < 8; i++) {
-            var x2 = this.sampleCurveX(t) - x;
-            if (Math.abs(x2) < epsilon) return t;
-
-            var d2 = this.sampleCurveDerivativeX(t);
-            if (Math.abs(d2) < 1e-6) break;
-
-            t = t - x2 / d2;
-        }
-
-        // Fall back to the bisection method for reliability.
-        var t0 = 0.0;
-        var t1 = 1.0;
-        t = x;
-
-        for (i = 0; i < 20; i++) {
-            x2 = this.sampleCurveX(t);
-            if (Math.abs(x2 - x) < epsilon) break;
-
-            if (x > x2) {
-                t0 = t;
-            } else {
-                t1 = t;
-            }
-
-            t = (t1 - t0) * 0.5 + t0;
-        }
-
-        return t;
-    },
-
-    solve: function (x, epsilon) {
-        return this.sampleCurveY(this.solveCurveX(x, epsilon));
-    }
-};
-
-var UnitBezier$3 = /*@__PURE__*/getDefaultExportFromCjs$1(unitbezier$1);
+var unitbezierExports = requireUnitbezier();
+var UnitBezier$2 = /*@__PURE__*/getDefaultExportFromCjs$1(unitbezierExports);
 
 let supportsOffscreenCanvas;
 function offscreenCanvasSupported() {
@@ -858,6 +885,23 @@ function isOffscreenCanvasDistorted() {
 }
 
 /**
+ * For a given collection of 2D points, returns their axis-aligned bounding box,
+ * in the format [minX, minY, maxX, maxY].
+ */
+function getAABB(points) {
+    let tlX = Infinity;
+    let tlY = Infinity;
+    let brX = -Infinity;
+    let brY = -Infinity;
+    for (const p of points) {
+        tlX = Math.min(tlX, p.x);
+        tlY = Math.min(tlY, p.y);
+        brX = Math.max(brX, p.x);
+        brY = Math.max(brY, p.y);
+    }
+    return [tlX, tlY, brX, brY];
+}
+/**
  * Given a value `t` that varies between 0 and 1, return
  * an interpolation function that eases between 0 and 1 in a pleasing
  * cubic in-out fashion.
@@ -880,8 +924,8 @@ function easeCubicInOut(t) {
  * @param p2y - control point 2 y coordinate
  */
 function bezier$1(p1x, p1y, p2x, p2y) {
-    const bezier = new UnitBezier$3(p1x, p1y, p2x, p2y);
-    return function (t) {
+    const bezier = new UnitBezier$2(p1x, p1y, p2x, p2y);
+    return (t) => {
         return bezier.solve(t);
     };
 }
@@ -1080,7 +1124,7 @@ function warnOnce(message) {
  *
  * @returns true for a counter clockwise set of points
  */
-// http://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
+// https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
 function isCounterClockwise(a, b, c) {
     return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 }
@@ -1109,43 +1153,7 @@ function findLineIntersection(a1, a2, b1, b2) {
     const originDeltaX = a1.x - b1.x;
     const aInterpolation = (bDeltaX * originDeltaY - bDeltaY * originDeltaX) / denominator;
     // Find intersection by projecting out from origin of first segment
-    return new Point$3(a1.x + (aInterpolation * aDeltaX), a1.y + (aInterpolation * aDeltaY));
-}
-/**
- * Returns the signed area for the polygon ring.  Positive areas are exterior rings and
- * have a clockwise winding.  Negative areas are interior rings and have a counter clockwise
- * ordering.
- *
- * @param ring - Exterior or interior ring
- */
-function calculateSignedArea(ring) {
-    let sum = 0;
-    for (let i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
-        p1 = ring[i];
-        p2 = ring[j];
-        sum += (p2.x - p1.x) * (p1.y + p2.y);
-    }
-    return sum;
-}
-/**
- * Detects closed polygons, first + last point are equal
- *
- * @param points - array of points
- * @returns `true` if the points are a closed polygon
- */
-function isClosedPolygon(points) {
-    // If it is 2 points that are the same then it is a point
-    // If it is 3 points with start and end the same then it is a line
-    if (points.length < 4)
-        return false;
-    const p1 = points[0];
-    const p2 = points[points.length - 1];
-    if (Math.abs(p1.x - p2.x) > 0 ||
-        Math.abs(p1.y - p2.y) > 0) {
-        return false;
-    }
-    // polygon simplification can produce polygons with zero area and more than 3 points
-    return Math.abs(calculateSignedArea(points)) > 0.01;
+    return new Point(a1.x + (aInterpolation * aDeltaX), a1.y + (aInterpolation * aDeltaY));
 }
 /**
  * Converts spherical coordinates to cartesian coordinates.
@@ -1460,6 +1468,16 @@ function subscribe(target, message, listener, options) {
 function degreesToRadians(degrees) {
     return degrees * Math.PI / 180;
 }
+/**
+ * The maximum world tile zoom (Z).
+ * In other words, the upper bound supported for tile zoom.
+ */
+const MAX_TILE_ZOOM = 25;
+/**
+ * The minimum world tile zoom (Z).
+ * In other words, the lower bound supported for tile zoom.
+ */
+const MIN_TILE_ZOOM = 0;
 
 /*
 This file was copied from https://github.com/mapbox/grid-index and was
@@ -1673,6 +1691,9 @@ var $root = {
 	sky: {
 		type: "sky"
 	},
+	projection: {
+		type: "projection"
+	},
 	terrain: {
 		type: "terrain"
 	},
@@ -1763,6 +1784,9 @@ var source_vector = {
 		type: "boolean",
 		"default": false
 	},
+	priorSourceId: {
+		type: "string"
+	},
 	"*": {
 		type: "*"
 	}
@@ -1823,6 +1847,9 @@ var source_raster = {
 	volatile: {
 		type: "boolean",
 		"default": false
+	},
+	priorSourceId: {
+		type: "string"
 	},
 	"*": {
 		type: "*"
@@ -1903,6 +1930,9 @@ var source_raster_dem = {
 		type: "boolean",
 		"default": false
 	},
+	priorSourceId: {
+		type: "string"
+	},
 	"*": {
 		type: "*"
 	}
@@ -1968,6 +1998,9 @@ var source_geojson = {
 	},
 	promoteId: {
 		type: "promoteId"
+	},
+	priorSourceId: {
+		type: "string"
 	}
 };
 var source_video = {
@@ -1993,6 +2026,9 @@ var source_video = {
 			length: 2,
 			value: "number"
 		}
+	},
+	priorSourceId: {
+		type: "string"
 	}
 };
 var source_image = {
@@ -2017,6 +2053,9 @@ var source_image = {
 			length: 2,
 			value: "number"
 		}
+	},
+	priorSourceId: {
+		type: "string"
 	}
 };
 var layer = {
@@ -3210,8 +3249,6 @@ var filter_operator = {
 		has: {
 		},
 		"!has": {
-		},
-		within: {
 		}
 	}
 };
@@ -3318,6 +3355,18 @@ var sky = {
 		},
 		transition: true
 	},
+	"horizon-color": {
+		type: "color",
+		"property-type": "data-constant",
+		"default": "#ffffff",
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		transition: true
+	},
 	"fog-color": {
 		type: "color",
 		"property-type": "data-constant",
@@ -3330,7 +3379,7 @@ var sky = {
 		},
 		transition: true
 	},
-	"fog-blend": {
+	"fog-ground-blend": {
 		type: "number",
 		"property-type": "data-constant",
 		"default": 0.5,
@@ -3344,7 +3393,35 @@ var sky = {
 		},
 		transition: true
 	},
-	"horizon-blend": {
+	"horizon-fog-blend": {
+		type: "number",
+		"property-type": "data-constant",
+		"default": 0.8,
+		minimum: 0,
+		maximum: 1,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		transition: true
+	},
+	"sky-horizon-blend": {
+		type: "number",
+		"property-type": "data-constant",
+		"default": 0.8,
+		minimum: 0,
+		maximum: 1,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		transition: true
+	},
+	"atmosphere-blend": {
 		type: "number",
 		"property-type": "data-constant",
 		"default": 0.8,
@@ -3368,6 +3445,18 @@ var terrain = {
 		type: "number",
 		minimum: 0,
 		"default": 1
+	}
+};
+var projection$1 = {
+	type: {
+		type: "enum",
+		"default": "mercator",
+		values: {
+			mercator: {
+			},
+			globe: {
+			}
+		}
 	}
 };
 var paint$9 = [
@@ -4588,6 +4677,7 @@ var v8Spec = {
 	light: light,
 	sky: sky,
 	terrain: terrain,
+	projection: projection$1,
 	paint: paint$9,
 	paint_fill: paint_fill,
 	"paint_fill-extrusion": {
@@ -5081,6 +5171,9 @@ function diffStyles(before, after) {
         }
         if (!deepEqual(before.sky, after.sky)) {
             commands.push({ command: 'setSky', args: [after.sky] });
+        }
+        if (!deepEqual(before.projection, after.projection)) {
+            commands.push({ command: 'setProjection', args: [after.projection] });
         }
         // Handle changes to `sources`
         // If a source is to be removed, we also--before the removeSource
@@ -6267,7 +6360,7 @@ class Coercion {
                     }
                     else if (Array.isArray(input)) {
                         if (input.length < 3 || input.length > 4) {
-                            error = `Invalid rbga value ${JSON.stringify(input)}: expected an array containing either three or four numeric values.`;
+                            error = `Invalid rgba value ${JSON.stringify(input)}: expected an array containing either three or four numeric values.`;
                         }
                         else {
                             error = validateRGBA(input[0], input[1], input[2], input[3]);
@@ -6517,360 +6610,45 @@ class ParsingContext {
     }
 }
 
-class CollatorExpression {
-    constructor(caseSensitive, diacriticSensitive, locale) {
-        this.type = CollatorType;
-        this.locale = locale;
-        this.caseSensitive = caseSensitive;
-        this.diacriticSensitive = diacriticSensitive;
-    }
-    static parse(args, context) {
-        if (args.length !== 2)
-            return context.error('Expected one argument.');
-        const options = args[1];
-        if (typeof options !== 'object' || Array.isArray(options))
-            return context.error('Collator options argument must be an object.');
-        const caseSensitive = context.parse(options['case-sensitive'] === undefined ? false : options['case-sensitive'], 1, BooleanType);
-        if (!caseSensitive)
-            return null;
-        const diacriticSensitive = context.parse(options['diacritic-sensitive'] === undefined ? false : options['diacritic-sensitive'], 1, BooleanType);
-        if (!diacriticSensitive)
-            return null;
-        let locale = null;
-        if (options['locale']) {
-            locale = context.parse(options['locale'], 1, StringType);
-            if (!locale)
-                return null;
-        }
-        return new CollatorExpression(caseSensitive, diacriticSensitive, locale);
+class Let {
+    constructor(bindings, result) {
+        this.type = result.type;
+        this.bindings = [].concat(bindings);
+        this.result = result;
     }
     evaluate(ctx) {
-        return new Collator(this.caseSensitive.evaluate(ctx), this.diacriticSensitive.evaluate(ctx), this.locale ? this.locale.evaluate(ctx) : null);
+        return this.result.evaluate(ctx);
     }
     eachChild(fn) {
-        fn(this.caseSensitive);
-        fn(this.diacriticSensitive);
-        if (this.locale) {
-            fn(this.locale);
+        for (const binding of this.bindings) {
+            fn(binding[1]);
         }
-    }
-    outputDefined() {
-        // Technically the set of possible outputs is the combinatoric set of Collators produced
-        // by all possible outputs of locale/caseSensitive/diacriticSensitive
-        // But for the primary use of Collators in comparison operators, we ignore the Collator's
-        // possible outputs anyway, so we can get away with leaving this false for now.
-        return false;
-    }
-}
-
-const EXTENT$1 = 8192;
-function updateBBox(bbox, coord) {
-    bbox[0] = Math.min(bbox[0], coord[0]);
-    bbox[1] = Math.min(bbox[1], coord[1]);
-    bbox[2] = Math.max(bbox[2], coord[0]);
-    bbox[3] = Math.max(bbox[3], coord[1]);
-}
-function mercatorXfromLng$1(lng) {
-    return (180 + lng) / 360;
-}
-function mercatorYfromLat$1(lat) {
-    return (180 - (180 / Math.PI * Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)))) / 360;
-}
-function boxWithinBox(bbox1, bbox2) {
-    if (bbox1[0] <= bbox2[0])
-        return false;
-    if (bbox1[2] >= bbox2[2])
-        return false;
-    if (bbox1[1] <= bbox2[1])
-        return false;
-    if (bbox1[3] >= bbox2[3])
-        return false;
-    return true;
-}
-function getTileCoordinates(p, canonical) {
-    const x = mercatorXfromLng$1(p[0]);
-    const y = mercatorYfromLat$1(p[1]);
-    const tilesAtZoom = Math.pow(2, canonical.z);
-    return [Math.round(x * tilesAtZoom * EXTENT$1), Math.round(y * tilesAtZoom * EXTENT$1)];
-}
-function onBoundary(p, p1, p2) {
-    const x1 = p[0] - p1[0];
-    const y1 = p[1] - p1[1];
-    const x2 = p[0] - p2[0];
-    const y2 = p[1] - p2[1];
-    return (x1 * y2 - x2 * y1 === 0) && (x1 * x2 <= 0) && (y1 * y2 <= 0);
-}
-function rayIntersect(p, p1, p2) {
-    return ((p1[1] > p[1]) !== (p2[1] > p[1])) && (p[0] < (p2[0] - p1[0]) * (p[1] - p1[1]) / (p2[1] - p1[1]) + p1[0]);
-}
-// ray casting algorithm for detecting if point is in polygon
-function pointWithinPolygon(point, rings) {
-    let inside = false;
-    for (let i = 0, len = rings.length; i < len; i++) {
-        const ring = rings[i];
-        for (let j = 0, len2 = ring.length; j < len2 - 1; j++) {
-            if (onBoundary(point, ring[j], ring[j + 1]))
-                return false;
-            if (rayIntersect(point, ring[j], ring[j + 1]))
-                inside = !inside;
-        }
-    }
-    return inside;
-}
-function pointWithinPolygons(point, polygons) {
-    for (let i = 0; i < polygons.length; i++) {
-        if (pointWithinPolygon(point, polygons[i]))
-            return true;
-    }
-    return false;
-}
-function perp(v1, v2) {
-    return (v1[0] * v2[1] - v1[1] * v2[0]);
-}
-// check if p1 and p2 are in different sides of line segment q1->q2
-function twoSided(p1, p2, q1, q2) {
-    // q1->p1 (x1, y1), q1->p2 (x2, y2), q1->q2 (x3, y3)
-    const x1 = p1[0] - q1[0];
-    const y1 = p1[1] - q1[1];
-    const x2 = p2[0] - q1[0];
-    const y2 = p2[1] - q1[1];
-    const x3 = q2[0] - q1[0];
-    const y3 = q2[1] - q1[1];
-    const det1 = (x1 * y3 - x3 * y1);
-    const det2 = (x2 * y3 - x3 * y2);
-    if ((det1 > 0 && det2 < 0) || (det1 < 0 && det2 > 0))
-        return true;
-    return false;
-}
-// a, b are end points for line segment1, c and d are end points for line segment2
-function lineIntersectLine(a, b, c, d) {
-    // check if two segments are parallel or not
-    // precondition is end point a, b is inside polygon, if line a->b is
-    // parallel to polygon edge c->d, then a->b won't intersect with c->d
-    const vectorP = [b[0] - a[0], b[1] - a[1]];
-    const vectorQ = [d[0] - c[0], d[1] - c[1]];
-    if (perp(vectorQ, vectorP) === 0)
-        return false;
-    // If lines are intersecting with each other, the relative location should be:
-    // a and b lie in different sides of segment c->d
-    // c and d lie in different sides of segment a->b
-    if (twoSided(a, b, c, d) && twoSided(c, d, a, b))
-        return true;
-    return false;
-}
-function lineIntersectPolygon(p1, p2, polygon) {
-    for (const ring of polygon) {
-        // loop through every edge of the ring
-        for (let j = 0; j < ring.length - 1; ++j) {
-            if (lineIntersectLine(p1, p2, ring[j], ring[j + 1])) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-function lineStringWithinPolygon(line, polygon) {
-    // First, check if geometry points of line segments are all inside polygon
-    for (let i = 0; i < line.length; ++i) {
-        if (!pointWithinPolygon(line[i], polygon)) {
-            return false;
-        }
-    }
-    // Second, check if there is line segment intersecting polygon edge
-    for (let i = 0; i < line.length - 1; ++i) {
-        if (lineIntersectPolygon(line[i], line[i + 1], polygon)) {
-            return false;
-        }
-    }
-    return true;
-}
-function lineStringWithinPolygons(line, polygons) {
-    for (let i = 0; i < polygons.length; i++) {
-        if (lineStringWithinPolygon(line, polygons[i]))
-            return true;
-    }
-    return false;
-}
-function getTilePolygon(coordinates, bbox, canonical) {
-    const polygon = [];
-    for (let i = 0; i < coordinates.length; i++) {
-        const ring = [];
-        for (let j = 0; j < coordinates[i].length; j++) {
-            const coord = getTileCoordinates(coordinates[i][j], canonical);
-            updateBBox(bbox, coord);
-            ring.push(coord);
-        }
-        polygon.push(ring);
-    }
-    return polygon;
-}
-function getTilePolygons(coordinates, bbox, canonical) {
-    const polygons = [];
-    for (let i = 0; i < coordinates.length; i++) {
-        const polygon = getTilePolygon(coordinates[i], bbox, canonical);
-        polygons.push(polygon);
-    }
-    return polygons;
-}
-function updatePoint(p, bbox, polyBBox, worldSize) {
-    if (p[0] < polyBBox[0] || p[0] > polyBBox[2]) {
-        const halfWorldSize = worldSize * 0.5;
-        let shift = (p[0] - polyBBox[0] > halfWorldSize) ? -worldSize : (polyBBox[0] - p[0] > halfWorldSize) ? worldSize : 0;
-        if (shift === 0) {
-            shift = (p[0] - polyBBox[2] > halfWorldSize) ? -worldSize : (polyBBox[2] - p[0] > halfWorldSize) ? worldSize : 0;
-        }
-        p[0] += shift;
-    }
-    updateBBox(bbox, p);
-}
-function resetBBox(bbox) {
-    bbox[0] = bbox[1] = Infinity;
-    bbox[2] = bbox[3] = -Infinity;
-}
-function getTilePoints(geometry, pointBBox, polyBBox, canonical) {
-    const worldSize = Math.pow(2, canonical.z) * EXTENT$1;
-    const shifts = [canonical.x * EXTENT$1, canonical.y * EXTENT$1];
-    const tilePoints = [];
-    for (const points of geometry) {
-        for (const point of points) {
-            const p = [point.x + shifts[0], point.y + shifts[1]];
-            updatePoint(p, pointBBox, polyBBox, worldSize);
-            tilePoints.push(p);
-        }
-    }
-    return tilePoints;
-}
-function getTileLines(geometry, lineBBox, polyBBox, canonical) {
-    const worldSize = Math.pow(2, canonical.z) * EXTENT$1;
-    const shifts = [canonical.x * EXTENT$1, canonical.y * EXTENT$1];
-    const tileLines = [];
-    for (const line of geometry) {
-        const tileLine = [];
-        for (const point of line) {
-            const p = [point.x + shifts[0], point.y + shifts[1]];
-            updateBBox(lineBBox, p);
-            tileLine.push(p);
-        }
-        tileLines.push(tileLine);
-    }
-    if (lineBBox[2] - lineBBox[0] <= worldSize / 2) {
-        resetBBox(lineBBox);
-        for (const line of tileLines) {
-            for (const p of line) {
-                updatePoint(p, lineBBox, polyBBox, worldSize);
-            }
-        }
-    }
-    return tileLines;
-}
-function pointsWithinPolygons(ctx, polygonGeometry) {
-    const pointBBox = [Infinity, Infinity, -Infinity, -Infinity];
-    const polyBBox = [Infinity, Infinity, -Infinity, -Infinity];
-    const canonical = ctx.canonicalID();
-    if (polygonGeometry.type === 'Polygon') {
-        const tilePolygon = getTilePolygon(polygonGeometry.coordinates, polyBBox, canonical);
-        const tilePoints = getTilePoints(ctx.geometry(), pointBBox, polyBBox, canonical);
-        if (!boxWithinBox(pointBBox, polyBBox))
-            return false;
-        for (const point of tilePoints) {
-            if (!pointWithinPolygon(point, tilePolygon))
-                return false;
-        }
-    }
-    if (polygonGeometry.type === 'MultiPolygon') {
-        const tilePolygons = getTilePolygons(polygonGeometry.coordinates, polyBBox, canonical);
-        const tilePoints = getTilePoints(ctx.geometry(), pointBBox, polyBBox, canonical);
-        if (!boxWithinBox(pointBBox, polyBBox))
-            return false;
-        for (const point of tilePoints) {
-            if (!pointWithinPolygons(point, tilePolygons))
-                return false;
-        }
-    }
-    return true;
-}
-function linesWithinPolygons(ctx, polygonGeometry) {
-    const lineBBox = [Infinity, Infinity, -Infinity, -Infinity];
-    const polyBBox = [Infinity, Infinity, -Infinity, -Infinity];
-    const canonical = ctx.canonicalID();
-    if (polygonGeometry.type === 'Polygon') {
-        const tilePolygon = getTilePolygon(polygonGeometry.coordinates, polyBBox, canonical);
-        const tileLines = getTileLines(ctx.geometry(), lineBBox, polyBBox, canonical);
-        if (!boxWithinBox(lineBBox, polyBBox))
-            return false;
-        for (const line of tileLines) {
-            if (!lineStringWithinPolygon(line, tilePolygon))
-                return false;
-        }
-    }
-    if (polygonGeometry.type === 'MultiPolygon') {
-        const tilePolygons = getTilePolygons(polygonGeometry.coordinates, polyBBox, canonical);
-        const tileLines = getTileLines(ctx.geometry(), lineBBox, polyBBox, canonical);
-        if (!boxWithinBox(lineBBox, polyBBox))
-            return false;
-        for (const line of tileLines) {
-            if (!lineStringWithinPolygons(line, tilePolygons))
-                return false;
-        }
-    }
-    return true;
-}
-class Within {
-    constructor(geojson, geometries) {
-        this.type = BooleanType;
-        this.geojson = geojson;
-        this.geometries = geometries;
+        fn(this.result);
     }
     static parse(args, context) {
-        if (args.length !== 2)
-            return context.error(`'within' expression requires exactly one argument, but found ${args.length - 1} instead.`);
-        if (isValue(args[1])) {
-            const geojson = args[1];
-            if (geojson.type === 'FeatureCollection') {
-                const polygonsCoords = [];
-                for (const polygon of geojson.features) {
-                    const { type, coordinates } = polygon.geometry;
-                    if (type === 'Polygon') {
-                        polygonsCoords.push(coordinates);
-                    }
-                    if (type === 'MultiPolygon') {
-                        polygonsCoords.push(...coordinates);
-                    }
-                }
-                if (polygonsCoords.length) {
-                    const multipolygonWrapper = {
-                        type: 'MultiPolygon',
-                        coordinates: polygonsCoords
-                    };
-                    return new Within(geojson, multipolygonWrapper);
-                }
+        if (args.length < 4)
+            return context.error(`Expected at least 3 arguments, but found ${args.length - 1} instead.`);
+        const bindings = [];
+        for (let i = 1; i < args.length - 1; i += 2) {
+            const name = args[i];
+            if (typeof name !== 'string') {
+                return context.error(`Expected string, but found ${typeof name} instead.`, i);
             }
-            else if (geojson.type === 'Feature') {
-                const type = geojson.geometry.type;
-                if (type === 'Polygon' || type === 'MultiPolygon') {
-                    return new Within(geojson, geojson.geometry);
-                }
+            if (/[^a-zA-Z0-9_]/.test(name)) {
+                return context.error('Variable names must contain only alphanumeric characters or \'_\'.', i);
             }
-            else if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
-                return new Within(geojson, geojson);
-            }
+            const value = context.parse(args[i + 1], i + 1);
+            if (!value)
+                return null;
+            bindings.push([name, value]);
         }
-        return context.error('\'within\' expression requires valid geojson object that contains polygon geometry type.');
+        const result = context.parse(args[args.length - 1], args.length - 1, context.expectedType, bindings);
+        if (!result)
+            return null;
+        return new Let(bindings, result);
     }
-    evaluate(ctx) {
-        if (ctx.geometry() != null && ctx.canonicalID() != null) {
-            if (ctx.geometryType() === 'Point') {
-                return pointsWithinPolygons(ctx, this.geometries);
-            }
-            else if (ctx.geometryType() === 'LineString') {
-                return linesWithinPolygons(ctx, this.geometries);
-            }
-        }
-        return false;
-    }
-    eachChild() { }
     outputDefined() {
-        return true;
+        return this.result.outputDefined();
     }
 }
 
@@ -6898,209 +6676,346 @@ class Var {
     }
 }
 
-class CompoundExpression {
-    constructor(name, type, evaluate, args) {
-        this.name = name;
+class At {
+    constructor(type, index, input) {
         this.type = type;
-        this._evaluate = evaluate;
-        this.args = args;
+        this.index = index;
+        this.input = input;
+    }
+    static parse(args, context) {
+        if (args.length !== 3)
+            return context.error(`Expected 2 arguments, but found ${args.length - 1} instead.`);
+        const index = context.parse(args[1], 1, NumberType);
+        const input = context.parse(args[2], 2, array$1(context.expectedType || ValueType));
+        if (!index || !input)
+            return null;
+        const t = input.type;
+        return new At(t.itemType, index, input);
     }
     evaluate(ctx) {
-        return this._evaluate(ctx, this.args);
+        const index = this.index.evaluate(ctx);
+        const array = this.input.evaluate(ctx);
+        if (index < 0) {
+            throw new RuntimeError(`Array index out of bounds: ${index} < 0.`);
+        }
+        if (index >= array.length) {
+            throw new RuntimeError(`Array index out of bounds: ${index} > ${array.length - 1}.`);
+        }
+        if (index !== Math.floor(index)) {
+            throw new RuntimeError(`Array index must be an integer, but found ${index} instead.`);
+        }
+        return array[index];
     }
     eachChild(fn) {
-        this.args.forEach(fn);
+        fn(this.index);
+        fn(this.input);
     }
     outputDefined() {
         return false;
     }
+}
+
+class In {
+    constructor(needle, haystack) {
+        this.type = BooleanType;
+        this.needle = needle;
+        this.haystack = haystack;
+    }
     static parse(args, context) {
-        const op = args[0];
-        const definition = CompoundExpression.definitions[op];
-        if (!definition) {
-            return context.error(`Unknown expression "${op}". If you wanted a literal array, use ["literal", [...]].`, 0);
+        if (args.length !== 3) {
+            return context.error(`Expected 2 arguments, but found ${args.length - 1} instead.`);
         }
-        // Now check argument types against each signature
-        const type = Array.isArray(definition) ?
-            definition[0] : definition.type;
-        const availableOverloads = Array.isArray(definition) ?
-            [[definition[1], definition[2]]] :
-            definition.overloads;
-        const overloads = availableOverloads.filter(([signature]) => (!Array.isArray(signature) || // varags
-            signature.length === args.length - 1 // correct param count
-        ));
-        let signatureContext = null;
-        for (const [params, evaluate] of overloads) {
-            // Use a fresh context for each attempted signature so that, if
-            // we eventually succeed, we haven't polluted `context.errors`.
-            signatureContext = new ParsingContext(context.registry, isExpressionConstant, context.path, null, context.scope);
-            // First parse all the args, potentially coercing to the
-            // types expected by this overload.
-            const parsedArgs = [];
-            let argParseFailed = false;
-            for (let i = 1; i < args.length; i++) {
-                const arg = args[i];
-                const expectedType = Array.isArray(params) ?
-                    params[i - 1] :
-                    params.type;
-                const parsed = signatureContext.parse(arg, 1 + parsedArgs.length, expectedType);
-                if (!parsed) {
-                    argParseFailed = true;
-                    break;
-                }
-                parsedArgs.push(parsed);
-            }
-            if (argParseFailed) {
-                // Couldn't coerce args of this overload to expected type, move
-                // on to next one.
-                continue;
-            }
-            if (Array.isArray(params)) {
-                if (params.length !== parsedArgs.length) {
-                    signatureContext.error(`Expected ${params.length} arguments, but found ${parsedArgs.length} instead.`);
-                    continue;
-                }
-            }
-            for (let i = 0; i < parsedArgs.length; i++) {
-                const expected = Array.isArray(params) ? params[i] : params.type;
-                const arg = parsedArgs[i];
-                signatureContext.concat(i + 1).checkSubtype(expected, arg.type);
-            }
-            if (signatureContext.errors.length === 0) {
-                return new CompoundExpression(op, type, evaluate, parsedArgs);
-            }
+        const needle = context.parse(args[1], 1, ValueType);
+        const haystack = context.parse(args[2], 2, ValueType);
+        if (!needle || !haystack)
+            return null;
+        if (!isValidType(needle.type, [BooleanType, StringType, NumberType, NullType, ValueType])) {
+            return context.error(`Expected first argument to be of type boolean, string, number or null, but found ${toString$1(needle.type)} instead`);
         }
-        if (overloads.length === 1) {
-            context.errors.push(...signatureContext.errors);
+        return new In(needle, haystack);
+    }
+    evaluate(ctx) {
+        const needle = this.needle.evaluate(ctx);
+        const haystack = this.haystack.evaluate(ctx);
+        if (!haystack)
+            return false;
+        if (!isValidNativeType(needle, ['boolean', 'string', 'number', 'null'])) {
+            throw new RuntimeError(`Expected first argument to be of type boolean, string, number or null, but found ${toString$1(typeOf(needle))} instead.`);
+        }
+        if (!isValidNativeType(haystack, ['string', 'array'])) {
+            throw new RuntimeError(`Expected second argument to be of type array or string, but found ${toString$1(typeOf(haystack))} instead.`);
+        }
+        return haystack.indexOf(needle) >= 0;
+    }
+    eachChild(fn) {
+        fn(this.needle);
+        fn(this.haystack);
+    }
+    outputDefined() {
+        return true;
+    }
+}
+
+class IndexOf {
+    constructor(needle, haystack, fromIndex) {
+        this.type = NumberType;
+        this.needle = needle;
+        this.haystack = haystack;
+        this.fromIndex = fromIndex;
+    }
+    static parse(args, context) {
+        if (args.length <= 2 || args.length >= 5) {
+            return context.error(`Expected 3 or 4 arguments, but found ${args.length - 1} instead.`);
+        }
+        const needle = context.parse(args[1], 1, ValueType);
+        const haystack = context.parse(args[2], 2, ValueType);
+        if (!needle || !haystack)
+            return null;
+        if (!isValidType(needle.type, [BooleanType, StringType, NumberType, NullType, ValueType])) {
+            return context.error(`Expected first argument to be of type boolean, string, number or null, but found ${toString$1(needle.type)} instead`);
+        }
+        if (args.length === 4) {
+            const fromIndex = context.parse(args[3], 3, NumberType);
+            if (!fromIndex)
+                return null;
+            return new IndexOf(needle, haystack, fromIndex);
         }
         else {
-            const expected = overloads.length ? overloads : availableOverloads;
-            const signatures = expected
-                .map(([params]) => stringifySignature(params))
-                .join(' | ');
-            const actualTypes = [];
-            // For error message, re-parse arguments without trying to
-            // apply any coercions
-            for (let i = 1; i < args.length; i++) {
-                const parsed = context.parse(args[i], 1 + actualTypes.length);
-                if (!parsed)
+            return new IndexOf(needle, haystack);
+        }
+    }
+    evaluate(ctx) {
+        const needle = this.needle.evaluate(ctx);
+        const haystack = this.haystack.evaluate(ctx);
+        if (!isValidNativeType(needle, ['boolean', 'string', 'number', 'null'])) {
+            throw new RuntimeError(`Expected first argument to be of type boolean, string, number or null, but found ${toString$1(typeOf(needle))} instead.`);
+        }
+        let fromIndex;
+        if (this.fromIndex) {
+            fromIndex = this.fromIndex.evaluate(ctx);
+        }
+        if (isValidNativeType(haystack, ['string'])) {
+            const rawIndex = haystack.indexOf(needle, fromIndex);
+            if (rawIndex === -1) {
+                return -1;
+            }
+            else {
+                // The index may be affected by surrogate pairs, so get the length of the preceding substring.
+                return [...haystack.slice(0, rawIndex)].length;
+            }
+        }
+        else if (isValidNativeType(haystack, ['array'])) {
+            return haystack.indexOf(needle, fromIndex);
+        }
+        else {
+            throw new RuntimeError(`Expected second argument to be of type array or string, but found ${toString$1(typeOf(haystack))} instead.`);
+        }
+    }
+    eachChild(fn) {
+        fn(this.needle);
+        fn(this.haystack);
+        if (this.fromIndex) {
+            fn(this.fromIndex);
+        }
+    }
+    outputDefined() {
+        return false;
+    }
+}
+
+class Match {
+    constructor(inputType, outputType, input, cases, outputs, otherwise) {
+        this.inputType = inputType;
+        this.type = outputType;
+        this.input = input;
+        this.cases = cases;
+        this.outputs = outputs;
+        this.otherwise = otherwise;
+    }
+    static parse(args, context) {
+        if (args.length < 5)
+            return context.error(`Expected at least 4 arguments, but found only ${args.length - 1}.`);
+        if (args.length % 2 !== 1)
+            return context.error('Expected an even number of arguments.');
+        let inputType;
+        let outputType;
+        if (context.expectedType && context.expectedType.kind !== 'value') {
+            outputType = context.expectedType;
+        }
+        const cases = {};
+        const outputs = [];
+        for (let i = 2; i < args.length - 1; i += 2) {
+            let labels = args[i];
+            const value = args[i + 1];
+            if (!Array.isArray(labels)) {
+                labels = [labels];
+            }
+            const labelContext = context.concat(i);
+            if (labels.length === 0) {
+                return labelContext.error('Expected at least one branch label.');
+            }
+            for (const label of labels) {
+                if (typeof label !== 'number' && typeof label !== 'string') {
+                    return labelContext.error('Branch labels must be numbers or strings.');
+                }
+                else if (typeof label === 'number' && Math.abs(label) > Number.MAX_SAFE_INTEGER) {
+                    return labelContext.error(`Branch labels must be integers no larger than ${Number.MAX_SAFE_INTEGER}.`);
+                }
+                else if (typeof label === 'number' && Math.floor(label) !== label) {
+                    return labelContext.error('Numeric branch labels must be integer values.');
+                }
+                else if (!inputType) {
+                    inputType = typeOf(label);
+                }
+                else if (labelContext.checkSubtype(inputType, typeOf(label))) {
                     return null;
-                actualTypes.push(toString$1(parsed.type));
+                }
+                if (typeof cases[String(label)] !== 'undefined') {
+                    return labelContext.error('Branch labels must be unique.');
+                }
+                cases[String(label)] = outputs.length;
             }
-            context.error(`Expected arguments of type ${signatures}, but found (${actualTypes.join(', ')}) instead.`);
+            const result = context.parse(value, i, outputType);
+            if (!result)
+                return null;
+            outputType = outputType || result.type;
+            outputs.push(result);
         }
-        return null;
+        const input = context.parse(args[1], 1, ValueType);
+        if (!input)
+            return null;
+        const otherwise = context.parse(args[args.length - 1], args.length - 1, outputType);
+        if (!otherwise)
+            return null;
+        if (input.type.kind !== 'value' && context.concat(1).checkSubtype(inputType, input.type)) {
+            return null;
+        }
+        return new Match(inputType, outputType, input, cases, outputs, otherwise);
     }
-    static register(registry, definitions) {
-        CompoundExpression.definitions = definitions;
-        for (const name in definitions) {
-            registry[name] = CompoundExpression;
-        }
+    evaluate(ctx) {
+        const input = this.input.evaluate(ctx);
+        const output = (typeOf(input) === this.inputType && this.outputs[this.cases[input]]) || this.otherwise;
+        return output.evaluate(ctx);
+    }
+    eachChild(fn) {
+        fn(this.input);
+        this.outputs.forEach(fn);
+        fn(this.otherwise);
+    }
+    outputDefined() {
+        return this.outputs.every(out => out.outputDefined()) && this.otherwise.outputDefined();
     }
 }
-function stringifySignature(signature) {
-    if (Array.isArray(signature)) {
-        return `(${signature.map(toString$1).join(', ')})`;
+
+class Case {
+    constructor(type, branches, otherwise) {
+        this.type = type;
+        this.branches = branches;
+        this.otherwise = otherwise;
     }
-    else {
-        return `(${toString$1(signature.type)}...)`;
+    static parse(args, context) {
+        if (args.length < 4)
+            return context.error(`Expected at least 3 arguments, but found only ${args.length - 1}.`);
+        if (args.length % 2 !== 0)
+            return context.error('Expected an odd number of arguments.');
+        let outputType;
+        if (context.expectedType && context.expectedType.kind !== 'value') {
+            outputType = context.expectedType;
+        }
+        const branches = [];
+        for (let i = 1; i < args.length - 1; i += 2) {
+            const test = context.parse(args[i], i, BooleanType);
+            if (!test)
+                return null;
+            const result = context.parse(args[i + 1], i + 1, outputType);
+            if (!result)
+                return null;
+            branches.push([test, result]);
+            outputType = outputType || result.type;
+        }
+        const otherwise = context.parse(args[args.length - 1], args.length - 1, outputType);
+        if (!otherwise)
+            return null;
+        if (!outputType)
+            throw new Error('Can\'t infer output type');
+        return new Case(outputType, branches, otherwise);
+    }
+    evaluate(ctx) {
+        for (const [test, expression] of this.branches) {
+            if (test.evaluate(ctx)) {
+                return expression.evaluate(ctx);
+            }
+        }
+        return this.otherwise.evaluate(ctx);
+    }
+    eachChild(fn) {
+        for (const [test, expression] of this.branches) {
+            fn(test);
+            fn(expression);
+        }
+        fn(this.otherwise);
+    }
+    outputDefined() {
+        return this.branches.every(([_, out]) => out.outputDefined()) && this.otherwise.outputDefined();
     }
 }
-function isExpressionConstant(expression) {
-    if (expression instanceof Var) {
-        return isExpressionConstant(expression.boundExpression);
+
+class Slice {
+    constructor(type, input, beginIndex, endIndex) {
+        this.type = type;
+        this.input = input;
+        this.beginIndex = beginIndex;
+        this.endIndex = endIndex;
     }
-    else if (expression instanceof CompoundExpression && expression.name === 'error') {
-        return false;
-    }
-    else if (expression instanceof CollatorExpression) {
-        // Although the results of a Collator expression with fixed arguments
-        // generally shouldn't change between executions, we can't serialize them
-        // as constant expressions because results change based on environment.
-        return false;
-    }
-    else if (expression instanceof Within) {
-        return false;
-    }
-    const isTypeAnnotation = expression instanceof Coercion ||
-        expression instanceof Assertion;
-    let childrenConstant = true;
-    expression.eachChild(child => {
-        // We can _almost_ assume that if `expressions` children are constant,
-        // they would already have been evaluated to Literal values when they
-        // were parsed.  Type annotations are the exception, because they might
-        // have been inferred and added after a child was parsed.
-        // So we recurse into isConstant() for the children of type annotations,
-        // but otherwise simply check whether they are Literals.
-        if (isTypeAnnotation) {
-            childrenConstant = childrenConstant && isExpressionConstant(child);
+    static parse(args, context) {
+        if (args.length <= 2 || args.length >= 5) {
+            return context.error(`Expected 3 or 4 arguments, but found ${args.length - 1} instead.`);
+        }
+        const input = context.parse(args[1], 1, ValueType);
+        const beginIndex = context.parse(args[2], 2, NumberType);
+        if (!input || !beginIndex)
+            return null;
+        if (!isValidType(input.type, [array$1(ValueType), StringType, ValueType])) {
+            return context.error(`Expected first argument to be of type array or string, but found ${toString$1(input.type)} instead`);
+        }
+        if (args.length === 4) {
+            const endIndex = context.parse(args[3], 3, NumberType);
+            if (!endIndex)
+                return null;
+            return new Slice(input.type, input, beginIndex, endIndex);
         }
         else {
-            childrenConstant = childrenConstant && child instanceof Literal;
+            return new Slice(input.type, input, beginIndex);
         }
-    });
-    if (!childrenConstant) {
+    }
+    evaluate(ctx) {
+        const input = this.input.evaluate(ctx);
+        const beginIndex = this.beginIndex.evaluate(ctx);
+        let endIndex;
+        if (this.endIndex) {
+            endIndex = this.endIndex.evaluate(ctx);
+        }
+        if (isValidNativeType(input, ['string'])) {
+            // Indices may be affected by surrogate pairs.
+            return [...input].slice(beginIndex, endIndex).join('');
+        }
+        else if (isValidNativeType(input, ['array'])) {
+            return input.slice(beginIndex, endIndex);
+        }
+        else {
+            throw new RuntimeError(`Expected first argument to be of type array or string, but found ${toString$1(typeOf(input))} instead.`);
+        }
+    }
+    eachChild(fn) {
+        fn(this.input);
+        fn(this.beginIndex);
+        if (this.endIndex) {
+            fn(this.endIndex);
+        }
+    }
+    outputDefined() {
         return false;
     }
-    return isFeatureConstant(expression) &&
-        isGlobalPropertyConstant(expression, ['zoom', 'heatmap-density', 'line-progress', 'accumulated', 'is-supported-script']);
-}
-function isFeatureConstant(e) {
-    if (e instanceof CompoundExpression) {
-        if (e.name === 'get' && e.args.length === 1) {
-            return false;
-        }
-        else if (e.name === 'feature-state') {
-            return false;
-        }
-        else if (e.name === 'has' && e.args.length === 1) {
-            return false;
-        }
-        else if (e.name === 'properties' ||
-            e.name === 'geometry-type' ||
-            e.name === 'id') {
-            return false;
-        }
-        else if (/^filter-/.test(e.name)) {
-            return false;
-        }
-    }
-    if (e instanceof Within) {
-        return false;
-    }
-    let result = true;
-    e.eachChild(arg => {
-        if (result && !isFeatureConstant(arg)) {
-            result = false;
-        }
-    });
-    return result;
-}
-function isStateConstant(e) {
-    if (e instanceof CompoundExpression) {
-        if (e.name === 'feature-state') {
-            return false;
-        }
-    }
-    let result = true;
-    e.eachChild(arg => {
-        if (result && !isStateConstant(arg)) {
-            result = false;
-        }
-    });
-    return result;
-}
-function isGlobalPropertyConstant(e, properties) {
-    if (e instanceof CompoundExpression && properties.indexOf(e.name) >= 0) {
-        return false;
-    }
-    let result = true;
-    e.eachChild((arg) => {
-        if (result && !isGlobalPropertyConstant(arg, properties)) {
-            result = false;
-        }
-    });
-    return result;
 }
 
 /**
@@ -7597,7 +7512,7 @@ class Coalesce {
     }
     static parse(args, context) {
         if (args.length < 2) {
-            return context.error('Expectected at least one argument.');
+            return context.error('Expected at least one argument.');
         }
         let outputType = null;
         const expectedType = context.expectedType;
@@ -7653,372 +7568,6 @@ class Coalesce {
     }
     outputDefined() {
         return this.args.every(arg => arg.outputDefined());
-    }
-}
-
-class Let {
-    constructor(bindings, result) {
-        this.type = result.type;
-        this.bindings = [].concat(bindings);
-        this.result = result;
-    }
-    evaluate(ctx) {
-        return this.result.evaluate(ctx);
-    }
-    eachChild(fn) {
-        for (const binding of this.bindings) {
-            fn(binding[1]);
-        }
-        fn(this.result);
-    }
-    static parse(args, context) {
-        if (args.length < 4)
-            return context.error(`Expected at least 3 arguments, but found ${args.length - 1} instead.`);
-        const bindings = [];
-        for (let i = 1; i < args.length - 1; i += 2) {
-            const name = args[i];
-            if (typeof name !== 'string') {
-                return context.error(`Expected string, but found ${typeof name} instead.`, i);
-            }
-            if (/[^a-zA-Z0-9_]/.test(name)) {
-                return context.error('Variable names must contain only alphanumeric characters or \'_\'.', i);
-            }
-            const value = context.parse(args[i + 1], i + 1);
-            if (!value)
-                return null;
-            bindings.push([name, value]);
-        }
-        const result = context.parse(args[args.length - 1], args.length - 1, context.expectedType, bindings);
-        if (!result)
-            return null;
-        return new Let(bindings, result);
-    }
-    outputDefined() {
-        return this.result.outputDefined();
-    }
-}
-
-class At {
-    constructor(type, index, input) {
-        this.type = type;
-        this.index = index;
-        this.input = input;
-    }
-    static parse(args, context) {
-        if (args.length !== 3)
-            return context.error(`Expected 2 arguments, but found ${args.length - 1} instead.`);
-        const index = context.parse(args[1], 1, NumberType);
-        const input = context.parse(args[2], 2, array$1(context.expectedType || ValueType));
-        if (!index || !input)
-            return null;
-        const t = input.type;
-        return new At(t.itemType, index, input);
-    }
-    evaluate(ctx) {
-        const index = this.index.evaluate(ctx);
-        const array = this.input.evaluate(ctx);
-        if (index < 0) {
-            throw new RuntimeError(`Array index out of bounds: ${index} < 0.`);
-        }
-        if (index >= array.length) {
-            throw new RuntimeError(`Array index out of bounds: ${index} > ${array.length - 1}.`);
-        }
-        if (index !== Math.floor(index)) {
-            throw new RuntimeError(`Array index must be an integer, but found ${index} instead.`);
-        }
-        return array[index];
-    }
-    eachChild(fn) {
-        fn(this.index);
-        fn(this.input);
-    }
-    outputDefined() {
-        return false;
-    }
-}
-
-class In {
-    constructor(needle, haystack) {
-        this.type = BooleanType;
-        this.needle = needle;
-        this.haystack = haystack;
-    }
-    static parse(args, context) {
-        if (args.length !== 3) {
-            return context.error(`Expected 2 arguments, but found ${args.length - 1} instead.`);
-        }
-        const needle = context.parse(args[1], 1, ValueType);
-        const haystack = context.parse(args[2], 2, ValueType);
-        if (!needle || !haystack)
-            return null;
-        if (!isValidType(needle.type, [BooleanType, StringType, NumberType, NullType, ValueType])) {
-            return context.error(`Expected first argument to be of type boolean, string, number or null, but found ${toString$1(needle.type)} instead`);
-        }
-        return new In(needle, haystack);
-    }
-    evaluate(ctx) {
-        const needle = this.needle.evaluate(ctx);
-        const haystack = this.haystack.evaluate(ctx);
-        if (!haystack)
-            return false;
-        if (!isValidNativeType(needle, ['boolean', 'string', 'number', 'null'])) {
-            throw new RuntimeError(`Expected first argument to be of type boolean, string, number or null, but found ${toString$1(typeOf(needle))} instead.`);
-        }
-        if (!isValidNativeType(haystack, ['string', 'array'])) {
-            throw new RuntimeError(`Expected second argument to be of type array or string, but found ${toString$1(typeOf(haystack))} instead.`);
-        }
-        return haystack.indexOf(needle) >= 0;
-    }
-    eachChild(fn) {
-        fn(this.needle);
-        fn(this.haystack);
-    }
-    outputDefined() {
-        return true;
-    }
-}
-
-class IndexOf {
-    constructor(needle, haystack, fromIndex) {
-        this.type = NumberType;
-        this.needle = needle;
-        this.haystack = haystack;
-        this.fromIndex = fromIndex;
-    }
-    static parse(args, context) {
-        if (args.length <= 2 || args.length >= 5) {
-            return context.error(`Expected 3 or 4 arguments, but found ${args.length - 1} instead.`);
-        }
-        const needle = context.parse(args[1], 1, ValueType);
-        const haystack = context.parse(args[2], 2, ValueType);
-        if (!needle || !haystack)
-            return null;
-        if (!isValidType(needle.type, [BooleanType, StringType, NumberType, NullType, ValueType])) {
-            return context.error(`Expected first argument to be of type boolean, string, number or null, but found ${toString$1(needle.type)} instead`);
-        }
-        if (args.length === 4) {
-            const fromIndex = context.parse(args[3], 3, NumberType);
-            if (!fromIndex)
-                return null;
-            return new IndexOf(needle, haystack, fromIndex);
-        }
-        else {
-            return new IndexOf(needle, haystack);
-        }
-    }
-    evaluate(ctx) {
-        const needle = this.needle.evaluate(ctx);
-        const haystack = this.haystack.evaluate(ctx);
-        if (!isValidNativeType(needle, ['boolean', 'string', 'number', 'null'])) {
-            throw new RuntimeError(`Expected first argument to be of type boolean, string, number or null, but found ${toString$1(typeOf(needle))} instead.`);
-        }
-        if (!isValidNativeType(haystack, ['string', 'array'])) {
-            throw new RuntimeError(`Expected second argument to be of type array or string, but found ${toString$1(typeOf(haystack))} instead.`);
-        }
-        if (this.fromIndex) {
-            const fromIndex = this.fromIndex.evaluate(ctx);
-            return haystack.indexOf(needle, fromIndex);
-        }
-        return haystack.indexOf(needle);
-    }
-    eachChild(fn) {
-        fn(this.needle);
-        fn(this.haystack);
-        if (this.fromIndex) {
-            fn(this.fromIndex);
-        }
-    }
-    outputDefined() {
-        return false;
-    }
-}
-
-class Match {
-    constructor(inputType, outputType, input, cases, outputs, otherwise) {
-        this.inputType = inputType;
-        this.type = outputType;
-        this.input = input;
-        this.cases = cases;
-        this.outputs = outputs;
-        this.otherwise = otherwise;
-    }
-    static parse(args, context) {
-        if (args.length < 5)
-            return context.error(`Expected at least 4 arguments, but found only ${args.length - 1}.`);
-        if (args.length % 2 !== 1)
-            return context.error('Expected an even number of arguments.');
-        let inputType;
-        let outputType;
-        if (context.expectedType && context.expectedType.kind !== 'value') {
-            outputType = context.expectedType;
-        }
-        const cases = {};
-        const outputs = [];
-        for (let i = 2; i < args.length - 1; i += 2) {
-            let labels = args[i];
-            const value = args[i + 1];
-            if (!Array.isArray(labels)) {
-                labels = [labels];
-            }
-            const labelContext = context.concat(i);
-            if (labels.length === 0) {
-                return labelContext.error('Expected at least one branch label.');
-            }
-            for (const label of labels) {
-                if (typeof label !== 'number' && typeof label !== 'string') {
-                    return labelContext.error('Branch labels must be numbers or strings.');
-                }
-                else if (typeof label === 'number' && Math.abs(label) > Number.MAX_SAFE_INTEGER) {
-                    return labelContext.error(`Branch labels must be integers no larger than ${Number.MAX_SAFE_INTEGER}.`);
-                }
-                else if (typeof label === 'number' && Math.floor(label) !== label) {
-                    return labelContext.error('Numeric branch labels must be integer values.');
-                }
-                else if (!inputType) {
-                    inputType = typeOf(label);
-                }
-                else if (labelContext.checkSubtype(inputType, typeOf(label))) {
-                    return null;
-                }
-                if (typeof cases[String(label)] !== 'undefined') {
-                    return labelContext.error('Branch labels must be unique.');
-                }
-                cases[String(label)] = outputs.length;
-            }
-            const result = context.parse(value, i, outputType);
-            if (!result)
-                return null;
-            outputType = outputType || result.type;
-            outputs.push(result);
-        }
-        const input = context.parse(args[1], 1, ValueType);
-        if (!input)
-            return null;
-        const otherwise = context.parse(args[args.length - 1], args.length - 1, outputType);
-        if (!otherwise)
-            return null;
-        if (input.type.kind !== 'value' && context.concat(1).checkSubtype(inputType, input.type)) {
-            return null;
-        }
-        return new Match(inputType, outputType, input, cases, outputs, otherwise);
-    }
-    evaluate(ctx) {
-        const input = this.input.evaluate(ctx);
-        const output = (typeOf(input) === this.inputType && this.outputs[this.cases[input]]) || this.otherwise;
-        return output.evaluate(ctx);
-    }
-    eachChild(fn) {
-        fn(this.input);
-        this.outputs.forEach(fn);
-        fn(this.otherwise);
-    }
-    outputDefined() {
-        return this.outputs.every(out => out.outputDefined()) && this.otherwise.outputDefined();
-    }
-}
-
-class Case {
-    constructor(type, branches, otherwise) {
-        this.type = type;
-        this.branches = branches;
-        this.otherwise = otherwise;
-    }
-    static parse(args, context) {
-        if (args.length < 4)
-            return context.error(`Expected at least 3 arguments, but found only ${args.length - 1}.`);
-        if (args.length % 2 !== 0)
-            return context.error('Expected an odd number of arguments.');
-        let outputType;
-        if (context.expectedType && context.expectedType.kind !== 'value') {
-            outputType = context.expectedType;
-        }
-        const branches = [];
-        for (let i = 1; i < args.length - 1; i += 2) {
-            const test = context.parse(args[i], i, BooleanType);
-            if (!test)
-                return null;
-            const result = context.parse(args[i + 1], i + 1, outputType);
-            if (!result)
-                return null;
-            branches.push([test, result]);
-            outputType = outputType || result.type;
-        }
-        const otherwise = context.parse(args[args.length - 1], args.length - 1, outputType);
-        if (!otherwise)
-            return null;
-        if (!outputType)
-            throw new Error('Can\'t infer output type');
-        return new Case(outputType, branches, otherwise);
-    }
-    evaluate(ctx) {
-        for (const [test, expression] of this.branches) {
-            if (test.evaluate(ctx)) {
-                return expression.evaluate(ctx);
-            }
-        }
-        return this.otherwise.evaluate(ctx);
-    }
-    eachChild(fn) {
-        for (const [test, expression] of this.branches) {
-            fn(test);
-            fn(expression);
-        }
-        fn(this.otherwise);
-    }
-    outputDefined() {
-        return this.branches.every(([_, out]) => out.outputDefined()) && this.otherwise.outputDefined();
-    }
-}
-
-class Slice {
-    constructor(type, input, beginIndex, endIndex) {
-        this.type = type;
-        this.input = input;
-        this.beginIndex = beginIndex;
-        this.endIndex = endIndex;
-    }
-    static parse(args, context) {
-        if (args.length <= 2 || args.length >= 5) {
-            return context.error(`Expected 3 or 4 arguments, but found ${args.length - 1} instead.`);
-        }
-        const input = context.parse(args[1], 1, ValueType);
-        const beginIndex = context.parse(args[2], 2, NumberType);
-        if (!input || !beginIndex)
-            return null;
-        if (!isValidType(input.type, [array$1(ValueType), StringType, ValueType])) {
-            return context.error(`Expected first argument to be of type array or string, but found ${toString$1(input.type)} instead`);
-        }
-        if (args.length === 4) {
-            const endIndex = context.parse(args[3], 3, NumberType);
-            if (!endIndex)
-                return null;
-            return new Slice(input.type, input, beginIndex, endIndex);
-        }
-        else {
-            return new Slice(input.type, input, beginIndex);
-        }
-    }
-    evaluate(ctx) {
-        const input = this.input.evaluate(ctx);
-        const beginIndex = this.beginIndex.evaluate(ctx);
-        if (!isValidNativeType(input, ['string', 'array'])) {
-            throw new RuntimeError(`Expected first argument to be of type array or string, but found ${toString$1(typeOf(input))} instead.`);
-        }
-        if (this.endIndex) {
-            const endIndex = this.endIndex.evaluate(ctx);
-            return input.slice(beginIndex, endIndex);
-        }
-        return input.slice(beginIndex);
-    }
-    eachChild(fn) {
-        fn(this.input);
-        fn(this.beginIndex);
-        if (this.endIndex) {
-            fn(this.endIndex);
-        }
-    }
-    outputDefined() {
-        return false;
     }
 }
 
@@ -8163,6 +7712,52 @@ const LessThan = makeComparison('<', lt, ltCollate);
 const GreaterThan = makeComparison('>', gt, gtCollate);
 const LessThanOrEqual = makeComparison('<=', lteq, lteqCollate);
 const GreaterThanOrEqual = makeComparison('>=', gteq, gteqCollate);
+
+class CollatorExpression {
+    constructor(caseSensitive, diacriticSensitive, locale) {
+        this.type = CollatorType;
+        this.locale = locale;
+        this.caseSensitive = caseSensitive;
+        this.diacriticSensitive = diacriticSensitive;
+    }
+    static parse(args, context) {
+        if (args.length !== 2)
+            return context.error('Expected one argument.');
+        const options = args[1];
+        if (typeof options !== 'object' || Array.isArray(options))
+            return context.error('Collator options argument must be an object.');
+        const caseSensitive = context.parse(options['case-sensitive'] === undefined ? false : options['case-sensitive'], 1, BooleanType);
+        if (!caseSensitive)
+            return null;
+        const diacriticSensitive = context.parse(options['diacritic-sensitive'] === undefined ? false : options['diacritic-sensitive'], 1, BooleanType);
+        if (!diacriticSensitive)
+            return null;
+        let locale = null;
+        if (options['locale']) {
+            locale = context.parse(options['locale'], 1, StringType);
+            if (!locale)
+                return null;
+        }
+        return new CollatorExpression(caseSensitive, diacriticSensitive, locale);
+    }
+    evaluate(ctx) {
+        return new Collator(this.caseSensitive.evaluate(ctx), this.diacriticSensitive.evaluate(ctx), this.locale ? this.locale.evaluate(ctx) : null);
+    }
+    eachChild(fn) {
+        fn(this.caseSensitive);
+        fn(this.diacriticSensitive);
+        if (this.locale) {
+            fn(this.locale);
+        }
+    }
+    outputDefined() {
+        // Technically the set of possible outputs is the combinatoric set of Collators produced
+        // by all possible outputs of locale/caseSensitive/diacriticSensitive
+        // But for the primary use of Collators in comparison operators, we ignore the Collator's
+        // possible outputs anyway, so we can get away with leaving this false for now.
+        return false;
+    }
+}
 
 class NumberFormat {
     constructor(number, locale, currency, minFractionDigits, maxFractionDigits) {
@@ -8370,7 +7965,8 @@ class Length {
     evaluate(ctx) {
         const input = this.input.evaluate(ctx);
         if (typeof input === 'string') {
-            return input.length;
+            // The length may be affected by surrogate pairs.
+            return [...input].length;
         }
         else if (Array.isArray(input)) {
             return input.length;
@@ -8384,6 +7980,1107 @@ class Length {
     }
     outputDefined() {
         return false;
+    }
+}
+
+const EXTENT$1 = 8192;
+function getTileCoordinates(p, canonical) {
+    const x = mercatorXfromLng$1(p[0]);
+    const y = mercatorYfromLat$1(p[1]);
+    const tilesAtZoom = Math.pow(2, canonical.z);
+    return [Math.round(x * tilesAtZoom * EXTENT$1), Math.round(y * tilesAtZoom * EXTENT$1)];
+}
+function getLngLatFromTileCoord(coord, canonical) {
+    const tilesAtZoom = Math.pow(2, canonical.z);
+    const x = (coord[0] / EXTENT$1 + canonical.x) / tilesAtZoom;
+    const y = (coord[1] / EXTENT$1 + canonical.y) / tilesAtZoom;
+    return [lngFromMercatorXfromLng(x), latFromMercatorY$1(y)];
+}
+function mercatorXfromLng$1(lng) {
+    return (180 + lng) / 360;
+}
+function lngFromMercatorXfromLng(mercatorX) {
+    return mercatorX * 360 - 180;
+}
+function mercatorYfromLat$1(lat) {
+    return (180 - (180 / Math.PI * Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)))) / 360;
+}
+function latFromMercatorY$1(mercatorY) {
+    return 360 / Math.PI * Math.atan(Math.exp((180 - mercatorY * 360) * Math.PI / 180)) - 90;
+}
+function updateBBox(bbox, coord) {
+    bbox[0] = Math.min(bbox[0], coord[0]);
+    bbox[1] = Math.min(bbox[1], coord[1]);
+    bbox[2] = Math.max(bbox[2], coord[0]);
+    bbox[3] = Math.max(bbox[3], coord[1]);
+}
+function boxWithinBox(bbox1, bbox2) {
+    if (bbox1[0] <= bbox2[0])
+        return false;
+    if (bbox1[2] >= bbox2[2])
+        return false;
+    if (bbox1[1] <= bbox2[1])
+        return false;
+    if (bbox1[3] >= bbox2[3])
+        return false;
+    return true;
+}
+function rayIntersect(p, p1, p2) {
+    return ((p1[1] > p[1]) !== (p2[1] > p[1])) && (p[0] < (p2[0] - p1[0]) * (p[1] - p1[1]) / (p2[1] - p1[1]) + p1[0]);
+}
+function pointOnBoundary(p, p1, p2) {
+    const x1 = p[0] - p1[0];
+    const y1 = p[1] - p1[1];
+    const x2 = p[0] - p2[0];
+    const y2 = p[1] - p2[1];
+    return (x1 * y2 - x2 * y1 === 0) && (x1 * x2 <= 0) && (y1 * y2 <= 0);
+}
+// a, b are end points for line segment1, c and d are end points for line segment2
+function segmentIntersectSegment(a, b, c, d) {
+    // check if two segments are parallel or not
+    // precondition is end point a, b is inside polygon, if line a->b is
+    // parallel to polygon edge c->d, then a->b won't intersect with c->d
+    const vectorP = [b[0] - a[0], b[1] - a[1]];
+    const vectorQ = [d[0] - c[0], d[1] - c[1]];
+    if (perp(vectorQ, vectorP) === 0)
+        return false;
+    // If lines are intersecting with each other, the relative location should be:
+    // a and b lie in different sides of segment c->d
+    // c and d lie in different sides of segment a->b
+    if (twoSided(a, b, c, d) && twoSided(c, d, a, b))
+        return true;
+    return false;
+}
+function lineIntersectPolygon(p1, p2, polygon) {
+    for (const ring of polygon) {
+        // loop through every edge of the ring
+        for (let j = 0; j < ring.length - 1; ++j) {
+            if (segmentIntersectSegment(p1, p2, ring[j], ring[j + 1])) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+// ray casting algorithm for detecting if point is in polygon
+function pointWithinPolygon(point, rings, trueIfOnBoundary = false) {
+    let inside = false;
+    for (const ring of rings) {
+        for (let j = 0; j < ring.length - 1; j++) {
+            if (pointOnBoundary(point, ring[j], ring[j + 1]))
+                return trueIfOnBoundary;
+            if (rayIntersect(point, ring[j], ring[j + 1]))
+                inside = !inside;
+        }
+    }
+    return inside;
+}
+function pointWithinPolygons(point, polygons) {
+    for (const polygon of polygons) {
+        if (pointWithinPolygon(point, polygon))
+            return true;
+    }
+    return false;
+}
+function lineStringWithinPolygon(line, polygon) {
+    // First, check if geometry points of line segments are all inside polygon
+    for (const point of line) {
+        if (!pointWithinPolygon(point, polygon)) {
+            return false;
+        }
+    }
+    // Second, check if there is line segment intersecting polygon edge
+    for (let i = 0; i < line.length - 1; ++i) {
+        if (lineIntersectPolygon(line[i], line[i + 1], polygon)) {
+            return false;
+        }
+    }
+    return true;
+}
+function lineStringWithinPolygons(line, polygons) {
+    for (const polygon of polygons) {
+        if (lineStringWithinPolygon(line, polygon))
+            return true;
+    }
+    return false;
+}
+function perp(v1, v2) {
+    return (v1[0] * v2[1] - v1[1] * v2[0]);
+}
+// check if p1 and p2 are in different sides of line segment q1->q2
+function twoSided(p1, p2, q1, q2) {
+    // q1->p1 (x1, y1), q1->p2 (x2, y2), q1->q2 (x3, y3)
+    const x1 = p1[0] - q1[0];
+    const y1 = p1[1] - q1[1];
+    const x2 = p2[0] - q1[0];
+    const y2 = p2[1] - q1[1];
+    const x3 = q2[0] - q1[0];
+    const y3 = q2[1] - q1[1];
+    const det1 = (x1 * y3 - x3 * y1);
+    const det2 = (x2 * y3 - x3 * y2);
+    if ((det1 > 0 && det2 < 0) || (det1 < 0 && det2 > 0))
+        return true;
+    return false;
+}
+
+function getTilePolygon(coordinates, bbox, canonical) {
+    const polygon = [];
+    for (let i = 0; i < coordinates.length; i++) {
+        const ring = [];
+        for (let j = 0; j < coordinates[i].length; j++) {
+            const coord = getTileCoordinates(coordinates[i][j], canonical);
+            updateBBox(bbox, coord);
+            ring.push(coord);
+        }
+        polygon.push(ring);
+    }
+    return polygon;
+}
+function getTilePolygons(coordinates, bbox, canonical) {
+    const polygons = [];
+    for (let i = 0; i < coordinates.length; i++) {
+        const polygon = getTilePolygon(coordinates[i], bbox, canonical);
+        polygons.push(polygon);
+    }
+    return polygons;
+}
+function updatePoint(p, bbox, polyBBox, worldSize) {
+    if (p[0] < polyBBox[0] || p[0] > polyBBox[2]) {
+        const halfWorldSize = worldSize * 0.5;
+        let shift = (p[0] - polyBBox[0] > halfWorldSize) ? -worldSize : (polyBBox[0] - p[0] > halfWorldSize) ? worldSize : 0;
+        if (shift === 0) {
+            shift = (p[0] - polyBBox[2] > halfWorldSize) ? -worldSize : (polyBBox[2] - p[0] > halfWorldSize) ? worldSize : 0;
+        }
+        p[0] += shift;
+    }
+    updateBBox(bbox, p);
+}
+function resetBBox(bbox) {
+    bbox[0] = bbox[1] = Infinity;
+    bbox[2] = bbox[3] = -Infinity;
+}
+function getTilePoints(geometry, pointBBox, polyBBox, canonical) {
+    const worldSize = Math.pow(2, canonical.z) * EXTENT$1;
+    const shifts = [canonical.x * EXTENT$1, canonical.y * EXTENT$1];
+    const tilePoints = [];
+    for (const points of geometry) {
+        for (const point of points) {
+            const p = [point.x + shifts[0], point.y + shifts[1]];
+            updatePoint(p, pointBBox, polyBBox, worldSize);
+            tilePoints.push(p);
+        }
+    }
+    return tilePoints;
+}
+function getTileLines(geometry, lineBBox, polyBBox, canonical) {
+    const worldSize = Math.pow(2, canonical.z) * EXTENT$1;
+    const shifts = [canonical.x * EXTENT$1, canonical.y * EXTENT$1];
+    const tileLines = [];
+    for (const line of geometry) {
+        const tileLine = [];
+        for (const point of line) {
+            const p = [point.x + shifts[0], point.y + shifts[1]];
+            updateBBox(lineBBox, p);
+            tileLine.push(p);
+        }
+        tileLines.push(tileLine);
+    }
+    if (lineBBox[2] - lineBBox[0] <= worldSize / 2) {
+        resetBBox(lineBBox);
+        for (const line of tileLines) {
+            for (const p of line) {
+                updatePoint(p, lineBBox, polyBBox, worldSize);
+            }
+        }
+    }
+    return tileLines;
+}
+function pointsWithinPolygons(ctx, polygonGeometry) {
+    const pointBBox = [Infinity, Infinity, -Infinity, -Infinity];
+    const polyBBox = [Infinity, Infinity, -Infinity, -Infinity];
+    const canonical = ctx.canonicalID();
+    if (polygonGeometry.type === 'Polygon') {
+        const tilePolygon = getTilePolygon(polygonGeometry.coordinates, polyBBox, canonical);
+        const tilePoints = getTilePoints(ctx.geometry(), pointBBox, polyBBox, canonical);
+        if (!boxWithinBox(pointBBox, polyBBox))
+            return false;
+        for (const point of tilePoints) {
+            if (!pointWithinPolygon(point, tilePolygon))
+                return false;
+        }
+    }
+    if (polygonGeometry.type === 'MultiPolygon') {
+        const tilePolygons = getTilePolygons(polygonGeometry.coordinates, polyBBox, canonical);
+        const tilePoints = getTilePoints(ctx.geometry(), pointBBox, polyBBox, canonical);
+        if (!boxWithinBox(pointBBox, polyBBox))
+            return false;
+        for (const point of tilePoints) {
+            if (!pointWithinPolygons(point, tilePolygons))
+                return false;
+        }
+    }
+    return true;
+}
+function linesWithinPolygons(ctx, polygonGeometry) {
+    const lineBBox = [Infinity, Infinity, -Infinity, -Infinity];
+    const polyBBox = [Infinity, Infinity, -Infinity, -Infinity];
+    const canonical = ctx.canonicalID();
+    if (polygonGeometry.type === 'Polygon') {
+        const tilePolygon = getTilePolygon(polygonGeometry.coordinates, polyBBox, canonical);
+        const tileLines = getTileLines(ctx.geometry(), lineBBox, polyBBox, canonical);
+        if (!boxWithinBox(lineBBox, polyBBox))
+            return false;
+        for (const line of tileLines) {
+            if (!lineStringWithinPolygon(line, tilePolygon))
+                return false;
+        }
+    }
+    if (polygonGeometry.type === 'MultiPolygon') {
+        const tilePolygons = getTilePolygons(polygonGeometry.coordinates, polyBBox, canonical);
+        const tileLines = getTileLines(ctx.geometry(), lineBBox, polyBBox, canonical);
+        if (!boxWithinBox(lineBBox, polyBBox))
+            return false;
+        for (const line of tileLines) {
+            if (!lineStringWithinPolygons(line, tilePolygons))
+                return false;
+        }
+    }
+    return true;
+}
+class Within {
+    constructor(geojson, geometries) {
+        this.type = BooleanType;
+        this.geojson = geojson;
+        this.geometries = geometries;
+    }
+    static parse(args, context) {
+        if (args.length !== 2)
+            return context.error(`'within' expression requires exactly one argument, but found ${args.length - 1} instead.`);
+        if (isValue(args[1])) {
+            const geojson = args[1];
+            if (geojson.type === 'FeatureCollection') {
+                const polygonsCoords = [];
+                for (const polygon of geojson.features) {
+                    const { type, coordinates } = polygon.geometry;
+                    if (type === 'Polygon') {
+                        polygonsCoords.push(coordinates);
+                    }
+                    if (type === 'MultiPolygon') {
+                        polygonsCoords.push(...coordinates);
+                    }
+                }
+                if (polygonsCoords.length) {
+                    const multipolygonWrapper = {
+                        type: 'MultiPolygon',
+                        coordinates: polygonsCoords
+                    };
+                    return new Within(geojson, multipolygonWrapper);
+                }
+            }
+            else if (geojson.type === 'Feature') {
+                const type = geojson.geometry.type;
+                if (type === 'Polygon' || type === 'MultiPolygon') {
+                    return new Within(geojson, geojson.geometry);
+                }
+            }
+            else if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
+                return new Within(geojson, geojson);
+            }
+        }
+        return context.error('\'within\' expression requires valid geojson object that contains polygon geometry type.');
+    }
+    evaluate(ctx) {
+        if (ctx.geometry() != null && ctx.canonicalID() != null) {
+            if (ctx.geometryType() === 'Point') {
+                return pointsWithinPolygons(ctx, this.geometries);
+            }
+            else if (ctx.geometryType() === 'LineString') {
+                return linesWithinPolygons(ctx, this.geometries);
+            }
+        }
+        return false;
+    }
+    eachChild() { }
+    outputDefined() {
+        return true;
+    }
+}
+
+let TinyQueue$1 = class TinyQueue {
+    constructor(data = [], compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0)) {
+        this.data = data;
+        this.length = this.data.length;
+        this.compare = compare;
+
+        if (this.length > 0) {
+            for (let i = (this.length >> 1) - 1; i >= 0; i--) this._down(i);
+        }
+    }
+
+    push(item) {
+        this.data.push(item);
+        this._up(this.length++);
+    }
+
+    pop() {
+        if (this.length === 0) return undefined;
+
+        const top = this.data[0];
+        const bottom = this.data.pop();
+
+        if (--this.length > 0) {
+            this.data[0] = bottom;
+            this._down(0);
+        }
+
+        return top;
+    }
+
+    peek() {
+        return this.data[0];
+    }
+
+    _up(pos) {
+        const {data, compare} = this;
+        const item = data[pos];
+
+        while (pos > 0) {
+            const parent = (pos - 1) >> 1;
+            const current = data[parent];
+            if (compare(item, current) >= 0) break;
+            data[pos] = current;
+            pos = parent;
+        }
+
+        data[pos] = item;
+    }
+
+    _down(pos) {
+        const {data, compare} = this;
+        const halfLength = this.length >> 1;
+        const item = data[pos];
+
+        while (pos < halfLength) {
+            let bestChild = (pos << 1) + 1; // initially it is the left child
+            const right = bestChild + 1;
+
+            if (right < this.length && compare(data[right], data[bestChild]) < 0) {
+                bestChild = right;
+            }
+            if (compare(data[bestChild], item) >= 0) break;
+
+            data[pos] = data[bestChild];
+            pos = bestChild;
+        }
+
+        data[pos] = item;
+    }
+};
+
+function quickselect(arr, k, left, right, compare) {
+    quickselectStep(arr, k, left, right || (arr.length - 1), compare || defaultCompare);
+}
+
+function quickselectStep(arr, k, left, right, compare) {
+
+    while (right > left) {
+        if (right - left > 600) {
+            var n = right - left + 1;
+            var m = k - left + 1;
+            var z = Math.log(n);
+            var s = 0.5 * Math.exp(2 * z / 3);
+            var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
+            var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
+            var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
+            quickselectStep(arr, k, newLeft, newRight, compare);
+        }
+
+        var t = arr[k];
+        var i = left;
+        var j = right;
+
+        swap$2(arr, left, k);
+        if (compare(arr[right], t) > 0) swap$2(arr, left, right);
+
+        while (i < j) {
+            swap$2(arr, i, j);
+            i++;
+            j--;
+            while (compare(arr[i], t) < 0) i++;
+            while (compare(arr[j], t) > 0) j--;
+        }
+
+        if (compare(arr[left], t) === 0) swap$2(arr, left, j);
+        else {
+            j++;
+            swap$2(arr, j, right);
+        }
+
+        if (j <= k) left = j + 1;
+        if (k <= j) right = j - 1;
+    }
+}
+
+function swap$2(arr, i, j) {
+    var tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+}
+
+function defaultCompare(a, b) {
+    return a < b ? -1 : a > b ? 1 : 0;
+}
+
+/**
+ * Classifies an array of rings into polygons with outer rings and holes
+ * @param rings - the rings to classify
+ * @param maxRings - the maximum number of rings to include in a polygon, use 0 to include all rings
+ * @returns an array of polygons with internal rings as holes
+ */
+function classifyRings(rings, maxRings) {
+    const len = rings.length;
+    if (len <= 1)
+        return [rings];
+    const polygons = [];
+    let polygon;
+    let ccw;
+    for (const ring of rings) {
+        const area = calculateSignedArea(ring);
+        if (area === 0)
+            continue;
+        ring.area = Math.abs(area);
+        if (ccw === undefined)
+            ccw = area < 0;
+        if (ccw === area < 0) {
+            if (polygon)
+                polygons.push(polygon);
+            polygon = [ring];
+        }
+        else {
+            polygon.push(ring);
+        }
+    }
+    if (polygon)
+        polygons.push(polygon);
+    // Earcut performance degrades with the # of rings in a polygon. For this
+    // reason, we limit strip out all but the `maxRings` largest rings.
+    if (maxRings > 1) {
+        for (let j = 0; j < polygons.length; j++) {
+            if (polygons[j].length <= maxRings)
+                continue;
+            quickselect(polygons[j], maxRings, 1, polygons[j].length - 1, compareAreas);
+            polygons[j] = polygons[j].slice(0, maxRings);
+        }
+    }
+    return polygons;
+}
+function compareAreas(a, b) {
+    return b.area - a.area;
+}
+/**
+ * Returns the signed area for the polygon ring.  Positive areas are exterior rings and
+ * have a clockwise winding.  Negative areas are interior rings and have a counter clockwise
+ * ordering.
+ *
+ * @param ring - Exterior or interior ring
+ * @returns Signed area
+ */
+function calculateSignedArea(ring) {
+    let sum = 0;
+    for (let i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
+        p1 = ring[i];
+        p2 = ring[j];
+        sum += (p2.x - p1.x) * (p1.y + p2.y);
+    }
+    return sum;
+}
+
+// This is taken from https://github.com/mapbox/cheap-ruler/ in order to take only the relevant parts
+// Values that define WGS84 ellipsoid model of the Earth
+const RE = 6378.137; // equatorial radius
+const FE = 1 / 298.257223563; // flattening
+const E2 = FE * (2 - FE);
+const RAD = Math.PI / 180;
+class CheapRuler {
+    constructor(lat) {
+        // Curvature formulas from https://en.wikipedia.org/wiki/Earth_radius#Meridional
+        const m = RAD * RE * 1000;
+        const coslat = Math.cos(lat * RAD);
+        const w2 = 1 / (1 - E2 * (1 - coslat * coslat));
+        const w = Math.sqrt(w2);
+        // multipliers for converting longitude and latitude degrees into distance
+        this.kx = m * w * coslat; // based on normal radius of curvature
+        this.ky = m * w * w2 * (1 - E2); // based on meridional radius of curvature
+    }
+    /**
+     * Given two points of the form [longitude, latitude], returns the distance.
+     *
+     * @param a - point [longitude, latitude]
+     * @param b - point [longitude, latitude]
+     * @returns distance
+     * @example
+     * const distance = ruler.distance([30.5, 50.5], [30.51, 50.49]);
+     * //=distance
+     */
+    distance(a, b) {
+        const dx = this.wrap(a[0] - b[0]) * this.kx;
+        const dy = (a[1] - b[1]) * this.ky;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    /**
+     * Returns an object of the form {point, index, t}, where point is closest point on the line
+     * from the given point, index is the start index of the segment with the closest point,
+     * and t is a parameter from 0 to 1 that indicates where the closest point is on that segment.
+     *
+     * @param line - an array of points that form the line
+     * @param p - point [longitude, latitude]
+     * @returns the nearest point, its index in the array and the proportion along the line
+     * @example
+     * const point = ruler.pointOnLine(line, [-67.04, 50.5]).point;
+     * //=point
+     */
+    pointOnLine(line, p) {
+        let minDist = Infinity;
+        let minX, minY, minI, minT;
+        for (let i = 0; i < line.length - 1; i++) {
+            let x = line[i][0];
+            let y = line[i][1];
+            let dx = this.wrap(line[i + 1][0] - x) * this.kx;
+            let dy = (line[i + 1][1] - y) * this.ky;
+            let t = 0;
+            if (dx !== 0 || dy !== 0) {
+                t = (this.wrap(p[0] - x) * this.kx * dx + (p[1] - y) * this.ky * dy) / (dx * dx + dy * dy);
+                if (t > 1) {
+                    x = line[i + 1][0];
+                    y = line[i + 1][1];
+                }
+                else if (t > 0) {
+                    x += (dx / this.kx) * t;
+                    y += (dy / this.ky) * t;
+                }
+            }
+            dx = this.wrap(p[0] - x) * this.kx;
+            dy = (p[1] - y) * this.ky;
+            const sqDist = dx * dx + dy * dy;
+            if (sqDist < minDist) {
+                minDist = sqDist;
+                minX = x;
+                minY = y;
+                minI = i;
+                minT = t;
+            }
+        }
+        return {
+            point: [minX, minY],
+            index: minI,
+            t: Math.max(0, Math.min(1, minT))
+        };
+    }
+    wrap(deg) {
+        while (deg < -180)
+            deg += 360;
+        while (deg > 180)
+            deg -= 360;
+        return deg;
+    }
+}
+
+const MinPointsSize = 100;
+const MinLinePointsSize = 50;
+function compareDistPair(a, b) {
+    return b[0] - a[0];
+}
+function getRangeSize(range) {
+    return range[1] - range[0] + 1;
+}
+function isRangeSafe(range, threshold) {
+    return range[1] >= range[0] && range[1] < threshold;
+}
+function splitRange(range, isLine) {
+    if (range[0] > range[1]) {
+        return [null, null];
+    }
+    const size = getRangeSize(range);
+    if (isLine) {
+        if (size === 2) {
+            return [range, null];
+        }
+        const size1 = Math.floor(size / 2);
+        return [[range[0], range[0] + size1],
+            [range[0] + size1, range[1]]];
+    }
+    if (size === 1) {
+        return [range, null];
+    }
+    const size1 = Math.floor(size / 2) - 1;
+    return [[range[0], range[0] + size1],
+        [range[0] + size1 + 1, range[1]]];
+}
+function getBBox(coords, range) {
+    if (!isRangeSafe(range, coords.length)) {
+        return [Infinity, Infinity, -Infinity, -Infinity];
+    }
+    const bbox = [Infinity, Infinity, -Infinity, -Infinity];
+    for (let i = range[0]; i <= range[1]; ++i) {
+        updateBBox(bbox, coords[i]);
+    }
+    return bbox;
+}
+function getPolygonBBox(polygon) {
+    const bbox = [Infinity, Infinity, -Infinity, -Infinity];
+    for (const ring of polygon) {
+        for (const coord of ring) {
+            updateBBox(bbox, coord);
+        }
+    }
+    return bbox;
+}
+function isValidBBox(bbox) {
+    return bbox[0] !== -Infinity && bbox[1] !== -Infinity && bbox[2] !== Infinity && bbox[3] !== Infinity;
+}
+// Calculate the distance between two bounding boxes.
+// Calculate the delta in x and y direction, and use two fake points {0.0, 0.0}
+// and {dx, dy} to calculate the distance. Distance will be 0.0 if bounding box are overlapping.
+function bboxToBBoxDistance(bbox1, bbox2, ruler) {
+    if (!isValidBBox(bbox1) || !isValidBBox(bbox2)) {
+        return NaN;
+    }
+    let dx = 0.0;
+    let dy = 0.0;
+    // bbox1 in left side
+    if (bbox1[2] < bbox2[0]) {
+        dx = bbox2[0] - bbox1[2];
+    }
+    // bbox1 in right side
+    if (bbox1[0] > bbox2[2]) {
+        dx = bbox1[0] - bbox2[2];
+    }
+    // bbox1 in above side
+    if (bbox1[1] > bbox2[3]) {
+        dy = bbox1[1] - bbox2[3];
+    }
+    // bbox1 in down side
+    if (bbox1[3] < bbox2[1]) {
+        dy = bbox2[1] - bbox1[3];
+    }
+    return ruler.distance([0.0, 0.0], [dx, dy]);
+}
+function pointToLineDistance(point, line, ruler) {
+    const nearestPoint = ruler.pointOnLine(line, point);
+    return ruler.distance(point, nearestPoint.point);
+}
+function segmentToSegmentDistance(p1, p2, q1, q2, ruler) {
+    const dist1 = Math.min(pointToLineDistance(p1, [q1, q2], ruler), pointToLineDistance(p2, [q1, q2], ruler));
+    const dist2 = Math.min(pointToLineDistance(q1, [p1, p2], ruler), pointToLineDistance(q2, [p1, p2], ruler));
+    return Math.min(dist1, dist2);
+}
+function lineToLineDistance(line1, range1, line2, range2, ruler) {
+    const rangeSafe = isRangeSafe(range1, line1.length) && isRangeSafe(range2, line2.length);
+    if (!rangeSafe) {
+        return Infinity;
+    }
+    let dist = Infinity;
+    for (let i = range1[0]; i < range1[1]; ++i) {
+        const p1 = line1[i];
+        const p2 = line1[i + 1];
+        for (let j = range2[0]; j < range2[1]; ++j) {
+            const q1 = line2[j];
+            const q2 = line2[j + 1];
+            if (segmentIntersectSegment(p1, p2, q1, q2)) {
+                return 0.0;
+            }
+            dist = Math.min(dist, segmentToSegmentDistance(p1, p2, q1, q2, ruler));
+        }
+    }
+    return dist;
+}
+function pointsToPointsDistance(points1, range1, points2, range2, ruler) {
+    const rangeSafe = isRangeSafe(range1, points1.length) && isRangeSafe(range2, points2.length);
+    if (!rangeSafe) {
+        return NaN;
+    }
+    let dist = Infinity;
+    for (let i = range1[0]; i <= range1[1]; ++i) {
+        for (let j = range2[0]; j <= range2[1]; ++j) {
+            dist = Math.min(dist, ruler.distance(points1[i], points2[j]));
+            if (dist === 0.0) {
+                return dist;
+            }
+        }
+    }
+    return dist;
+}
+function pointToPolygonDistance(point, polygon, ruler) {
+    if (pointWithinPolygon(point, polygon, true)) {
+        return 0.0;
+    }
+    let dist = Infinity;
+    for (const ring of polygon) {
+        const front = ring[0];
+        const back = ring[ring.length - 1];
+        if (front !== back) {
+            dist = Math.min(dist, pointToLineDistance(point, [back, front], ruler));
+            if (dist === 0.0) {
+                return dist;
+            }
+        }
+        const nearestPoint = ruler.pointOnLine(ring, point);
+        dist = Math.min(dist, ruler.distance(point, nearestPoint.point));
+        if (dist === 0.0) {
+            return dist;
+        }
+    }
+    return dist;
+}
+function lineToPolygonDistance(line, range, polygon, ruler) {
+    if (!isRangeSafe(range, line.length)) {
+        return NaN;
+    }
+    for (let i = range[0]; i <= range[1]; ++i) {
+        if (pointWithinPolygon(line[i], polygon, true)) {
+            return 0.0;
+        }
+    }
+    let dist = Infinity;
+    for (let i = range[0]; i < range[1]; ++i) {
+        const p1 = line[i];
+        const p2 = line[i + 1];
+        for (const ring of polygon) {
+            for (let j = 0, len = ring.length, k = len - 1; j < len; k = j++) {
+                const q1 = ring[k];
+                const q2 = ring[j];
+                if (segmentIntersectSegment(p1, p2, q1, q2)) {
+                    return 0.0;
+                }
+                dist = Math.min(dist, segmentToSegmentDistance(p1, p2, q1, q2, ruler));
+            }
+        }
+    }
+    return dist;
+}
+function polygonIntersect(poly1, poly2) {
+    for (const ring of poly1) {
+        for (const point of ring) {
+            if (pointWithinPolygon(point, poly2, true)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function polygonToPolygonDistance(polygon1, polygon2, ruler, currentMiniDist = Infinity) {
+    const bbox1 = getPolygonBBox(polygon1);
+    const bbox2 = getPolygonBBox(polygon2);
+    if (currentMiniDist !== Infinity && bboxToBBoxDistance(bbox1, bbox2, ruler) >= currentMiniDist) {
+        return currentMiniDist;
+    }
+    if (boxWithinBox(bbox1, bbox2)) {
+        if (polygonIntersect(polygon1, polygon2)) {
+            return 0.0;
+        }
+    }
+    else if (polygonIntersect(polygon2, polygon1)) {
+        return 0.0;
+    }
+    let dist = Infinity;
+    for (const ring1 of polygon1) {
+        for (let i = 0, len1 = ring1.length, l = len1 - 1; i < len1; l = i++) {
+            const p1 = ring1[l];
+            const p2 = ring1[i];
+            for (const ring2 of polygon2) {
+                for (let j = 0, len2 = ring2.length, k = len2 - 1; j < len2; k = j++) {
+                    const q1 = ring2[k];
+                    const q2 = ring2[j];
+                    if (segmentIntersectSegment(p1, p2, q1, q2)) {
+                        return 0.0;
+                    }
+                    dist = Math.min(dist, segmentToSegmentDistance(p1, p2, q1, q2, ruler));
+                }
+            }
+        }
+    }
+    return dist;
+}
+function updateQueue(distQueue, miniDist, ruler, points, polyBBox, rangeA) {
+    if (!rangeA) {
+        return;
+    }
+    const tempDist = bboxToBBoxDistance(getBBox(points, rangeA), polyBBox, ruler);
+    // Insert new pair to the queue if the bbox distance is less than
+    // miniDist, The pair with biggest distance will be at the top
+    if (tempDist < miniDist) {
+        distQueue.push([tempDist, rangeA, [0, 0]]);
+    }
+}
+function updateQueueTwoSets(distQueue, miniDist, ruler, pointSet1, pointSet2, range1, range2) {
+    if (!range1 || !range2) {
+        return;
+    }
+    const tempDist = bboxToBBoxDistance(getBBox(pointSet1, range1), getBBox(pointSet2, range2), ruler);
+    // Insert new pair to the queue if the bbox distance is less than
+    // miniDist, The pair with biggest distance will be at the top
+    if (tempDist < miniDist) {
+        distQueue.push([tempDist, range1, range2]);
+    }
+}
+// Divide and conquer, the time complexity is O(n*lgn), faster than Brute force
+// O(n*n) Most of the time, use index for in-place processing.
+function pointsToPolygonDistance(points, isLine, polygon, ruler, currentMiniDist = Infinity) {
+    let miniDist = Math.min(ruler.distance(points[0], polygon[0][0]), currentMiniDist);
+    if (miniDist === 0.0) {
+        return miniDist;
+    }
+    const distQueue = new TinyQueue$1([[0, [0, points.length - 1], [0, 0]]], compareDistPair);
+    const polyBBox = getPolygonBBox(polygon);
+    while (distQueue.length > 0) {
+        const distPair = distQueue.pop();
+        if (distPair[0] >= miniDist) {
+            continue;
+        }
+        const range = distPair[1];
+        // In case the set size are relatively small, we could use brute-force directly
+        const threshold = isLine ? MinLinePointsSize : MinPointsSize;
+        if (getRangeSize(range) <= threshold) {
+            if (!isRangeSafe(range, points.length)) {
+                return NaN;
+            }
+            if (isLine) {
+                const tempDist = lineToPolygonDistance(points, range, polygon, ruler);
+                if (isNaN(tempDist) || tempDist === 0.0) {
+                    return tempDist;
+                }
+                miniDist = Math.min(miniDist, tempDist);
+            }
+            else {
+                for (let i = range[0]; i <= range[1]; ++i) {
+                    const tempDist = pointToPolygonDistance(points[i], polygon, ruler);
+                    miniDist = Math.min(miniDist, tempDist);
+                    if (miniDist === 0.0) {
+                        return 0.0;
+                    }
+                }
+            }
+        }
+        else {
+            const newRangesA = splitRange(range, isLine);
+            updateQueue(distQueue, miniDist, ruler, points, polyBBox, newRangesA[0]);
+            updateQueue(distQueue, miniDist, ruler, points, polyBBox, newRangesA[1]);
+        }
+    }
+    return miniDist;
+}
+function pointSetToPointSetDistance(pointSet1, isLine1, pointSet2, isLine2, ruler, currentMiniDist = Infinity) {
+    let miniDist = Math.min(currentMiniDist, ruler.distance(pointSet1[0], pointSet2[0]));
+    if (miniDist === 0.0) {
+        return miniDist;
+    }
+    const distQueue = new TinyQueue$1([[0, [0, pointSet1.length - 1], [0, pointSet2.length - 1]]], compareDistPair);
+    while (distQueue.length > 0) {
+        const distPair = distQueue.pop();
+        if (distPair[0] >= miniDist) {
+            continue;
+        }
+        const rangeA = distPair[1];
+        const rangeB = distPair[2];
+        const threshold1 = isLine1 ? MinLinePointsSize : MinPointsSize;
+        const threshold2 = isLine2 ? MinLinePointsSize : MinPointsSize;
+        // In case the set size are relatively small, we could use brute-force directly
+        if (getRangeSize(rangeA) <= threshold1 && getRangeSize(rangeB) <= threshold2) {
+            if (!isRangeSafe(rangeA, pointSet1.length) && isRangeSafe(rangeB, pointSet2.length)) {
+                return NaN;
+            }
+            let tempDist;
+            if (isLine1 && isLine2) {
+                tempDist = lineToLineDistance(pointSet1, rangeA, pointSet2, rangeB, ruler);
+                miniDist = Math.min(miniDist, tempDist);
+            }
+            else if (isLine1 && !isLine2) {
+                const sublibe = pointSet1.slice(rangeA[0], rangeA[1] + 1);
+                for (let i = rangeB[0]; i <= rangeB[1]; ++i) {
+                    tempDist = pointToLineDistance(pointSet2[i], sublibe, ruler);
+                    miniDist = Math.min(miniDist, tempDist);
+                    if (miniDist === 0.0) {
+                        return miniDist;
+                    }
+                }
+            }
+            else if (!isLine1 && isLine2) {
+                const sublibe = pointSet2.slice(rangeB[0], rangeB[1] + 1);
+                for (let i = rangeA[0]; i <= rangeA[1]; ++i) {
+                    tempDist = pointToLineDistance(pointSet1[i], sublibe, ruler);
+                    miniDist = Math.min(miniDist, tempDist);
+                    if (miniDist === 0.0) {
+                        return miniDist;
+                    }
+                }
+            }
+            else {
+                tempDist = pointsToPointsDistance(pointSet1, rangeA, pointSet2, rangeB, ruler);
+                miniDist = Math.min(miniDist, tempDist);
+            }
+        }
+        else {
+            const newRangesA = splitRange(rangeA, isLine1);
+            const newRangesB = splitRange(rangeB, isLine2);
+            updateQueueTwoSets(distQueue, miniDist, ruler, pointSet1, pointSet2, newRangesA[0], newRangesB[0]);
+            updateQueueTwoSets(distQueue, miniDist, ruler, pointSet1, pointSet2, newRangesA[0], newRangesB[1]);
+            updateQueueTwoSets(distQueue, miniDist, ruler, pointSet1, pointSet2, newRangesA[1], newRangesB[0]);
+            updateQueueTwoSets(distQueue, miniDist, ruler, pointSet1, pointSet2, newRangesA[1], newRangesB[1]);
+        }
+    }
+    return miniDist;
+}
+function pointToGeometryDistance(ctx, geometries) {
+    const tilePoints = ctx.geometry();
+    const pointPosition = tilePoints.flat().map(p => getLngLatFromTileCoord([p.x, p.y], ctx.canonical));
+    if (tilePoints.length === 0) {
+        return NaN;
+    }
+    const ruler = new CheapRuler(pointPosition[0][1]);
+    let dist = Infinity;
+    for (const geometry of geometries) {
+        switch (geometry.type) {
+            case 'Point':
+                dist = Math.min(dist, pointSetToPointSetDistance(pointPosition, false, [geometry.coordinates], false, ruler, dist));
+                break;
+            case 'LineString':
+                dist = Math.min(dist, pointSetToPointSetDistance(pointPosition, false, geometry.coordinates, true, ruler, dist));
+                break;
+            case 'Polygon':
+                dist = Math.min(dist, pointsToPolygonDistance(pointPosition, false, geometry.coordinates, ruler, dist));
+                break;
+        }
+        if (dist === 0.0) {
+            return dist;
+        }
+    }
+    return dist;
+}
+function lineStringToGeometryDistance(ctx, geometries) {
+    const tileLine = ctx.geometry();
+    const linePositions = tileLine.flat().map(p => getLngLatFromTileCoord([p.x, p.y], ctx.canonical));
+    if (tileLine.length === 0) {
+        return NaN;
+    }
+    const ruler = new CheapRuler(linePositions[0][1]);
+    let dist = Infinity;
+    for (const geometry of geometries) {
+        switch (geometry.type) {
+            case 'Point':
+                dist = Math.min(dist, pointSetToPointSetDistance(linePositions, true, [geometry.coordinates], false, ruler, dist));
+                break;
+            case 'LineString':
+                dist = Math.min(dist, pointSetToPointSetDistance(linePositions, true, geometry.coordinates, true, ruler, dist));
+                break;
+            case 'Polygon':
+                dist = Math.min(dist, pointsToPolygonDistance(linePositions, true, geometry.coordinates, ruler, dist));
+                break;
+        }
+        if (dist === 0.0) {
+            return dist;
+        }
+    }
+    return dist;
+}
+function polygonToGeometryDistance(ctx, geometries) {
+    const tilePolygon = ctx.geometry();
+    if (tilePolygon.length === 0 || tilePolygon[0].length === 0) {
+        return NaN;
+    }
+    const polygons = classifyRings(tilePolygon, 0).map(polygon => {
+        return polygon.map(ring => {
+            return ring.map(p => getLngLatFromTileCoord([p.x, p.y], ctx.canonical));
+        });
+    });
+    const ruler = new CheapRuler(polygons[0][0][0][1]);
+    let dist = Infinity;
+    for (const geometry of geometries) {
+        for (const polygon of polygons) {
+            switch (geometry.type) {
+                case 'Point':
+                    dist = Math.min(dist, pointsToPolygonDistance([geometry.coordinates], false, polygon, ruler, dist));
+                    break;
+                case 'LineString':
+                    dist = Math.min(dist, pointsToPolygonDistance(geometry.coordinates, true, polygon, ruler, dist));
+                    break;
+                case 'Polygon':
+                    dist = Math.min(dist, polygonToPolygonDistance(polygon, geometry.coordinates, ruler, dist));
+                    break;
+            }
+            if (dist === 0.0) {
+                return dist;
+            }
+        }
+    }
+    return dist;
+}
+function toSimpleGeometry(geometry) {
+    if (geometry.type === 'MultiPolygon') {
+        return geometry.coordinates.map(polygon => {
+            return {
+                type: 'Polygon',
+                coordinates: polygon
+            };
+        });
+    }
+    if (geometry.type === 'MultiLineString') {
+        return geometry.coordinates.map(lineString => {
+            return {
+                type: 'LineString',
+                coordinates: lineString
+            };
+        });
+    }
+    if (geometry.type === 'MultiPoint') {
+        return geometry.coordinates.map(point => {
+            return {
+                type: 'Point',
+                coordinates: point
+            };
+        });
+    }
+    return [geometry];
+}
+class Distance {
+    constructor(geojson, geometries) {
+        this.type = NumberType;
+        this.geojson = geojson;
+        this.geometries = geometries;
+    }
+    static parse(args, context) {
+        if (args.length !== 2)
+            return context.error(`'distance' expression requires exactly one argument, but found ${args.length - 1} instead.`);
+        if (isValue(args[1])) {
+            const geojson = args[1];
+            if (geojson.type === 'FeatureCollection') {
+                return new Distance(geojson, geojson.features.map(feature => toSimpleGeometry(feature.geometry)).flat());
+            }
+            else if (geojson.type === 'Feature') {
+                return new Distance(geojson, toSimpleGeometry(geojson.geometry));
+            }
+            else if ('type' in geojson && 'coordinates' in geojson) {
+                return new Distance(geojson, toSimpleGeometry(geojson));
+            }
+        }
+        return context.error('\'distance\' expression requires valid geojson object that contains polygon geometry type.');
+    }
+    evaluate(ctx) {
+        if (ctx.geometry() != null && ctx.canonicalID() != null) {
+            if (ctx.geometryType() === 'Point') {
+                return pointToGeometryDistance(ctx, this.geometries);
+            }
+            else if (ctx.geometryType() === 'LineString') {
+                return lineStringToGeometryDistance(ctx, this.geometries);
+            }
+            else if (ctx.geometryType() === 'Polygon') {
+                return polygonToGeometryDistance(ctx, this.geometries);
+            }
+        }
+        return NaN;
+    }
+    eachChild() { }
+    outputDefined() {
+        return true;
     }
 }
 
@@ -8423,8 +9120,110 @@ const expressions$1 = {
     'to-number': Coercion,
     'to-string': Coercion,
     'var': Var,
-    'within': Within
+    'within': Within,
+    'distance': Distance
 };
+
+class CompoundExpression {
+    constructor(name, type, evaluate, args) {
+        this.name = name;
+        this.type = type;
+        this._evaluate = evaluate;
+        this.args = args;
+    }
+    evaluate(ctx) {
+        return this._evaluate(ctx, this.args);
+    }
+    eachChild(fn) {
+        this.args.forEach(fn);
+    }
+    outputDefined() {
+        return false;
+    }
+    static parse(args, context) {
+        const op = args[0];
+        const definition = CompoundExpression.definitions[op];
+        if (!definition) {
+            return context.error(`Unknown expression "${op}". If you wanted a literal array, use ["literal", [...]].`, 0);
+        }
+        // Now check argument types against each signature
+        const type = Array.isArray(definition) ?
+            definition[0] : definition.type;
+        const availableOverloads = Array.isArray(definition) ?
+            [[definition[1], definition[2]]] :
+            definition.overloads;
+        const overloads = availableOverloads.filter(([signature]) => (!Array.isArray(signature) || // varags
+            signature.length === args.length - 1 // correct param count
+        ));
+        let signatureContext = null;
+        for (const [params, evaluate] of overloads) {
+            // Use a fresh context for each attempted signature so that, if
+            // we eventually succeed, we haven't polluted `context.errors`.
+            signatureContext = new ParsingContext(context.registry, isExpressionConstant, context.path, null, context.scope);
+            // First parse all the args, potentially coercing to the
+            // types expected by this overload.
+            const parsedArgs = [];
+            let argParseFailed = false;
+            for (let i = 1; i < args.length; i++) {
+                const arg = args[i];
+                const expectedType = Array.isArray(params) ?
+                    params[i - 1] :
+                    params.type;
+                const parsed = signatureContext.parse(arg, 1 + parsedArgs.length, expectedType);
+                if (!parsed) {
+                    argParseFailed = true;
+                    break;
+                }
+                parsedArgs.push(parsed);
+            }
+            if (argParseFailed) {
+                // Couldn't coerce args of this overload to expected type, move
+                // on to next one.
+                continue;
+            }
+            if (Array.isArray(params)) {
+                if (params.length !== parsedArgs.length) {
+                    signatureContext.error(`Expected ${params.length} arguments, but found ${parsedArgs.length} instead.`);
+                    continue;
+                }
+            }
+            for (let i = 0; i < parsedArgs.length; i++) {
+                const expected = Array.isArray(params) ? params[i] : params.type;
+                const arg = parsedArgs[i];
+                signatureContext.concat(i + 1).checkSubtype(expected, arg.type);
+            }
+            if (signatureContext.errors.length === 0) {
+                return new CompoundExpression(op, type, evaluate, parsedArgs);
+            }
+        }
+        if (overloads.length === 1) {
+            context.errors.push(...signatureContext.errors);
+        }
+        else {
+            const expected = overloads.length ? overloads : availableOverloads;
+            const signatures = expected
+                .map(([params]) => stringifySignature(params))
+                .join(' | ');
+            const actualTypes = [];
+            // For error message, re-parse arguments without trying to
+            // apply any coercions
+            for (let i = 1; i < args.length; i++) {
+                const parsed = context.parse(args[i], 1 + actualTypes.length);
+                if (!parsed)
+                    return null;
+                actualTypes.push(toString$1(parsed.type));
+            }
+            context.error(`Expected arguments of type ${signatures}, but found (${actualTypes.join(', ')}) instead.`);
+        }
+        return null;
+    }
+    static register(registry, definitions) {
+        CompoundExpression.definitions = definitions;
+        for (const name in definitions) {
+            registry[name] = CompoundExpression;
+        }
+    }
+}
 function rgba(ctx, [r, g, b, a]) {
     r = r.evaluate(ctx);
     g = g.evaluate(ctx);
@@ -8895,6 +9694,116 @@ CompoundExpression.register(expressions$1, {
         (ctx, [collator]) => collator.evaluate(ctx).resolvedLocale()
     ]
 });
+function stringifySignature(signature) {
+    if (Array.isArray(signature)) {
+        return `(${signature.map(toString$1).join(', ')})`;
+    }
+    else {
+        return `(${toString$1(signature.type)}...)`;
+    }
+}
+function isExpressionConstant(expression) {
+    if (expression instanceof Var) {
+        return isExpressionConstant(expression.boundExpression);
+    }
+    else if (expression instanceof CompoundExpression && expression.name === 'error') {
+        return false;
+    }
+    else if (expression instanceof CollatorExpression) {
+        // Although the results of a Collator expression with fixed arguments
+        // generally shouldn't change between executions, we can't serialize them
+        // as constant expressions because results change based on environment.
+        return false;
+    }
+    else if (expression instanceof Within) {
+        return false;
+    }
+    else if (expression instanceof Distance) {
+        return false;
+    }
+    const isTypeAnnotation = expression instanceof Coercion ||
+        expression instanceof Assertion;
+    let childrenConstant = true;
+    expression.eachChild(child => {
+        // We can _almost_ assume that if `expressions` children are constant,
+        // they would already have been evaluated to Literal values when they
+        // were parsed.  Type annotations are the exception, because they might
+        // have been inferred and added after a child was parsed.
+        // So we recurse into isConstant() for the children of type annotations,
+        // but otherwise simply check whether they are Literals.
+        if (isTypeAnnotation) {
+            childrenConstant = childrenConstant && isExpressionConstant(child);
+        }
+        else {
+            childrenConstant = childrenConstant && child instanceof Literal;
+        }
+    });
+    if (!childrenConstant) {
+        return false;
+    }
+    return isFeatureConstant(expression) &&
+        isGlobalPropertyConstant(expression, ['zoom', 'heatmap-density', 'line-progress', 'accumulated', 'is-supported-script']);
+}
+function isFeatureConstant(e) {
+    if (e instanceof CompoundExpression) {
+        if (e.name === 'get' && e.args.length === 1) {
+            return false;
+        }
+        else if (e.name === 'feature-state') {
+            return false;
+        }
+        else if (e.name === 'has' && e.args.length === 1) {
+            return false;
+        }
+        else if (e.name === 'properties' ||
+            e.name === 'geometry-type' ||
+            e.name === 'id') {
+            return false;
+        }
+        else if (/^filter-/.test(e.name)) {
+            return false;
+        }
+    }
+    if (e instanceof Within) {
+        return false;
+    }
+    if (e instanceof Distance) {
+        return false;
+    }
+    let result = true;
+    e.eachChild(arg => {
+        if (result && !isFeatureConstant(arg)) {
+            result = false;
+        }
+    });
+    return result;
+}
+function isStateConstant(e) {
+    if (e instanceof CompoundExpression) {
+        if (e.name === 'feature-state') {
+            return false;
+        }
+    }
+    let result = true;
+    e.eachChild(arg => {
+        if (result && !isStateConstant(arg)) {
+            result = false;
+        }
+    });
+    return result;
+}
+function isGlobalPropertyConstant(e, properties) {
+    if (e instanceof CompoundExpression && properties.indexOf(e.name) >= 0) {
+        return false;
+    }
+    let result = true;
+    e.eachChild((arg) => {
+        if (result && !isGlobalPropertyConstant(arg, properties)) {
+            result = false;
+        }
+    });
+    return result;
+}
 
 function success(value) {
     return { result: 'success', value };
@@ -9525,7 +10434,7 @@ function compare(a, b) {
 function geometryNeeded(filter) {
     if (!Array.isArray(filter))
         return false;
-    if (filter[0] === 'within')
+    if (filter[0] === 'within' || filter[0] === 'distance')
         return true;
     for (let index = 1; index < filter.length; index++) {
         if (geometryNeeded(filter[index]))
@@ -9552,8 +10461,7 @@ function convertFilter$1(filter) {
                                 op === '!in' ? convertNegation(convertInOp$1(filter[1], filter.slice(2))) :
                                     op === 'has' ? convertHasOp$1(filter[1]) :
                                         op === '!has' ? convertNegation(convertHasOp$1(filter[1])) :
-                                            op === 'within' ? filter :
-                                                true;
+                                            true;
     return converted;
 }
 function convertComparisonOp$1(property, value, op) {
@@ -9625,7 +10533,7 @@ function convertNegation(filter) {
  *
  * We account for this by inserting a preflight type-checking expression before
  * each "any" term, allowing us to avoid evaluating the actual converted filter
- * if any type mismatches would cause it to produce an evalaution error:
+ * if any type mismatches would cause it to produce an evaluation error:
  *
  *     ["any",
  *       ["case",
@@ -10676,15 +11584,6 @@ function validateNonExpressionFilter(options) {
                 errors.push(new ValidationError(`${key}[1]`, value[1], `string expected, ${type} found`));
             }
             break;
-        case 'within':
-            type = getType(value[1]);
-            if (value.length !== 2) {
-                errors.push(new ValidationError(key, value, `filter array for "${value[0]}" operator must have 2 elements`));
-            }
-            else if (type !== 'object') {
-                errors.push(new ValidationError(`${key}[1]`, value[1], `object expected, ${type} found`));
-            }
-            break;
     }
     return errors;
 }
@@ -11083,7 +11982,7 @@ function validateLight$1(options) {
     return errors;
 }
 
-function validateSky(options) {
+function validateSky$1(options) {
     const sky = options.value;
     const styleSpec = options.styleSpec;
     const skySpec = styleSpec.sky;
@@ -11098,7 +11997,7 @@ function validateSky(options) {
     let errors = [];
     for (const key in sky) {
         if (skySpec[key]) {
-            errors = errors.concat(validate({
+            errors = errors.concat(options.validateSpec({
                 key,
                 value: sky[key],
                 valueSpec: skySpec[key],
@@ -11263,6 +12162,36 @@ function validateSprite(options) {
     }
 }
 
+function validateProjection(options) {
+    const projection = options.value;
+    const styleSpec = options.styleSpec;
+    const projectionSpec = styleSpec.projection;
+    const style = options.style;
+    const rootType = getType(projection);
+    if (projection === undefined) {
+        return [];
+    }
+    else if (rootType !== 'object') {
+        return [new ValidationError('projection', projection, `object expected, ${rootType} found`)];
+    }
+    let errors = [];
+    for (const key in projection) {
+        if (projectionSpec[key]) {
+            errors = errors.concat(options.validateSpec({
+                key,
+                value: projection[key],
+                valueSpec: projectionSpec[key],
+                style,
+                styleSpec
+            }));
+        }
+        else {
+            errors = errors.concat([new ValidationError(key, projection[key], `unknown property "${key}"`)]);
+        }
+    }
+    return errors;
+}
+
 const VALIDATORS = {
     '*'() {
         return [];
@@ -11279,8 +12208,9 @@ const VALIDATORS = {
     'object': validateObject,
     'source': validateSource$1,
     'light': validateLight$1,
-    'sky': validateSky,
+    'sky': validateSky$1,
     'terrain': validateTerrain$1,
+    'projection': validateProjection,
     'string': validateString,
     'formatted': validateFormatted,
     'resolvedImage': validateImage,
@@ -11384,7 +12314,7 @@ validateStyleMin.source = wrapCleanErrors(injectValidateSpec(validateSource$1));
 validateStyleMin.sprite = wrapCleanErrors(injectValidateSpec(validateSprite));
 validateStyleMin.glyphs = wrapCleanErrors(injectValidateSpec(validateGlyphsUrl));
 validateStyleMin.light = wrapCleanErrors(injectValidateSpec(validateLight$1));
-validateStyleMin.sky = wrapCleanErrors(injectValidateSpec(validateSky));
+validateStyleMin.sky = wrapCleanErrors(injectValidateSpec(validateSky$1));
 validateStyleMin.terrain = wrapCleanErrors(injectValidateSpec(validateTerrain$1));
 validateStyleMin.layer = wrapCleanErrors(injectValidateSpec(validateLayer));
 validateStyleMin.filter = wrapCleanErrors(injectValidateSpec(validateFilter$1));
@@ -11771,7 +12701,7 @@ function migrateHslColors(colorToMigrate) {
  * @returns a migrated style
  * @example
  * const fs = require('fs');
- * csont migrate = require('@maplibre/maplibre-gl-style-spec').migrate;
+ * const migrate = require('@maplibre/maplibre-gl-style-spec').migrate;
  * const style = fs.readFileSync('./style.json', 'utf8');
  * fs.writeFileSync('./style.json', JSON.stringify(migrate(style)));
  */
@@ -11940,7 +12870,8 @@ function makeFetchRequest(requestParameters, abortController) {
             referrer: getReferrer(),
             signal: abortController.signal
         });
-        if (requestParameters.type === 'json') {
+        // If the user has already set an Accept header, do not overwrite it here
+        if (requestParameters.type === 'json' && !request.headers.has('Accept')) {
             request.headers.set('Accept', 'application/json');
         }
         const response = yield fetch(request);
@@ -11948,9 +12879,16 @@ function makeFetchRequest(requestParameters, abortController) {
             const body = yield response.blob();
             throw new AJAXError(response.status, response.statusText, requestParameters.url, body);
         }
-        const parsePromise = (requestParameters.type === 'arrayBuffer' || requestParameters.type === 'image') ? response.arrayBuffer() :
-            requestParameters.type === 'json' ? response.json() :
-                response.text();
+        let parsePromise;
+        if ((requestParameters.type === 'arrayBuffer' || requestParameters.type === 'image')) {
+            parsePromise = response.arrayBuffer();
+        }
+        else if (requestParameters.type === 'json') {
+            parsePromise = response.json();
+        }
+        else {
+            parsePromise = response.text();
+        }
         const result = yield parsePromise;
         if (abortController.signal.aborted) {
             throw createAbortError();
@@ -11960,6 +12898,7 @@ function makeFetchRequest(requestParameters, abortController) {
 }
 function makeXMLHttpRequest(requestParameters, abortController) {
     return new Promise((resolve, reject) => {
+        var _a;
         const xhr = new XMLHttpRequest();
         xhr.open(requestParameters.method || 'GET', requestParameters.url, true);
         if (requestParameters.type === 'arrayBuffer' || requestParameters.type === 'image') {
@@ -11970,7 +12909,10 @@ function makeXMLHttpRequest(requestParameters, abortController) {
         }
         if (requestParameters.type === 'json') {
             xhr.responseType = 'text';
-            xhr.setRequestHeader('Accept', 'application/json');
+            // Do not overwrite the user-provided Accept header
+            if (!((_a = requestParameters.headers) === null || _a === void 0 ? void 0 : _a.Accept)) {
+                xhr.setRequestHeader('Accept', 'application/json');
+            }
         }
         xhr.withCredentials = requestParameters.credentials === 'include';
         xhr.onerror = () => {
@@ -12021,7 +12963,7 @@ const makeRequest = function (requestParameters, abortController) {
             return protocolLoadFn(requestParameters, abortController);
         }
         if (isWorker(self) && self.worker && self.worker.actor) {
-            return self.worker.actor.sendAsync({ type: 'getResource', data: requestParameters, targetMapId: GLOBAL_DISPATCHER_ID }, abortController);
+            return self.worker.actor.sendAsync({ type: "GR" /* MessageType.getResource */, data: requestParameters, targetMapId: GLOBAL_DISPATCHER_ID }, abortController);
         }
     }
     if (!isFileURL(requestParameters.url)) {
@@ -12029,7 +12971,7 @@ const makeRequest = function (requestParameters, abortController) {
             return makeFetchRequest(requestParameters, abortController);
         }
         if (isWorker(self) && self.worker && self.worker.actor) {
-            return self.worker.actor.sendAsync({ type: 'getResource', data: requestParameters, mustQueue: true, targetMapId: GLOBAL_DISPATCHER_ID }, abortController);
+            return self.worker.actor.sendAsync({ type: "GR" /* MessageType.getResource */, data: requestParameters, mustQueue: true, targetMapId: GLOBAL_DISPATCHER_ID }, abortController);
         }
     }
     return makeXMLHttpRequest(requestParameters, abortController);
@@ -12111,114 +13053,22 @@ function isArrayBuffer(value) {
     return value && typeof ArrayBuffer !== 'undefined' &&
         (value instanceof ArrayBuffer || (value.constructor && value.constructor.name === 'ArrayBuffer'));
 }
-/**
- * Serialize the given object for transfer to or from a web worker.
- *
- * For non-builtin types, recursively serialize each property (possibly
- * omitting certain properties - see register()), and package the result along
- * with the constructor's `name` so that the appropriate constructor can be
- * looked up in `deserialize()`.
- *
- * If a `transferables` array is provided, add any transferable objects (i.e.,
- * any ArrayBuffers or ArrayBuffer views) to the list. (If a copy is needed,
- * this should happen in the client code, before using serialize().)
- */
-function serialize(input, transferables) {
-    if (input === null ||
-        input === undefined ||
-        typeof input === 'boolean' ||
-        typeof input === 'number' ||
-        typeof input === 'string' ||
-        input instanceof Boolean ||
-        input instanceof Number ||
-        input instanceof String ||
-        input instanceof Date ||
-        input instanceof RegExp ||
-        input instanceof Blob ||
-        input instanceof Error) {
-        return input;
-    }
-    if (isArrayBuffer(input)) {
-        if (transferables) {
-            transferables.push(input);
-        }
-        return input;
-    }
-    if (isImageBitmap(input)) {
-        if (transferables) {
-            transferables.push(input);
-        }
-        return input;
-    }
-    if (ArrayBuffer.isView(input)) {
-        const view = input;
-        if (transferables) {
-            transferables.push(view.buffer);
-        }
-        return view;
-    }
-    if (input instanceof ImageData) {
-        if (transferables) {
-            transferables.push(input.data.buffer);
-        }
-        return input;
-    }
-    if (Array.isArray(input)) {
-        const serialized = [];
-        for (const item of input) {
-            serialized.push(serialize(item, transferables));
-        }
-        return serialized;
-    }
-    if (typeof input === 'object') {
-        const klass = input.constructor;
-        const name = klass._classRegistryKey;
-        if (!name) {
-            throw new Error(`can't serialize object of unregistered class ${klass.name}`);
-        }
-        if (!registry[name])
-            throw new Error(`${name} is not registered.`);
-        const properties = klass.serialize ?
-            // (Temporary workaround) allow a class to provide static
-            // `serialize()` and `deserialize()` methods to bypass the generic
-            // approach.
-            // This temporary workaround lets us use the generic serialization
-            // approach for objects whose members include instances of dynamic
-            // StructArray types. Once we refactor StructArray to be static,
-            // we can remove this complexity.
-            klass.serialize(input, transferables) : {};
-        if (!klass.serialize) {
-            for (const key in input) {
-                if (!input.hasOwnProperty(key))
-                    continue; // eslint-disable-line no-prototype-builtins
-                if (registry[name].omit.indexOf(key) >= 0)
-                    continue;
-                const property = input[key];
-                properties[key] = registry[name].shallow.indexOf(key) >= 0 ?
-                    property :
-                    serialize(property, transferables);
-            }
-            if (input instanceof Error) {
-                properties.message = input.message;
-            }
-        }
-        else {
-            if (transferables && properties === transferables[transferables.length - 1]) {
-                throw new Error('statically serialized object won\'t survive transfer of $name property');
-            }
-        }
-        if (properties.$name) {
-            throw new Error('$name property is reserved for worker serialization logic.');
-        }
-        if (name !== 'Object') {
-            properties.$name = name;
-        }
-        return properties;
-    }
-    throw new Error(`can't serialize object of type ${typeof input}`);
+function getClassRegistryKey(input) {
+    const klass = input.constructor;
+    return input.$name || klass._classRegistryKey;
 }
-function deserialize(input) {
-    if (input === null ||
+function isRegistered(input) {
+    if (input === null || typeof input !== 'object') {
+        return false;
+    }
+    const classRegistryKey = getClassRegistryKey(input);
+    if (classRegistryKey && classRegistryKey !== 'Object') {
+        return true;
+    }
+    return false;
+}
+function isSerializeHandledByBuiltin(input) {
+    return (!isRegistered(input) && (input === null ||
         input === undefined ||
         typeof input === 'boolean' ||
         typeof input === 'number' ||
@@ -12233,34 +13083,123 @@ function deserialize(input) {
         isArrayBuffer(input) ||
         isImageBitmap(input) ||
         ArrayBuffer.isView(input) ||
-        input instanceof ImageData) {
+        input instanceof ImageData));
+}
+/**
+ * Serialize the given object for transfer to or from a web worker.
+ *
+ * For non-builtin types, recursively serialize each property (possibly
+ * omitting certain properties - see register()), and package the result along
+ * with the constructor's `name` so that the appropriate constructor can be
+ * looked up in `deserialize()`.
+ *
+ * If a `transferables` array is provided, add any transferable objects (i.e.,
+ * any ArrayBuffers or ArrayBuffer views) to the list. (If a copy is needed,
+ * this should happen in the client code, before using serialize().)
+ */
+function serialize(input, transferables) {
+    if (isSerializeHandledByBuiltin(input)) {
+        if (isArrayBuffer(input) || isImageBitmap(input)) {
+            if (transferables) {
+                transferables.push(input);
+            }
+        }
+        if (ArrayBuffer.isView(input)) {
+            const view = input;
+            if (transferables) {
+                transferables.push(view.buffer);
+            }
+        }
+        if (input instanceof ImageData) {
+            if (transferables) {
+                transferables.push(input.data.buffer);
+            }
+        }
+        return input;
+    }
+    if (Array.isArray(input)) {
+        const serialized = [];
+        for (const item of input) {
+            serialized.push(serialize(item, transferables));
+        }
+        return serialized;
+    }
+    if (typeof input !== 'object') {
+        throw new Error(`can't serialize object of type ${typeof input}`);
+    }
+    const classRegistryKey = getClassRegistryKey(input);
+    if (!classRegistryKey) {
+        throw new Error(`can't serialize object of unregistered class ${input.constructor.name}`);
+    }
+    if (!registry[classRegistryKey])
+        throw new Error(`${classRegistryKey} is not registered.`);
+    const { klass } = registry[classRegistryKey];
+    const properties = klass.serialize ?
+        // (Temporary workaround) allow a class to provide static
+        // `serialize()` and `deserialize()` methods to bypass the generic
+        // approach.
+        // This temporary workaround lets us use the generic serialization
+        // approach for objects whose members include instances of dynamic
+        // StructArray types. Once we refactor StructArray to be static,
+        // we can remove this complexity.
+        klass.serialize(input, transferables) : {};
+    if (!klass.serialize) {
+        for (const key in input) {
+            if (!input.hasOwnProperty(key))
+                continue; // eslint-disable-line no-prototype-builtins
+            if (registry[classRegistryKey].omit.indexOf(key) >= 0)
+                continue;
+            const property = input[key];
+            properties[key] = registry[classRegistryKey].shallow.indexOf(key) >= 0 ?
+                property :
+                serialize(property, transferables);
+        }
+        if (input instanceof Error) {
+            properties.message = input.message;
+        }
+    }
+    else {
+        if (transferables && properties === transferables[transferables.length - 1]) {
+            throw new Error('statically serialized object won\'t survive transfer of $name property');
+        }
+    }
+    if (properties.$name) {
+        throw new Error('$name property is reserved for worker serialization logic.');
+    }
+    if (classRegistryKey !== 'Object') {
+        properties.$name = classRegistryKey;
+    }
+    return properties;
+}
+function deserialize(input) {
+    if (isSerializeHandledByBuiltin(input)) {
         return input;
     }
     if (Array.isArray(input)) {
         return input.map(deserialize);
     }
-    if (typeof input === 'object') {
-        const name = input.$name || 'Object';
-        if (!registry[name]) {
-            throw new Error(`can't deserialize unregistered class ${name}`);
-        }
-        const { klass } = registry[name];
-        if (!klass) {
-            throw new Error(`can't deserialize unregistered class ${name}`);
-        }
-        if (klass.deserialize) {
-            return klass.deserialize(input);
-        }
-        const result = Object.create(klass.prototype);
-        for (const key of Object.keys(input)) {
-            if (key === '$name')
-                continue;
-            const value = input[key];
-            result[key] = registry[name].shallow.indexOf(key) >= 0 ? value : deserialize(value);
-        }
-        return result;
+    if (typeof input !== 'object') {
+        throw new Error(`can't deserialize object of type ${typeof input}`);
     }
-    throw new Error(`can't deserialize object of type ${typeof input}`);
+    const classRegistryKey = getClassRegistryKey(input) || 'Object';
+    if (!registry[classRegistryKey]) {
+        throw new Error(`can't deserialize unregistered class ${classRegistryKey}`);
+    }
+    const { klass } = registry[classRegistryKey];
+    if (!klass) {
+        throw new Error(`can't deserialize unregistered class ${classRegistryKey}`);
+    }
+    if (klass.deserialize) {
+        return klass.deserialize(input);
+    }
+    const result = Object.create(klass.prototype);
+    for (const key of Object.keys(input)) {
+        if (key === '$name')
+            continue;
+        const value = input[key];
+        result[key] = registry[classRegistryKey].shallow.indexOf(key) >= 0 ? value : deserialize(value);
+    }
+    return result;
 }
 
 /**
@@ -12301,7 +13240,7 @@ class ThrottledInvoker {
 }
 
 /**
- * An implementation of the [Actor design pattern](http://en.wikipedia.org/wiki/Actor_model)
+ * An implementation of the [Actor design pattern](https://en.wikipedia.org/wiki/Actor_model)
  * that maintains the relationship between asynchronous tasks and the objects
  * that spin them off - in this case, tasks like parsing parts of styles,
  * owned by the styles
@@ -12366,7 +13305,7 @@ class Actor {
     receive(message) {
         const data = message.data;
         const id = data.id;
-        if (data.origin !== 'file://' && location.origin !== 'file://' && data.origin !== location.origin) {
+        if (data.origin !== 'file://' && location.origin !== 'file://' && data.origin !== 'resource://android' && location.origin !== 'resource://android' && data.origin !== location.origin) {
             return;
         }
         if (data.targetMapId && this.mapId !== data.targetMapId) {
@@ -12518,7 +13457,6 @@ class Evented {
      * @param listener - The function to be called when the event is fired.
      * The listener function is called with the data object passed to `fire`,
      * extended with `target` and `type` properties.
-     * @returns `this`
      */
     on(type, listener) {
         this._listeners = this._listeners || {};
@@ -12530,7 +13468,6 @@ class Evented {
      *
      * @param type - The event type to remove listeners for.
      * @param listener - The listener function to remove.
-     * @returns `this`
      */
     off(type, listener) {
         _removeEventListener(type, listener, this._listeners);
@@ -12600,7 +13537,6 @@ class Evented {
     }
     /**
      * Bubble all events fired by this instance of Evented to this parent instance of Evented.
-     * @returns `this`
      */
     setEventedParent(parent, data) {
         this._eventedParent = parent;
@@ -12612,6 +13548,7 @@ class Evented {
 const validateStyle = validateStyleMin;
 const validateSource = validateStyle.source;
 const validateLight = validateStyle.light;
+const validateSky = validateStyle.sky;
 const validateTerrain = validateStyle.terrain;
 const validateFilter = validateStyle.filter;
 const validatePaintProperty = validateStyle.paintProperty;
@@ -12658,8 +13595,8 @@ class ZoomHistory {
     }
 }
 
-// The following table comes from <http://www.unicode.org/Public/12.0.0/ucd/Blocks.txt>.
-// Keep it synchronized with <http://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt>.
+// The following table comes from <https://www.unicode.org/Public/16.0.0/ucd/Blocks.txt>.
+// Keep it synchronized with <https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt>.
 const unicodeBlockLookup = {
     // 'Basic Latin': (char) => char >= 0x0000 && char <= 0x007F,
     'Latin-1 Supplement': (char) => char >= 0x0080 && char <= 0x00FF,
@@ -12673,15 +13610,16 @@ const unicodeBlockLookup = {
     // 'Cyrillic Supplement': (char) => char >= 0x0500 && char <= 0x052F,
     // 'Armenian': (char) => char >= 0x0530 && char <= 0x058F,
     //'Hebrew': (char) => char >= 0x0590 && char <= 0x05FF,
-    'Arabic': (char) => char >= 0x0600 && char <= 0x06FF,
+    // 'Arabic': (char) => char >= 0x0600 && char <= 0x06FF,
     //'Syriac': (char) => char >= 0x0700 && char <= 0x074F,
-    'Arabic Supplement': (char) => char >= 0x0750 && char <= 0x077F,
+    // 'Arabic Supplement': (char) => char >= 0x0750 && char <= 0x077F,
     // 'Thaana': (char) => char >= 0x0780 && char <= 0x07BF,
     // 'NKo': (char) => char >= 0x07C0 && char <= 0x07FF,
     // 'Samaritan': (char) => char >= 0x0800 && char <= 0x083F,
     // 'Mandaic': (char) => char >= 0x0840 && char <= 0x085F,
     // 'Syriac Supplement': (char) => char >= 0x0860 && char <= 0x086F,
-    'Arabic Extended-A': (char) => char >= 0x08A0 && char <= 0x08FF,
+    // 'Arabic Extended-B': (char) => char >= 0x0870 && char <= 0x089F,
+    // 'Arabic Extended-A': (char) => char >= 0x08A0 && char <= 0x08FF,
     // 'Devanagari': (char) => char >= 0x0900 && char <= 0x097F,
     // 'Bengali': (char) => char >= 0x0980 && char <= 0x09FF,
     // 'Gurmukhi': (char) => char >= 0x0A00 && char <= 0x0A7F,
@@ -12701,7 +13639,7 @@ const unicodeBlockLookup = {
     // 'Ethiopic': (char) => char >= 0x1200 && char <= 0x137F,
     // 'Ethiopic Supplement': (char) => char >= 0x1380 && char <= 0x139F,
     // 'Cherokee': (char) => char >= 0x13A0 && char <= 0x13FF,
-    'Unified Canadian Aboriginal Syllabics': (char) => char >= 0x1400 && char <= 0x167F,
+    // 'Unified Canadian Aboriginal Syllabics': (char) => char >= 0x1400 && char <= 0x167F,
     // 'Ogham': (char) => char >= 0x1680 && char <= 0x169F,
     // 'Runic': (char) => char >= 0x16A0 && char <= 0x16FF,
     // 'Tagalog': (char) => char >= 0x1700 && char <= 0x171F,
@@ -12710,7 +13648,7 @@ const unicodeBlockLookup = {
     // 'Tagbanwa': (char) => char >= 0x1760 && char <= 0x177F,
     'Khmer': (char) => char >= 0x1780 && char <= 0x17FF,
     // 'Mongolian': (char) => char >= 0x1800 && char <= 0x18AF,
-    'Unified Canadian Aboriginal Syllabics Extended': (char) => char >= 0x18B0 && char <= 0x18FF,
+    // 'Unified Canadian Aboriginal Syllabics Extended': (char) => char >= 0x18B0 && char <= 0x18FF,
     // 'Limbu': (char) => char >= 0x1900 && char <= 0x194F,
     // 'Tai Le': (char) => char >= 0x1950 && char <= 0x197F,
     // 'New Tai Lue': (char) => char >= 0x1980 && char <= 0x19DF,
@@ -12764,25 +13702,25 @@ const unicodeBlockLookup = {
     // 'Ethiopic Extended': (char) => char >= 0x2D80 && char <= 0x2DDF,
     // 'Cyrillic Extended-A': (char) => char >= 0x2DE0 && char <= 0x2DFF,
     // 'Supplemental Punctuation': (char) => char >= 0x2E00 && char <= 0x2E7F,
-    'CJK Radicals Supplement': (char) => char >= 0x2E80 && char <= 0x2EFF,
-    'Kangxi Radicals': (char) => char >= 0x2F00 && char <= 0x2FDF,
+    // 'CJK Radicals Supplement': (char) => char >= 0x2E80 && char <= 0x2EFF,
+    // 'Kangxi Radicals': (char) => char >= 0x2F00 && char <= 0x2FDF,
     'Ideographic Description Characters': (char) => char >= 0x2FF0 && char <= 0x2FFF,
     'CJK Symbols and Punctuation': (char) => char >= 0x3000 && char <= 0x303F,
-    'Hiragana': (char) => char >= 0x3040 && char <= 0x309F,
+    // 'Hiragana': (char) => char >= 0x3040 && char <= 0x309F,
     'Katakana': (char) => char >= 0x30A0 && char <= 0x30FF,
-    'Bopomofo': (char) => char >= 0x3100 && char <= 0x312F,
-    'Hangul Compatibility Jamo': (char) => char >= 0x3130 && char <= 0x318F,
+    // 'Bopomofo': (char) => char >= 0x3100 && char <= 0x312F,
+    // 'Hangul Compatibility Jamo': (char) => char >= 0x3130 && char <= 0x318F,
     'Kanbun': (char) => char >= 0x3190 && char <= 0x319F,
-    'Bopomofo Extended': (char) => char >= 0x31A0 && char <= 0x31BF,
+    // 'Bopomofo Extended': (char) => char >= 0x31A0 && char <= 0x31BF,
     'CJK Strokes': (char) => char >= 0x31C0 && char <= 0x31EF,
-    'Katakana Phonetic Extensions': (char) => char >= 0x31F0 && char <= 0x31FF,
+    // 'Katakana Phonetic Extensions': (char) => char >= 0x31F0 && char <= 0x31FF,
     'Enclosed CJK Letters and Months': (char) => char >= 0x3200 && char <= 0x32FF,
     'CJK Compatibility': (char) => char >= 0x3300 && char <= 0x33FF,
-    'CJK Unified Ideographs Extension A': (char) => char >= 0x3400 && char <= 0x4DBF,
+    // 'CJK Unified Ideographs Extension A': (char) => char >= 0x3400 && char <= 0x4DBF,
     'Yijing Hexagram Symbols': (char) => char >= 0x4DC0 && char <= 0x4DFF,
-    'CJK Unified Ideographs': (char) => char >= 0x4E00 && char <= 0x9FFF,
-    'Yi Syllables': (char) => char >= 0xA000 && char <= 0xA48F,
-    'Yi Radicals': (char) => char >= 0xA490 && char <= 0xA4CF,
+    // 'CJK Unified Ideographs': (char) => char >= 0x4E00 && char <= 0x9FFF,
+    // 'Yi Syllables': (char) => char >= 0xA000 && char <= 0xA48F,
+    // 'Yi Radicals': (char) => char >= 0xA490 && char <= 0xA4CF,
     // 'Lisu': (char) => char >= 0xA4D0 && char <= 0xA4FF,
     // 'Vai': (char) => char >= 0xA500 && char <= 0xA63F,
     // 'Cyrillic Extended-B': (char) => char >= 0xA640 && char <= 0xA69F,
@@ -12796,7 +13734,7 @@ const unicodeBlockLookup = {
     // 'Devanagari Extended': (char) => char >= 0xA8E0 && char <= 0xA8FF,
     // 'Kayah Li': (char) => char >= 0xA900 && char <= 0xA92F,
     // 'Rejang': (char) => char >= 0xA930 && char <= 0xA95F,
-    'Hangul Jamo Extended-A': (char) => char >= 0xA960 && char <= 0xA97F,
+    // 'Hangul Jamo Extended-A': (char) => char >= 0xA960 && char <= 0xA97F,
     // 'Javanese': (char) => char >= 0xA980 && char <= 0xA9DF,
     // 'Myanmar Extended-B': (char) => char >= 0xA9E0 && char <= 0xA9FF,
     // 'Cham': (char) => char >= 0xAA00 && char <= 0xAA5F,
@@ -12807,21 +13745,21 @@ const unicodeBlockLookup = {
     // 'Latin Extended-E': (char) => char >= 0xAB30 && char <= 0xAB6F,
     // 'Cherokee Supplement': (char) => char >= 0xAB70 && char <= 0xABBF,
     // 'Meetei Mayek': (char) => char >= 0xABC0 && char <= 0xABFF,
-    'Hangul Syllables': (char) => char >= 0xAC00 && char <= 0xD7AF,
-    'Hangul Jamo Extended-B': (char) => char >= 0xD7B0 && char <= 0xD7FF,
+    // 'Hangul Syllables': (char) => char >= 0xAC00 && char <= 0xD7AF,
+    // 'Hangul Jamo Extended-B': (char) => char >= 0xD7B0 && char <= 0xD7FF,
     // 'High Surrogates': (char) => char >= 0xD800 && char <= 0xDB7F,
     // 'High Private Use Surrogates': (char) => char >= 0xDB80 && char <= 0xDBFF,
     // 'Low Surrogates': (char) => char >= 0xDC00 && char <= 0xDFFF,
     'Private Use Area': (char) => char >= 0xE000 && char <= 0xF8FF,
-    'CJK Compatibility Ideographs': (char) => char >= 0xF900 && char <= 0xFAFF,
+    // 'CJK Compatibility Ideographs': (char) => char >= 0xF900 && char <= 0xFAFF,
     // 'Alphabetic Presentation Forms': (char) => char >= 0xFB00 && char <= 0xFB4F,
-    'Arabic Presentation Forms-A': (char) => char >= 0xFB50 && char <= 0xFDFF,
+    // 'Arabic Presentation Forms-A': (char) => char >= 0xFB50 && char <= 0xFDFF,
     // 'Variation Selectors': (char) => char >= 0xFE00 && char <= 0xFE0F,
     'Vertical Forms': (char) => char >= 0xFE10 && char <= 0xFE1F,
     // 'Combining Half Marks': (char) => char >= 0xFE20 && char <= 0xFE2F,
     'CJK Compatibility Forms': (char) => char >= 0xFE30 && char <= 0xFE4F,
     'Small Form Variants': (char) => char >= 0xFE50 && char <= 0xFE6F,
-    'Arabic Presentation Forms-B': (char) => char >= 0xFE70 && char <= 0xFEFF,
+    // 'Arabic Presentation Forms-B': (char) => char >= 0xFE70 && char <= 0xFEFF,
     'Halfwidth and Fullwidth Forms': (char) => char >= 0xFF00 && char <= 0xFFEF
     // 'Specials': (char) => char >= 0xFFF0 && char <= 0xFFFF,
     // 'Linear B Syllabary': (char) => char >= 0x10000 && char <= 0x1007F,
@@ -12844,7 +13782,10 @@ const unicodeBlockLookup = {
     // 'Osage': (char) => char >= 0x104B0 && char <= 0x104FF,
     // 'Elbasan': (char) => char >= 0x10500 && char <= 0x1052F,
     // 'Caucasian Albanian': (char) => char >= 0x10530 && char <= 0x1056F,
+    // 'Vithkuqi': (char) => char >= 0x10570 && char <= 0x105BF,
+    // 'Todhri': (char) => char >= 0x105C0 && char <= 0x105FF,
     // 'Linear A': (char) => char >= 0x10600 && char <= 0x1077F,
+    // 'Latin Extended-F': (char) => char >= 0x10780 && char <= 0x107BF,
     // 'Cypriot Syllabary': (char) => char >= 0x10800 && char <= 0x1083F,
     // 'Imperial Aramaic': (char) => char >= 0x10840 && char <= 0x1085F,
     // 'Palmyrene': (char) => char >= 0x10860 && char <= 0x1087F,
@@ -12865,9 +13806,14 @@ const unicodeBlockLookup = {
     // 'Old Turkic': (char) => char >= 0x10C00 && char <= 0x10C4F,
     // 'Old Hungarian': (char) => char >= 0x10C80 && char <= 0x10CFF,
     // 'Hanifi Rohingya': (char) => char >= 0x10D00 && char <= 0x10D3F,
+    // 'Garay': (char) => char >= 0x10D40 && char <= 0x10D8F,
     // 'Rumi Numeral Symbols': (char) => char >= 0x10E60 && char <= 0x10E7F,
+    // 'Yezidi': (char) => char >= 0x10E80 && char <= 0x10EBF,
+    // 'Arabic Extended-C': (char) => char >= 0x10EC0 && char <= 0x10EFF,
     // 'Old Sogdian': (char) => char >= 0x10F00 && char <= 0x10F2F,
     // 'Sogdian': (char) => char >= 0x10F30 && char <= 0x10F6F,
+    // 'Old Uyghur': (char) => char >= 0x10F70 && char <= 0x10FAF,
+    // 'Chorasmian': (char) => char >= 0x10FB0 && char <= 0x10FDF,
     // 'Elymaic': (char) => char >= 0x10FE0 && char <= 0x10FFF,
     // 'Brahmi': (char) => char >= 0x11000 && char <= 0x1107F,
     // 'Kaithi': (char) => char >= 0x11080 && char <= 0x110CF,
@@ -12880,57 +13826,82 @@ const unicodeBlockLookup = {
     // 'Multani': (char) => char >= 0x11280 && char <= 0x112AF,
     // 'Khudawadi': (char) => char >= 0x112B0 && char <= 0x112FF,
     // 'Grantha': (char) => char >= 0x11300 && char <= 0x1137F,
+    // 'Tulu-Tigalari': (char) => char >= 0x11380 && char <= 0x113FF,
     // 'Newa': (char) => char >= 0x11400 && char <= 0x1147F,
     // 'Tirhuta': (char) => char >= 0x11480 && char <= 0x114DF,
     // 'Siddham': (char) => char >= 0x11580 && char <= 0x115FF,
     // 'Modi': (char) => char >= 0x11600 && char <= 0x1165F,
     // 'Mongolian Supplement': (char) => char >= 0x11660 && char <= 0x1167F,
     // 'Takri': (char) => char >= 0x11680 && char <= 0x116CF,
-    // 'Ahom': (char) => char >= 0x11700 && char <= 0x1173F,
+    // 'Myanmar Extended-C': (char) => char >= 0x116D0 && char <= 0x116FF,
+    // 'Ahom': (char) => char >= 0x11700 && char <= 0x1174F,
     // 'Dogra': (char) => char >= 0x11800 && char <= 0x1184F,
     // 'Warang Citi': (char) => char >= 0x118A0 && char <= 0x118FF,
+    // 'Dives Akuru': (char) => char >= 0x11900 && char <= 0x1195F,
     // 'Nandinagari': (char) => char >= 0x119A0 && char <= 0x119FF,
     // 'Zanabazar Square': (char) => char >= 0x11A00 && char <= 0x11A4F,
     // 'Soyombo': (char) => char >= 0x11A50 && char <= 0x11AAF,
+    // 'Unified Canadian Aboriginal Syllabics Extended-A': (char) => char >= 0x11AB0 && char <= 0x11ABF,
     // 'Pau Cin Hau': (char) => char >= 0x11AC0 && char <= 0x11AFF,
+    // 'Devanagari Extended-A': (char) => char >= 0x11B00 && char <= 0x11B5F,
+    // 'Sunuwar': (char) => char >= 0x11BC0 && char <= 0x11BFF,
     // 'Bhaiksuki': (char) => char >= 0x11C00 && char <= 0x11C6F,
     // 'Marchen': (char) => char >= 0x11C70 && char <= 0x11CBF,
     // 'Masaram Gondi': (char) => char >= 0x11D00 && char <= 0x11D5F,
     // 'Gunjala Gondi': (char) => char >= 0x11D60 && char <= 0x11DAF,
     // 'Makasar': (char) => char >= 0x11EE0 && char <= 0x11EFF,
+    // 'Kawi': (char) => char >= 0x11F00 && char <= 0x11F5F,
+    // 'Lisu Supplement': (char) => char >= 0x11FB0 && char <= 0x11FBF,
     // 'Tamil Supplement': (char) => char >= 0x11FC0 && char <= 0x11FFF,
     // 'Cuneiform': (char) => char >= 0x12000 && char <= 0x123FF,
     // 'Cuneiform Numbers and Punctuation': (char) => char >= 0x12400 && char <= 0x1247F,
     // 'Early Dynastic Cuneiform': (char) => char >= 0x12480 && char <= 0x1254F,
+    // 'Cypro-Minoan': (char) => char >= 0x12F90 && char <= 0x12FFF,
     // 'Egyptian Hieroglyphs': (char) => char >= 0x13000 && char <= 0x1342F,
-    // 'Egyptian Hieroglyph Format Controls': (char) => char >= 0x13430 && char <= 0x1343F,
+    // 'Egyptian Hieroglyph Format Controls': (char) => char >= 0x13430 && char <= 0x1345F,
+    // 'Egyptian Hieroglyphs Extended-A': (char) => char >= 0x13460 && char <= 0x143FF,
     // 'Anatolian Hieroglyphs': (char) => char >= 0x14400 && char <= 0x1467F,
+    // 'Gurung Khema': (char) => char >= 0x16100 && char <= 0x1613F,
     // 'Bamum Supplement': (char) => char >= 0x16800 && char <= 0x16A3F,
     // 'Mro': (char) => char >= 0x16A40 && char <= 0x16A6F,
+    // 'Tangsa': (char) => char >= 0x16A70 && char <= 0x16ACF,
     // 'Bassa Vah': (char) => char >= 0x16AD0 && char <= 0x16AFF,
     // 'Pahawh Hmong': (char) => char >= 0x16B00 && char <= 0x16B8F,
+    // 'Kirat Rai': (char) => char >= 0x16D40 && char <= 0x16D7F,
     // 'Medefaidrin': (char) => char >= 0x16E40 && char <= 0x16E9F,
     // 'Miao': (char) => char >= 0x16F00 && char <= 0x16F9F,
     // 'Ideographic Symbols and Punctuation': (char) => char >= 0x16FE0 && char <= 0x16FFF,
     // 'Tangut': (char) => char >= 0x17000 && char <= 0x187FF,
     // 'Tangut Components': (char) => char >= 0x18800 && char <= 0x18AFF,
+    // 'Khitan Small Script': (char) => char >= 0x18B00 && char <= 0x18CFF,
+    // 'Tangut Supplement': (char) => char >= 0x18D00 && char <= 0x18D7F,
+    // 'Kana Extended-B': (char) => char >= 0x1AFF0 && char <= 0x1AFFF,
     // 'Kana Supplement': (char) => char >= 0x1B000 && char <= 0x1B0FF,
     // 'Kana Extended-A': (char) => char >= 0x1B100 && char <= 0x1B12F,
     // 'Small Kana Extension': (char) => char >= 0x1B130 && char <= 0x1B16F,
     // 'Nushu': (char) => char >= 0x1B170 && char <= 0x1B2FF,
     // 'Duployan': (char) => char >= 0x1BC00 && char <= 0x1BC9F,
     // 'Shorthand Format Controls': (char) => char >= 0x1BCA0 && char <= 0x1BCAF,
+    // 'Symbols for Legacy Computing Supplement': (char) => char >= 0x1CC00 && char <= 0x1CEBF,
+    // 'Znamenny Musical Notation': (char) => char >= 0x1CF00 && char <= 0x1CFCF,
     // 'Byzantine Musical Symbols': (char) => char >= 0x1D000 && char <= 0x1D0FF,
     // 'Musical Symbols': (char) => char >= 0x1D100 && char <= 0x1D1FF,
     // 'Ancient Greek Musical Notation': (char) => char >= 0x1D200 && char <= 0x1D24F,
+    // 'Kaktovik Numerals': (char) => char >= 0x1D2C0 && char <= 0x1D2DF,
     // 'Mayan Numerals': (char) => char >= 0x1D2E0 && char <= 0x1D2FF,
     // 'Tai Xuan Jing Symbols': (char) => char >= 0x1D300 && char <= 0x1D35F,
     // 'Counting Rod Numerals': (char) => char >= 0x1D360 && char <= 0x1D37F,
     // 'Mathematical Alphanumeric Symbols': (char) => char >= 0x1D400 && char <= 0x1D7FF,
     // 'Sutton SignWriting': (char) => char >= 0x1D800 && char <= 0x1DAAF,
+    // 'Latin Extended-G': (char) => char >= 0x1DF00 && char <= 0x1DFFF,
     // 'Glagolitic Supplement': (char) => char >= 0x1E000 && char <= 0x1E02F,
+    // 'Cyrillic Extended-D': (char) => char >= 0x1E030 && char <= 0x1E08F,
     // 'Nyiakeng Puachue Hmong': (char) => char >= 0x1E100 && char <= 0x1E14F,
+    // 'Toto': (char) => char >= 0x1E290 && char <= 0x1E2BF,
     // 'Wancho': (char) => char >= 0x1E2C0 && char <= 0x1E2FF,
+    // 'Nag Mundari': (char) => char >= 0x1E4D0 && char <= 0x1E4FF,
+    // 'Ol Onal': (char) => char >= 0x1E5D0 && char <= 0x1E5FF,
+    // 'Ethiopic Extended-B': (char) => char >= 0x1E7E0 && char <= 0x1E7FF,
     // 'Mende Kikakui': (char) => char >= 0x1E800 && char <= 0x1E8DF,
     // 'Adlam': (char) => char >= 0x1E900 && char <= 0x1E95F,
     // 'Indic Siyaq Numbers': (char) => char >= 0x1EC70 && char <= 0x1ECBF,
@@ -12951,11 +13922,15 @@ const unicodeBlockLookup = {
     // 'Supplemental Symbols and Pictographs': (char) => char >= 0x1F900 && char <= 0x1F9FF,
     // 'Chess Symbols': (char) => char >= 0x1FA00 && char <= 0x1FA6F,
     // 'Symbols and Pictographs Extended-A': (char) => char >= 0x1FA70 && char <= 0x1FAFF,
+    // 'Symbols for Legacy Computing': (char) => char >= 0x1FB00 && char <= 0x1FBFF,
     // 'CJK Unified Ideographs Extension B': (char) => char >= 0x20000 && char <= 0x2A6DF,
     // 'CJK Unified Ideographs Extension C': (char) => char >= 0x2A700 && char <= 0x2B73F,
     // 'CJK Unified Ideographs Extension D': (char) => char >= 0x2B740 && char <= 0x2B81F,
     // 'CJK Unified Ideographs Extension E': (char) => char >= 0x2B820 && char <= 0x2CEAF,
     // 'CJK Unified Ideographs Extension F': (char) => char >= 0x2CEB0 && char <= 0x2EBEF,
+    // 'CJK Unified Ideographs Extension I': (char) => char >= 0x2EBF0 && char <= 0x2EE5F,
+    // 'CJK Unified Ideographs Extension G': (char) => char >= 0x30000 && char <= 0x3134F,
+    // 'CJK Unified Ideographs Extension H': (char) => char >= 0x31350 && char <= 0x323AF,
     // 'CJK Compatibility Ideographs Supplement': (char) => char >= 0x2F800 && char <= 0x2FA1F,
     // 'Tags': (char) => char >= 0xE0000 && char <= 0xE007F,
     // 'Variation Selectors Supplement': (char) => char >= 0xE0100 && char <= 0xE01EF,
@@ -12985,69 +13960,79 @@ function allowsLetterSpacing(chars) {
     }
     return true;
 }
-function charAllowsLetterSpacing(char) {
-    if (unicodeBlockLookup['Arabic'](char))
-        return false;
-    if (unicodeBlockLookup['Arabic Supplement'](char))
-        return false;
-    if (unicodeBlockLookup['Arabic Extended-A'](char))
-        return false;
-    if (unicodeBlockLookup['Arabic Presentation Forms-A'](char))
-        return false;
-    if (unicodeBlockLookup['Arabic Presentation Forms-B'](char))
-        return false;
-    return true;
+/**
+ * Returns a regular expression matching the given script codes, excluding any
+ * code that the execution environment lacks support for in regular expressions.
+ */
+function sanitizedRegExpFromScriptCodes(scriptCodes) {
+    const supportedPropertyEscapes = scriptCodes.map(code => {
+        try {
+            return new RegExp(`\\p{sc=${code}}`, 'u').source;
+        }
+        catch (e) {
+            return null;
+        }
+    }).filter(pe => pe);
+    return new RegExp(supportedPropertyEscapes.join('|'), 'u');
 }
+/**
+ * ISO 15924 script codes of scripts that disallow letter spacing as of Unicode
+ * 16.0.0.
+ *
+ * In general, cursive scripts are incompatible with letter spacing.
+ */
+const cursiveScriptCodes = [
+    'Arab', // Arabic
+    'Dupl', // Duployan
+    'Mong', // Mongolian
+    'Ougr', // Old Uyghur
+    'Syrc', // Syriac
+];
+const cursiveScriptRegExp = sanitizedRegExpFromScriptCodes(cursiveScriptCodes);
+function charAllowsLetterSpacing(char) {
+    return !cursiveScriptRegExp.test(String.fromCodePoint(char));
+}
+/**
+ * ISO 15924 script codes of scripts that allow ideographic line breaking beyond
+ * the CJKV scripts that are considered ideographic in Unicode 16.0.0.
+ */
+const ideographicBreakingScriptCodes = [
+    'Bopo', // Bopomofo
+    'Hani', // Han
+    'Hira', // Hiragana
+    'Kana', // Katakana
+    'Kits', // Khitan Small Script
+    'Nshu', // Nushu
+    'Tang', // Tangut
+    'Yiii', // Yi
+];
+const ideographicBreakingRegExp = sanitizedRegExpFromScriptCodes(ideographicBreakingScriptCodes);
 function charAllowsIdeographicBreaking(char) {
     // Return early for characters outside all ideographic ranges.
     if (char < 0x2E80)
         return false;
-    if (unicodeBlockLookup['Bopomofo Extended'](char))
-        return true;
-    if (unicodeBlockLookup['Bopomofo'](char))
-        return true;
     if (unicodeBlockLookup['CJK Compatibility Forms'](char))
         return true;
-    if (unicodeBlockLookup['CJK Compatibility Ideographs'](char))
-        return true;
     if (unicodeBlockLookup['CJK Compatibility'](char))
-        return true;
-    if (unicodeBlockLookup['CJK Radicals Supplement'](char))
         return true;
     if (unicodeBlockLookup['CJK Strokes'](char))
         return true;
     if (unicodeBlockLookup['CJK Symbols and Punctuation'](char))
         return true;
-    if (unicodeBlockLookup['CJK Unified Ideographs Extension A'](char))
-        return true;
-    if (unicodeBlockLookup['CJK Unified Ideographs'](char))
-        return true;
     if (unicodeBlockLookup['Enclosed CJK Letters and Months'](char))
         return true;
     if (unicodeBlockLookup['Halfwidth and Fullwidth Forms'](char))
         return true;
-    if (unicodeBlockLookup['Hiragana'](char))
-        return true;
     if (unicodeBlockLookup['Ideographic Description Characters'](char))
-        return true;
-    if (unicodeBlockLookup['Kangxi Radicals'](char))
-        return true;
-    if (unicodeBlockLookup['Katakana Phonetic Extensions'](char))
-        return true;
-    if (unicodeBlockLookup['Katakana'](char))
         return true;
     if (unicodeBlockLookup['Vertical Forms'](char))
         return true;
-    if (unicodeBlockLookup['Yi Radicals'](char))
-        return true;
-    if (unicodeBlockLookup['Yi Syllables'](char))
-        return true;
-    return false;
+    return ideographicBreakingRegExp.test(String.fromCodePoint(char));
 }
 // The following logic comes from
-// <http://www.unicode.org/Public/12.0.0/ucd/VerticalOrientation.txt>.
+// <https://www.unicode.org/Public/16.0.0/ucd/VerticalOrientation.txt>.
 // Keep it synchronized with
-// <http://www.unicode.org/Public/UCD/latest/ucd/VerticalOrientation.txt>.
+// <https://www.unicode.org/Public/UCD/latest/ucd/VerticalOrientation.txt>.
 // The data file denotes with “U” or “Tu” any codepoint that may be drawn
 // upright in vertical text but does not distinguish between upright and
 // “neutral” characters.
@@ -13072,20 +14057,12 @@ function charHasUprightVerticalOrientation(char) {
     // upright in vertical writing mode.
     if (char < 0x1100)
         return false;
-    if (unicodeBlockLookup['Bopomofo Extended'](char))
-        return true;
-    if (unicodeBlockLookup['Bopomofo'](char))
-        return true;
     if (unicodeBlockLookup['CJK Compatibility Forms'](char)) {
         if (!((char >= 0xFE49 /* dashed overline */ && char <= 0xFE4F) /* wavy low line */)) {
             return true;
         }
     }
-    if (unicodeBlockLookup['CJK Compatibility Ideographs'](char))
-        return true;
     if (unicodeBlockLookup['CJK Compatibility'](char))
-        return true;
-    if (unicodeBlockLookup['CJK Radicals Supplement'](char))
         return true;
     if (unicodeBlockLookup['CJK Strokes'](char))
         return true;
@@ -13096,31 +14073,11 @@ function charHasUprightVerticalOrientation(char) {
             return true;
         }
     }
-    if (unicodeBlockLookup['CJK Unified Ideographs Extension A'](char))
-        return true;
-    if (unicodeBlockLookup['CJK Unified Ideographs'](char))
-        return true;
     if (unicodeBlockLookup['Enclosed CJK Letters and Months'](char))
-        return true;
-    if (unicodeBlockLookup['Hangul Compatibility Jamo'](char))
-        return true;
-    if (unicodeBlockLookup['Hangul Jamo Extended-A'](char))
-        return true;
-    if (unicodeBlockLookup['Hangul Jamo Extended-B'](char))
-        return true;
-    if (unicodeBlockLookup['Hangul Jamo'](char))
-        return true;
-    if (unicodeBlockLookup['Hangul Syllables'](char))
-        return true;
-    if (unicodeBlockLookup['Hiragana'](char))
         return true;
     if (unicodeBlockLookup['Ideographic Description Characters'](char))
         return true;
     if (unicodeBlockLookup['Kanbun'](char))
-        return true;
-    if (unicodeBlockLookup['Kangxi Radicals'](char))
-        return true;
-    if (unicodeBlockLookup['Katakana Phonetic Extensions'](char))
         return true;
     if (unicodeBlockLookup['Katakana'](char)) {
         if (char !== 0x30FC /* katakana-hiragana prolonged sound mark */) {
@@ -13147,17 +14104,15 @@ function charHasUprightVerticalOrientation(char) {
             return true;
         }
     }
-    if (unicodeBlockLookup['Unified Canadian Aboriginal Syllabics'](char))
-        return true;
-    if (unicodeBlockLookup['Unified Canadian Aboriginal Syllabics Extended'](char))
-        return true;
     if (unicodeBlockLookup['Vertical Forms'](char))
         return true;
     if (unicodeBlockLookup['Yijing Hexagram Symbols'](char))
         return true;
-    if (unicodeBlockLookup['Yi Syllables'](char))
+    if ( /* Canadian Aboriginal *//\p{sc=Cans}/u.test(String.fromCodePoint(char)))
         return true;
-    if (unicodeBlockLookup['Yi Radicals'](char))
+    if ( /* Hangul *//\p{sc=Hang}/u.test(String.fromCodePoint(char)))
+        return true;
+    if (ideographicBreakingRegExp.test(String.fromCodePoint(char)))
         return true;
     return false;
 }
@@ -13167,7 +14122,7 @@ function charHasUprightVerticalOrientation(char) {
  *
  * A character has neutral orientation if it may be drawn rotated or unrotated
  * when the line is oriented vertically, depending on the orientation of the
- * adjacent characters. For example, along a verticlly oriented line, the vulgar
+ * adjacent characters. For example, along a vertically oriented line, the vulgar
  * fraction ½ is drawn upright among Chinese characters but rotated among Latin
  * letters. A neutrally oriented character does not influence whether an
  * adjacent character is drawn upright or rotated.
@@ -13276,17 +14231,53 @@ function charHasRotatedVerticalOrientation(char) {
         charHasNeutralVerticalOrientation(char));
 }
 function charInComplexShapingScript(char) {
-    return unicodeBlockLookup['Arabic'](char) ||
-        unicodeBlockLookup['Arabic Supplement'](char) ||
-        unicodeBlockLookup['Arabic Extended-A'](char) ||
-        unicodeBlockLookup['Arabic Presentation Forms-A'](char) ||
-        unicodeBlockLookup['Arabic Presentation Forms-B'](char);
+    return /\p{sc=Arab}/u.test(String.fromCodePoint(char));
 }
+/**
+ * ISO 15924 script codes of scripts that are primarily written horizontally
+ * right-to-left according to Unicode 16.0.0.
+ */
+const rtlScriptCodes = [
+    'Adlm', // Adlam
+    'Arab', // Arabic
+    'Armi', // Imperial Aramaic
+    'Avst', // Avestan
+    'Chrs', // Chorasmian
+    'Cprt', // Cypriot
+    'Egyp', // Egyptian Hieroglyphs
+    'Elym', // Elymaic
+    'Gara', // Garay
+    'Hatr', // Hatran
+    'Hebr', // Hebrew
+    'Hung', // Old Hungarian
+    'Khar', // Kharoshthi
+    'Lydi', // Lydian
+    'Mand', // Mandaic
+    'Mani', // Manichaean
+    'Mend', // Mende Kikakui
+    'Merc', // Meroitic Cursive
+    'Mero', // Meroitic Hieroglyphs
+    'Narb', // Old North Arabian
+    'Nbat', // Nabataean
+    'Nkoo', // NKo
+    'Orkh', // Old Turkic
+    'Palm', // Palmyrene
+    'Phli', // Inscriptional Pahlavi
+    'Phlp', // Psalter Pahlavi
+    'Phnx', // Phoenician
+    'Prti', // Inscriptional Parthian
+    'Rohg', // Hanifi Rohingya
+    'Samr', // Samaritan
+    'Sarb', // Old South Arabian
+    'Sogo', // Old Sogdian
+    'Syrc', // Syriac
+    'Thaa', // Thaana
+    'Todr', // Todhri
+    'Yezi', // Yezidi
+];
+const rtlScriptRegExp = sanitizedRegExpFromScriptCodes(rtlScriptCodes);
 function charInRTLScript(char) {
-    // Main blocks for Hebrew, Arabic, Thaana and other RTL scripts
-    return (char >= 0x0590 && char <= 0x08FF) ||
-        unicodeBlockLookup['Arabic Presentation Forms-A'](char) ||
-        unicodeBlockLookup['Arabic Presentation Forms-B'](char);
+    return rtlScriptRegExp.test(String.fromCodePoint(char));
 }
 function charInSupportedScript(char, canRenderRTL) {
     // This is a rough heuristic: whether we "can render" a script
@@ -13305,7 +14296,7 @@ function charInSupportedScript(char, canRenderRTL) {
         unicodeBlockLookup['Khmer'](char)) {
         // These blocks cover common scripts that require
         // complex text shaping, based on unicode script metadata:
-        // http://www.unicode.org/repos/cldr/trunk/common/properties/scriptMetadata.txt
+        // https://www.unicode.org/repos/cldr/trunk/common/properties/scriptMetadata.txt
         // where "Web Rank <= 32" "Shaping Required = YES"
         return false;
     }
@@ -13339,6 +14330,12 @@ class RTLWorkerPlugin {
     setState(state) {
         this.pluginStatus = state.pluginStatus;
         this.pluginURL = state.pluginURL;
+    }
+    getState() {
+        return {
+            pluginStatus: this.pluginStatus,
+            pluginURL: this.pluginURL
+        };
     }
     setMethods(rtlTextPlugin) {
         this.applyArabicShaping = rtlTextPlugin.applyArabicShaping;
@@ -14117,7 +15114,7 @@ const RESIZE_MULTIPLIER = 5;
  * we implement a more specific subclass that inherits from one of the
  * StructArrayLayouts and adds a `get(i): T` accessor that returns a structured
  * object whose properties are proxies into the underlying memory space for the
- * i-th element.  This affords the convience of working with (seemingly) plain
+ * i-th element.  This affords the convenience of working with (seemingly) plain
  * Javascript objects without the overhead of serializing/deserializing them
  * into ArrayBuffers for efficient web worker transfer.
  */
@@ -14162,7 +15159,7 @@ class StructArray {
         }
     }
     /**
-     * Resets the length of the array to 0 without de-allocating capcacity.
+     * Resets the length of the array to 0 without de-allocating capacity.
      */
     clear() {
         this.length = 0;
@@ -14239,7 +15236,7 @@ function align$1(offset, size) {
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[2]
+ * [0] - Int16[2]
  *
  */
 class StructArrayLayout2i4 extends StructArray {
@@ -14264,7 +15261,7 @@ register('StructArrayLayout2i4', StructArrayLayout2i4);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[3]
+ * [0] - Int16[3]
  *
  */
 class StructArrayLayout3i6 extends StructArray {
@@ -14290,7 +15287,7 @@ register('StructArrayLayout3i6', StructArrayLayout3i6);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[4]
+ * [0] - Int16[4]
  *
  */
 class StructArrayLayout4i8 extends StructArray {
@@ -14317,8 +15314,8 @@ register('StructArrayLayout4i8', StructArrayLayout4i8);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[2]
- * [4]: Int16[4]
+ * [0] - Int16[2]
+ * [4] - Int16[4]
  *
  */
 class StructArrayLayout2i4i12 extends StructArray {
@@ -14347,8 +15344,8 @@ register('StructArrayLayout2i4i12', StructArrayLayout2i4i12);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[2]
- * [4]: Uint8[4]
+ * [0] - Int16[2]
+ * [4] - Uint8[4]
  *
  */
 class StructArrayLayout2i4ub8 extends StructArray {
@@ -14378,7 +15375,7 @@ register('StructArrayLayout2i4ub8', StructArrayLayout2i4ub8);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Float32[2]
+ * [0] - Float32[2]
  *
  */
 class StructArrayLayout2f8 extends StructArray {
@@ -14403,7 +15400,7 @@ register('StructArrayLayout2f8', StructArrayLayout2f8);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Uint16[10]
+ * [0] - Uint16[10]
  *
  */
 class StructArrayLayout10ui20 extends StructArray {
@@ -14436,9 +15433,9 @@ register('StructArrayLayout10ui20', StructArrayLayout10ui20);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[4]
- * [8]: Uint16[4]
- * [16]: Int16[4]
+ * [0] - Int16[4]
+ * [8] - Uint16[4]
+ * [16] - Int16[4]
  *
  */
 class StructArrayLayout4i4ui4i24 extends StructArray {
@@ -14474,7 +15471,7 @@ register('StructArrayLayout4i4ui4i24', StructArrayLayout4i4ui4i24);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Float32[3]
+ * [0] - Float32[3]
  *
  */
 class StructArrayLayout3f12 extends StructArray {
@@ -14500,7 +15497,7 @@ register('StructArrayLayout3f12', StructArrayLayout3f12);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Uint32[1]
+ * [0] - Uint32[1]
  *
  */
 class StructArrayLayout1ul4 extends StructArray {
@@ -14524,9 +15521,9 @@ register('StructArrayLayout1ul4', StructArrayLayout1ul4);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[6]
- * [12]: Uint32[1]
- * [16]: Uint16[2]
+ * [0] - Int16[6]
+ * [12] - Uint32[1]
+ * [16] - Uint16[2]
  *
  */
 class StructArrayLayout6i1ul2ui20 extends StructArray {
@@ -14561,9 +15558,9 @@ register('StructArrayLayout6i1ul2ui20', StructArrayLayout6i1ul2ui20);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[2]
- * [4]: Int16[2]
- * [8]: Int16[2]
+ * [0] - Int16[2]
+ * [4] - Int16[2]
+ * [8] - Int16[2]
  *
  */
 class StructArrayLayout2i2i2i12 extends StructArray {
@@ -14592,9 +15589,9 @@ register('StructArrayLayout2i2i2i12', StructArrayLayout2i2i2i12);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Float32[2]
- * [8]: Float32[1]
- * [12]: Int16[2]
+ * [0] - Float32[2]
+ * [8] - Float32[1]
+ * [12] - Int16[2]
  *
  */
 class StructArrayLayout2f1f2i16 extends StructArray {
@@ -14624,36 +15621,41 @@ register('StructArrayLayout2f1f2i16', StructArrayLayout2f1f2i16);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Uint8[2]
- * [4]: Float32[2]
+ * [0] - Uint8[2]
+ * [4] - Float32[2]
+ * [12] - Int16[2]
  *
  */
-class StructArrayLayout2ub2f12 extends StructArray {
+class StructArrayLayout2ub2f2i16 extends StructArray {
     _refreshViews() {
         this.uint8 = new Uint8Array(this.arrayBuffer);
         this.float32 = new Float32Array(this.arrayBuffer);
+        this.int16 = new Int16Array(this.arrayBuffer);
     }
-    emplaceBack(v0, v1, v2, v3) {
+    emplaceBack(v0, v1, v2, v3, v4, v5) {
         const i = this.length;
         this.resize(i + 1);
-        return this.emplace(i, v0, v1, v2, v3);
+        return this.emplace(i, v0, v1, v2, v3, v4, v5);
     }
-    emplace(i, v0, v1, v2, v3) {
-        const o1 = i * 12;
-        const o4 = i * 3;
+    emplace(i, v0, v1, v2, v3, v4, v5) {
+        const o1 = i * 16;
+        const o4 = i * 4;
+        const o2 = i * 8;
         this.uint8[o1 + 0] = v0;
         this.uint8[o1 + 1] = v1;
         this.float32[o4 + 1] = v2;
         this.float32[o4 + 2] = v3;
+        this.int16[o2 + 6] = v4;
+        this.int16[o2 + 7] = v5;
         return i;
     }
 }
-StructArrayLayout2ub2f12.prototype.bytesPerElement = 12;
-register('StructArrayLayout2ub2f12', StructArrayLayout2ub2f12);
+StructArrayLayout2ub2f2i16.prototype.bytesPerElement = 16;
+register('StructArrayLayout2ub2f2i16', StructArrayLayout2ub2f2i16);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Uint16[3]
+ * [0] - Uint16[3]
  *
  */
 class StructArrayLayout3ui6 extends StructArray {
@@ -14679,14 +15681,14 @@ register('StructArrayLayout3ui6', StructArrayLayout3ui6);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[2]
- * [4]: Uint16[2]
- * [8]: Uint32[3]
- * [20]: Uint16[3]
- * [28]: Float32[2]
- * [36]: Uint8[3]
- * [40]: Uint32[1]
- * [44]: Int16[1]
+ * [0] - Int16[2]
+ * [4] - Uint16[2]
+ * [8] - Uint32[3]
+ * [20] - Uint16[3]
+ * [28] - Float32[2]
+ * [36] - Uint8[3]
+ * [40] - Uint32[1]
+ * [44] - Int16[1]
  *
  */
 class StructArrayLayout2i2ui3ul3ui2f3ub1ul1i48 extends StructArray {
@@ -14731,11 +15733,11 @@ register('StructArrayLayout2i2ui3ul3ui2f3ub1ul1i48', StructArrayLayout2i2ui3ul3u
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Int16[8]
- * [16]: Uint16[15]
- * [48]: Uint32[1]
- * [52]: Float32[2]
- * [60]: Uint16[2]
+ * [0] - Int16[8]
+ * [16] - Uint16[15]
+ * [48] - Uint32[1]
+ * [52] - Float32[2]
+ * [60] - Uint16[2]
  *
  */
 class StructArrayLayout8i15ui1ul2f2ui64 extends StructArray {
@@ -14790,7 +15792,7 @@ register('StructArrayLayout8i15ui1ul2f2ui64', StructArrayLayout8i15ui1ul2f2ui64)
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Float32[1]
+ * [0] - Float32[1]
  *
  */
 class StructArrayLayout1f4 extends StructArray {
@@ -14814,8 +15816,8 @@ register('StructArrayLayout1f4', StructArrayLayout1f4);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Uint16[1]
- * [4]: Float32[2]
+ * [0] - Uint16[1]
+ * [4] - Float32[2]
  *
  */
 class StructArrayLayout1ui2f12 extends StructArray {
@@ -14843,8 +15845,8 @@ register('StructArrayLayout1ui2f12', StructArrayLayout1ui2f12);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Uint32[1]
- * [4]: Uint16[2]
+ * [0] - Uint32[1]
+ * [4] - Uint16[2]
  *
  */
 class StructArrayLayout1ul2ui8 extends StructArray {
@@ -14872,7 +15874,7 @@ register('StructArrayLayout1ul2ui8', StructArrayLayout1ul2ui8);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Uint16[2]
+ * [0] - Uint16[2]
  *
  */
 class StructArrayLayout2ui4 extends StructArray {
@@ -14897,7 +15899,7 @@ register('StructArrayLayout2ui4', StructArrayLayout2ui4);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Uint16[1]
+ * [0] - Uint16[1]
  *
  */
 class StructArrayLayout1ui2 extends StructArray {
@@ -14921,7 +15923,7 @@ register('StructArrayLayout1ui2', StructArrayLayout1ui2);
 /**
  * @internal
  * Implementation of the StructArray layout:
- * [0]: Float32[4]
+ * [0] - Float32[4]
  *
  */
 class StructArrayLayout4f16 extends StructArray {
@@ -14956,7 +15958,7 @@ class CollisionBoxStruct extends Struct {
     get featureIndex() { return this._structArray.uint32[this._pos4 + 3]; }
     get sourceLayerIndex() { return this._structArray.uint16[this._pos2 + 8]; }
     get bucketIndex() { return this._structArray.uint16[this._pos2 + 9]; }
-    get anchorPoint() { return new Point$3(this.anchorPointX, this.anchorPointY); }
+    get anchorPoint() { return new Point(this.anchorPointX, this.anchorPointY); }
 }
 CollisionBoxStruct.prototype.size = 20;
 /** @internal */
@@ -15127,7 +16129,7 @@ class CollisionBoxLayoutArray extends StructArrayLayout2i2i2i12 {
 }
 class CollisionCircleLayoutArray extends StructArrayLayout2f1f2i16 {
 }
-class CollisionVertexArray extends StructArrayLayout2ub2f12 {
+class CollisionVertexArray extends StructArrayLayout2ub2f2i16 {
 }
 class QuadTriangleArray extends StructArrayLayout3ui6 {
 }
@@ -15218,7 +16220,7 @@ const patternAttributes = createLayout([
 
 var murmurhashJs$1 = {exports: {}};
 
-var murmurhash3_gc$2 = {exports: {}};
+var murmurhash3_gc$1 = {exports: {}};
 
 /**
  * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
@@ -15232,70 +16234,74 @@ var murmurhash3_gc$2 = {exports: {}};
  * @param {number} seed Positive integer only
  * @return {number} 32-bit positive integer hash 
  */
-var murmurhash3_gc = murmurhash3_gc$2.exports;
+var murmurhash3_gc = murmurhash3_gc$1.exports;
 
-(function (module) {
-	function murmurhash3_32_gc(key, seed) {
-		var remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
-		
-		remainder = key.length & 3; // key.length % 4
-		bytes = key.length - remainder;
-		h1 = seed;
-		c1 = 0xcc9e2d51;
-		c2 = 0x1b873593;
-		i = 0;
-		
-		while (i < bytes) {
-		  	k1 = 
-		  	  ((key.charCodeAt(i) & 0xff)) |
-		  	  ((key.charCodeAt(++i) & 0xff) << 8) |
-		  	  ((key.charCodeAt(++i) & 0xff) << 16) |
-		  	  ((key.charCodeAt(++i) & 0xff) << 24);
-			++i;
+var hasRequiredMurmurhash3_gc;
+
+function requireMurmurhash3_gc () {
+	if (hasRequiredMurmurhash3_gc) return murmurhash3_gc$1.exports;
+	hasRequiredMurmurhash3_gc = 1;
+	(function (module) {
+		function murmurhash3_32_gc(key, seed) {
+			var remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
 			
-			k1 = ((((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16))) & 0xffffffff;
-			k1 = (k1 << 15) | (k1 >>> 17);
-			k1 = ((((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16))) & 0xffffffff;
-
-			h1 ^= k1;
-	        h1 = (h1 << 13) | (h1 >>> 19);
-			h1b = ((((h1 & 0xffff) * 5) + ((((h1 >>> 16) * 5) & 0xffff) << 16))) & 0xffffffff;
-			h1 = (((h1b & 0xffff) + 0x6b64) + ((((h1b >>> 16) + 0xe654) & 0xffff) << 16));
-		}
-		
-		k1 = 0;
-		
-		switch (remainder) {
-			case 3: k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
-			case 2: k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
-			case 1: k1 ^= (key.charCodeAt(i) & 0xff);
+			remainder = key.length & 3; // key.length % 4
+			bytes = key.length - remainder;
+			h1 = seed;
+			c1 = 0xcc9e2d51;
+			c2 = 0x1b873593;
+			i = 0;
 			
-			k1 = (((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16)) & 0xffffffff;
-			k1 = (k1 << 15) | (k1 >>> 17);
-			k1 = (((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16)) & 0xffffffff;
-			h1 ^= k1;
+			while (i < bytes) {
+			  	k1 = 
+			  	  ((key.charCodeAt(i) & 0xff)) |
+			  	  ((key.charCodeAt(++i) & 0xff) << 8) |
+			  	  ((key.charCodeAt(++i) & 0xff) << 16) |
+			  	  ((key.charCodeAt(++i) & 0xff) << 24);
+				++i;
+				
+				k1 = ((((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16))) & 0xffffffff;
+				k1 = (k1 << 15) | (k1 >>> 17);
+				k1 = ((((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16))) & 0xffffffff;
+
+				h1 ^= k1;
+		        h1 = (h1 << 13) | (h1 >>> 19);
+				h1b = ((((h1 & 0xffff) * 5) + ((((h1 >>> 16) * 5) & 0xffff) << 16))) & 0xffffffff;
+				h1 = (((h1b & 0xffff) + 0x6b64) + ((((h1b >>> 16) + 0xe654) & 0xffff) << 16));
+			}
+			
+			k1 = 0;
+			
+			switch (remainder) {
+				case 3: k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+				case 2: k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+				case 1: k1 ^= (key.charCodeAt(i) & 0xff);
+				
+				k1 = (((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16)) & 0xffffffff;
+				k1 = (k1 << 15) | (k1 >>> 17);
+				k1 = (((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16)) & 0xffffffff;
+				h1 ^= k1;
+			}
+			
+			h1 ^= key.length;
+
+			h1 ^= h1 >>> 16;
+			h1 = (((h1 & 0xffff) * 0x85ebca6b) + ((((h1 >>> 16) * 0x85ebca6b) & 0xffff) << 16)) & 0xffffffff;
+			h1 ^= h1 >>> 13;
+			h1 = ((((h1 & 0xffff) * 0xc2b2ae35) + ((((h1 >>> 16) * 0xc2b2ae35) & 0xffff) << 16))) & 0xffffffff;
+			h1 ^= h1 >>> 16;
+
+			return h1 >>> 0;
 		}
-		
-		h1 ^= key.length;
 
-		h1 ^= h1 >>> 16;
-		h1 = (((h1 & 0xffff) * 0x85ebca6b) + ((((h1 >>> 16) * 0x85ebca6b) & 0xffff) << 16)) & 0xffffffff;
-		h1 ^= h1 >>> 13;
-		h1 = ((((h1 & 0xffff) * 0xc2b2ae35) + ((((h1 >>> 16) * 0xc2b2ae35) & 0xffff) << 16))) & 0xffffffff;
-		h1 ^= h1 >>> 16;
+		if('object' !== "undefined") {
+		  module.exports = murmurhash3_32_gc;
+		} 
+	} (murmurhash3_gc$1));
+	return murmurhash3_gc$1.exports;
+}
 
-		return h1 >>> 0;
-	}
-
-	if('object' !== "undefined") {
-	  module.exports = murmurhash3_32_gc;
-	} 
-} (murmurhash3_gc$2));
-
-var murmurhash3_gcExports = murmurhash3_gc$2.exports;
-var murmurhash3_gc$1 = /*@__PURE__*/getDefaultExportFromCjs$1(murmurhash3_gcExports);
-
-var murmurhash2_gc$2 = {exports: {}};
+var murmurhash2_gc$1 = {exports: {}};
 
 /**
  * JS Implementation of MurmurHash2
@@ -15309,66 +16315,77 @@ var murmurhash2_gc$2 = {exports: {}};
  * @param {number} seed Positive integer only
  * @return {number} 32-bit positive integer hash
  */
-var murmurhash2_gc = murmurhash2_gc$2.exports;
+var murmurhash2_gc = murmurhash2_gc$1.exports;
 
-(function (module) {
-	function murmurhash2_32_gc(str, seed) {
-	  var
-	    l = str.length,
-	    h = seed ^ l,
-	    i = 0,
-	    k;
-	  
-	  while (l >= 4) {
-	  	k = 
-	  	  ((str.charCodeAt(i) & 0xff)) |
-	  	  ((str.charCodeAt(++i) & 0xff) << 8) |
-	  	  ((str.charCodeAt(++i) & 0xff) << 16) |
-	  	  ((str.charCodeAt(++i) & 0xff) << 24);
-	    
-	    k = (((k & 0xffff) * 0x5bd1e995) + ((((k >>> 16) * 0x5bd1e995) & 0xffff) << 16));
-	    k ^= k >>> 24;
-	    k = (((k & 0xffff) * 0x5bd1e995) + ((((k >>> 16) * 0x5bd1e995) & 0xffff) << 16));
+var hasRequiredMurmurhash2_gc;
 
-		h = (((h & 0xffff) * 0x5bd1e995) + ((((h >>> 16) * 0x5bd1e995) & 0xffff) << 16)) ^ k;
+function requireMurmurhash2_gc () {
+	if (hasRequiredMurmurhash2_gc) return murmurhash2_gc$1.exports;
+	hasRequiredMurmurhash2_gc = 1;
+	(function (module) {
+		function murmurhash2_32_gc(str, seed) {
+		  var
+		    l = str.length,
+		    h = seed ^ l,
+		    i = 0,
+		    k;
+		  
+		  while (l >= 4) {
+		  	k = 
+		  	  ((str.charCodeAt(i) & 0xff)) |
+		  	  ((str.charCodeAt(++i) & 0xff) << 8) |
+		  	  ((str.charCodeAt(++i) & 0xff) << 16) |
+		  	  ((str.charCodeAt(++i) & 0xff) << 24);
+		    
+		    k = (((k & 0xffff) * 0x5bd1e995) + ((((k >>> 16) * 0x5bd1e995) & 0xffff) << 16));
+		    k ^= k >>> 24;
+		    k = (((k & 0xffff) * 0x5bd1e995) + ((((k >>> 16) * 0x5bd1e995) & 0xffff) << 16));
 
-	    l -= 4;
-	    ++i;
-	  }
-	  
-	  switch (l) {
-	  case 3: h ^= (str.charCodeAt(i + 2) & 0xff) << 16;
-	  case 2: h ^= (str.charCodeAt(i + 1) & 0xff) << 8;
-	  case 1: h ^= (str.charCodeAt(i) & 0xff);
-	          h = (((h & 0xffff) * 0x5bd1e995) + ((((h >>> 16) * 0x5bd1e995) & 0xffff) << 16));
-	  }
+			h = (((h & 0xffff) * 0x5bd1e995) + ((((h >>> 16) * 0x5bd1e995) & 0xffff) << 16)) ^ k;
 
-	  h ^= h >>> 13;
-	  h = (((h & 0xffff) * 0x5bd1e995) + ((((h >>> 16) * 0x5bd1e995) & 0xffff) << 16));
-	  h ^= h >>> 15;
+		    l -= 4;
+		    ++i;
+		  }
+		  
+		  switch (l) {
+		  case 3: h ^= (str.charCodeAt(i + 2) & 0xff) << 16;
+		  case 2: h ^= (str.charCodeAt(i + 1) & 0xff) << 8;
+		  case 1: h ^= (str.charCodeAt(i) & 0xff);
+		          h = (((h & 0xffff) * 0x5bd1e995) + ((((h >>> 16) * 0x5bd1e995) & 0xffff) << 16));
+		  }
 
-	  return h >>> 0;
-	}
+		  h ^= h >>> 13;
+		  h = (((h & 0xffff) * 0x5bd1e995) + ((((h >>> 16) * 0x5bd1e995) & 0xffff) << 16));
+		  h ^= h >>> 15;
 
-	if('object' !== undefined) {
-	  module.exports = murmurhash2_32_gc;
-	} 
-} (murmurhash2_gc$2));
+		  return h >>> 0;
+		}
 
-var murmurhash2_gcExports = murmurhash2_gc$2.exports;
-var murmurhash2_gc$1 = /*@__PURE__*/getDefaultExportFromCjs$1(murmurhash2_gcExports);
+		if('object' !== undefined) {
+		  module.exports = murmurhash2_32_gc;
+		} 
+	} (murmurhash2_gc$1));
+	return murmurhash2_gc$1.exports;
+}
 
 var murmurhashJs = murmurhashJs$1.exports;
 
-var murmur3 = murmurhash3_gcExports;
-var murmur2 = murmurhash2_gcExports;
+var hasRequiredMurmurhashJs;
 
-murmurhashJs$1.exports = murmur3;
-var murmur3_1 = murmurhashJs$1.exports.murmur3 = murmur3;
-var murmur2_1 = murmurhashJs$1.exports.murmur2 = murmur2;
+function requireMurmurhashJs () {
+	if (hasRequiredMurmurhashJs) return murmurhashJs$1.exports;
+	hasRequiredMurmurhashJs = 1;
+	var murmur3 = requireMurmurhash3_gc();
+	var murmur2 = requireMurmurhash2_gc();
 
-var murmurhashJsExports = murmurhashJs$1.exports;
-var murmur3$1 = /*@__PURE__*/getDefaultExportFromCjs$1(murmurhashJsExports);
+	murmurhashJs$1.exports = murmur3;
+	murmurhashJs$1.exports.murmur3 = murmur3;
+	murmurhashJs$1.exports.murmur2 = murmur2;
+	return murmurhashJs$1.exports;
+}
+
+var murmurhashJsExports = requireMurmurhashJs();
+var murmur3 = /*@__PURE__*/getDefaultExportFromCjs$1(murmurhashJsExports);
 
 // A transferable data structure that maps feature ids to their indices and buffer offsets
 class FeaturePositionMap {
@@ -15432,7 +16449,7 @@ function getNumericId(value) {
     if (!isNaN(numValue) && numValue <= Number.MAX_SAFE_INTEGER) {
         return numValue;
     }
-    return murmur3$1(String(value));
+    return murmur3(String(value));
 }
 // custom quicksort that sorts ids, indices and offsets together (by ids)
 // uses Hoare partitioning & manual tail call optimization to avoid worst case scenarios
@@ -15450,10 +16467,10 @@ function sort$1(ids, positions, left, right) {
             while (ids[j] > pivot);
             if (i >= j)
                 break;
-            swap$2(ids, i, j);
-            swap$2(positions, 3 * i, 3 * j);
-            swap$2(positions, 3 * i + 1, 3 * j + 1);
-            swap$2(positions, 3 * i + 2, 3 * j + 2);
+            swap$1(ids, i, j);
+            swap$1(positions, 3 * i, 3 * j);
+            swap$1(positions, 3 * i + 1, 3 * j + 1);
+            swap$1(positions, 3 * i + 2, 3 * j + 2);
         }
         if (j - left < right - j) {
             sort$1(ids, positions, left, j);
@@ -15465,7 +16482,7 @@ function sort$1(ids, positions, left, right) {
         }
     }
 }
-function swap$2(arr, i, j) {
+function swap$1(arr, i, j) {
     const tmp = arr[i];
     arr[i] = arr[j];
     arr[j] = tmp;
@@ -15955,7 +16972,7 @@ class ProgramConfiguration {
     }
     setUniforms(context, binderUniforms, properties, globals) {
         // Uniform state bindings are owned by the Program, but we set them
-        // from within the ProgramConfiguraton's binder members.
+        // from within the ProgramConfiguration's binder members.
         for (const { name, property, binding } of binderUniforms) {
             this.binders[property].setUniform(binding, globals, properties.get(property), name);
         }
@@ -16379,7 +17396,7 @@ function pointIntersectsBufferedLine(p, line, radius) {
     }
     return false;
 }
-// Code from http://stackoverflow.com/a/1501725/331379.
+// Code from https://stackoverflow.com/a/1501725/331379.
 function distToSegmentSquared(p, v, w) {
     const l2 = v.distSqr(w);
     if (l2 === 0)
@@ -16426,10 +17443,10 @@ function polygonIntersectsBox(ring, boxX1, boxY1, boxX2, boxY2) {
             return true;
     }
     const corners = [
-        new Point$3(boxX1, boxY1),
-        new Point$3(boxX1, boxY2),
-        new Point$3(boxX2, boxY2),
-        new Point$3(boxX2, boxY1)
+        new Point(boxX1, boxY1),
+        new Point(boxX1, boxY2),
+        new Point(boxX2, boxY2),
+        new Point(boxX2, boxY1)
     ];
     if (ring.length > 2) {
         for (const corner of corners) {
@@ -16477,7 +17494,7 @@ function translate$4(queryGeometry, translate, translateAnchor, bearing, pixelsT
     if (!translate[0] && !translate[1]) {
         return queryGeometry;
     }
-    const pt = Point$3.convert(translate)._mult(pixelsToTileUnits);
+    const pt = Point.convert(translate)._mult(pixelsToTileUnits);
     if (translateAnchor === 'viewport') {
         pt._rotate(-bearing);
     }
@@ -16497,8 +17514,8 @@ function offsetLine(rings, offset) {
             const a = ring[index - 1];
             const b = ring[index];
             const c = ring[index + 1];
-            const aToB = index === 0 ? new Point$3(0, 0) : b.sub(a)._unit()._perp();
-            const bToC = index === ring.length - 1 ? new Point$3(0, 0) : c.sub(b)._unit()._perp();
+            const aToB = index === 0 ? new Point(0, 0) : b.sub(a)._unit()._perp();
+            const bToC = index === ring.length - 1 ? new Point(0, 0) : c.sub(b)._unit()._perp();
             const extrude = aToB._add(bToC)._unit();
             const cosHalfAngle = extrude.x * bToC.x + extrude.y * bToC.y;
             if (cosHalfAngle !== 0) {
@@ -24244,7 +25261,7 @@ class CircleStyleLayer extends StyleLayer {
 }
 function projectPoint(p, pixelPosMatrix) {
     const point = transformMat4$1([], [p.x, p.y, 0, 1], pixelPosMatrix);
-    return new Point$3(point[0] / point[3], point[1] / point[3]);
+    return new Point(point[0] / point[3], point[1] / point[3]);
 }
 function projectQueryGeometry$1(queryGeometry, pixelPosMatrix) {
     return queryGeometry.map((p) => {
@@ -24415,6 +25432,7 @@ function renderColorRamp(params) {
     return image;
 }
 
+const HEATMAP_FULL_RENDER_FBO_KEY = 'big-fb';
 /**
  * A style layer that defines a heatmap
  */
@@ -24424,6 +25442,7 @@ class HeatmapStyleLayer extends StyleLayer {
     }
     constructor(layer) {
         super(layer, properties$7);
+        this.heatmapFbos = new Map();
         // make sure color ramp texture is generated for default heatmap color too
         this._updateColorRamp();
     }
@@ -24442,9 +25461,8 @@ class HeatmapStyleLayer extends StyleLayer {
         this.colorRampTexture = null;
     }
     resize() {
-        if (this.heatmapFbo) {
-            this.heatmapFbo.destroy();
-            this.heatmapFbo = null;
+        if (this.heatmapFbos.has(HEATMAP_FULL_RENDER_FBO_KEY)) {
+            this.heatmapFbos.delete(HEATMAP_FULL_RENDER_FBO_KEY);
         }
     }
     queryRadius() {
@@ -24485,38 +25503,29 @@ const layout$4 = createLayout([
 ], 4);
 const { members: members$3, size: size$3, alignment: alignment$3 } = layout$4;
 
-var earcut$2 = {exports: {}};
+function earcut(data, holeIndices, dim = 2) {
 
-var earcut_1 = earcut$2.exports;
-
-'use strict';
-
-earcut$2.exports = earcut;
-var _default = earcut$2.exports.default = earcut;
-
-function earcut(data, holeIndices, dim) {
-
-    dim = dim || 2;
-
-    var hasHoles = holeIndices && holeIndices.length,
-        outerLen = hasHoles ? holeIndices[0] * dim : data.length,
-        outerNode = linkedList(data, 0, outerLen, dim, true),
-        triangles = [];
+    const hasHoles = holeIndices && holeIndices.length;
+    const outerLen = hasHoles ? holeIndices[0] * dim : data.length;
+    let outerNode = linkedList(data, 0, outerLen, dim, true);
+    const triangles = [];
 
     if (!outerNode || outerNode.next === outerNode.prev) return triangles;
 
-    var minX, minY, maxX, maxY, x, y, invSize;
+    let minX, minY, invSize;
 
     if (hasHoles) outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
 
     // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
     if (data.length > 80 * dim) {
-        minX = maxX = data[0];
-        minY = maxY = data[1];
+        minX = Infinity;
+        minY = Infinity;
+        let maxX = -Infinity;
+        let maxY = -Infinity;
 
-        for (var i = dim; i < outerLen; i += dim) {
-            x = data[i];
-            y = data[i + 1];
+        for (let i = dim; i < outerLen; i += dim) {
+            const x = data[i];
+            const y = data[i + 1];
             if (x < minX) minX = x;
             if (y < minY) minY = y;
             if (x > maxX) maxX = x;
@@ -24535,12 +25544,12 @@ function earcut(data, holeIndices, dim) {
 
 // create a circular doubly linked list from polygon points in the specified winding order
 function linkedList(data, start, end, dim, clockwise) {
-    var i, last;
+    let last;
 
-    if (clockwise === (signedArea$1(data, start, end, dim) > 0)) {
-        for (i = start; i < end; i += dim) last = insertNode(i, data[i], data[i + 1], last);
+    if (clockwise === (signedArea(data, start, end, dim) > 0)) {
+        for (let i = start; i < end; i += dim) last = insertNode(i / dim | 0, data[i], data[i + 1], last);
     } else {
-        for (i = end - dim; i >= start; i -= dim) last = insertNode(i, data[i], data[i + 1], last);
+        for (let i = end - dim; i >= start; i -= dim) last = insertNode(i / dim | 0, data[i], data[i + 1], last);
     }
 
     if (last && equals(last, last.next)) {
@@ -24556,7 +25565,7 @@ function filterPoints(start, end) {
     if (!start) return start;
     if (!end) end = start;
 
-    var p = start,
+    let p = start,
         again;
     do {
         again = false;
@@ -24582,19 +25591,15 @@ function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
     // interlink polygon nodes in z-order
     if (!pass && invSize) indexCurve(ear, minX, minY, invSize);
 
-    var stop = ear,
-        prev, next;
+    let stop = ear;
 
     // iterate through ears, slicing them one by one
     while (ear.prev !== ear.next) {
-        prev = ear.prev;
-        next = ear.next;
+        const prev = ear.prev;
+        const next = ear.next;
 
         if (invSize ? isEarHashed(ear, minX, minY, invSize) : isEar(ear)) {
-            // cut off the triangle
-            triangles.push(prev.i / dim | 0);
-            triangles.push(ear.i / dim | 0);
-            triangles.push(next.i / dim | 0);
+            triangles.push(prev.i, ear.i, next.i); // cut off the triangle
 
             removeNode(ear);
 
@@ -24615,7 +25620,7 @@ function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
 
             // if this didn't work, try curing all small self-intersections locally
             } else if (pass === 1) {
-                ear = cureLocalIntersections(filterPoints(ear), triangles, dim);
+                ear = cureLocalIntersections(filterPoints(ear), triangles);
                 earcutLinked(ear, triangles, dim, minX, minY, invSize, 2);
 
             // as a last resort, try splitting the remaining polygon into two
@@ -24630,22 +25635,22 @@ function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
 
 // check whether a polygon node forms a valid ear with adjacent nodes
 function isEar(ear) {
-    var a = ear.prev,
+    const a = ear.prev,
         b = ear,
         c = ear.next;
 
     if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
 
     // now make sure we don't have other points inside the potential ear
-    var ax = a.x, bx = b.x, cx = c.x, ay = a.y, by = b.y, cy = c.y;
+    const ax = a.x, bx = b.x, cx = c.x, ay = a.y, by = b.y, cy = c.y;
 
     // triangle bbox; min & max are calculated like this for speed
-    var x0 = ax < bx ? (ax < cx ? ax : cx) : (bx < cx ? bx : cx),
+    const x0 = ax < bx ? (ax < cx ? ax : cx) : (bx < cx ? bx : cx),
         y0 = ay < by ? (ay < cy ? ay : cy) : (by < cy ? by : cy),
         x1 = ax > bx ? (ax > cx ? ax : cx) : (bx > cx ? bx : cx),
         y1 = ay > by ? (ay > cy ? ay : cy) : (by > cy ? by : cy);
 
-    var p = c.next;
+    let p = c.next;
     while (p !== a) {
         if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 &&
             pointInTriangle(ax, ay, bx, by, cx, cy, p.x, p.y) &&
@@ -24657,25 +25662,25 @@ function isEar(ear) {
 }
 
 function isEarHashed(ear, minX, minY, invSize) {
-    var a = ear.prev,
+    const a = ear.prev,
         b = ear,
         c = ear.next;
 
     if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
 
-    var ax = a.x, bx = b.x, cx = c.x, ay = a.y, by = b.y, cy = c.y;
+    const ax = a.x, bx = b.x, cx = c.x, ay = a.y, by = b.y, cy = c.y;
 
     // triangle bbox; min & max are calculated like this for speed
-    var x0 = ax < bx ? (ax < cx ? ax : cx) : (bx < cx ? bx : cx),
+    const x0 = ax < bx ? (ax < cx ? ax : cx) : (bx < cx ? bx : cx),
         y0 = ay < by ? (ay < cy ? ay : cy) : (by < cy ? by : cy),
         x1 = ax > bx ? (ax > cx ? ax : cx) : (bx > cx ? bx : cx),
         y1 = ay > by ? (ay > cy ? ay : cy) : (by > cy ? by : cy);
 
     // z-order range for the current triangle bbox;
-    var minZ = zOrder(x0, y0, minX, minY, invSize),
+    const minZ = zOrder(x0, y0, minX, minY, invSize),
         maxZ = zOrder(x1, y1, minX, minY, invSize);
 
-    var p = ear.prevZ,
+    let p = ear.prevZ,
         n = ear.nextZ;
 
     // look for points inside the triangle in both directions
@@ -24707,17 +25712,15 @@ function isEarHashed(ear, minX, minY, invSize) {
 }
 
 // go through all polygon nodes and cure small local self-intersections
-function cureLocalIntersections(start, triangles, dim) {
-    var p = start;
+function cureLocalIntersections(start, triangles) {
+    let p = start;
     do {
-        var a = p.prev,
+        const a = p.prev,
             b = p.next.next;
 
         if (!equals(a, b) && intersects(a, p, p.next, b) && locallyInside(a, b) && locallyInside(b, a)) {
 
-            triangles.push(a.i / dim | 0);
-            triangles.push(p.i / dim | 0);
-            triangles.push(b.i / dim | 0);
+            triangles.push(a.i, p.i, b.i);
 
             // remove two nodes involved
             removeNode(p);
@@ -24734,13 +25737,13 @@ function cureLocalIntersections(start, triangles, dim) {
 // try splitting polygon into two and triangulate them independently
 function splitEarcut(start, triangles, dim, minX, minY, invSize) {
     // look for a valid diagonal that divides the polygon into two
-    var a = start;
+    let a = start;
     do {
-        var b = a.next.next;
+        let b = a.next.next;
         while (b !== a.prev) {
             if (a.i !== b.i && isValidDiagonal(a, b)) {
                 // split the polygon in two by the diagonal
-                var c = splitPolygon(a, b);
+                let c = splitPolygon(a, b);
 
                 // filter colinear points around the cuts
                 a = filterPoints(a, a.next);
@@ -24759,13 +25762,12 @@ function splitEarcut(start, triangles, dim, minX, minY, invSize) {
 
 // link every hole into the outer loop, producing a single-ring polygon without holes
 function eliminateHoles(data, holeIndices, outerNode, dim) {
-    var queue = [],
-        i, len, start, end, list;
+    const queue = [];
 
-    for (i = 0, len = holeIndices.length; i < len; i++) {
-        start = holeIndices[i] * dim;
-        end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
-        list = linkedList(data, start, end, dim, false);
+    for (let i = 0, len = holeIndices.length; i < len; i++) {
+        const start = holeIndices[i] * dim;
+        const end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+        const list = linkedList(data, start, end, dim, false);
         if (list === list.next) list.steiner = true;
         queue.push(getLeftmost(list));
     }
@@ -24773,7 +25775,7 @@ function eliminateHoles(data, holeIndices, outerNode, dim) {
     queue.sort(compareX);
 
     // process holes from left to right
-    for (i = 0; i < queue.length; i++) {
+    for (let i = 0; i < queue.length; i++) {
         outerNode = eliminateHole(queue[i], outerNode);
     }
 
@@ -24786,12 +25788,12 @@ function compareX(a, b) {
 
 // find a bridge between vertices that connects hole with an outer ring and and link it
 function eliminateHole(hole, outerNode) {
-    var bridge = findHoleBridge(hole, outerNode);
+    const bridge = findHoleBridge(hole, outerNode);
     if (!bridge) {
         return outerNode;
     }
 
-    var bridgeReverse = splitPolygon(bridge, hole);
+    const bridgeReverse = splitPolygon(bridge, hole);
 
     // filter collinear points around the cuts
     filterPoints(bridgeReverse, bridgeReverse.next);
@@ -24800,17 +25802,17 @@ function eliminateHole(hole, outerNode) {
 
 // David Eberly's algorithm for finding a bridge between hole and outer polygon
 function findHoleBridge(hole, outerNode) {
-    var p = outerNode,
-        hx = hole.x,
-        hy = hole.y,
-        qx = -Infinity,
-        m;
+    let p = outerNode;
+    const hx = hole.x;
+    const hy = hole.y;
+    let qx = -Infinity;
+    let m;
 
     // find a segment intersected by a ray from the hole's leftmost point to the left;
     // segment's endpoint with lesser x will be potential connection point
     do {
         if (hy <= p.y && hy >= p.next.y && p.next.y !== p.y) {
-            var x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
+            const x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
             if (x <= hx && x > qx) {
                 qx = x;
                 m = p.x < p.next.x ? p : p.next;
@@ -24826,11 +25828,10 @@ function findHoleBridge(hole, outerNode) {
     // if there are no points found, we have a valid connection;
     // otherwise choose the point of the minimum angle with the ray as connection point
 
-    var stop = m,
-        mx = m.x,
-        my = m.y,
-        tanMin = Infinity,
-        tan;
+    const stop = m;
+    const mx = m.x;
+    const my = m.y;
+    let tanMin = Infinity;
 
     p = m;
 
@@ -24838,7 +25839,7 @@ function findHoleBridge(hole, outerNode) {
         if (hx >= p.x && p.x >= mx && hx !== p.x &&
                 pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y)) {
 
-            tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
+            const tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
 
             if (locallyInside(p, hole) &&
                 (tan < tanMin || (tan === tanMin && (p.x > m.x || (p.x === m.x && sectorContainsSector(m, p)))))) {
@@ -24860,7 +25861,7 @@ function sectorContainsSector(m, p) {
 
 // interlink polygon nodes in z-order
 function indexCurve(start, minX, minY, invSize) {
-    var p = start;
+    let p = start;
     do {
         if (p.z === 0) p.z = zOrder(p.x, p.y, minX, minY, invSize);
         p.prevZ = p.prev;
@@ -24877,25 +25878,26 @@ function indexCurve(start, minX, minY, invSize) {
 // Simon Tatham's linked list merge sort algorithm
 // http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
 function sortLinked(list) {
-    var i, p, q, e, tail, numMerges, pSize, qSize,
-        inSize = 1;
+    let numMerges;
+    let inSize = 1;
 
     do {
-        p = list;
+        let p = list;
+        let e;
         list = null;
-        tail = null;
+        let tail = null;
         numMerges = 0;
 
         while (p) {
             numMerges++;
-            q = p;
-            pSize = 0;
-            for (i = 0; i < inSize; i++) {
+            let q = p;
+            let pSize = 0;
+            for (let i = 0; i < inSize; i++) {
                 pSize++;
                 q = q.nextZ;
                 if (!q) break;
             }
-            qSize = inSize;
+            let qSize = inSize;
 
             while (pSize > 0 || (qSize > 0 && q)) {
 
@@ -24948,7 +25950,7 @@ function zOrder(x, y, minX, minY, invSize) {
 
 // find the leftmost node of a polygon ring
 function getLeftmost(start) {
-    var p = start,
+    let p = start,
         leftmost = start;
     do {
         if (p.x < leftmost.x || (p.x === leftmost.x && p.y < leftmost.y)) leftmost = p;
@@ -24985,10 +25987,10 @@ function equals(p1, p2) {
 
 // check if two segments intersect
 function intersects(p1, q1, p2, q2) {
-    var o1 = sign(area(p1, q1, p2));
-    var o2 = sign(area(p1, q1, q2));
-    var o3 = sign(area(p2, q2, p1));
-    var o4 = sign(area(p2, q2, q1));
+    const o1 = sign(area(p1, q1, p2));
+    const o2 = sign(area(p1, q1, q2));
+    const o3 = sign(area(p2, q2, p1));
+    const o4 = sign(area(p2, q2, q1));
 
     if (o1 !== o2 && o3 !== o4) return true; // general case
 
@@ -25011,7 +26013,7 @@ function sign(num) {
 
 // check if a polygon diagonal intersects any polygon segments
 function intersectsPolygon(a, b) {
-    var p = a;
+    let p = a;
     do {
         if (p.i !== a.i && p.next.i !== a.i && p.i !== b.i && p.next.i !== b.i &&
                 intersects(p, p.next, a, b)) return true;
@@ -25030,10 +26032,10 @@ function locallyInside(a, b) {
 
 // check if the middle point of a polygon diagonal is inside the polygon
 function middleInside(a, b) {
-    var p = a,
-        inside = false,
-        px = (a.x + b.x) / 2,
-        py = (a.y + b.y) / 2;
+    let p = a;
+    let inside = false;
+    const px = (a.x + b.x) / 2;
+    const py = (a.y + b.y) / 2;
     do {
         if (((p.y > py) !== (p.next.y > py)) && p.next.y !== p.y &&
                 (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
@@ -25047,8 +26049,8 @@ function middleInside(a, b) {
 // link two polygon vertices with a bridge; if the vertices belong to the same ring, it splits polygon into two;
 // if one belongs to the outer ring and another to a hole, it merges it into a single ring
 function splitPolygon(a, b) {
-    var a2 = new Node(a.i, a.x, a.y),
-        b2 = new Node(b.i, b.x, b.y),
+    const a2 = createNode(a.i, a.x, a.y),
+        b2 = createNode(b.i, b.x, b.y),
         an = a.next,
         bp = b.prev;
 
@@ -25069,7 +26071,7 @@ function splitPolygon(a, b) {
 
 // create a node and optionally link it with previous one (in a circular doubly linked list)
 function insertNode(i, x, y, last) {
-    var p = new Node(i, x, y);
+    const p = createNode(i, x, y);
 
     if (!last) {
         p.prev = p;
@@ -25092,49 +26094,39 @@ function removeNode(p) {
     if (p.nextZ) p.nextZ.prevZ = p.prevZ;
 }
 
-function Node(i, x, y) {
-    // vertex index in coordinates array
-    this.i = i;
-
-    // vertex coordinates
-    this.x = x;
-    this.y = y;
-
-    // previous and next vertex nodes in a polygon ring
-    this.prev = null;
-    this.next = null;
-
-    // z-order curve value
-    this.z = 0;
-
-    // previous and next nodes in z-order
-    this.prevZ = null;
-    this.nextZ = null;
-
-    // indicates whether this is a steiner point
-    this.steiner = false;
+function createNode(i, x, y) {
+    return {
+        i, // vertex index in coordinates array
+        x, y, // vertex coordinates
+        prev: null, // previous and next vertex nodes in a polygon ring
+        next: null,
+        z: 0, // z-order curve value
+        prevZ: null, // previous and next nodes in z-order
+        nextZ: null,
+        steiner: false // indicates whether this is a steiner point
+    };
 }
 
 // return a percentage difference between the polygon area and its triangulation area;
 // used to verify correctness of triangulation
-earcut.deviation = function (data, holeIndices, dim, triangles) {
-    var hasHoles = holeIndices && holeIndices.length;
-    var outerLen = hasHoles ? holeIndices[0] * dim : data.length;
+function deviation(data, holeIndices, dim, triangles) {
+    const hasHoles = holeIndices && holeIndices.length;
+    const outerLen = hasHoles ? holeIndices[0] * dim : data.length;
 
-    var polygonArea = Math.abs(signedArea$1(data, 0, outerLen, dim));
+    let polygonArea = Math.abs(signedArea(data, 0, outerLen, dim));
     if (hasHoles) {
-        for (var i = 0, len = holeIndices.length; i < len; i++) {
-            var start = holeIndices[i] * dim;
-            var end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
-            polygonArea -= Math.abs(signedArea$1(data, start, end, dim));
+        for (let i = 0, len = holeIndices.length; i < len; i++) {
+            const start = holeIndices[i] * dim;
+            const end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+            polygonArea -= Math.abs(signedArea(data, start, end, dim));
         }
     }
 
-    var trianglesArea = 0;
-    for (i = 0; i < triangles.length; i += 3) {
-        var a = triangles[i] * dim;
-        var b = triangles[i + 1] * dim;
-        var c = triangles[i + 2] * dim;
+    let trianglesArea = 0;
+    for (let i = 0; i < triangles.length; i += 3) {
+        const a = triangles[i] * dim;
+        const b = triangles[i + 1] * dim;
+        const c = triangles[i + 2] * dim;
         trianglesArea += Math.abs(
             (data[a] - data[c]) * (data[b + 1] - data[a + 1]) -
             (data[a] - data[b]) * (data[c + 1] - data[a + 1]));
@@ -25142,11 +26134,11 @@ earcut.deviation = function (data, holeIndices, dim, triangles) {
 
     return polygonArea === 0 && trianglesArea === 0 ? 0 :
         Math.abs((trianglesArea - polygonArea) / polygonArea);
-};
+}
 
-function signedArea$1(data, start, end, dim) {
-    var sum = 0;
-    for (var i = start, j = end - dim; i < end; i += dim) {
+function signedArea(data, start, end, dim) {
+    let sum = 0;
+    for (let i = start, j = end - dim; i < end; i += dim) {
         sum += (data[j] - data[i]) * (data[i + 1] + data[j + 1]);
         j = i;
     }
@@ -25154,119 +26146,24 @@ function signedArea$1(data, start, end, dim) {
 }
 
 // turn a polygon in a multi-dimensional array form (e.g. as in GeoJSON) into a form Earcut accepts
-earcut.flatten = function (data) {
-    var dim = data[0][0].length,
-        result = {vertices: [], holes: [], dimensions: dim},
-        holeIndex = 0;
+function flatten(data) {
+    const vertices = [];
+    const holes = [];
+    const dimensions = data[0][0].length;
+    let holeIndex = 0;
+    let prevLen = 0;
 
-    for (var i = 0; i < data.length; i++) {
-        for (var j = 0; j < data[i].length; j++) {
-            for (var d = 0; d < dim; d++) result.vertices.push(data[i][j][d]);
+    for (const ring of data) {
+        for (const p of ring) {
+            for (let d = 0; d < dimensions; d++) vertices.push(p[d]);
         }
-        if (i > 0) {
-            holeIndex += data[i - 1].length;
-            result.holes.push(holeIndex);
+        if (prevLen) {
+            holeIndex += prevLen;
+            holes.push(holeIndex);
         }
+        prevLen = ring.length;
     }
-    return result;
-};
-
-var earcutExports = earcut$2.exports;
-var earcut$1 = /*@__PURE__*/getDefaultExportFromCjs$1(earcutExports);
-
-function quickselect(arr, k, left, right, compare) {
-    quickselectStep(arr, k, left || 0, right || (arr.length - 1), compare || defaultCompare$1);
-}
-
-function quickselectStep(arr, k, left, right, compare) {
-
-    while (right > left) {
-        if (right - left > 600) {
-            var n = right - left + 1;
-            var m = k - left + 1;
-            var z = Math.log(n);
-            var s = 0.5 * Math.exp(2 * z / 3);
-            var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
-            var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
-            var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-            quickselectStep(arr, k, newLeft, newRight, compare);
-        }
-
-        var t = arr[k];
-        var i = left;
-        var j = right;
-
-        swap$1(arr, left, k);
-        if (compare(arr[right], t) > 0) swap$1(arr, left, right);
-
-        while (i < j) {
-            swap$1(arr, i, j);
-            i++;
-            j--;
-            while (compare(arr[i], t) < 0) i++;
-            while (compare(arr[j], t) > 0) j--;
-        }
-
-        if (compare(arr[left], t) === 0) swap$1(arr, left, j);
-        else {
-            j++;
-            swap$1(arr, j, right);
-        }
-
-        if (j <= k) left = j + 1;
-        if (k <= j) right = j - 1;
-    }
-}
-
-function swap$1(arr, i, j) {
-    var tmp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
-}
-
-function defaultCompare$1(a, b) {
-    return a < b ? -1 : a > b ? 1 : 0;
-}
-
-// classifies an array of rings into polygons with outer rings and holes
-function classifyRings$1(rings, maxRings) {
-    const len = rings.length;
-    if (len <= 1)
-        return [rings];
-    const polygons = [];
-    let polygon, ccw;
-    for (let i = 0; i < len; i++) {
-        const area = calculateSignedArea(rings[i]);
-        if (area === 0)
-            continue;
-        rings[i].area = Math.abs(area);
-        if (ccw === undefined)
-            ccw = area < 0;
-        if (ccw === area < 0) {
-            if (polygon)
-                polygons.push(polygon);
-            polygon = [rings[i]];
-        }
-        else {
-            polygon.push(rings[i]);
-        }
-    }
-    if (polygon)
-        polygons.push(polygon);
-    // Earcut performance degrades with the # of rings in a polygon. For this
-    // reason, we limit strip out all but the `maxRings` largest rings.
-    if (maxRings > 1) {
-        for (let j = 0; j < polygons.length; j++) {
-            if (polygons[j].length <= maxRings)
-                continue;
-            quickselect(polygons[j], maxRings, 1, polygons[j].length - 1, compareAreas);
-            polygons[j] = polygons[j].slice(0, maxRings);
-        }
-    }
-    return polygons;
-}
-function compareAreas(a, b) {
-    return b.area - a.area;
+    return {vertices, holes, dimensions};
 }
 
 function hasPattern(type, layers, options) {
@@ -25406,7 +26303,7 @@ class FillBucket {
         this.segments2.destroy();
     }
     addFeature(feature, geometry, index, canonical, imagePositions) {
-        for (const polygon of classifyRings$1(geometry, EARCUT_MAX_RINGS$1)) {
+        for (const polygon of classifyRings(geometry, EARCUT_MAX_RINGS$1)) {
             let numVertices = 0;
             for (const ring of polygon) {
                 numVertices += ring.length;
@@ -25437,7 +26334,7 @@ class FillBucket {
                 lineSegment.vertexLength += ring.length;
                 lineSegment.primitiveLength += ring.length;
             }
-            const indices = earcut$1(flattened, holeIndices);
+            const indices = earcut(flattened, holeIndices);
             for (let i = 0; i < indices.length; i += 3) {
                 this.indexArray.emplaceBack(triangleIndex + indices[i], triangleIndex + indices[i + 1], triangleIndex + indices[i + 2]);
             }
@@ -25504,330 +26401,358 @@ const { members: members$2, size: size$2, alignment: alignment$2 } = layout$2;
 
 var vectorTile = {};
 
-'use strict';
+var vectortilefeature;
+var hasRequiredVectortilefeature;
 
-var Point$1 = pointGeometry;
+function requireVectortilefeature () {
+	if (hasRequiredVectortilefeature) return vectortilefeature;
+	hasRequiredVectortilefeature = 1;
+	'use strict';
 
-var vectortilefeature = VectorTileFeature$3;
+	var Point = requirePointGeometry();
 
-function VectorTileFeature$3(pbf, end, extent, keys, values) {
-    // Public
-    this.properties = {};
-    this.extent = extent;
-    this.type = 0;
+	vectortilefeature = VectorTileFeature;
 
-    // Private
-    this._pbf = pbf;
-    this._geometry = -1;
-    this._keys = keys;
-    this._values = values;
+	function VectorTileFeature(pbf, end, extent, keys, values) {
+	    // Public
+	    this.properties = {};
+	    this.extent = extent;
+	    this.type = 0;
 
-    pbf.readFields(readFeature, this, end);
+	    // Private
+	    this._pbf = pbf;
+	    this._geometry = -1;
+	    this._keys = keys;
+	    this._values = values;
+
+	    pbf.readFields(readFeature, this, end);
+	}
+
+	function readFeature(tag, feature, pbf) {
+	    if (tag == 1) feature.id = pbf.readVarint();
+	    else if (tag == 2) readTag(pbf, feature);
+	    else if (tag == 3) feature.type = pbf.readVarint();
+	    else if (tag == 4) feature._geometry = pbf.pos;
+	}
+
+	function readTag(pbf, feature) {
+	    var end = pbf.readVarint() + pbf.pos;
+
+	    while (pbf.pos < end) {
+	        var key = feature._keys[pbf.readVarint()],
+	            value = feature._values[pbf.readVarint()];
+	        feature.properties[key] = value;
+	    }
+	}
+
+	VectorTileFeature.types = ['Unknown', 'Point', 'LineString', 'Polygon'];
+
+	VectorTileFeature.prototype.loadGeometry = function() {
+	    var pbf = this._pbf;
+	    pbf.pos = this._geometry;
+
+	    var end = pbf.readVarint() + pbf.pos,
+	        cmd = 1,
+	        length = 0,
+	        x = 0,
+	        y = 0,
+	        lines = [],
+	        line;
+
+	    while (pbf.pos < end) {
+	        if (length <= 0) {
+	            var cmdLen = pbf.readVarint();
+	            cmd = cmdLen & 0x7;
+	            length = cmdLen >> 3;
+	        }
+
+	        length--;
+
+	        if (cmd === 1 || cmd === 2) {
+	            x += pbf.readSVarint();
+	            y += pbf.readSVarint();
+
+	            if (cmd === 1) { // moveTo
+	                if (line) lines.push(line);
+	                line = [];
+	            }
+
+	            line.push(new Point(x, y));
+
+	        } else if (cmd === 7) {
+
+	            // Workaround for https://github.com/mapbox/mapnik-vector-tile/issues/90
+	            if (line) {
+	                line.push(line[0].clone()); // closePolygon
+	            }
+
+	        } else {
+	            throw new Error('unknown command ' + cmd);
+	        }
+	    }
+
+	    if (line) lines.push(line);
+
+	    return lines;
+	};
+
+	VectorTileFeature.prototype.bbox = function() {
+	    var pbf = this._pbf;
+	    pbf.pos = this._geometry;
+
+	    var end = pbf.readVarint() + pbf.pos,
+	        cmd = 1,
+	        length = 0,
+	        x = 0,
+	        y = 0,
+	        x1 = Infinity,
+	        x2 = -Infinity,
+	        y1 = Infinity,
+	        y2 = -Infinity;
+
+	    while (pbf.pos < end) {
+	        if (length <= 0) {
+	            var cmdLen = pbf.readVarint();
+	            cmd = cmdLen & 0x7;
+	            length = cmdLen >> 3;
+	        }
+
+	        length--;
+
+	        if (cmd === 1 || cmd === 2) {
+	            x += pbf.readSVarint();
+	            y += pbf.readSVarint();
+	            if (x < x1) x1 = x;
+	            if (x > x2) x2 = x;
+	            if (y < y1) y1 = y;
+	            if (y > y2) y2 = y;
+
+	        } else if (cmd !== 7) {
+	            throw new Error('unknown command ' + cmd);
+	        }
+	    }
+
+	    return [x1, y1, x2, y2];
+	};
+
+	VectorTileFeature.prototype.toGeoJSON = function(x, y, z) {
+	    var size = this.extent * Math.pow(2, z),
+	        x0 = this.extent * x,
+	        y0 = this.extent * y,
+	        coords = this.loadGeometry(),
+	        type = VectorTileFeature.types[this.type],
+	        i, j;
+
+	    function project(line) {
+	        for (var j = 0; j < line.length; j++) {
+	            var p = line[j], y2 = 180 - (p.y + y0) * 360 / size;
+	            line[j] = [
+	                (p.x + x0) * 360 / size - 180,
+	                360 / Math.PI * Math.atan(Math.exp(y2 * Math.PI / 180)) - 90
+	            ];
+	        }
+	    }
+
+	    switch (this.type) {
+	    case 1:
+	        var points = [];
+	        for (i = 0; i < coords.length; i++) {
+	            points[i] = coords[i][0];
+	        }
+	        coords = points;
+	        project(coords);
+	        break;
+
+	    case 2:
+	        for (i = 0; i < coords.length; i++) {
+	            project(coords[i]);
+	        }
+	        break;
+
+	    case 3:
+	        coords = classifyRings(coords);
+	        for (i = 0; i < coords.length; i++) {
+	            for (j = 0; j < coords[i].length; j++) {
+	                project(coords[i][j]);
+	            }
+	        }
+	        break;
+	    }
+
+	    if (coords.length === 1) {
+	        coords = coords[0];
+	    } else {
+	        type = 'Multi' + type;
+	    }
+
+	    var result = {
+	        type: "Feature",
+	        geometry: {
+	            type: type,
+	            coordinates: coords
+	        },
+	        properties: this.properties
+	    };
+
+	    if ('id' in this) {
+	        result.id = this.id;
+	    }
+
+	    return result;
+	};
+
+	// classifies an array of rings into polygons with outer rings and holes
+
+	function classifyRings(rings) {
+	    var len = rings.length;
+
+	    if (len <= 1) return [rings];
+
+	    var polygons = [],
+	        polygon,
+	        ccw;
+
+	    for (var i = 0; i < len; i++) {
+	        var area = signedArea(rings[i]);
+	        if (area === 0) continue;
+
+	        if (ccw === undefined) ccw = area < 0;
+
+	        if (ccw === area < 0) {
+	            if (polygon) polygons.push(polygon);
+	            polygon = [rings[i]];
+
+	        } else {
+	            polygon.push(rings[i]);
+	        }
+	    }
+	    if (polygon) polygons.push(polygon);
+
+	    return polygons;
+	}
+
+	function signedArea(ring) {
+	    var sum = 0;
+	    for (var i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
+	        p1 = ring[i];
+	        p2 = ring[j];
+	        sum += (p2.x - p1.x) * (p1.y + p2.y);
+	    }
+	    return sum;
+	}
+	return vectortilefeature;
 }
 
-function readFeature(tag, feature, pbf) {
-    if (tag == 1) feature.id = pbf.readVarint();
-    else if (tag == 2) readTag(pbf, feature);
-    else if (tag == 3) feature.type = pbf.readVarint();
-    else if (tag == 4) feature._geometry = pbf.pos;
+var vectortilelayer;
+var hasRequiredVectortilelayer;
+
+function requireVectortilelayer () {
+	if (hasRequiredVectortilelayer) return vectortilelayer;
+	hasRequiredVectortilelayer = 1;
+	'use strict';
+
+	var VectorTileFeature = requireVectortilefeature();
+
+	vectortilelayer = VectorTileLayer;
+
+	function VectorTileLayer(pbf, end) {
+	    // Public
+	    this.version = 1;
+	    this.name = null;
+	    this.extent = 4096;
+	    this.length = 0;
+
+	    // Private
+	    this._pbf = pbf;
+	    this._keys = [];
+	    this._values = [];
+	    this._features = [];
+
+	    pbf.readFields(readLayer, this, end);
+
+	    this.length = this._features.length;
+	}
+
+	function readLayer(tag, layer, pbf) {
+	    if (tag === 15) layer.version = pbf.readVarint();
+	    else if (tag === 1) layer.name = pbf.readString();
+	    else if (tag === 5) layer.extent = pbf.readVarint();
+	    else if (tag === 2) layer._features.push(pbf.pos);
+	    else if (tag === 3) layer._keys.push(pbf.readString());
+	    else if (tag === 4) layer._values.push(readValueMessage(pbf));
+	}
+
+	function readValueMessage(pbf) {
+	    var value = null,
+	        end = pbf.readVarint() + pbf.pos;
+
+	    while (pbf.pos < end) {
+	        var tag = pbf.readVarint() >> 3;
+
+	        value = tag === 1 ? pbf.readString() :
+	            tag === 2 ? pbf.readFloat() :
+	            tag === 3 ? pbf.readDouble() :
+	            tag === 4 ? pbf.readVarint64() :
+	            tag === 5 ? pbf.readVarint() :
+	            tag === 6 ? pbf.readSVarint() :
+	            tag === 7 ? pbf.readBoolean() : null;
+	    }
+
+	    return value;
+	}
+
+	// return feature `i` from this layer as a `VectorTileFeature`
+	VectorTileLayer.prototype.feature = function(i) {
+	    if (i < 0 || i >= this._features.length) throw new Error('feature index out of bounds');
+
+	    this._pbf.pos = this._features[i];
+
+	    var end = this._pbf.readVarint() + this._pbf.pos;
+	    return new VectorTileFeature(this._pbf, end, this.extent, this._keys, this._values);
+	};
+	return vectortilelayer;
 }
 
-function readTag(pbf, feature) {
-    var end = pbf.readVarint() + pbf.pos;
+var vectortile;
+var hasRequiredVectortile;
 
-    while (pbf.pos < end) {
-        var key = feature._keys[pbf.readVarint()],
-            value = feature._values[pbf.readVarint()];
-        feature.properties[key] = value;
-    }
+function requireVectortile () {
+	if (hasRequiredVectortile) return vectortile;
+	hasRequiredVectortile = 1;
+	'use strict';
+
+	var VectorTileLayer = requireVectortilelayer();
+
+	vectortile = VectorTile;
+
+	function VectorTile(pbf, end) {
+	    this.layers = pbf.readFields(readTile, {}, end);
+	}
+
+	function readTile(tag, layers, pbf) {
+	    if (tag === 3) {
+	        var layer = new VectorTileLayer(pbf, pbf.readVarint() + pbf.pos);
+	        if (layer.length) layers[layer.name] = layer;
+	    }
+	}
+	return vectortile;
 }
 
-VectorTileFeature$3.types = ['Unknown', 'Point', 'LineString', 'Polygon'];
+var hasRequiredVectorTile;
 
-VectorTileFeature$3.prototype.loadGeometry = function() {
-    var pbf = this._pbf;
-    pbf.pos = this._geometry;
-
-    var end = pbf.readVarint() + pbf.pos,
-        cmd = 1,
-        length = 0,
-        x = 0,
-        y = 0,
-        lines = [],
-        line;
-
-    while (pbf.pos < end) {
-        if (length <= 0) {
-            var cmdLen = pbf.readVarint();
-            cmd = cmdLen & 0x7;
-            length = cmdLen >> 3;
-        }
-
-        length--;
-
-        if (cmd === 1 || cmd === 2) {
-            x += pbf.readSVarint();
-            y += pbf.readSVarint();
-
-            if (cmd === 1) { // moveTo
-                if (line) lines.push(line);
-                line = [];
-            }
-
-            line.push(new Point$1(x, y));
-
-        } else if (cmd === 7) {
-
-            // Workaround for https://github.com/mapbox/mapnik-vector-tile/issues/90
-            if (line) {
-                line.push(line[0].clone()); // closePolygon
-            }
-
-        } else {
-            throw new Error('unknown command ' + cmd);
-        }
-    }
-
-    if (line) lines.push(line);
-
-    return lines;
-};
-
-VectorTileFeature$3.prototype.bbox = function() {
-    var pbf = this._pbf;
-    pbf.pos = this._geometry;
-
-    var end = pbf.readVarint() + pbf.pos,
-        cmd = 1,
-        length = 0,
-        x = 0,
-        y = 0,
-        x1 = Infinity,
-        x2 = -Infinity,
-        y1 = Infinity,
-        y2 = -Infinity;
-
-    while (pbf.pos < end) {
-        if (length <= 0) {
-            var cmdLen = pbf.readVarint();
-            cmd = cmdLen & 0x7;
-            length = cmdLen >> 3;
-        }
-
-        length--;
-
-        if (cmd === 1 || cmd === 2) {
-            x += pbf.readSVarint();
-            y += pbf.readSVarint();
-            if (x < x1) x1 = x;
-            if (x > x2) x2 = x;
-            if (y < y1) y1 = y;
-            if (y > y2) y2 = y;
-
-        } else if (cmd !== 7) {
-            throw new Error('unknown command ' + cmd);
-        }
-    }
-
-    return [x1, y1, x2, y2];
-};
-
-VectorTileFeature$3.prototype.toGeoJSON = function(x, y, z) {
-    var size = this.extent * Math.pow(2, z),
-        x0 = this.extent * x,
-        y0 = this.extent * y,
-        coords = this.loadGeometry(),
-        type = VectorTileFeature$3.types[this.type],
-        i, j;
-
-    function project(line) {
-        for (var j = 0; j < line.length; j++) {
-            var p = line[j], y2 = 180 - (p.y + y0) * 360 / size;
-            line[j] = [
-                (p.x + x0) * 360 / size - 180,
-                360 / Math.PI * Math.atan(Math.exp(y2 * Math.PI / 180)) - 90
-            ];
-        }
-    }
-
-    switch (this.type) {
-    case 1:
-        var points = [];
-        for (i = 0; i < coords.length; i++) {
-            points[i] = coords[i][0];
-        }
-        coords = points;
-        project(coords);
-        break;
-
-    case 2:
-        for (i = 0; i < coords.length; i++) {
-            project(coords[i]);
-        }
-        break;
-
-    case 3:
-        coords = classifyRings(coords);
-        for (i = 0; i < coords.length; i++) {
-            for (j = 0; j < coords[i].length; j++) {
-                project(coords[i][j]);
-            }
-        }
-        break;
-    }
-
-    if (coords.length === 1) {
-        coords = coords[0];
-    } else {
-        type = 'Multi' + type;
-    }
-
-    var result = {
-        type: "Feature",
-        geometry: {
-            type: type,
-            coordinates: coords
-        },
-        properties: this.properties
-    };
-
-    if ('id' in this) {
-        result.id = this.id;
-    }
-
-    return result;
-};
-
-// classifies an array of rings into polygons with outer rings and holes
-
-function classifyRings(rings) {
-    var len = rings.length;
-
-    if (len <= 1) return [rings];
-
-    var polygons = [],
-        polygon,
-        ccw;
-
-    for (var i = 0; i < len; i++) {
-        var area = signedArea(rings[i]);
-        if (area === 0) continue;
-
-        if (ccw === undefined) ccw = area < 0;
-
-        if (ccw === area < 0) {
-            if (polygon) polygons.push(polygon);
-            polygon = [rings[i]];
-
-        } else {
-            polygon.push(rings[i]);
-        }
-    }
-    if (polygon) polygons.push(polygon);
-
-    return polygons;
+function requireVectorTile () {
+	if (hasRequiredVectorTile) return vectorTile;
+	hasRequiredVectorTile = 1;
+	vectorTile.VectorTile = requireVectortile();
+	vectorTile.VectorTileFeature = requireVectortilefeature();
+	vectorTile.VectorTileLayer = requireVectortilelayer();
+	return vectorTile;
 }
 
-function signedArea(ring) {
-    var sum = 0;
-    for (var i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
-        p1 = ring[i];
-        p2 = ring[j];
-        sum += (p2.x - p1.x) * (p1.y + p2.y);
-    }
-    return sum;
-}
+var vectorTileExports = requireVectorTile();
+var mvt = /*@__PURE__*/getDefaultExportFromCjs$1(vectorTileExports);
 
-var vectortilefeature$1 = /*@__PURE__*/getDefaultExportFromCjs$1(vectortilefeature);
-
-'use strict';
-
-var VectorTileFeature$2 = vectortilefeature;
-
-var vectortilelayer = VectorTileLayer$2;
-
-function VectorTileLayer$2(pbf, end) {
-    // Public
-    this.version = 1;
-    this.name = null;
-    this.extent = 4096;
-    this.length = 0;
-
-    // Private
-    this._pbf = pbf;
-    this._keys = [];
-    this._values = [];
-    this._features = [];
-
-    pbf.readFields(readLayer, this, end);
-
-    this.length = this._features.length;
-}
-
-function readLayer(tag, layer, pbf) {
-    if (tag === 15) layer.version = pbf.readVarint();
-    else if (tag === 1) layer.name = pbf.readString();
-    else if (tag === 5) layer.extent = pbf.readVarint();
-    else if (tag === 2) layer._features.push(pbf.pos);
-    else if (tag === 3) layer._keys.push(pbf.readString());
-    else if (tag === 4) layer._values.push(readValueMessage(pbf));
-}
-
-function readValueMessage(pbf) {
-    var value = null,
-        end = pbf.readVarint() + pbf.pos;
-
-    while (pbf.pos < end) {
-        var tag = pbf.readVarint() >> 3;
-
-        value = tag === 1 ? pbf.readString() :
-            tag === 2 ? pbf.readFloat() :
-            tag === 3 ? pbf.readDouble() :
-            tag === 4 ? pbf.readVarint64() :
-            tag === 5 ? pbf.readVarint() :
-            tag === 6 ? pbf.readSVarint() :
-            tag === 7 ? pbf.readBoolean() : null;
-    }
-
-    return value;
-}
-
-// return feature `i` from this layer as a `VectorTileFeature`
-VectorTileLayer$2.prototype.feature = function(i) {
-    if (i < 0 || i >= this._features.length) throw new Error('feature index out of bounds');
-
-    this._pbf.pos = this._features[i];
-
-    var end = this._pbf.readVarint() + this._pbf.pos;
-    return new VectorTileFeature$2(this._pbf, end, this.extent, this._keys, this._values);
-};
-
-var vectortilelayer$1 = /*@__PURE__*/getDefaultExportFromCjs$1(vectortilelayer);
-
-'use strict';
-
-var VectorTileLayer$1 = vectortilelayer;
-
-var vectortile = VectorTile$1;
-
-function VectorTile$1(pbf, end) {
-    this.layers = pbf.readFields(readTile, {}, end);
-}
-
-function readTile(tag, layers, pbf) {
-    if (tag === 3) {
-        var layer = new VectorTileLayer$1(pbf, pbf.readVarint() + pbf.pos);
-        if (layer.length) layers[layer.name] = layer;
-    }
-}
-
-var vectortile$1 = /*@__PURE__*/getDefaultExportFromCjs$1(vectortile);
-
-var VectorTile = vectorTile.VectorTile = vectortile;
-var VectorTileFeature$1 = vectorTile.VectorTileFeature = vectortilefeature;
-var VectorTileLayer = vectorTile.VectorTileLayer = vectortilelayer;
-
-const vectorTileFeatureTypes$2 = vectorTile.VectorTileFeature.types;
+const vectorTileFeatureTypes$2 = mvt.VectorTileFeature.types;
 const EARCUT_MAX_RINGS = 500;
 const FACTOR = Math.pow(2, 13);
 function addVertex$1(vertexArray, x, y, nx, ny, nz, t, e) {
@@ -25916,8 +26841,8 @@ class FillExtrusionBucket {
         this.centroidVertexBuffer.destroy();
     }
     addFeature(feature, geometry, index, canonical, imagePositions) {
-        const centroid = { x: 0, y: 0, vertexCount: 0 };
-        for (const polygon of classifyRings$1(geometry, EARCUT_MAX_RINGS)) {
+        for (const polygon of classifyRings(geometry, EARCUT_MAX_RINGS)) {
+            const centroid = { x: 0, y: 0, vertexCount: 0 };
             let numVertices = 0;
             for (const ring of polygon) {
                 numVertices += ring.length;
@@ -25995,17 +26920,19 @@ class FillExtrusionBucket {
                     flattened.push(p.y);
                 }
             }
-            const indices = earcut$1(flattened, holeIndices);
+            const indices = earcut(flattened, holeIndices);
             for (let j = 0; j < indices.length; j += 3) {
                 // Counter-clockwise winding order.
                 this.indexArray.emplaceBack(triangleIndex + indices[j], triangleIndex + indices[j + 2], triangleIndex + indices[j + 1]);
             }
             segment.primitiveLength += indices.length / 3;
             segment.vertexLength += numVertices;
-        }
-        // remember polygon centroid to calculate elevation in GPU
-        for (let i = 0; i < centroid.vertexCount; i++) {
-            this.centroidVertexArray.emplaceBack(Math.floor(centroid.x / centroid.vertexCount), Math.floor(centroid.y / centroid.vertexCount));
+            // remember polygon centroid to calculate elevation in GPU
+            for (let i = 0; i < centroid.vertexCount; i++) {
+                const averageX = Math.floor(centroid.x / centroid.vertexCount);
+                const averageY = Math.floor(centroid.y / centroid.vertexCount);
+                this.centroidVertexArray.emplaceBack(averageX, averageY);
+            }
         }
         this.programConfigurations.populatePaintArrays(this.layoutVertexArray.length, feature, index, imagePositions, canonical);
     }
@@ -26037,7 +26964,7 @@ const getPaint$4 = () => paint$4 = paint$4 || new Properties({
 });
 var properties$4 = ({ get paint() { return getPaint$4(); } });
 
-class Point3D extends Point$3 {
+class Point3D extends Point {
 }
 class FillExtrusionStyleLayer extends StyleLayer {
     constructor(layer) {
@@ -26177,10 +27104,10 @@ function projectExtrusion(geometry, zBase, zTop, m) {
             const topY = sY + topYZ;
             const topZ = sZ + topZZ;
             const topW = sW + topWZ;
-            const b = new Point$3(baseX / baseW, baseY / baseW);
+            const b = new Point(baseX / baseW, baseY / baseW);
             b.z = baseZ / baseW;
             ringBase.push(b);
-            const t = new Point$3(topX / topW, topY / topW);
+            const t = new Point(topX / topW, topY / topW);
             t.z = topZ / topW;
             ringTop.push(t);
         }
@@ -26194,7 +27121,7 @@ function projectQueryGeometry(queryGeometry, pixelPosMatrix, transform, z) {
     for (const p of queryGeometry) {
         const v = [p.x, p.y, z, 1];
         transformMat4$1(v, v, pixelPosMatrix);
-        projectedQueryGeometry.push(new Point$3(v[0] / v[3], v[1] / v[3]));
+        projectedQueryGeometry.push(new Point(v[0] / v[3], v[1] / v[3]));
     }
     return projectedQueryGeometry;
 }
@@ -26211,7 +27138,7 @@ const lineLayoutAttributesExt = createLayout([
 ]);
 const { members, size, alignment } = lineLayoutAttributesExt;
 
-const vectorTileFeatureTypes$1 = vectorTile.VectorTileFeature.types;
+const vectorTileFeatureTypes$1 = mvt.VectorTileFeature.types;
 // NOTE ON EXTRUDE SCALE:
 // scale the extrusion vector so that the normal length is this value.
 // contains the "texture" normals (-1..1). this is distinct from the extrude
@@ -26772,7 +27699,8 @@ const placementOpacityAttributes = createLayout([
 ], 4);
 const collisionVertexAttributes = createLayout([
     { name: 'a_placed', components: 2, type: 'Uint8' },
-    { name: 'a_shift', components: 2, type: 'Float32' }
+    { name: 'a_shift', components: 2, type: 'Float32' },
+    { name: 'a_box_real', components: 2, type: 'Int16' },
 ]);
 const collisionBox = createLayout([
     // the box is centered around the anchor point
@@ -27055,739 +27983,755 @@ function verticalizePunctuation(input) {
 // ONE_EM constant used to go between "em" units used in style spec and "points" used internally for layout
 var ONE_EM = 24;
 
-var ieee754$1 = {};
+var ieee754 = {};
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
-var read = ieee754$1.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m;
-  var eLen = (nBytes * 8) - mLen - 1;
-  var eMax = (1 << eLen) - 1;
-  var eBias = eMax >> 1;
-  var nBits = -7;
-  var i = isLE ? (nBytes - 1) : 0;
-  var d = isLE ? -1 : 1;
-  var s = buffer[offset + i];
+var hasRequiredIeee754;
 
-  i += d;
+function requireIeee754 () {
+	if (hasRequiredIeee754) return ieee754;
+	hasRequiredIeee754 = 1;
+	ieee754.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m;
+	  var eLen = (nBytes * 8) - mLen - 1;
+	  var eMax = (1 << eLen) - 1;
+	  var eBias = eMax >> 1;
+	  var nBits = -7;
+	  var i = isLE ? (nBytes - 1) : 0;
+	  var d = isLE ? -1 : 1;
+	  var s = buffer[offset + i];
 
-  e = s & ((1 << (-nBits)) - 1);
-  s >>= (-nBits);
-  nBits += eLen;
-  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+	  i += d;
 
-  m = e & ((1 << (-nBits)) - 1);
-  e >>= (-nBits);
-  nBits += mLen;
-  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+	  e = s & ((1 << (-nBits)) - 1);
+	  s >>= (-nBits);
+	  nBits += eLen;
+	  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
-  if (e === 0) {
-    e = 1 - eBias;
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen);
-    e = e - eBias;
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-};
+	  m = e & ((1 << (-nBits)) - 1);
+	  e >>= (-nBits);
+	  nBits += mLen;
+	  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
-var write = ieee754$1.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c;
-  var eLen = (nBytes * 8) - mLen - 1;
-  var eMax = (1 << eLen) - 1;
-  var eBias = eMax >> 1;
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0);
-  var i = isLE ? 0 : (nBytes - 1);
-  var d = isLE ? 1 : -1;
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+	  if (e === 0) {
+	    e = 1 - eBias;
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen);
+	    e = e - eBias;
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	};
 
-  value = Math.abs(value);
+	ieee754.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c;
+	  var eLen = (nBytes * 8) - mLen - 1;
+	  var eMax = (1 << eLen) - 1;
+	  var eBias = eMax >> 1;
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0);
+	  var i = isLE ? 0 : (nBytes - 1);
+	  var d = isLE ? 1 : -1;
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
 
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0;
-    e = eMax;
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2);
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--;
-      c *= 2;
-    }
-    if (e + eBias >= 1) {
-      value += rt / c;
-    } else {
-      value += rt * Math.pow(2, 1 - eBias);
-    }
-    if (value * c >= 2) {
-      e++;
-      c /= 2;
-    }
+	  value = Math.abs(value);
 
-    if (e + eBias >= eMax) {
-      m = 0;
-      e = eMax;
-    } else if (e + eBias >= 1) {
-      m = ((value * c) - 1) * Math.pow(2, mLen);
-      e = e + eBias;
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-      e = 0;
-    }
-  }
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0;
+	    e = eMax;
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2);
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--;
+	      c *= 2;
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c;
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias);
+	    }
+	    if (value * c >= 2) {
+	      e++;
+	      c /= 2;
+	    }
 
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+	    if (e + eBias >= eMax) {
+	      m = 0;
+	      e = eMax;
+	    } else if (e + eBias >= 1) {
+	      m = ((value * c) - 1) * Math.pow(2, mLen);
+	      e = e + eBias;
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+	      e = 0;
+	    }
+	  }
 
-  e = (e << mLen) | m;
-  eLen += mLen;
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
 
-  buffer[offset + i - d] |= s * 128;
-};
+	  e = (e << mLen) | m;
+	  eLen += mLen;
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
 
-'use strict';
-
-var pbf = Pbf$1;
-
-var ieee754 = ieee754$1;
-
-function Pbf$1(buf) {
-    this.buf = ArrayBuffer.isView && ArrayBuffer.isView(buf) ? buf : new Uint8Array(buf || 0);
-    this.pos = 0;
-    this.type = 0;
-    this.length = this.buf.length;
+	  buffer[offset + i - d] |= s * 128;
+	};
+	return ieee754;
 }
 
-Pbf$1.Varint  = 0; // varint: int32, int64, uint32, uint64, sint32, sint64, bool, enum
-Pbf$1.Fixed64 = 1; // 64-bit: double, fixed64, sfixed64
-Pbf$1.Bytes   = 2; // length-delimited: string, bytes, embedded messages, packed repeated fields
-Pbf$1.Fixed32 = 5; // 32-bit: float, fixed32, sfixed32
+var pbf;
+var hasRequiredPbf;
 
-var SHIFT_LEFT_32 = (1 << 16) * (1 << 16),
-    SHIFT_RIGHT_32 = 1 / SHIFT_LEFT_32;
+function requirePbf () {
+	if (hasRequiredPbf) return pbf;
+	hasRequiredPbf = 1;
+	'use strict';
 
-// Threshold chosen based on both benchmarking and knowledge about browser string
-// data structures (which currently switch structure types at 12 bytes or more)
-var TEXT_DECODER_MIN_LENGTH = 12;
-var utf8TextDecoder = typeof TextDecoder === 'undefined' ? null : new TextDecoder('utf8');
+	pbf = Pbf;
 
-Pbf$1.prototype = {
+	var ieee754 = requireIeee754();
 
-    destroy: function() {
-        this.buf = null;
-    },
+	function Pbf(buf) {
+	    this.buf = ArrayBuffer.isView && ArrayBuffer.isView(buf) ? buf : new Uint8Array(buf || 0);
+	    this.pos = 0;
+	    this.type = 0;
+	    this.length = this.buf.length;
+	}
 
-    // === READING =================================================================
+	Pbf.Varint  = 0; // varint: int32, int64, uint32, uint64, sint32, sint64, bool, enum
+	Pbf.Fixed64 = 1; // 64-bit: double, fixed64, sfixed64
+	Pbf.Bytes   = 2; // length-delimited: string, bytes, embedded messages, packed repeated fields
+	Pbf.Fixed32 = 5; // 32-bit: float, fixed32, sfixed32
 
-    readFields: function(readField, result, end) {
-        end = end || this.length;
+	var SHIFT_LEFT_32 = (1 << 16) * (1 << 16),
+	    SHIFT_RIGHT_32 = 1 / SHIFT_LEFT_32;
 
-        while (this.pos < end) {
-            var val = this.readVarint(),
-                tag = val >> 3,
-                startPos = this.pos;
+	// Threshold chosen based on both benchmarking and knowledge about browser string
+	// data structures (which currently switch structure types at 12 bytes or more)
+	var TEXT_DECODER_MIN_LENGTH = 12;
+	var utf8TextDecoder = typeof TextDecoder === 'undefined' ? null : new TextDecoder('utf-8');
 
-            this.type = val & 0x7;
-            readField(tag, result, this);
+	Pbf.prototype = {
 
-            if (this.pos === startPos) this.skip(val);
-        }
-        return result;
-    },
+	    destroy: function() {
+	        this.buf = null;
+	    },
 
-    readMessage: function(readField, result) {
-        return this.readFields(readField, result, this.readVarint() + this.pos);
-    },
+	    // === READING =================================================================
 
-    readFixed32: function() {
-        var val = readUInt32(this.buf, this.pos);
-        this.pos += 4;
-        return val;
-    },
+	    readFields: function(readField, result, end) {
+	        end = end || this.length;
 
-    readSFixed32: function() {
-        var val = readInt32(this.buf, this.pos);
-        this.pos += 4;
-        return val;
-    },
+	        while (this.pos < end) {
+	            var val = this.readVarint(),
+	                tag = val >> 3,
+	                startPos = this.pos;
 
-    // 64-bit int handling is based on github.com/dpw/node-buffer-more-ints (MIT-licensed)
+	            this.type = val & 0x7;
+	            readField(tag, result, this);
 
-    readFixed64: function() {
-        var val = readUInt32(this.buf, this.pos) + readUInt32(this.buf, this.pos + 4) * SHIFT_LEFT_32;
-        this.pos += 8;
-        return val;
-    },
+	            if (this.pos === startPos) this.skip(val);
+	        }
+	        return result;
+	    },
 
-    readSFixed64: function() {
-        var val = readUInt32(this.buf, this.pos) + readInt32(this.buf, this.pos + 4) * SHIFT_LEFT_32;
-        this.pos += 8;
-        return val;
-    },
+	    readMessage: function(readField, result) {
+	        return this.readFields(readField, result, this.readVarint() + this.pos);
+	    },
 
-    readFloat: function() {
-        var val = ieee754.read(this.buf, this.pos, true, 23, 4);
-        this.pos += 4;
-        return val;
-    },
+	    readFixed32: function() {
+	        var val = readUInt32(this.buf, this.pos);
+	        this.pos += 4;
+	        return val;
+	    },
 
-    readDouble: function() {
-        var val = ieee754.read(this.buf, this.pos, true, 52, 8);
-        this.pos += 8;
-        return val;
-    },
+	    readSFixed32: function() {
+	        var val = readInt32(this.buf, this.pos);
+	        this.pos += 4;
+	        return val;
+	    },
 
-    readVarint: function(isSigned) {
-        var buf = this.buf,
-            val, b;
+	    // 64-bit int handling is based on github.com/dpw/node-buffer-more-ints (MIT-licensed)
 
-        b = buf[this.pos++]; val  =  b & 0x7f;        if (b < 0x80) return val;
-        b = buf[this.pos++]; val |= (b & 0x7f) << 7;  if (b < 0x80) return val;
-        b = buf[this.pos++]; val |= (b & 0x7f) << 14; if (b < 0x80) return val;
-        b = buf[this.pos++]; val |= (b & 0x7f) << 21; if (b < 0x80) return val;
-        b = buf[this.pos];   val |= (b & 0x0f) << 28;
+	    readFixed64: function() {
+	        var val = readUInt32(this.buf, this.pos) + readUInt32(this.buf, this.pos + 4) * SHIFT_LEFT_32;
+	        this.pos += 8;
+	        return val;
+	    },
 
-        return readVarintRemainder(val, isSigned, this);
-    },
+	    readSFixed64: function() {
+	        var val = readUInt32(this.buf, this.pos) + readInt32(this.buf, this.pos + 4) * SHIFT_LEFT_32;
+	        this.pos += 8;
+	        return val;
+	    },
 
-    readVarint64: function() { // for compatibility with v2.0.1
-        return this.readVarint(true);
-    },
+	    readFloat: function() {
+	        var val = ieee754.read(this.buf, this.pos, true, 23, 4);
+	        this.pos += 4;
+	        return val;
+	    },
 
-    readSVarint: function() {
-        var num = this.readVarint();
-        return num % 2 === 1 ? (num + 1) / -2 : num / 2; // zigzag encoding
-    },
+	    readDouble: function() {
+	        var val = ieee754.read(this.buf, this.pos, true, 52, 8);
+	        this.pos += 8;
+	        return val;
+	    },
 
-    readBoolean: function() {
-        return Boolean(this.readVarint());
-    },
+	    readVarint: function(isSigned) {
+	        var buf = this.buf,
+	            val, b;
 
-    readString: function() {
-        var end = this.readVarint() + this.pos;
-        var pos = this.pos;
-        this.pos = end;
+	        b = buf[this.pos++]; val  =  b & 0x7f;        if (b < 0x80) return val;
+	        b = buf[this.pos++]; val |= (b & 0x7f) << 7;  if (b < 0x80) return val;
+	        b = buf[this.pos++]; val |= (b & 0x7f) << 14; if (b < 0x80) return val;
+	        b = buf[this.pos++]; val |= (b & 0x7f) << 21; if (b < 0x80) return val;
+	        b = buf[this.pos];   val |= (b & 0x0f) << 28;
 
-        if (end - pos >= TEXT_DECODER_MIN_LENGTH && utf8TextDecoder) {
-            // longer strings are fast with the built-in browser TextDecoder API
-            return readUtf8TextDecoder(this.buf, pos, end);
-        }
-        // short strings are fast with our custom implementation
-        return readUtf8(this.buf, pos, end);
-    },
+	        return readVarintRemainder(val, isSigned, this);
+	    },
 
-    readBytes: function() {
-        var end = this.readVarint() + this.pos,
-            buffer = this.buf.subarray(this.pos, end);
-        this.pos = end;
-        return buffer;
-    },
+	    readVarint64: function() { // for compatibility with v2.0.1
+	        return this.readVarint(true);
+	    },
 
-    // verbose for performance reasons; doesn't affect gzipped size
+	    readSVarint: function() {
+	        var num = this.readVarint();
+	        return num % 2 === 1 ? (num + 1) / -2 : num / 2; // zigzag encoding
+	    },
 
-    readPackedVarint: function(arr, isSigned) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readVarint(isSigned));
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readVarint(isSigned));
-        return arr;
-    },
-    readPackedSVarint: function(arr) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readSVarint());
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readSVarint());
-        return arr;
-    },
-    readPackedBoolean: function(arr) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readBoolean());
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readBoolean());
-        return arr;
-    },
-    readPackedFloat: function(arr) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readFloat());
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readFloat());
-        return arr;
-    },
-    readPackedDouble: function(arr) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readDouble());
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readDouble());
-        return arr;
-    },
-    readPackedFixed32: function(arr) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readFixed32());
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readFixed32());
-        return arr;
-    },
-    readPackedSFixed32: function(arr) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readSFixed32());
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readSFixed32());
-        return arr;
-    },
-    readPackedFixed64: function(arr) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readFixed64());
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readFixed64());
-        return arr;
-    },
-    readPackedSFixed64: function(arr) {
-        if (this.type !== Pbf$1.Bytes) return arr.push(this.readSFixed64());
-        var end = readPackedEnd(this);
-        arr = arr || [];
-        while (this.pos < end) arr.push(this.readSFixed64());
-        return arr;
-    },
+	    readBoolean: function() {
+	        return Boolean(this.readVarint());
+	    },
 
-    skip: function(val) {
-        var type = val & 0x7;
-        if (type === Pbf$1.Varint) while (this.buf[this.pos++] > 0x7f) {}
-        else if (type === Pbf$1.Bytes) this.pos = this.readVarint() + this.pos;
-        else if (type === Pbf$1.Fixed32) this.pos += 4;
-        else if (type === Pbf$1.Fixed64) this.pos += 8;
-        else throw new Error('Unimplemented type: ' + type);
-    },
+	    readString: function() {
+	        var end = this.readVarint() + this.pos;
+	        var pos = this.pos;
+	        this.pos = end;
 
-    // === WRITING =================================================================
+	        if (end - pos >= TEXT_DECODER_MIN_LENGTH && utf8TextDecoder) {
+	            // longer strings are fast with the built-in browser TextDecoder API
+	            return readUtf8TextDecoder(this.buf, pos, end);
+	        }
+	        // short strings are fast with our custom implementation
+	        return readUtf8(this.buf, pos, end);
+	    },
 
-    writeTag: function(tag, type) {
-        this.writeVarint((tag << 3) | type);
-    },
+	    readBytes: function() {
+	        var end = this.readVarint() + this.pos,
+	            buffer = this.buf.subarray(this.pos, end);
+	        this.pos = end;
+	        return buffer;
+	    },
 
-    realloc: function(min) {
-        var length = this.length || 16;
+	    // verbose for performance reasons; doesn't affect gzipped size
 
-        while (length < this.pos + min) length *= 2;
+	    readPackedVarint: function(arr, isSigned) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readVarint(isSigned));
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readVarint(isSigned));
+	        return arr;
+	    },
+	    readPackedSVarint: function(arr) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readSVarint());
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readSVarint());
+	        return arr;
+	    },
+	    readPackedBoolean: function(arr) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readBoolean());
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readBoolean());
+	        return arr;
+	    },
+	    readPackedFloat: function(arr) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readFloat());
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readFloat());
+	        return arr;
+	    },
+	    readPackedDouble: function(arr) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readDouble());
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readDouble());
+	        return arr;
+	    },
+	    readPackedFixed32: function(arr) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readFixed32());
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readFixed32());
+	        return arr;
+	    },
+	    readPackedSFixed32: function(arr) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readSFixed32());
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readSFixed32());
+	        return arr;
+	    },
+	    readPackedFixed64: function(arr) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readFixed64());
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readFixed64());
+	        return arr;
+	    },
+	    readPackedSFixed64: function(arr) {
+	        if (this.type !== Pbf.Bytes) return arr.push(this.readSFixed64());
+	        var end = readPackedEnd(this);
+	        arr = arr || [];
+	        while (this.pos < end) arr.push(this.readSFixed64());
+	        return arr;
+	    },
 
-        if (length !== this.length) {
-            var buf = new Uint8Array(length);
-            buf.set(this.buf);
-            this.buf = buf;
-            this.length = length;
-        }
-    },
+	    skip: function(val) {
+	        var type = val & 0x7;
+	        if (type === Pbf.Varint) while (this.buf[this.pos++] > 0x7f) {}
+	        else if (type === Pbf.Bytes) this.pos = this.readVarint() + this.pos;
+	        else if (type === Pbf.Fixed32) this.pos += 4;
+	        else if (type === Pbf.Fixed64) this.pos += 8;
+	        else throw new Error('Unimplemented type: ' + type);
+	    },
 
-    finish: function() {
-        this.length = this.pos;
-        this.pos = 0;
-        return this.buf.subarray(0, this.length);
-    },
+	    // === WRITING =================================================================
 
-    writeFixed32: function(val) {
-        this.realloc(4);
-        writeInt32(this.buf, val, this.pos);
-        this.pos += 4;
-    },
+	    writeTag: function(tag, type) {
+	        this.writeVarint((tag << 3) | type);
+	    },
 
-    writeSFixed32: function(val) {
-        this.realloc(4);
-        writeInt32(this.buf, val, this.pos);
-        this.pos += 4;
-    },
+	    realloc: function(min) {
+	        var length = this.length || 16;
 
-    writeFixed64: function(val) {
-        this.realloc(8);
-        writeInt32(this.buf, val & -1, this.pos);
-        writeInt32(this.buf, Math.floor(val * SHIFT_RIGHT_32), this.pos + 4);
-        this.pos += 8;
-    },
+	        while (length < this.pos + min) length *= 2;
 
-    writeSFixed64: function(val) {
-        this.realloc(8);
-        writeInt32(this.buf, val & -1, this.pos);
-        writeInt32(this.buf, Math.floor(val * SHIFT_RIGHT_32), this.pos + 4);
-        this.pos += 8;
-    },
+	        if (length !== this.length) {
+	            var buf = new Uint8Array(length);
+	            buf.set(this.buf);
+	            this.buf = buf;
+	            this.length = length;
+	        }
+	    },
 
-    writeVarint: function(val) {
-        val = +val || 0;
+	    finish: function() {
+	        this.length = this.pos;
+	        this.pos = 0;
+	        return this.buf.subarray(0, this.length);
+	    },
 
-        if (val > 0xfffffff || val < 0) {
-            writeBigVarint(val, this);
-            return;
-        }
+	    writeFixed32: function(val) {
+	        this.realloc(4);
+	        writeInt32(this.buf, val, this.pos);
+	        this.pos += 4;
+	    },
 
-        this.realloc(4);
+	    writeSFixed32: function(val) {
+	        this.realloc(4);
+	        writeInt32(this.buf, val, this.pos);
+	        this.pos += 4;
+	    },
 
-        this.buf[this.pos++] =           val & 0x7f  | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
-        this.buf[this.pos++] = ((val >>>= 7) & 0x7f) | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
-        this.buf[this.pos++] = ((val >>>= 7) & 0x7f) | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
-        this.buf[this.pos++] =   (val >>> 7) & 0x7f;
-    },
+	    writeFixed64: function(val) {
+	        this.realloc(8);
+	        writeInt32(this.buf, val & -1, this.pos);
+	        writeInt32(this.buf, Math.floor(val * SHIFT_RIGHT_32), this.pos + 4);
+	        this.pos += 8;
+	    },
 
-    writeSVarint: function(val) {
-        this.writeVarint(val < 0 ? -val * 2 - 1 : val * 2);
-    },
+	    writeSFixed64: function(val) {
+	        this.realloc(8);
+	        writeInt32(this.buf, val & -1, this.pos);
+	        writeInt32(this.buf, Math.floor(val * SHIFT_RIGHT_32), this.pos + 4);
+	        this.pos += 8;
+	    },
 
-    writeBoolean: function(val) {
-        this.writeVarint(Boolean(val));
-    },
+	    writeVarint: function(val) {
+	        val = +val || 0;
 
-    writeString: function(str) {
-        str = String(str);
-        this.realloc(str.length * 4);
+	        if (val > 0xfffffff || val < 0) {
+	            writeBigVarint(val, this);
+	            return;
+	        }
 
-        this.pos++; // reserve 1 byte for short string length
+	        this.realloc(4);
 
-        var startPos = this.pos;
-        // write the string directly to the buffer and see how much was written
-        this.pos = writeUtf8(this.buf, str, this.pos);
-        var len = this.pos - startPos;
+	        this.buf[this.pos++] =           val & 0x7f  | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
+	        this.buf[this.pos++] = ((val >>>= 7) & 0x7f) | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
+	        this.buf[this.pos++] = ((val >>>= 7) & 0x7f) | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
+	        this.buf[this.pos++] =   (val >>> 7) & 0x7f;
+	    },
 
-        if (len >= 0x80) makeRoomForExtraLength(startPos, len, this);
+	    writeSVarint: function(val) {
+	        this.writeVarint(val < 0 ? -val * 2 - 1 : val * 2);
+	    },
 
-        // finally, write the message length in the reserved place and restore the position
-        this.pos = startPos - 1;
-        this.writeVarint(len);
-        this.pos += len;
-    },
+	    writeBoolean: function(val) {
+	        this.writeVarint(Boolean(val));
+	    },
 
-    writeFloat: function(val) {
-        this.realloc(4);
-        ieee754.write(this.buf, val, this.pos, true, 23, 4);
-        this.pos += 4;
-    },
+	    writeString: function(str) {
+	        str = String(str);
+	        this.realloc(str.length * 4);
 
-    writeDouble: function(val) {
-        this.realloc(8);
-        ieee754.write(this.buf, val, this.pos, true, 52, 8);
-        this.pos += 8;
-    },
+	        this.pos++; // reserve 1 byte for short string length
 
-    writeBytes: function(buffer) {
-        var len = buffer.length;
-        this.writeVarint(len);
-        this.realloc(len);
-        for (var i = 0; i < len; i++) this.buf[this.pos++] = buffer[i];
-    },
+	        var startPos = this.pos;
+	        // write the string directly to the buffer and see how much was written
+	        this.pos = writeUtf8(this.buf, str, this.pos);
+	        var len = this.pos - startPos;
 
-    writeRawMessage: function(fn, obj) {
-        this.pos++; // reserve 1 byte for short message length
+	        if (len >= 0x80) makeRoomForExtraLength(startPos, len, this);
 
-        // write the message directly to the buffer and see how much was written
-        var startPos = this.pos;
-        fn(obj, this);
-        var len = this.pos - startPos;
+	        // finally, write the message length in the reserved place and restore the position
+	        this.pos = startPos - 1;
+	        this.writeVarint(len);
+	        this.pos += len;
+	    },
 
-        if (len >= 0x80) makeRoomForExtraLength(startPos, len, this);
+	    writeFloat: function(val) {
+	        this.realloc(4);
+	        ieee754.write(this.buf, val, this.pos, true, 23, 4);
+	        this.pos += 4;
+	    },
 
-        // finally, write the message length in the reserved place and restore the position
-        this.pos = startPos - 1;
-        this.writeVarint(len);
-        this.pos += len;
-    },
+	    writeDouble: function(val) {
+	        this.realloc(8);
+	        ieee754.write(this.buf, val, this.pos, true, 52, 8);
+	        this.pos += 8;
+	    },
 
-    writeMessage: function(tag, fn, obj) {
-        this.writeTag(tag, Pbf$1.Bytes);
-        this.writeRawMessage(fn, obj);
-    },
+	    writeBytes: function(buffer) {
+	        var len = buffer.length;
+	        this.writeVarint(len);
+	        this.realloc(len);
+	        for (var i = 0; i < len; i++) this.buf[this.pos++] = buffer[i];
+	    },
 
-    writePackedVarint:   function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedVarint, arr);   },
-    writePackedSVarint:  function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedSVarint, arr);  },
-    writePackedBoolean:  function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedBoolean, arr);  },
-    writePackedFloat:    function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedFloat, arr);    },
-    writePackedDouble:   function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedDouble, arr);   },
-    writePackedFixed32:  function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedFixed32, arr);  },
-    writePackedSFixed32: function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedSFixed32, arr); },
-    writePackedFixed64:  function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedFixed64, arr);  },
-    writePackedSFixed64: function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedSFixed64, arr); },
+	    writeRawMessage: function(fn, obj) {
+	        this.pos++; // reserve 1 byte for short message length
 
-    writeBytesField: function(tag, buffer) {
-        this.writeTag(tag, Pbf$1.Bytes);
-        this.writeBytes(buffer);
-    },
-    writeFixed32Field: function(tag, val) {
-        this.writeTag(tag, Pbf$1.Fixed32);
-        this.writeFixed32(val);
-    },
-    writeSFixed32Field: function(tag, val) {
-        this.writeTag(tag, Pbf$1.Fixed32);
-        this.writeSFixed32(val);
-    },
-    writeFixed64Field: function(tag, val) {
-        this.writeTag(tag, Pbf$1.Fixed64);
-        this.writeFixed64(val);
-    },
-    writeSFixed64Field: function(tag, val) {
-        this.writeTag(tag, Pbf$1.Fixed64);
-        this.writeSFixed64(val);
-    },
-    writeVarintField: function(tag, val) {
-        this.writeTag(tag, Pbf$1.Varint);
-        this.writeVarint(val);
-    },
-    writeSVarintField: function(tag, val) {
-        this.writeTag(tag, Pbf$1.Varint);
-        this.writeSVarint(val);
-    },
-    writeStringField: function(tag, str) {
-        this.writeTag(tag, Pbf$1.Bytes);
-        this.writeString(str);
-    },
-    writeFloatField: function(tag, val) {
-        this.writeTag(tag, Pbf$1.Fixed32);
-        this.writeFloat(val);
-    },
-    writeDoubleField: function(tag, val) {
-        this.writeTag(tag, Pbf$1.Fixed64);
-        this.writeDouble(val);
-    },
-    writeBooleanField: function(tag, val) {
-        this.writeVarintField(tag, Boolean(val));
-    }
-};
+	        // write the message directly to the buffer and see how much was written
+	        var startPos = this.pos;
+	        fn(obj, this);
+	        var len = this.pos - startPos;
 
-function readVarintRemainder(l, s, p) {
-    var buf = p.buf,
-        h, b;
+	        if (len >= 0x80) makeRoomForExtraLength(startPos, len, this);
 
-    b = buf[p.pos++]; h  = (b & 0x70) >> 4;  if (b < 0x80) return toNum(l, h, s);
-    b = buf[p.pos++]; h |= (b & 0x7f) << 3;  if (b < 0x80) return toNum(l, h, s);
-    b = buf[p.pos++]; h |= (b & 0x7f) << 10; if (b < 0x80) return toNum(l, h, s);
-    b = buf[p.pos++]; h |= (b & 0x7f) << 17; if (b < 0x80) return toNum(l, h, s);
-    b = buf[p.pos++]; h |= (b & 0x7f) << 24; if (b < 0x80) return toNum(l, h, s);
-    b = buf[p.pos++]; h |= (b & 0x01) << 31; if (b < 0x80) return toNum(l, h, s);
+	        // finally, write the message length in the reserved place and restore the position
+	        this.pos = startPos - 1;
+	        this.writeVarint(len);
+	        this.pos += len;
+	    },
 
-    throw new Error('Expected varint not more than 10 bytes');
+	    writeMessage: function(tag, fn, obj) {
+	        this.writeTag(tag, Pbf.Bytes);
+	        this.writeRawMessage(fn, obj);
+	    },
+
+	    writePackedVarint:   function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedVarint, arr);   },
+	    writePackedSVarint:  function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedSVarint, arr);  },
+	    writePackedBoolean:  function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedBoolean, arr);  },
+	    writePackedFloat:    function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedFloat, arr);    },
+	    writePackedDouble:   function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedDouble, arr);   },
+	    writePackedFixed32:  function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedFixed32, arr);  },
+	    writePackedSFixed32: function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedSFixed32, arr); },
+	    writePackedFixed64:  function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedFixed64, arr);  },
+	    writePackedSFixed64: function(tag, arr) { if (arr.length) this.writeMessage(tag, writePackedSFixed64, arr); },
+
+	    writeBytesField: function(tag, buffer) {
+	        this.writeTag(tag, Pbf.Bytes);
+	        this.writeBytes(buffer);
+	    },
+	    writeFixed32Field: function(tag, val) {
+	        this.writeTag(tag, Pbf.Fixed32);
+	        this.writeFixed32(val);
+	    },
+	    writeSFixed32Field: function(tag, val) {
+	        this.writeTag(tag, Pbf.Fixed32);
+	        this.writeSFixed32(val);
+	    },
+	    writeFixed64Field: function(tag, val) {
+	        this.writeTag(tag, Pbf.Fixed64);
+	        this.writeFixed64(val);
+	    },
+	    writeSFixed64Field: function(tag, val) {
+	        this.writeTag(tag, Pbf.Fixed64);
+	        this.writeSFixed64(val);
+	    },
+	    writeVarintField: function(tag, val) {
+	        this.writeTag(tag, Pbf.Varint);
+	        this.writeVarint(val);
+	    },
+	    writeSVarintField: function(tag, val) {
+	        this.writeTag(tag, Pbf.Varint);
+	        this.writeSVarint(val);
+	    },
+	    writeStringField: function(tag, str) {
+	        this.writeTag(tag, Pbf.Bytes);
+	        this.writeString(str);
+	    },
+	    writeFloatField: function(tag, val) {
+	        this.writeTag(tag, Pbf.Fixed32);
+	        this.writeFloat(val);
+	    },
+	    writeDoubleField: function(tag, val) {
+	        this.writeTag(tag, Pbf.Fixed64);
+	        this.writeDouble(val);
+	    },
+	    writeBooleanField: function(tag, val) {
+	        this.writeVarintField(tag, Boolean(val));
+	    }
+	};
+
+	function readVarintRemainder(l, s, p) {
+	    var buf = p.buf,
+	        h, b;
+
+	    b = buf[p.pos++]; h  = (b & 0x70) >> 4;  if (b < 0x80) return toNum(l, h, s);
+	    b = buf[p.pos++]; h |= (b & 0x7f) << 3;  if (b < 0x80) return toNum(l, h, s);
+	    b = buf[p.pos++]; h |= (b & 0x7f) << 10; if (b < 0x80) return toNum(l, h, s);
+	    b = buf[p.pos++]; h |= (b & 0x7f) << 17; if (b < 0x80) return toNum(l, h, s);
+	    b = buf[p.pos++]; h |= (b & 0x7f) << 24; if (b < 0x80) return toNum(l, h, s);
+	    b = buf[p.pos++]; h |= (b & 0x01) << 31; if (b < 0x80) return toNum(l, h, s);
+
+	    throw new Error('Expected varint not more than 10 bytes');
+	}
+
+	function readPackedEnd(pbf) {
+	    return pbf.type === Pbf.Bytes ?
+	        pbf.readVarint() + pbf.pos : pbf.pos + 1;
+	}
+
+	function toNum(low, high, isSigned) {
+	    if (isSigned) {
+	        return high * 0x100000000 + (low >>> 0);
+	    }
+
+	    return ((high >>> 0) * 0x100000000) + (low >>> 0);
+	}
+
+	function writeBigVarint(val, pbf) {
+	    var low, high;
+
+	    if (val >= 0) {
+	        low  = (val % 0x100000000) | 0;
+	        high = (val / 0x100000000) | 0;
+	    } else {
+	        low  = ~(-val % 0x100000000);
+	        high = ~(-val / 0x100000000);
+
+	        if (low ^ 0xffffffff) {
+	            low = (low + 1) | 0;
+	        } else {
+	            low = 0;
+	            high = (high + 1) | 0;
+	        }
+	    }
+
+	    if (val >= 0x10000000000000000 || val < -0x10000000000000000) {
+	        throw new Error('Given varint doesn\'t fit into 10 bytes');
+	    }
+
+	    pbf.realloc(10);
+
+	    writeBigVarintLow(low, high, pbf);
+	    writeBigVarintHigh(high, pbf);
+	}
+
+	function writeBigVarintLow(low, high, pbf) {
+	    pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
+	    pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
+	    pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
+	    pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
+	    pbf.buf[pbf.pos]   = low & 0x7f;
+	}
+
+	function writeBigVarintHigh(high, pbf) {
+	    var lsb = (high & 0x07) << 4;
+
+	    pbf.buf[pbf.pos++] |= lsb         | ((high >>>= 3) ? 0x80 : 0); if (!high) return;
+	    pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
+	    pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
+	    pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
+	    pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
+	    pbf.buf[pbf.pos++]  = high & 0x7f;
+	}
+
+	function makeRoomForExtraLength(startPos, len, pbf) {
+	    var extraLen =
+	        len <= 0x3fff ? 1 :
+	        len <= 0x1fffff ? 2 :
+	        len <= 0xfffffff ? 3 : Math.floor(Math.log(len) / (Math.LN2 * 7));
+
+	    // if 1 byte isn't enough for encoding message length, shift the data to the right
+	    pbf.realloc(extraLen);
+	    for (var i = pbf.pos - 1; i >= startPos; i--) pbf.buf[i + extraLen] = pbf.buf[i];
+	}
+
+	function writePackedVarint(arr, pbf)   { for (var i = 0; i < arr.length; i++) pbf.writeVarint(arr[i]);   }
+	function writePackedSVarint(arr, pbf)  { for (var i = 0; i < arr.length; i++) pbf.writeSVarint(arr[i]);  }
+	function writePackedFloat(arr, pbf)    { for (var i = 0; i < arr.length; i++) pbf.writeFloat(arr[i]);    }
+	function writePackedDouble(arr, pbf)   { for (var i = 0; i < arr.length; i++) pbf.writeDouble(arr[i]);   }
+	function writePackedBoolean(arr, pbf)  { for (var i = 0; i < arr.length; i++) pbf.writeBoolean(arr[i]);  }
+	function writePackedFixed32(arr, pbf)  { for (var i = 0; i < arr.length; i++) pbf.writeFixed32(arr[i]);  }
+	function writePackedSFixed32(arr, pbf) { for (var i = 0; i < arr.length; i++) pbf.writeSFixed32(arr[i]); }
+	function writePackedFixed64(arr, pbf)  { for (var i = 0; i < arr.length; i++) pbf.writeFixed64(arr[i]);  }
+	function writePackedSFixed64(arr, pbf) { for (var i = 0; i < arr.length; i++) pbf.writeSFixed64(arr[i]); }
+
+	// Buffer code below from https://github.com/feross/buffer, MIT-licensed
+
+	function readUInt32(buf, pos) {
+	    return ((buf[pos]) |
+	        (buf[pos + 1] << 8) |
+	        (buf[pos + 2] << 16)) +
+	        (buf[pos + 3] * 0x1000000);
+	}
+
+	function writeInt32(buf, val, pos) {
+	    buf[pos] = val;
+	    buf[pos + 1] = (val >>> 8);
+	    buf[pos + 2] = (val >>> 16);
+	    buf[pos + 3] = (val >>> 24);
+	}
+
+	function readInt32(buf, pos) {
+	    return ((buf[pos]) |
+	        (buf[pos + 1] << 8) |
+	        (buf[pos + 2] << 16)) +
+	        (buf[pos + 3] << 24);
+	}
+
+	function readUtf8(buf, pos, end) {
+	    var str = '';
+	    var i = pos;
+
+	    while (i < end) {
+	        var b0 = buf[i];
+	        var c = null; // codepoint
+	        var bytesPerSequence =
+	            b0 > 0xEF ? 4 :
+	            b0 > 0xDF ? 3 :
+	            b0 > 0xBF ? 2 : 1;
+
+	        if (i + bytesPerSequence > end) break;
+
+	        var b1, b2, b3;
+
+	        if (bytesPerSequence === 1) {
+	            if (b0 < 0x80) {
+	                c = b0;
+	            }
+	        } else if (bytesPerSequence === 2) {
+	            b1 = buf[i + 1];
+	            if ((b1 & 0xC0) === 0x80) {
+	                c = (b0 & 0x1F) << 0x6 | (b1 & 0x3F);
+	                if (c <= 0x7F) {
+	                    c = null;
+	                }
+	            }
+	        } else if (bytesPerSequence === 3) {
+	            b1 = buf[i + 1];
+	            b2 = buf[i + 2];
+	            if ((b1 & 0xC0) === 0x80 && (b2 & 0xC0) === 0x80) {
+	                c = (b0 & 0xF) << 0xC | (b1 & 0x3F) << 0x6 | (b2 & 0x3F);
+	                if (c <= 0x7FF || (c >= 0xD800 && c <= 0xDFFF)) {
+	                    c = null;
+	                }
+	            }
+	        } else if (bytesPerSequence === 4) {
+	            b1 = buf[i + 1];
+	            b2 = buf[i + 2];
+	            b3 = buf[i + 3];
+	            if ((b1 & 0xC0) === 0x80 && (b2 & 0xC0) === 0x80 && (b3 & 0xC0) === 0x80) {
+	                c = (b0 & 0xF) << 0x12 | (b1 & 0x3F) << 0xC | (b2 & 0x3F) << 0x6 | (b3 & 0x3F);
+	                if (c <= 0xFFFF || c >= 0x110000) {
+	                    c = null;
+	                }
+	            }
+	        }
+
+	        if (c === null) {
+	            c = 0xFFFD;
+	            bytesPerSequence = 1;
+
+	        } else if (c > 0xFFFF) {
+	            c -= 0x10000;
+	            str += String.fromCharCode(c >>> 10 & 0x3FF | 0xD800);
+	            c = 0xDC00 | c & 0x3FF;
+	        }
+
+	        str += String.fromCharCode(c);
+	        i += bytesPerSequence;
+	    }
+
+	    return str;
+	}
+
+	function readUtf8TextDecoder(buf, pos, end) {
+	    return utf8TextDecoder.decode(buf.subarray(pos, end));
+	}
+
+	function writeUtf8(buf, str, pos) {
+	    for (var i = 0, c, lead; i < str.length; i++) {
+	        c = str.charCodeAt(i); // code point
+
+	        if (c > 0xD7FF && c < 0xE000) {
+	            if (lead) {
+	                if (c < 0xDC00) {
+	                    buf[pos++] = 0xEF;
+	                    buf[pos++] = 0xBF;
+	                    buf[pos++] = 0xBD;
+	                    lead = c;
+	                    continue;
+	                } else {
+	                    c = lead - 0xD800 << 10 | c - 0xDC00 | 0x10000;
+	                    lead = null;
+	                }
+	            } else {
+	                if (c > 0xDBFF || (i + 1 === str.length)) {
+	                    buf[pos++] = 0xEF;
+	                    buf[pos++] = 0xBF;
+	                    buf[pos++] = 0xBD;
+	                } else {
+	                    lead = c;
+	                }
+	                continue;
+	            }
+	        } else if (lead) {
+	            buf[pos++] = 0xEF;
+	            buf[pos++] = 0xBF;
+	            buf[pos++] = 0xBD;
+	            lead = null;
+	        }
+
+	        if (c < 0x80) {
+	            buf[pos++] = c;
+	        } else {
+	            if (c < 0x800) {
+	                buf[pos++] = c >> 0x6 | 0xC0;
+	            } else {
+	                if (c < 0x10000) {
+	                    buf[pos++] = c >> 0xC | 0xE0;
+	                } else {
+	                    buf[pos++] = c >> 0x12 | 0xF0;
+	                    buf[pos++] = c >> 0xC & 0x3F | 0x80;
+	                }
+	                buf[pos++] = c >> 0x6 & 0x3F | 0x80;
+	            }
+	            buf[pos++] = c & 0x3F | 0x80;
+	        }
+	    }
+	    return pos;
+	}
+	return pbf;
 }
 
-function readPackedEnd(pbf) {
-    return pbf.type === Pbf$1.Bytes ?
-        pbf.readVarint() + pbf.pos : pbf.pos + 1;
-}
-
-function toNum(low, high, isSigned) {
-    if (isSigned) {
-        return high * 0x100000000 + (low >>> 0);
-    }
-
-    return ((high >>> 0) * 0x100000000) + (low >>> 0);
-}
-
-function writeBigVarint(val, pbf) {
-    var low, high;
-
-    if (val >= 0) {
-        low  = (val % 0x100000000) | 0;
-        high = (val / 0x100000000) | 0;
-    } else {
-        low  = ~(-val % 0x100000000);
-        high = ~(-val / 0x100000000);
-
-        if (low ^ 0xffffffff) {
-            low = (low + 1) | 0;
-        } else {
-            low = 0;
-            high = (high + 1) | 0;
-        }
-    }
-
-    if (val >= 0x10000000000000000 || val < -0x10000000000000000) {
-        throw new Error('Given varint doesn\'t fit into 10 bytes');
-    }
-
-    pbf.realloc(10);
-
-    writeBigVarintLow(low, high, pbf);
-    writeBigVarintHigh(high, pbf);
-}
-
-function writeBigVarintLow(low, high, pbf) {
-    pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
-    pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
-    pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
-    pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
-    pbf.buf[pbf.pos]   = low & 0x7f;
-}
-
-function writeBigVarintHigh(high, pbf) {
-    var lsb = (high & 0x07) << 4;
-
-    pbf.buf[pbf.pos++] |= lsb         | ((high >>>= 3) ? 0x80 : 0); if (!high) return;
-    pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
-    pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
-    pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
-    pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
-    pbf.buf[pbf.pos++]  = high & 0x7f;
-}
-
-function makeRoomForExtraLength(startPos, len, pbf) {
-    var extraLen =
-        len <= 0x3fff ? 1 :
-        len <= 0x1fffff ? 2 :
-        len <= 0xfffffff ? 3 : Math.floor(Math.log(len) / (Math.LN2 * 7));
-
-    // if 1 byte isn't enough for encoding message length, shift the data to the right
-    pbf.realloc(extraLen);
-    for (var i = pbf.pos - 1; i >= startPos; i--) pbf.buf[i + extraLen] = pbf.buf[i];
-}
-
-function writePackedVarint(arr, pbf)   { for (var i = 0; i < arr.length; i++) pbf.writeVarint(arr[i]);   }
-function writePackedSVarint(arr, pbf)  { for (var i = 0; i < arr.length; i++) pbf.writeSVarint(arr[i]);  }
-function writePackedFloat(arr, pbf)    { for (var i = 0; i < arr.length; i++) pbf.writeFloat(arr[i]);    }
-function writePackedDouble(arr, pbf)   { for (var i = 0; i < arr.length; i++) pbf.writeDouble(arr[i]);   }
-function writePackedBoolean(arr, pbf)  { for (var i = 0; i < arr.length; i++) pbf.writeBoolean(arr[i]);  }
-function writePackedFixed32(arr, pbf)  { for (var i = 0; i < arr.length; i++) pbf.writeFixed32(arr[i]);  }
-function writePackedSFixed32(arr, pbf) { for (var i = 0; i < arr.length; i++) pbf.writeSFixed32(arr[i]); }
-function writePackedFixed64(arr, pbf)  { for (var i = 0; i < arr.length; i++) pbf.writeFixed64(arr[i]);  }
-function writePackedSFixed64(arr, pbf) { for (var i = 0; i < arr.length; i++) pbf.writeSFixed64(arr[i]); }
-
-// Buffer code below from https://github.com/feross/buffer, MIT-licensed
-
-function readUInt32(buf, pos) {
-    return ((buf[pos]) |
-        (buf[pos + 1] << 8) |
-        (buf[pos + 2] << 16)) +
-        (buf[pos + 3] * 0x1000000);
-}
-
-function writeInt32(buf, val, pos) {
-    buf[pos] = val;
-    buf[pos + 1] = (val >>> 8);
-    buf[pos + 2] = (val >>> 16);
-    buf[pos + 3] = (val >>> 24);
-}
-
-function readInt32(buf, pos) {
-    return ((buf[pos]) |
-        (buf[pos + 1] << 8) |
-        (buf[pos + 2] << 16)) +
-        (buf[pos + 3] << 24);
-}
-
-function readUtf8(buf, pos, end) {
-    var str = '';
-    var i = pos;
-
-    while (i < end) {
-        var b0 = buf[i];
-        var c = null; // codepoint
-        var bytesPerSequence =
-            b0 > 0xEF ? 4 :
-            b0 > 0xDF ? 3 :
-            b0 > 0xBF ? 2 : 1;
-
-        if (i + bytesPerSequence > end) break;
-
-        var b1, b2, b3;
-
-        if (bytesPerSequence === 1) {
-            if (b0 < 0x80) {
-                c = b0;
-            }
-        } else if (bytesPerSequence === 2) {
-            b1 = buf[i + 1];
-            if ((b1 & 0xC0) === 0x80) {
-                c = (b0 & 0x1F) << 0x6 | (b1 & 0x3F);
-                if (c <= 0x7F) {
-                    c = null;
-                }
-            }
-        } else if (bytesPerSequence === 3) {
-            b1 = buf[i + 1];
-            b2 = buf[i + 2];
-            if ((b1 & 0xC0) === 0x80 && (b2 & 0xC0) === 0x80) {
-                c = (b0 & 0xF) << 0xC | (b1 & 0x3F) << 0x6 | (b2 & 0x3F);
-                if (c <= 0x7FF || (c >= 0xD800 && c <= 0xDFFF)) {
-                    c = null;
-                }
-            }
-        } else if (bytesPerSequence === 4) {
-            b1 = buf[i + 1];
-            b2 = buf[i + 2];
-            b3 = buf[i + 3];
-            if ((b1 & 0xC0) === 0x80 && (b2 & 0xC0) === 0x80 && (b3 & 0xC0) === 0x80) {
-                c = (b0 & 0xF) << 0x12 | (b1 & 0x3F) << 0xC | (b2 & 0x3F) << 0x6 | (b3 & 0x3F);
-                if (c <= 0xFFFF || c >= 0x110000) {
-                    c = null;
-                }
-            }
-        }
-
-        if (c === null) {
-            c = 0xFFFD;
-            bytesPerSequence = 1;
-
-        } else if (c > 0xFFFF) {
-            c -= 0x10000;
-            str += String.fromCharCode(c >>> 10 & 0x3FF | 0xD800);
-            c = 0xDC00 | c & 0x3FF;
-        }
-
-        str += String.fromCharCode(c);
-        i += bytesPerSequence;
-    }
-
-    return str;
-}
-
-function readUtf8TextDecoder(buf, pos, end) {
-    return utf8TextDecoder.decode(buf.subarray(pos, end));
-}
-
-function writeUtf8(buf, str, pos) {
-    for (var i = 0, c, lead; i < str.length; i++) {
-        c = str.charCodeAt(i); // code point
-
-        if (c > 0xD7FF && c < 0xE000) {
-            if (lead) {
-                if (c < 0xDC00) {
-                    buf[pos++] = 0xEF;
-                    buf[pos++] = 0xBF;
-                    buf[pos++] = 0xBD;
-                    lead = c;
-                    continue;
-                } else {
-                    c = lead - 0xD800 << 10 | c - 0xDC00 | 0x10000;
-                    lead = null;
-                }
-            } else {
-                if (c > 0xDBFF || (i + 1 === str.length)) {
-                    buf[pos++] = 0xEF;
-                    buf[pos++] = 0xBF;
-                    buf[pos++] = 0xBD;
-                } else {
-                    lead = c;
-                }
-                continue;
-            }
-        } else if (lead) {
-            buf[pos++] = 0xEF;
-            buf[pos++] = 0xBF;
-            buf[pos++] = 0xBD;
-            lead = null;
-        }
-
-        if (c < 0x80) {
-            buf[pos++] = c;
-        } else {
-            if (c < 0x800) {
-                buf[pos++] = c >> 0x6 | 0xC0;
-            } else {
-                if (c < 0x10000) {
-                    buf[pos++] = c >> 0xC | 0xE0;
-                } else {
-                    buf[pos++] = c >> 0x12 | 0xF0;
-                    buf[pos++] = c >> 0xC & 0x3F | 0x80;
-                }
-                buf[pos++] = c >> 0x6 & 0x3F | 0x80;
-            }
-            buf[pos++] = c & 0x3F | 0x80;
-        }
-    }
-    return pos;
-}
-
-var Protobuf = /*@__PURE__*/getDefaultExportFromCjs$1(pbf);
+var pbfExports = requirePbf();
+var Protobuf = /*@__PURE__*/getDefaultExportFromCjs$1(pbfExports);
 
 const border$1 = 3;
 function readFontstacks(tag, glyphs, pbf) {
@@ -27926,13 +28870,15 @@ function potpack(boxes) {
 /* eslint-disable key-spacing */
 const IMAGE_PADDING = 1;
 class ImagePosition {
-    constructor(paddedRect, { pixelRatio, version, stretchX, stretchY, content }) {
+    constructor(paddedRect, { pixelRatio, version, stretchX, stretchY, content, textFitWidth, textFitHeight }) {
         this.paddedRect = paddedRect;
         this.pixelRatio = pixelRatio;
         this.stretchX = stretchX;
         this.stretchY = stretchY;
         this.content = content;
         this.version = version;
+        this.textFitWidth = textFitWidth;
+        this.textFitHeight = textFitHeight;
     }
     get tl() {
         return [
@@ -28168,7 +29114,7 @@ function breakLines(input, lineBreakPoints) {
     }
     return lines;
 }
-function shapeText(text, glyphMap, glyphPositions, imagePositions, defaultFontStack, maxWidth, lineHeight, textAnchor, textJustify, spacing, translate, writingMode, allowVerticalPlacement, symbolPlacement, layoutTextSize, layoutTextSizeThisZoom) {
+function shapeText(text, glyphMap, glyphPositions, imagePositions, defaultFontStack, maxWidth, lineHeight, textAnchor, textJustify, spacing, translate, writingMode, allowVerticalPlacement, layoutTextSize, layoutTextSizeThisZoom) {
     const logicalInput = TaggedString.fromFeature(text, defaultFontStack);
     if (writingMode === WritingMode.vertical) {
         logicalInput.verticalizePunctuation();
@@ -28178,7 +29124,7 @@ function shapeText(text, glyphMap, glyphPositions, imagePositions, defaultFontSt
     if (processBidirectionalText && logicalInput.sections.length === 1) {
         // Bidi doesn't have to be style-aware
         lines = [];
-        const untaggedLines = processBidirectionalText(logicalInput.toString(), determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePositions, symbolPlacement, layoutTextSize));
+        const untaggedLines = processBidirectionalText(logicalInput.toString(), determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePositions, layoutTextSize));
         for (const line of untaggedLines) {
             const taggedLine = new TaggedString();
             taggedLine.text = line;
@@ -28193,7 +29139,7 @@ function shapeText(text, glyphMap, glyphPositions, imagePositions, defaultFontSt
         // Need version of mapbox-gl-rtl-text with style support for combining RTL text
         // with formatting
         lines = [];
-        const processedLines = processStyledBidirectionalText(logicalInput.text, logicalInput.sectionIndex, determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePositions, symbolPlacement, layoutTextSize));
+        const processedLines = processStyledBidirectionalText(logicalInput.text, logicalInput.sectionIndex, determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePositions, layoutTextSize));
         for (const line of processedLines) {
             const taggedLine = new TaggedString();
             taggedLine.text = line[0];
@@ -28203,7 +29149,7 @@ function shapeText(text, glyphMap, glyphPositions, imagePositions, defaultFontSt
         }
     }
     else {
-        lines = breakLines(logicalInput, determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePositions, symbolPlacement, layoutTextSize));
+        lines = breakLines(logicalInput, determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePositions, layoutTextSize));
     }
     const positionedLines = [];
     const shaping = {
@@ -28236,7 +29182,6 @@ const breakable = {
     [0x0a]: true, // newline
     [0x20]: true, // space
     [0x26]: true, // ampersand
-    [0x28]: true, // left parenthesis
     [0x29]: true, // right parenthesis
     [0x2b]: true, // plus sign
     [0x2d]: true, // hyphen-minus
@@ -28250,6 +29195,10 @@ const breakable = {
     // Many other characters may be reasonable breakpoints
     // Consider "neutral orientation" characters at scriptDetection.charHasNeutralVerticalOrientation
     // See https://github.com/mapbox/mapbox-gl-js/issues/3658
+};
+// Allow breaks depending on the following character
+const breakableBefore = {
+    [0x28]: true, // left parenthesis
 };
 function getGlyphAdvance(codePoint, section, glyphMap, imagePositions, spacing, layoutTextSize) {
     if (!section.imageName) {
@@ -28337,9 +29286,7 @@ function leastBadBreaks(lastLineBreak) {
     }
     return leastBadBreaks(lastLineBreak.priorBreak).concat(lastLineBreak.index);
 }
-function determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePositions, symbolPlacement, layoutTextSize) {
-    if (symbolPlacement !== 'point')
-        return [];
+function determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePositions, layoutTextSize) {
     if (!logicalInput)
         return [];
     const potentialLineBreaks = [];
@@ -28355,7 +29302,7 @@ function determineLineBreaks(logicalInput, spacing, maxWidth, glyphMap, imagePos
         // surrounding spaces.
         if ((i < logicalInput.length() - 1)) {
             const ideographicBreak = charAllowsIdeographicBreaking(codePoint);
-            if (breakable[codePoint] || ideographicBreak || section.imageName) {
+            if (breakable[codePoint] || ideographicBreak || section.imageName || (i !== logicalInput.length() - 2 && breakableBefore[logicalInput.getCharCode(i + 1)])) {
                 potentialLineBreaks.push(evaluateBreak(i + 1, currentX, targetWidth, potentialLineBreaks, calculatePenalty(codePoint, logicalInput.getCharCode(i + 1), ideographicBreak && hasServerSuggestedBreakpoints), false));
             }
         }
@@ -28545,6 +29492,51 @@ function shapeIcon(image, iconOffset, iconAnchor) {
     const y2 = y1 + image.displaySize[1];
     return { image, top: y1, bottom: y2, left: x1, right: x2 };
 }
+/**
+ * Called after a PositionedIcon has already been run through fitIconToText,
+ * but needs further adjustment to apply textFitWidth and textFitHeight.
+ * @param shapedIcon - The icon that will be adjusted.
+ * @returns Extents of the shapedIcon with text fit adjustments if necessary.
+ */
+function applyTextFit(shapedIcon) {
+    var _a, _b;
+    // Assume shapedIcon.image is set or this wouldn't be called.
+    // Size of the icon after it was adjusted using stretchX and Y
+    let iconLeft = shapedIcon.left;
+    let iconTop = shapedIcon.top;
+    let iconWidth = shapedIcon.right - iconLeft;
+    let iconHeight = shapedIcon.bottom - iconTop;
+    // Size of the original content area
+    const contentWidth = shapedIcon.image.content[2] - shapedIcon.image.content[0];
+    const contentHeight = shapedIcon.image.content[3] - shapedIcon.image.content[1];
+    const textFitWidth = (_a = shapedIcon.image.textFitWidth) !== null && _a !== void 0 ? _a : "stretchOrShrink" /* TextFit.stretchOrShrink */;
+    const textFitHeight = (_b = shapedIcon.image.textFitHeight) !== null && _b !== void 0 ? _b : "stretchOrShrink" /* TextFit.stretchOrShrink */;
+    const contentAspectRatio = contentWidth / contentHeight;
+    // Scale to the proportional axis first note that height takes precedence if
+    // both axes are set to proportional.
+    if (textFitHeight === "proportional" /* TextFit.proportional */) {
+        if ((textFitWidth === "stretchOnly" /* TextFit.stretchOnly */ && iconWidth / iconHeight < contentAspectRatio) || textFitWidth === "proportional" /* TextFit.proportional */) {
+            // Push the width of the icon back out to match the content aspect ratio
+            const newIconWidth = Math.ceil(iconHeight * contentAspectRatio);
+            iconLeft *= newIconWidth / iconWidth;
+            iconWidth = newIconWidth;
+        }
+    }
+    else if (textFitWidth === "proportional" /* TextFit.proportional */) {
+        if (textFitHeight === "stretchOnly" /* TextFit.stretchOnly */ && contentAspectRatio !== 0 && iconWidth / iconHeight > contentAspectRatio) {
+            // Push the height of the icon back out to match the content aspect ratio
+            const newIconHeight = Math.ceil(iconWidth / contentAspectRatio);
+            iconTop *= newIconHeight / iconHeight;
+            iconHeight = newIconHeight;
+        }
+    }
+    else {
+        // If neither textFitHeight nor textFitWidth are proportional then
+        // there is no effect since the content rectangle should be precisely
+        // matched to the content
+    }
+    return { x1: iconLeft, y1: iconTop, x2: iconLeft + iconWidth, y2: iconTop + iconHeight };
+}
 function fitIconToText(shapedIcon, shapedText, textFit, padding, iconOffset, fontScale) {
     const image = shapedIcon.image;
     let collisionPadding;
@@ -28676,7 +29668,7 @@ function getOverlapMode(layout, overlapProp, allowOverlapProp) {
     return result;
 }
 
-const vectorTileFeatureTypes = vectorTile.VectorTileFeature.types;
+const vectorTileFeatureTypes = mvt.VectorTileFeature.types;
 // Opacity arrays are frequently updated but don't contain a lot of information, so we pack them
 // tight. Each Uint32 is actually four duplicate Uint8s for the four corners of a glyph
 // 7 bits are for the current opacity, and the lowest bit is the target opacity
@@ -28907,12 +29899,11 @@ class SymbolBucket {
                 // conversion here.
                 const resolvedTokens = layer.getValueAndResolveTokens('text-field', evaluationFeature, canonical, availableImages);
                 const formattedText = Formatted.factory(resolvedTokens);
-                if (containsRTLText(formattedText)) {
-                    this.hasRTLText = true;
-                }
-                if (!this.hasRTLText || // non-rtl text so can proceed safely
+                // on this instance: if hasRTLText is already true, all future calls to containsRTLText can be skipped.
+                const bucketHasRTLText = this.hasRTLText = (this.hasRTLText || containsRTLText(formattedText));
+                if (!bucketHasRTLText || // non-rtl text so can proceed safely
                     rtlWorkerPlugin.getRTLTextPluginStatus() === 'unavailable' || // We don't intend to lazy-load the rtl text plugin, so proceed with incorrect shaping
-                    this.hasRTLText && rtlWorkerPlugin.isParsed() // Use the rtlText plugin to shape text
+                    bucketHasRTLText && rtlWorkerPlugin.isParsed() // Use the rtlText plugin to shape text
                 ) {
                     text = transformText(formattedText, layer, evaluationFeature);
                 }
@@ -28988,7 +29979,7 @@ class SymbolBucket {
         this.icon.programConfigurations.updatePaintArrays(states, vtLayer, this.layers, imagePositions);
     }
     isEmpty() {
-        // When the bucket encounters only rtl-text but the plugin isnt loaded, no symbol instances will be created.
+        // When the bucket encounters only rtl-text but the plugin isn't loaded, no symbol instances will be created.
         // In order for the bucket to be serialized, and not discarded as an empty bucket both checks are necessary.
         return this.symbolInstances.length === 0 && !this.hasRTLText;
     }
@@ -29092,10 +30083,10 @@ class SymbolBucket {
         const collisionVertexArray = arrays.collisionVertexArray;
         const anchorX = symbolInstance.anchorX;
         const anchorY = symbolInstance.anchorY;
-        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point$3(x1, y1));
-        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point$3(x2, y1));
-        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point$3(x2, y2));
-        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point$3(x1, y2));
+        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point(x1, y1));
+        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point(x2, y1));
+        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point(x2, y2));
+        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point(x1, y2));
         segment.vertexLength += 4;
         const indexArray = arrays.indexArray;
         indexArray.emplaceBack(index, index + 1);
@@ -29471,17 +30462,17 @@ class SymbolStyleLayer extends StyleLayer {
             if (!SymbolStyleLayer.hasPaintOverride(this.layout, overridable)) {
                 continue;
             }
-            const overriden = this.paint.get(overridable);
-            const override = new FormatSectionOverride(overriden);
-            const styleExpression = new StyleExpression(override, overriden.property.specification);
+            const overridden = this.paint.get(overridable);
+            const override = new FormatSectionOverride(overridden);
+            const styleExpression = new StyleExpression(override, overridden.property.specification);
             let expression = null;
-            if (overriden.value.kind === 'constant' || overriden.value.kind === 'source') {
+            if (overridden.value.kind === 'constant' || overridden.value.kind === 'source') {
                 expression = new ZoomConstantExpression('source', styleExpression);
             }
             else {
-                expression = new ZoomDependentExpression('composite', styleExpression, overriden.value.zoomStops);
+                expression = new ZoomDependentExpression('composite', styleExpression, overridden.value.zoomStops);
             }
-            this.paint._values[overridable] = new PossiblyEvaluatedPropertyValue(overriden.property, expression, overriden.parameters);
+            this.paint._values[overridable] = new PossiblyEvaluatedPropertyValue(overridden.property, expression, overridden.parameters);
         }
     }
     _handleOverridablePaintPropertyUpdate(name, oldValue, newValue) {
@@ -29795,7 +30786,7 @@ class FeatureIndex {
     }
     loadVTLayers() {
         if (!this.vtLayers) {
-            this.vtLayers = new vectorTile.VectorTile(new Protobuf(this.rawTileData)).layers;
+            this.vtLayers = new mvt.VectorTile(new Protobuf(this.rawTileData)).layers;
             this.sourceLayerCoder = new DictionaryCoder(this.vtLayers ? Object.keys(this.vtLayers).sort() : ['_geojsonTileLayer']);
         }
         return this.vtLayers;
@@ -29937,7 +30928,7 @@ function topDownFeatureComparator(a, b) {
     return b - a;
 }
 
-class Anchor extends Point$3 {
+class Anchor extends Point {
     constructor(x, y, angle, segment) {
         super(x, y);
         this.angle = angle;
@@ -30061,7 +31052,7 @@ function getCenterAnchor(line, maxAngle, shapedText, shapedIcon, glyphSize, boxS
 }
 function getAnchors(line, spacing, maxAngle, shapedText, shapedIcon, glyphSize, boxScale, overscaling, tileExtent) {
     // Resample a line to get anchor points for labels and check that each
-    // potential label passes text-max-angle check and has enough froom to fit
+    // potential label passes text-max-angle check and has enough room to fit
     // on the line.
     const angleWindowSize = getAngleWindowSize(shapedText, glyphSize, boxScale);
     const shapedLabelLength = getShapedLabelLength(shapedText, shapedIcon);
@@ -30174,37 +31165,37 @@ function clipLine$1(lines, x1, y1, x2, y2) {
                 continue;
             }
             else if (p0.x < x1) {
-                p0 = new Point$3(x1, p0.y + (p1.y - p0.y) * ((x1 - p0.x) / (p1.x - p0.x)))._round();
+                p0 = new Point(x1, p0.y + (p1.y - p0.y) * ((x1 - p0.x) / (p1.x - p0.x)))._round();
             }
             else if (p1.x < x1) {
-                p1 = new Point$3(x1, p0.y + (p1.y - p0.y) * ((x1 - p0.x) / (p1.x - p0.x)))._round();
+                p1 = new Point(x1, p0.y + (p1.y - p0.y) * ((x1 - p0.x) / (p1.x - p0.x)))._round();
             }
             if (p0.y < y1 && p1.y < y1) {
                 continue;
             }
             else if (p0.y < y1) {
-                p0 = new Point$3(p0.x + (p1.x - p0.x) * ((y1 - p0.y) / (p1.y - p0.y)), y1)._round();
+                p0 = new Point(p0.x + (p1.x - p0.x) * ((y1 - p0.y) / (p1.y - p0.y)), y1)._round();
             }
             else if (p1.y < y1) {
-                p1 = new Point$3(p0.x + (p1.x - p0.x) * ((y1 - p0.y) / (p1.y - p0.y)), y1)._round();
+                p1 = new Point(p0.x + (p1.x - p0.x) * ((y1 - p0.y) / (p1.y - p0.y)), y1)._round();
             }
             if (p0.x >= x2 && p1.x >= x2) {
                 continue;
             }
             else if (p0.x >= x2) {
-                p0 = new Point$3(x2, p0.y + (p1.y - p0.y) * ((x2 - p0.x) / (p1.x - p0.x)))._round();
+                p0 = new Point(x2, p0.y + (p1.y - p0.y) * ((x2 - p0.x) / (p1.x - p0.x)))._round();
             }
             else if (p1.x >= x2) {
-                p1 = new Point$3(x2, p0.y + (p1.y - p0.y) * ((x2 - p0.x) / (p1.x - p0.x)))._round();
+                p1 = new Point(x2, p0.y + (p1.y - p0.y) * ((x2 - p0.x) / (p1.x - p0.x)))._round();
             }
             if (p0.y >= y2 && p1.y >= y2) {
                 continue;
             }
             else if (p0.y >= y2) {
-                p0 = new Point$3(p0.x + (p1.x - p0.x) * ((y2 - p0.y) / (p1.y - p0.y)), y2)._round();
+                p0 = new Point(p0.x + (p1.x - p0.x) * ((y2 - p0.y) / (p1.y - p0.y)), y2)._round();
             }
             else if (p1.y >= y2) {
-                p1 = new Point$3(p0.x + (p1.x - p0.x) * ((y2 - p0.y) / (p1.y - p0.y)), y2)._round();
+                p1 = new Point(p0.x + (p1.x - p0.x) * ((y2 - p0.y) / (p1.y - p0.y)), y2)._round();
             }
             if (!clippedLine || !p0.equals(clippedLine[clippedLine.length - 1])) {
                 clippedLine = [p0];
@@ -30229,8 +31220,12 @@ function getIconQuads(shapedIcon, iconRotate, isSDFIcon, hasIconTextFit) {
     const pixelRatio = image.pixelRatio;
     const imageWidth = image.paddedRect.w - 2 * border;
     const imageHeight = image.paddedRect.h - 2 * border;
-    const iconWidth = shapedIcon.right - shapedIcon.left;
-    const iconHeight = shapedIcon.bottom - shapedIcon.top;
+    let icon = {
+        x1: shapedIcon.left,
+        y1: shapedIcon.top,
+        x2: shapedIcon.right,
+        y2: shapedIcon.bottom
+    };
     const stretchX = image.stretchX || [[0, imageWidth]];
     const stretchY = image.stretchY || [[0, imageHeight]];
     const reduceRanges = (sum, range) => sum + range[1] - range[0];
@@ -30248,30 +31243,40 @@ function getIconQuads(shapedIcon, iconRotate, isSDFIcon, hasIconTextFit) {
     let fixedContentHeight = fixedHeight;
     if (image.content && hasIconTextFit) {
         const content = image.content;
+        const contentWidth = content[2] - content[0];
+        const contentHeight = content[3] - content[1];
+        // Constrict content area to fit target aspect ratio
+        if (image.textFitWidth || image.textFitHeight) {
+            icon = applyTextFit(shapedIcon);
+        }
         stretchOffsetX = sumWithinRange(stretchX, 0, content[0]);
         stretchOffsetY = sumWithinRange(stretchY, 0, content[1]);
         stretchContentWidth = sumWithinRange(stretchX, content[0], content[2]);
         stretchContentHeight = sumWithinRange(stretchY, content[1], content[3]);
         fixedOffsetX = content[0] - stretchOffsetX;
         fixedOffsetY = content[1] - stretchOffsetY;
-        fixedContentWidth = content[2] - content[0] - stretchContentWidth;
-        fixedContentHeight = content[3] - content[1] - stretchContentHeight;
+        fixedContentWidth = contentWidth - stretchContentWidth;
+        fixedContentHeight = contentHeight - stretchContentHeight;
     }
+    const iconLeft = icon.x1;
+    const iconTop = icon.y1;
+    const iconWidth = icon.x2 - iconLeft;
+    const iconHeight = icon.y2 - iconTop;
     const makeBox = (left, top, right, bottom) => {
-        const leftEm = getEmOffset(left.stretch - stretchOffsetX, stretchContentWidth, iconWidth, shapedIcon.left);
+        const leftEm = getEmOffset(left.stretch - stretchOffsetX, stretchContentWidth, iconWidth, iconLeft);
         const leftPx = getPxOffset(left.fixed - fixedOffsetX, fixedContentWidth, left.stretch, stretchWidth);
-        const topEm = getEmOffset(top.stretch - stretchOffsetY, stretchContentHeight, iconHeight, shapedIcon.top);
+        const topEm = getEmOffset(top.stretch - stretchOffsetY, stretchContentHeight, iconHeight, iconTop);
         const topPx = getPxOffset(top.fixed - fixedOffsetY, fixedContentHeight, top.stretch, stretchHeight);
-        const rightEm = getEmOffset(right.stretch - stretchOffsetX, stretchContentWidth, iconWidth, shapedIcon.left);
+        const rightEm = getEmOffset(right.stretch - stretchOffsetX, stretchContentWidth, iconWidth, iconLeft);
         const rightPx = getPxOffset(right.fixed - fixedOffsetX, fixedContentWidth, right.stretch, stretchWidth);
-        const bottomEm = getEmOffset(bottom.stretch - stretchOffsetY, stretchContentHeight, iconHeight, shapedIcon.top);
+        const bottomEm = getEmOffset(bottom.stretch - stretchOffsetY, stretchContentHeight, iconHeight, iconTop);
         const bottomPx = getPxOffset(bottom.fixed - fixedOffsetY, fixedContentHeight, bottom.stretch, stretchHeight);
-        const tl = new Point$3(leftEm, topEm);
-        const tr = new Point$3(rightEm, topEm);
-        const br = new Point$3(rightEm, bottomEm);
-        const bl = new Point$3(leftEm, bottomEm);
-        const pixelOffsetTL = new Point$3(leftPx / pixelRatio, topPx / pixelRatio);
-        const pixelOffsetBR = new Point$3(rightPx / pixelRatio, bottomPx / pixelRatio);
+        const tl = new Point(leftEm, topEm);
+        const tr = new Point(rightEm, topEm);
+        const br = new Point(rightEm, bottomEm);
+        const bl = new Point(leftEm, bottomEm);
+        const pixelOffsetTL = new Point(leftPx / pixelRatio, topPx / pixelRatio);
+        const pixelOffsetBR = new Point(rightPx / pixelRatio, bottomPx / pixelRatio);
         const angle = iconRotate * Math.PI / 180;
         if (angle) {
             const sin = Math.sin(angle), cos = Math.cos(angle), matrix = [cos, -sin, sin, cos];
@@ -30394,10 +31399,10 @@ function getGlyphQuads(anchor, shaping, textOffset, layer, alongLine, feature, i
             const y1 = (-positionedGlyph.metrics.top - rectBuffer) * positionedGlyph.scale + builtInOffset[1];
             const x2 = x1 + textureRect.w / textureScale * positionedGlyph.scale / pixelRatio;
             const y2 = y1 + textureRect.h / textureScale * positionedGlyph.scale / pixelRatio;
-            const tl = new Point$3(x1, y1);
-            const tr = new Point$3(x2, y1);
-            const bl = new Point$3(x1, y2);
-            const br = new Point$3(x2, y2);
+            const tl = new Point(x1, y1);
+            const tr = new Point(x2, y1);
+            const bl = new Point(x1, y2);
+            const br = new Point(x2, y2);
             if (rotateVerticalGlyph) {
                 // Vertical-supporting glyphs are laid out in 24x24 point boxes (1 square em)
                 // In horizontal orientation, the y values for glyphs are below the midline
@@ -30408,14 +31413,14 @@ function getGlyphQuads(anchor, shaping, textOffset, layer, alongLine, feature, i
                 // necessary, but we also pull the glyph to the left along the x axis.
                 // The y coordinate includes baseline yOffset, thus needs to be accounted
                 // for when glyph is rotated and translated.
-                const center = new Point$3(-halfAdvance, halfAdvance - SHAPING_DEFAULT_OFFSET);
+                const center = new Point(-halfAdvance, halfAdvance - SHAPING_DEFAULT_OFFSET);
                 const verticalRotation = -Math.PI / 2;
                 // xHalfWidthOffsetCorrection is a difference between full-width and half-width
                 // advance, should be 0 for full-width glyphs and will pull up half-width glyphs.
                 const xHalfWidthOffsetCorrection = ONE_EM / 2 - halfAdvance;
                 const yImageOffsetCorrection = positionedGlyph.imageName ? xHalfWidthOffsetCorrection : 0.0;
-                const halfWidthOffsetCorrection = new Point$3(5 - SHAPING_DEFAULT_OFFSET - xHalfWidthOffsetCorrection, -yImageOffsetCorrection);
-                const verticalOffsetCorrection = new Point$3(...verticalizedLabelOffset);
+                const halfWidthOffsetCorrection = new Point(5 - SHAPING_DEFAULT_OFFSET - xHalfWidthOffsetCorrection, -yImageOffsetCorrection);
+                const verticalOffsetCorrection = new Point(...verticalizedLabelOffset);
                 tl._rotateAround(verticalRotation, center)._add(halfWidthOffsetCorrection)._add(verticalOffsetCorrection);
                 tr._rotateAround(verticalRotation, center)._add(halfWidthOffsetCorrection)._add(verticalOffsetCorrection);
                 bl._rotateAround(verticalRotation, center)._add(halfWidthOffsetCorrection)._add(verticalOffsetCorrection);
@@ -30428,8 +31433,8 @@ function getGlyphQuads(anchor, shaping, textOffset, layer, alongLine, feature, i
                 bl._matMult(matrix);
                 br._matMult(matrix);
             }
-            const pixelOffsetTL = new Point$3(0, 0);
-            const pixelOffsetBR = new Point$3(0, 0);
+            const pixelOffsetTL = new Point(0, 0);
+            const pixelOffsetBR = new Point(0, 0);
             const minFontScaleX = 0;
             const minFontScaleY = 0;
             quads.push({ tl, tr, bl, br, tex: textureRect, writingMode: shaping.writingMode, glyphOffset, sectionIndex: positionedGlyph.sectionIndex, isSDF, pixelOffsetTL, pixelOffsetBR, minFontScaleX, minFontScaleY });
@@ -30456,6 +31461,7 @@ class CollisionFeature {
      * @param alignLine - Whether the label is aligned with the line or the viewport.
      */
     constructor(collisionBoxArray, anchor, featureIndex, sourceLayerIndex, bucketIndex, shaped, boxScale, padding, alignLine, rotate) {
+        var _a;
         this.boxStartIndex = collisionBoxArray.length;
         if (alignLine) {
             // Compute height of the shape in glyph metrics and apply collision padding.
@@ -30475,26 +31481,34 @@ class CollisionFeature {
             }
         }
         else {
+            const icon = ((_a = shaped.image) === null || _a === void 0 ? void 0 : _a.content) && (shaped.image.textFitWidth || shaped.image.textFitHeight) ?
+                applyTextFit(shaped) :
+                {
+                    x1: shaped.left,
+                    y1: shaped.top,
+                    x2: shaped.right,
+                    y2: shaped.bottom
+                };
             // margin is in CSS order: [top, right, bottom, left]
-            let y1 = shaped.top * boxScale - padding[0];
-            let y2 = shaped.bottom * boxScale + padding[2];
-            let x1 = shaped.left * boxScale - padding[3];
-            let x2 = shaped.right * boxScale + padding[1];
+            icon.y1 = icon.y1 * boxScale - padding[0];
+            icon.y2 = icon.y2 * boxScale + padding[2];
+            icon.x1 = icon.x1 * boxScale - padding[3];
+            icon.x2 = icon.x2 * boxScale + padding[1];
             const collisionPadding = shaped.collisionPadding;
             if (collisionPadding) {
-                x1 -= collisionPadding[0] * boxScale;
-                y1 -= collisionPadding[1] * boxScale;
-                x2 += collisionPadding[2] * boxScale;
-                y2 += collisionPadding[3] * boxScale;
+                icon.x1 -= collisionPadding[0] * boxScale;
+                icon.y1 -= collisionPadding[1] * boxScale;
+                icon.x2 += collisionPadding[2] * boxScale;
+                icon.y2 += collisionPadding[3] * boxScale;
             }
             if (rotate) {
                 // Account for *-rotate in point collision boxes
                 // See https://github.com/mapbox/mapbox-gl-js/issues/6075
                 // Doesn't account for icon-text-fit
-                const tl = new Point$3(x1, y1);
-                const tr = new Point$3(x2, y1);
-                const bl = new Point$3(x1, y2);
-                const br = new Point$3(x2, y2);
+                const tl = new Point(icon.x1, icon.y1);
+                const tr = new Point(icon.x2, icon.y1);
+                const bl = new Point(icon.x1, icon.y2);
+                const br = new Point(icon.x2, icon.y2);
                 const rotateRadians = rotate * Math.PI / 180;
                 tl._rotate(rotateRadians);
                 tr._rotate(rotateRadians);
@@ -30503,19 +31517,19 @@ class CollisionFeature {
                 // Collision features require an "on-axis" geometry,
                 // so take the envelope of the rotated geometry
                 // (may be quite large for wide labels rotated 45 degrees)
-                x1 = Math.min(tl.x, tr.x, bl.x, br.x);
-                x2 = Math.max(tl.x, tr.x, bl.x, br.x);
-                y1 = Math.min(tl.y, tr.y, bl.y, br.y);
-                y2 = Math.max(tl.y, tr.y, bl.y, br.y);
+                icon.x1 = Math.min(tl.x, tr.x, bl.x, br.x);
+                icon.x2 = Math.max(tl.x, tr.x, bl.x, br.x);
+                icon.y1 = Math.min(tl.y, tr.y, bl.y, br.y);
+                icon.y2 = Math.max(tl.y, tr.y, bl.y, br.y);
             }
-            collisionBoxArray.emplaceBack(anchor.x, anchor.y, x1, y1, x2, y2, featureIndex, sourceLayerIndex, bucketIndex);
+            collisionBoxArray.emplaceBack(anchor.x, anchor.y, icon.x1, icon.y1, icon.x2, icon.y2, featureIndex, sourceLayerIndex, bucketIndex);
         }
         this.boxEndIndex = collisionBoxArray.length;
     }
 }
 
 class TinyQueue {
-    constructor(data = [], compare = defaultCompare) {
+    constructor(data = [], compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0)) {
         this.data = data;
         this.length = this.data.length;
         this.compare = compare;
@@ -30527,8 +31541,7 @@ class TinyQueue {
 
     push(item) {
         this.data.push(item);
-        this.length++;
-        this._up(this.length - 1);
+        this._up(this.length++);
     }
 
     pop() {
@@ -30536,9 +31549,8 @@ class TinyQueue {
 
         const top = this.data[0];
         const bottom = this.data.pop();
-        this.length--;
 
-        if (this.length > 0) {
+        if (--this.length > 0) {
             this.data[0] = bottom;
             this._down(0);
         }
@@ -30571,36 +31583,30 @@ class TinyQueue {
         const item = data[pos];
 
         while (pos < halfLength) {
-            let left = (pos << 1) + 1;
-            let best = data[left];
-            const right = left + 1;
+            let bestChild = (pos << 1) + 1; // initially it is the left child
+            const right = bestChild + 1;
 
-            if (right < this.length && compare(data[right], best) < 0) {
-                left = right;
-                best = data[right];
+            if (right < this.length && compare(data[right], data[bestChild]) < 0) {
+                bestChild = right;
             }
-            if (compare(best, item) >= 0) break;
+            if (compare(data[bestChild], item) >= 0) break;
 
-            data[pos] = best;
-            pos = left;
+            data[pos] = data[bestChild];
+            pos = bestChild;
         }
 
         data[pos] = item;
     }
 }
 
-function defaultCompare(a, b) {
-    return a < b ? -1 : a > b ? 1 : 0;
-}
-
 /**
- * Finds an approximation of a polygon's Pole Of Inaccessibiliy https://en.wikipedia.org/wiki/Pole_of_inaccessibility
- * This is a copy of http://github.com/mapbox/polylabel adapted to use Points
+ * Finds an approximation of a polygon's Pole Of Inaccessibility https://en.wikipedia.org/wiki/Pole_of_inaccessibility
+ * This is a copy of https://github.com/mapbox/polylabel adapted to use Points
  *
  * @param polygonRings - first item in array is the outer ring followed optionally by the list of holes, should be an element of the result of util/classify_rings
  * @param precision - Specified in input coordinate units. If 0 returns after first run, if `> 0` repeatedly narrows the search space until the radius of the area searched for the best pole is less than precision
  * @param debug - Print some statistics to the console during execution
- * @returns Pole of Inaccessibiliy.
+ * @returns Pole of Inaccessibility.
  */
 function findPoleOfInaccessibility(polygonRings, precision = 1, debug = false) {
     // find the bounding box of the outer ring
@@ -30624,7 +31630,7 @@ function findPoleOfInaccessibility(polygonRings, precision = 1, debug = false) {
     // a priority queue of cells in order of their "potential" (max distance to polygon)
     const cellQueue = new TinyQueue([], compareMax);
     if (cellSize === 0)
-        return new Point$3(minX, minY);
+        return new Point(minX, minY);
     // cover polygon with initial cells
     for (let x = minX; x < maxX; x += cellSize) {
         for (let y = minY; y < maxY; y += cellSize) {
@@ -30664,7 +31670,7 @@ function compareMax(a, b) {
     return b.max - a.max;
 }
 function Cell(x, y, h, polygon) {
-    this.p = new Point$3(x, y);
+    this.p = new Point(x, y);
     this.h = h; // half the cell size
     this.d = pointToPolygonDist(this.p, polygon); // distance from cell center to polygon
     this.max = this.d + this.h * Math.SQRT2; // max distance to polygon within a cell
@@ -30912,13 +31918,13 @@ function performSymbolLayout(args) {
             const symbolPlacement = layout.get('symbol-placement');
             const maxWidth = symbolPlacement === 'point' ?
                 layout.get('text-max-width').evaluate(feature, {}, args.canonical) * ONE_EM :
-                0;
+                Infinity;
             const addVerticalShapingForPointLabelIfNeeded = () => {
                 if (args.bucket.allowVerticalPlacement && allowsVerticalWritingMode(unformattedText)) {
                     // Vertical POI label placement is meant to be used for scripts that support vertical
                     // writing mode, thus, default left justification is used. If Latin
                     // scripts would need to be supported, this should take into account other justifications.
-                    shapedTextOrientations.vertical = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, 'left', spacingIfAllowed, textOffset, WritingMode.vertical, true, symbolPlacement, layoutTextSize, layoutTextSizeThisZoom);
+                    shapedTextOrientations.vertical = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, 'left', spacingIfAllowed, textOffset, WritingMode.vertical, true, layoutTextSize, layoutTextSizeThisZoom);
                 }
             };
             // If this layer uses text-variable-anchor, generate shapings for all justification possibilities.
@@ -30944,7 +31950,7 @@ function performSymbolLayout(args) {
                     else {
                         // If using text-variable-anchor for the layer, we use a center anchor for all shapings and apply
                         // the offsets for the anchor in the placement step.
-                        const shaping = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, 'center', justification, spacingIfAllowed, textOffset, WritingMode.horizontal, false, symbolPlacement, layoutTextSize, layoutTextSizeThisZoom);
+                        const shaping = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, 'center', justification, spacingIfAllowed, textOffset, WritingMode.horizontal, false, layoutTextSize, layoutTextSizeThisZoom);
                         if (shaping) {
                             shapedTextOrientations.horizontal[justification] = shaping;
                             singleLine = shaping.positionedLines.length === 1;
@@ -30958,14 +31964,14 @@ function performSymbolLayout(args) {
                     textJustify = getAnchorJustification(textAnchor);
                 }
                 // Horizontal point or line label.
-                const shaping = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, textJustify, spacingIfAllowed, textOffset, WritingMode.horizontal, false, symbolPlacement, layoutTextSize, layoutTextSizeThisZoom);
+                const shaping = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, textJustify, spacingIfAllowed, textOffset, WritingMode.horizontal, false, layoutTextSize, layoutTextSizeThisZoom);
                 if (shaping)
                     shapedTextOrientations.horizontal[textJustify] = shaping;
                 // Vertical point label (if allowVerticalPlacement is enabled).
                 addVerticalShapingForPointLabelIfNeeded();
                 // Verticalized line label.
                 if (allowsVerticalWritingMode(unformattedText) && textAlongLine && keepUpright) {
-                    shapedTextOrientations.vertical = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, textJustify, spacingIfAllowed, textOffset, WritingMode.vertical, false, symbolPlacement, layoutTextSize, layoutTextSizeThisZoom);
+                    shapedTextOrientations.vertical = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, textJustify, spacingIfAllowed, textOffset, WritingMode.vertical, false, layoutTextSize, layoutTextSizeThisZoom);
                 }
             }
         }
@@ -31080,7 +32086,7 @@ function addFeature$1(bucket, feature, shapedTextOrientations, shapedIcon, image
         }
     }
     else if (feature.type === 'Polygon') {
-        for (const polygon of classifyRings$1(feature.geometry, 0)) {
+        for (const polygon of classifyRings(feature.geometry, 0)) {
             // 16 here represents 2 pixels
             const poi = findPoleOfInaccessibility(polygon, 16);
             addSymbolAtAnchor(polygon[0], new Anchor(poi.x, poi.y, 0));
@@ -31162,7 +32168,7 @@ function addSymbol(bucket, anchor, line, shapedTextOrientations, shapedIcon, ima
     let placedIconSymbolIndex = -1;
     let verticalPlacedIconSymbolIndex = -1;
     const placedTextSymbolIndices = {};
-    let key = murmur3$1('');
+    let key = murmur3('');
     if (bucket.allowVerticalPlacement && shapedTextOrientations.vertical) {
         const textRotation = layer.layout.get('text-rotate').evaluate(feature, {}, canonical);
         const verticalTextRotation = textRotation + 90.0;
@@ -31203,13 +32209,13 @@ function addSymbol(bucket, anchor, line, shapedTextOrientations, shapedIcon, ima
             }
         }
         bucket.addSymbols(bucket.icon, iconQuads, iconSizeData, iconOffset, iconAlongLine, feature, WritingMode.none, anchor, lineArray.lineStartIndex, lineArray.lineLength, 
-        // The icon itself does not have an associated symbol since the text isnt placed yet
+        // The icon itself does not have an associated symbol since the text isn't placed yet
         -1, canonical);
         placedIconSymbolIndex = bucket.icon.placedSymbolArray.length - 1;
         if (verticalIconQuads) {
             numVerticalIconVertices = verticalIconQuads.length * 4;
             bucket.addSymbols(bucket.icon, verticalIconQuads, iconSizeData, iconOffset, iconAlongLine, feature, WritingMode.vertical, anchor, lineArray.lineStartIndex, lineArray.lineLength, 
-            // The icon itself does not have an associated symbol since the text isnt placed yet
+            // The icon itself does not have an associated symbol since the text isn't placed yet
             -1, canonical);
             verticalPlacedIconSymbolIndex = bucket.icon.placedSymbolArray.length - 1;
         }
@@ -31218,7 +32224,7 @@ function addSymbol(bucket, anchor, line, shapedTextOrientations, shapedIcon, ima
     for (const justification of justifications) {
         const shaping = shapedTextOrientations.horizontal[justification];
         if (!textCollisionFeature) {
-            key = murmur3$1(shaping.text);
+            key = murmur3(shaping.text);
             const textRotate = layer.layout.get('text-rotate').evaluate(feature, {}, canonical);
             // As a collision approximation, we can use either the vertical or any of the horizontal versions of the feature
             // We're counting on all versions having similar dimensions
@@ -31540,12 +32546,12 @@ class LngLat {
 /*
  * The average circumference of the world in meters.
  */
-const earthCircumfrence = 2 * Math.PI * earthRadius; // meters
+const earthCircumference = 2 * Math.PI * earthRadius; // meters
 /*
  * The circumference at a line of latitude in meters.
  */
 function circumferenceAtLatitude(latitude) {
-    return earthCircumfrence * Math.cos(latitude * Math.PI / 180);
+    return earthCircumference * Math.cos(latitude * Math.PI / 180);
 }
 function mercatorXfromLng(lng) {
     return (180 + lng) / 360;
@@ -31664,8 +32670,46 @@ class MercatorCoordinate {
      */
     meterInMercatorCoordinateUnits() {
         // 1 meter / circumference at equator in meters * Mercator projection scale factor at this latitude
-        return 1 / earthCircumfrence * mercatorScale(latFromMercatorY(this.y));
+        return 1 / earthCircumference * mercatorScale(latFromMercatorY(this.y));
     }
+}
+
+/**
+ * Returns true if a given tile zoom (Z), X, and Y are in the bounds of the world.
+ * Zoom bounds are the minimum zoom (inclusive) through the maximum zoom (inclusive).
+ * X and Y bounds are 0 (inclusive) to their respective zoom-dependent maxima (exclusive).
+ *
+ * @param zoom - the tile zoom (Z)
+ * @param x - the tile X
+ * @param y - the tile Y
+ * @returns `true` if a given tile zoom, X, and Y are in the bounds of the world.
+ */
+function isInBoundsForTileZoomXY(zoom, x, y) {
+    return !(zoom < MIN_TILE_ZOOM ||
+        zoom > MAX_TILE_ZOOM ||
+        y < 0 ||
+        y >= Math.pow(2, zoom) ||
+        x < 0 ||
+        x >= Math.pow(2, zoom));
+}
+/**
+ * Returns true if a given zoom and `LngLat` are in the bounds of the world.
+ * Does not wrap `LngLat` when checking if in bounds.
+ * Zoom bounds are the minimum zoom (inclusive) through the maximum zoom (inclusive).
+ * `LngLat` bounds are the mercator world's north-west corner (inclusive) to its south-east corner (exclusive).
+ *
+ * @param zoom - the tile zoom (Z)
+ * @param LngLat - the `LngLat` object containing the longitude and latitude
+ * @returns `true` if a given zoom and `LngLat` are in the bounds of the world.
+ */
+function isInBoundsForZoomLngLat(zoom, lnglat) {
+    const { x, y } = MercatorCoordinate.fromLngLat(lnglat);
+    return !(zoom < MIN_TILE_ZOOM ||
+        zoom > MAX_TILE_ZOOM ||
+        y < 0 ||
+        y >= 1 ||
+        x < 0 ||
+        x >= 1);
 }
 
 /**
@@ -31673,8 +32717,8 @@ class MercatorCoordinate {
  */
 class CanonicalTileID {
     constructor(z, x, y) {
-        if (z < 0 || z > 25 || y < 0 || y >= Math.pow(2, z) || x < 0 || x >= Math.pow(2, z)) {
-            throw new Error(`x=${x}, y=${y}, z=${z} outside of bounds. 0<=x<${Math.pow(2, z)}, 0<=y<${Math.pow(2, z)} 0<=z<=25 `);
+        if (!isInBoundsForTileZoomXY(z, x, y)) {
+            throw new Error(`x=${x}, y=${y}, z=${z} outside of bounds. 0<=x<${Math.pow(2, z)}, 0<=y<${Math.pow(2, z)} ${MIN_TILE_ZOOM}<=z<=${MAX_TILE_ZOOM} `);
         }
         this.z = z;
         this.x = x;
@@ -31703,7 +32747,7 @@ class CanonicalTileID {
     }
     getTilePoint(coord) {
         const tilesAtZoom = Math.pow(2, this.z);
-        return new Point$3((coord.x * tilesAtZoom - this.x) * EXTENT, (coord.y * tilesAtZoom - this.y) * EXTENT);
+        return new Point((coord.x * tilesAtZoom - this.x) * EXTENT, (coord.y * tilesAtZoom - this.y) * EXTENT);
     }
     toString() {
         return `${this.z}/${this.x}/${this.y}`;
@@ -31919,6 +32963,8 @@ class WorkerTile {
                     featureIndex.bucketLayerIDs.push(family.map((l) => l.id));
                 }
             }
+            // options.glyphDependencies looks like: {"SomeFontName":{"10":true,"32":true}}
+            // this line makes an object like: {"SomeFontName":[10,32]}
             const stacks = mapObject(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
             this.inFlightDependencies.forEach((request) => request === null || request === void 0 ? void 0 : request.abort());
             this.inFlightDependencies = [];
@@ -31926,21 +32972,21 @@ class WorkerTile {
             if (Object.keys(stacks).length) {
                 const abortController = new AbortController();
                 this.inFlightDependencies.push(abortController);
-                getGlyphsPromise = actor.sendAsync({ type: 'getGlyphs', data: { stacks, source: this.source, tileID: this.tileID, type: 'glyphs' } }, abortController);
+                getGlyphsPromise = actor.sendAsync({ type: "GG" /* MessageType.getGlyphs */, data: { stacks, source: this.source, tileID: this.tileID, type: 'glyphs' } }, abortController);
             }
             const icons = Object.keys(options.iconDependencies);
             let getIconsPromise = Promise.resolve({});
             if (icons.length) {
                 const abortController = new AbortController();
                 this.inFlightDependencies.push(abortController);
-                getIconsPromise = actor.sendAsync({ type: 'getImages', data: { icons, source: this.source, tileID: this.tileID, type: 'icons' } }, abortController);
+                getIconsPromise = actor.sendAsync({ type: "GI" /* MessageType.getImages */, data: { icons, source: this.source, tileID: this.tileID, type: 'icons' } }, abortController);
             }
             const patterns = Object.keys(options.patternDependencies);
             let getPatternsPromise = Promise.resolve({});
             if (patterns.length) {
                 const abortController = new AbortController();
                 this.inFlightDependencies.push(abortController);
-                getPatternsPromise = actor.sendAsync({ type: 'getImages', data: { icons: patterns, source: this.source, tileID: this.tileID, type: 'patterns' } }, abortController);
+                getPatternsPromise = actor.sendAsync({ type: "GI" /* MessageType.getImages */, data: { icons: patterns, source: this.source, tileID: this.tileID, type: 'patterns' } }, abortController);
             }
             const [glyphMap, iconMap, patternMap] = yield Promise.all([getGlyphsPromise, getIconsPromise, getPatternsPromise]);
             const glyphAtlas = new GlyphAtlas(glyphMap);
@@ -32105,9 +33151,9 @@ class VectorTileWorkerSource {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield getArrayBuffer(params.request, abortController);
             try {
-                const vectorTile$1 = new vectorTile.VectorTile(new Protobuf(response.data));
+                const vectorTile = new mvt.VectorTile(new Protobuf(response.data));
                 return {
-                    vectorTile: vectorTile$1,
+                    vectorTile,
                     rawData: response.data,
                     cacheControl: response.cacheControl,
                     expires: response.expires
@@ -32121,7 +33167,7 @@ class VectorTileWorkerSource {
                     errorMessage += 'please make sure the data is not gzipped and that you have configured the relevant header in the server';
                 }
                 else {
-                    errorMessage += `got error: ${ex.messge}`;
+                    errorMessage += `got error: ${ex.message}`;
                 }
                 throw new Error(errorMessage);
             }
@@ -32242,7 +33288,7 @@ class VectorTileWorkerSource {
 
 /**
  * DEMData is a data structure for decoding, backfilling, and storing elevation data for processing in the hillshade shaders
- * data can be populated either from a pngraw image tile or from serliazed data sent back from a worker. When data is initially
+ * data can be populated either from a pngraw image tile or from serialized data sent back from a worker. When data is initially
  * loaded from a image tile, we decode the pixel values using the appropriate decoding formula, but we store the
  * elevation data as an Int32 value. we add 65536 (2^16) to eliminate negative values and enable the use of
  * integer overflow when creating the texture used in the hillshadePrepare step.
@@ -32406,54 +33452,63 @@ class RasterDEMTileWorkerSource {
     }
 }
 
-var geojsonRewind = rewind$1;
+var geojsonRewind;
+var hasRequiredGeojsonRewind;
 
-function rewind$1(gj, outer) {
-    var type = gj && gj.type, i;
+function requireGeojsonRewind () {
+	if (hasRequiredGeojsonRewind) return geojsonRewind;
+	hasRequiredGeojsonRewind = 1;
+	geojsonRewind = rewind;
 
-    if (type === 'FeatureCollection') {
-        for (i = 0; i < gj.features.length; i++) rewind$1(gj.features[i], outer);
+	function rewind(gj, outer) {
+	    var type = gj && gj.type, i;
 
-    } else if (type === 'GeometryCollection') {
-        for (i = 0; i < gj.geometries.length; i++) rewind$1(gj.geometries[i], outer);
+	    if (type === 'FeatureCollection') {
+	        for (i = 0; i < gj.features.length; i++) rewind(gj.features[i], outer);
 
-    } else if (type === 'Feature') {
-        rewind$1(gj.geometry, outer);
+	    } else if (type === 'GeometryCollection') {
+	        for (i = 0; i < gj.geometries.length; i++) rewind(gj.geometries[i], outer);
 
-    } else if (type === 'Polygon') {
-        rewindRings(gj.coordinates, outer);
+	    } else if (type === 'Feature') {
+	        rewind(gj.geometry, outer);
 
-    } else if (type === 'MultiPolygon') {
-        for (i = 0; i < gj.coordinates.length; i++) rewindRings(gj.coordinates[i], outer);
-    }
+	    } else if (type === 'Polygon') {
+	        rewindRings(gj.coordinates, outer);
 
-    return gj;
+	    } else if (type === 'MultiPolygon') {
+	        for (i = 0; i < gj.coordinates.length; i++) rewindRings(gj.coordinates[i], outer);
+	    }
+
+	    return gj;
+	}
+
+	function rewindRings(rings, outer) {
+	    if (rings.length === 0) return;
+
+	    rewindRing(rings[0], outer);
+	    for (var i = 1; i < rings.length; i++) {
+	        rewindRing(rings[i], !outer);
+	    }
+	}
+
+	function rewindRing(ring, dir) {
+	    var area = 0, err = 0;
+	    for (var i = 0, len = ring.length, j = len - 1; i < len; j = i++) {
+	        var k = (ring[i][0] - ring[j][0]) * (ring[j][1] + ring[i][1]);
+	        var m = area + k;
+	        err += Math.abs(area) >= Math.abs(k) ? area - m + k : k - m + area;
+	        area = m;
+	    }
+	    if (area + err >= 0 !== !!dir) ring.reverse();
+	}
+	return geojsonRewind;
 }
 
-function rewindRings(rings, outer) {
-    if (rings.length === 0) return;
+var geojsonRewindExports = requireGeojsonRewind();
+var rewind$1 = /*@__PURE__*/getDefaultExportFromCjs$1(geojsonRewindExports);
 
-    rewindRing(rings[0], outer);
-    for (var i = 1; i < rings.length; i++) {
-        rewindRing(rings[i], !outer);
-    }
-}
-
-function rewindRing(ring, dir) {
-    var area = 0, err = 0;
-    for (var i = 0, len = ring.length, j = len - 1; i < len; j = i++) {
-        var k = (ring[i][0] - ring[j][0]) * (ring[j][1] + ring[i][1]);
-        var m = area + k;
-        err += Math.abs(area) >= Math.abs(k) ? area - m + k : k - m + area;
-        area = m;
-    }
-    if (area + err >= 0 !== !!dir) ring.reverse();
-}
-
-var rewind$2 = /*@__PURE__*/getDefaultExportFromCjs$1(geojsonRewind);
-
-const toGeoJSON = vectorTile.VectorTileFeature.prototype.toGeoJSON;
-let FeatureWrapper$1 = class FeatureWrapper {
+const toGeoJSON = mvt.VectorTileFeature.prototype.toGeoJSON;
+class FeatureWrapper {
     constructor(feature) {
         this._feature = feature;
         this.extent = EXTENT;
@@ -32473,7 +33528,7 @@ let FeatureWrapper$1 = class FeatureWrapper {
         if (this._feature.type === 1) {
             const geometry = [];
             for (const point of this._feature.geometry) {
-                geometry.push([new Point$3(point[0], point[1])]);
+                geometry.push([new Point(point[0], point[1])]);
             }
             return geometry;
         }
@@ -32482,7 +33537,7 @@ let FeatureWrapper$1 = class FeatureWrapper {
             for (const ring of this._feature.geometry) {
                 const newRing = [];
                 for (const point of ring) {
-                    newRing.push(new Point$3(point[0], point[1]));
+                    newRing.push(new Point(point[0], point[1]));
                 }
                 geometry.push(newRing);
             }
@@ -32492,8 +33547,8 @@ let FeatureWrapper$1 = class FeatureWrapper {
     toGeoJSON(x, y, z) {
         return toGeoJSON.call(this, x, y, z);
     }
-};
-let GeoJSONWrapper$2 = class GeoJSONWrapper {
+}
+class GeoJSONWrapper {
     constructor(features) {
         this.layers = { '_geojsonTileLayer': this };
         this.name = '_geojsonTileLayer';
@@ -32502,265 +33557,278 @@ let GeoJSONWrapper$2 = class GeoJSONWrapper {
         this._features = features;
     }
     feature(i) {
-        return new FeatureWrapper$1(this._features[i]);
+        return new FeatureWrapper(this._features[i]);
     }
-};
+}
 
 var vtPbf$1 = {exports: {}};
 
-'use strict';
+var geojson_wrapper;
+var hasRequiredGeojson_wrapper;
 
-var Point = pointGeometry;
-var VectorTileFeature = vectorTile.VectorTileFeature;
+function requireGeojson_wrapper () {
+	if (hasRequiredGeojson_wrapper) return geojson_wrapper;
+	hasRequiredGeojson_wrapper = 1;
+	'use strict';
 
-var geojson_wrapper = GeoJSONWrapper$1;
+	var Point = requirePointGeometry();
+	var VectorTileFeature = requireVectorTile().VectorTileFeature;
 
-// conform to vectortile api
-function GeoJSONWrapper$1 (features, options) {
-  this.options = options || {};
-  this.features = features;
-  this.length = features.length;
+	geojson_wrapper = GeoJSONWrapper;
+
+	// conform to vectortile api
+	function GeoJSONWrapper (features, options) {
+	  this.options = options || {};
+	  this.features = features;
+	  this.length = features.length;
+	}
+
+	GeoJSONWrapper.prototype.feature = function (i) {
+	  return new FeatureWrapper(this.features[i], this.options.extent)
+	};
+
+	function FeatureWrapper (feature, extent) {
+	  this.id = typeof feature.id === 'number' ? feature.id : undefined;
+	  this.type = feature.type;
+	  this.rawGeometry = feature.type === 1 ? [feature.geometry] : feature.geometry;
+	  this.properties = feature.tags;
+	  this.extent = extent || 4096;
+	}
+
+	FeatureWrapper.prototype.loadGeometry = function () {
+	  var rings = this.rawGeometry;
+	  this.geometry = [];
+
+	  for (var i = 0; i < rings.length; i++) {
+	    var ring = rings[i];
+	    var newRing = [];
+	    for (var j = 0; j < ring.length; j++) {
+	      newRing.push(new Point(ring[j][0], ring[j][1]));
+	    }
+	    this.geometry.push(newRing);
+	  }
+	  return this.geometry
+	};
+
+	FeatureWrapper.prototype.bbox = function () {
+	  if (!this.geometry) this.loadGeometry();
+
+	  var rings = this.geometry;
+	  var x1 = Infinity;
+	  var x2 = -Infinity;
+	  var y1 = Infinity;
+	  var y2 = -Infinity;
+
+	  for (var i = 0; i < rings.length; i++) {
+	    var ring = rings[i];
+
+	    for (var j = 0; j < ring.length; j++) {
+	      var coord = ring[j];
+
+	      x1 = Math.min(x1, coord.x);
+	      x2 = Math.max(x2, coord.x);
+	      y1 = Math.min(y1, coord.y);
+	      y2 = Math.max(y2, coord.y);
+	    }
+	  }
+
+	  return [x1, y1, x2, y2]
+	};
+
+	FeatureWrapper.prototype.toGeoJSON = VectorTileFeature.prototype.toGeoJSON;
+	return geojson_wrapper;
 }
-
-GeoJSONWrapper$1.prototype.feature = function (i) {
-  return new FeatureWrapper(this.features[i], this.options.extent)
-};
-
-function FeatureWrapper (feature, extent) {
-  this.id = typeof feature.id === 'number' ? feature.id : undefined;
-  this.type = feature.type;
-  this.rawGeometry = feature.type === 1 ? [feature.geometry] : feature.geometry;
-  this.properties = feature.tags;
-  this.extent = extent || 4096;
-}
-
-FeatureWrapper.prototype.loadGeometry = function () {
-  var rings = this.rawGeometry;
-  this.geometry = [];
-
-  for (var i = 0; i < rings.length; i++) {
-    var ring = rings[i];
-    var newRing = [];
-    for (var j = 0; j < ring.length; j++) {
-      newRing.push(new Point(ring[j][0], ring[j][1]));
-    }
-    this.geometry.push(newRing);
-  }
-  return this.geometry
-};
-
-FeatureWrapper.prototype.bbox = function () {
-  if (!this.geometry) this.loadGeometry();
-
-  var rings = this.geometry;
-  var x1 = Infinity;
-  var x2 = -Infinity;
-  var y1 = Infinity;
-  var y2 = -Infinity;
-
-  for (var i = 0; i < rings.length; i++) {
-    var ring = rings[i];
-
-    for (var j = 0; j < ring.length; j++) {
-      var coord = ring[j];
-
-      x1 = Math.min(x1, coord.x);
-      x2 = Math.max(x2, coord.x);
-      y1 = Math.min(y1, coord.y);
-      y2 = Math.max(y2, coord.y);
-    }
-  }
-
-  return [x1, y1, x2, y2]
-};
-
-FeatureWrapper.prototype.toGeoJSON = VectorTileFeature.prototype.toGeoJSON;
-
-var geojson_wrapper$1 = /*@__PURE__*/getDefaultExportFromCjs$1(geojson_wrapper);
 
 var vtPbf = vtPbf$1.exports;
 
-var Pbf = pbf;
-var GeoJSONWrapper = geojson_wrapper;
+var hasRequiredVtPbf;
 
-vtPbf$1.exports = fromVectorTileJs;
-var fromVectorTileJs_1 = vtPbf$1.exports.fromVectorTileJs = fromVectorTileJs;
-var fromGeojsonVt_1 = vtPbf$1.exports.fromGeojsonVt = fromGeojsonVt;
-var GeoJSONWrapper_1 = vtPbf$1.exports.GeoJSONWrapper = GeoJSONWrapper;
+function requireVtPbf () {
+	if (hasRequiredVtPbf) return vtPbf$1.exports;
+	hasRequiredVtPbf = 1;
+	var Pbf = requirePbf();
+	var GeoJSONWrapper = requireGeojson_wrapper();
 
-/**
- * Serialize a vector-tile-js-created tile to pbf
- *
- * @param {Object} tile
- * @return {Buffer} uncompressed, pbf-serialized tile data
- */
-function fromVectorTileJs (tile) {
-  var out = new Pbf();
-  writeTile(tile, out);
-  return out.finish()
+	vtPbf$1.exports = fromVectorTileJs;
+	vtPbf$1.exports.fromVectorTileJs = fromVectorTileJs;
+	vtPbf$1.exports.fromGeojsonVt = fromGeojsonVt;
+	vtPbf$1.exports.GeoJSONWrapper = GeoJSONWrapper;
+
+	/**
+	 * Serialize a vector-tile-js-created tile to pbf
+	 *
+	 * @param {Object} tile
+	 * @return {Buffer} uncompressed, pbf-serialized tile data
+	 */
+	function fromVectorTileJs (tile) {
+	  var out = new Pbf();
+	  writeTile(tile, out);
+	  return out.finish()
+	}
+
+	/**
+	 * Serialized a geojson-vt-created tile to pbf.
+	 *
+	 * @param {Object} layers - An object mapping layer names to geojson-vt-created vector tile objects
+	 * @param {Object} [options] - An object specifying the vector-tile specification version and extent that were used to create `layers`.
+	 * @param {Number} [options.version=1] - Version of vector-tile spec used
+	 * @param {Number} [options.extent=4096] - Extent of the vector tile
+	 * @return {Buffer} uncompressed, pbf-serialized tile data
+	 */
+	function fromGeojsonVt (layers, options) {
+	  options = options || {};
+	  var l = {};
+	  for (var k in layers) {
+	    l[k] = new GeoJSONWrapper(layers[k].features, options);
+	    l[k].name = k;
+	    l[k].version = options.version;
+	    l[k].extent = options.extent;
+	  }
+	  return fromVectorTileJs({ layers: l })
+	}
+
+	function writeTile (tile, pbf) {
+	  for (var key in tile.layers) {
+	    pbf.writeMessage(3, writeLayer, tile.layers[key]);
+	  }
+	}
+
+	function writeLayer (layer, pbf) {
+	  pbf.writeVarintField(15, layer.version || 1);
+	  pbf.writeStringField(1, layer.name || '');
+	  pbf.writeVarintField(5, layer.extent || 4096);
+
+	  var i;
+	  var context = {
+	    keys: [],
+	    values: [],
+	    keycache: {},
+	    valuecache: {}
+	  };
+
+	  for (i = 0; i < layer.length; i++) {
+	    context.feature = layer.feature(i);
+	    pbf.writeMessage(2, writeFeature, context);
+	  }
+
+	  var keys = context.keys;
+	  for (i = 0; i < keys.length; i++) {
+	    pbf.writeStringField(3, keys[i]);
+	  }
+
+	  var values = context.values;
+	  for (i = 0; i < values.length; i++) {
+	    pbf.writeMessage(4, writeValue, values[i]);
+	  }
+	}
+
+	function writeFeature (context, pbf) {
+	  var feature = context.feature;
+
+	  if (feature.id !== undefined) {
+	    pbf.writeVarintField(1, feature.id);
+	  }
+
+	  pbf.writeMessage(2, writeProperties, context);
+	  pbf.writeVarintField(3, feature.type);
+	  pbf.writeMessage(4, writeGeometry, feature);
+	}
+
+	function writeProperties (context, pbf) {
+	  var feature = context.feature;
+	  var keys = context.keys;
+	  var values = context.values;
+	  var keycache = context.keycache;
+	  var valuecache = context.valuecache;
+
+	  for (var key in feature.properties) {
+	    var value = feature.properties[key];
+
+	    var keyIndex = keycache[key];
+	    if (value === null) continue // don't encode null value properties
+
+	    if (typeof keyIndex === 'undefined') {
+	      keys.push(key);
+	      keyIndex = keys.length - 1;
+	      keycache[key] = keyIndex;
+	    }
+	    pbf.writeVarint(keyIndex);
+
+	    var type = typeof value;
+	    if (type !== 'string' && type !== 'boolean' && type !== 'number') {
+	      value = JSON.stringify(value);
+	    }
+	    var valueKey = type + ':' + value;
+	    var valueIndex = valuecache[valueKey];
+	    if (typeof valueIndex === 'undefined') {
+	      values.push(value);
+	      valueIndex = values.length - 1;
+	      valuecache[valueKey] = valueIndex;
+	    }
+	    pbf.writeVarint(valueIndex);
+	  }
+	}
+
+	function command (cmd, length) {
+	  return (length << 3) + (cmd & 0x7)
+	}
+
+	function zigzag (num) {
+	  return (num << 1) ^ (num >> 31)
+	}
+
+	function writeGeometry (feature, pbf) {
+	  var geometry = feature.loadGeometry();
+	  var type = feature.type;
+	  var x = 0;
+	  var y = 0;
+	  var rings = geometry.length;
+	  for (var r = 0; r < rings; r++) {
+	    var ring = geometry[r];
+	    var count = 1;
+	    if (type === 1) {
+	      count = ring.length;
+	    }
+	    pbf.writeVarint(command(1, count)); // moveto
+	    // do not write polygon closing path as lineto
+	    var lineCount = type === 3 ? ring.length - 1 : ring.length;
+	    for (var i = 0; i < lineCount; i++) {
+	      if (i === 1 && type !== 1) {
+	        pbf.writeVarint(command(2, lineCount - 1)); // lineto
+	      }
+	      var dx = ring[i].x - x;
+	      var dy = ring[i].y - y;
+	      pbf.writeVarint(zigzag(dx));
+	      pbf.writeVarint(zigzag(dy));
+	      x += dx;
+	      y += dy;
+	    }
+	    if (type === 3) {
+	      pbf.writeVarint(command(7, 1)); // closepath
+	    }
+	  }
+	}
+
+	function writeValue (value, pbf) {
+	  var type = typeof value;
+	  if (type === 'string') {
+	    pbf.writeStringField(1, value);
+	  } else if (type === 'boolean') {
+	    pbf.writeBooleanField(7, value);
+	  } else if (type === 'number') {
+	    if (value % 1 !== 0) {
+	      pbf.writeDoubleField(3, value);
+	    } else if (value < 0) {
+	      pbf.writeSVarintField(6, value);
+	    } else {
+	      pbf.writeVarintField(5, value);
+	    }
+	  }
+	}
+	return vtPbf$1.exports;
 }
 
-/**
- * Serialized a geojson-vt-created tile to pbf.
- *
- * @param {Object} layers - An object mapping layer names to geojson-vt-created vector tile objects
- * @param {Object} [options] - An object specifying the vector-tile specification version and extent that were used to create `layers`.
- * @param {Number} [options.version=1] - Version of vector-tile spec used
- * @param {Number} [options.extent=4096] - Extent of the vector tile
- * @return {Buffer} uncompressed, pbf-serialized tile data
- */
-function fromGeojsonVt (layers, options) {
-  options = options || {};
-  var l = {};
-  for (var k in layers) {
-    l[k] = new GeoJSONWrapper(layers[k].features, options);
-    l[k].name = k;
-    l[k].version = options.version;
-    l[k].extent = options.extent;
-  }
-  return fromVectorTileJs({ layers: l })
-}
-
-function writeTile (tile, pbf) {
-  for (var key in tile.layers) {
-    pbf.writeMessage(3, writeLayer, tile.layers[key]);
-  }
-}
-
-function writeLayer (layer, pbf) {
-  pbf.writeVarintField(15, layer.version || 1);
-  pbf.writeStringField(1, layer.name || '');
-  pbf.writeVarintField(5, layer.extent || 4096);
-
-  var i;
-  var context = {
-    keys: [],
-    values: [],
-    keycache: {},
-    valuecache: {}
-  };
-
-  for (i = 0; i < layer.length; i++) {
-    context.feature = layer.feature(i);
-    pbf.writeMessage(2, writeFeature, context);
-  }
-
-  var keys = context.keys;
-  for (i = 0; i < keys.length; i++) {
-    pbf.writeStringField(3, keys[i]);
-  }
-
-  var values = context.values;
-  for (i = 0; i < values.length; i++) {
-    pbf.writeMessage(4, writeValue, values[i]);
-  }
-}
-
-function writeFeature (context, pbf) {
-  var feature = context.feature;
-
-  if (feature.id !== undefined) {
-    pbf.writeVarintField(1, feature.id);
-  }
-
-  pbf.writeMessage(2, writeProperties, context);
-  pbf.writeVarintField(3, feature.type);
-  pbf.writeMessage(4, writeGeometry, feature);
-}
-
-function writeProperties (context, pbf) {
-  var feature = context.feature;
-  var keys = context.keys;
-  var values = context.values;
-  var keycache = context.keycache;
-  var valuecache = context.valuecache;
-
-  for (var key in feature.properties) {
-    var value = feature.properties[key];
-
-    var keyIndex = keycache[key];
-    if (value === null) continue // don't encode null value properties
-
-    if (typeof keyIndex === 'undefined') {
-      keys.push(key);
-      keyIndex = keys.length - 1;
-      keycache[key] = keyIndex;
-    }
-    pbf.writeVarint(keyIndex);
-
-    var type = typeof value;
-    if (type !== 'string' && type !== 'boolean' && type !== 'number') {
-      value = JSON.stringify(value);
-    }
-    var valueKey = type + ':' + value;
-    var valueIndex = valuecache[valueKey];
-    if (typeof valueIndex === 'undefined') {
-      values.push(value);
-      valueIndex = values.length - 1;
-      valuecache[valueKey] = valueIndex;
-    }
-    pbf.writeVarint(valueIndex);
-  }
-}
-
-function command (cmd, length) {
-  return (length << 3) + (cmd & 0x7)
-}
-
-function zigzag (num) {
-  return (num << 1) ^ (num >> 31)
-}
-
-function writeGeometry (feature, pbf) {
-  var geometry = feature.loadGeometry();
-  var type = feature.type;
-  var x = 0;
-  var y = 0;
-  var rings = geometry.length;
-  for (var r = 0; r < rings; r++) {
-    var ring = geometry[r];
-    var count = 1;
-    if (type === 1) {
-      count = ring.length;
-    }
-    pbf.writeVarint(command(1, count)); // moveto
-    // do not write polygon closing path as lineto
-    var lineCount = type === 3 ? ring.length - 1 : ring.length;
-    for (var i = 0; i < lineCount; i++) {
-      if (i === 1 && type !== 1) {
-        pbf.writeVarint(command(2, lineCount - 1)); // lineto
-      }
-      var dx = ring[i].x - x;
-      var dy = ring[i].y - y;
-      pbf.writeVarint(zigzag(dx));
-      pbf.writeVarint(zigzag(dy));
-      x += dx;
-      y += dy;
-    }
-    if (type === 3) {
-      pbf.writeVarint(command(7, 1)); // closepath
-    }
-  }
-}
-
-function writeValue (value, pbf) {
-  var type = typeof value;
-  if (type === 'string') {
-    pbf.writeStringField(1, value);
-  } else if (type === 'boolean') {
-    pbf.writeBooleanField(7, value);
-  } else if (type === 'number') {
-    if (value % 1 !== 0) {
-      pbf.writeDoubleField(3, value);
-    } else if (value < 0) {
-      pbf.writeSVarintField(6, value);
-    } else {
-      pbf.writeVarintField(5, value);
-    }
-  }
-}
-
-var vtPbfExports = vtPbf$1.exports;
+var vtPbfExports = requireVtPbf();
 var vtpbf = /*@__PURE__*/getDefaultExportFromCjs$1(vtPbfExports);
 
 const ARRAY_TYPES = [
@@ -33090,7 +34158,7 @@ function sqDist(ax, ay, bx, by) {
     return dx * dx + dy * dy;
 }
 
-const defaultOptions = {
+const defaultOptions$1 = {
     minZoom: 0,   // min zoom to generate clusters on
     maxZoom: 16,  // max zoom level to cluster the points on
     minPoints: 2, // minimum points to form a cluster
@@ -33119,7 +34187,7 @@ const OFFSET_PROP = 6;
 
 class Supercluster {
     constructor(options) {
-        this.options = Object.assign(Object.create(defaultOptions), options);
+        this.options = Object.assign(Object.create(defaultOptions$1), options);
         this.trees = new Array(this.options.maxZoom + 1);
         this.stride = this.options.reduce ? 7 : 6;
         this.clusterProps = [];
@@ -33515,18 +34583,18 @@ function yLat(y) {
 // calculate simplification data using optimized Douglas-Peucker algorithm
 
 function simplify(coords, first, last, sqTolerance) {
-    var maxSqDist = sqTolerance;
-    var mid = (last - first) >> 1;
-    var minPosToMid = last - first;
-    var index;
+    let maxSqDist = sqTolerance;
+    const mid = first + ((last - first) >> 1);
+    let minPosToMid = last - first;
+    let index;
 
-    var ax = coords[first];
-    var ay = coords[first + 1];
-    var bx = coords[last];
-    var by = coords[last + 1];
+    const ax = coords[first];
+    const ay = coords[first + 1];
+    const bx = coords[last];
+    const by = coords[last + 1];
 
-    for (var i = first + 3; i < last; i += 3) {
-        var d = getSqSegDist(coords[i], coords[i + 1], ax, ay, bx, by);
+    for (let i = first + 3; i < last; i += 3) {
+        const d = getSqSegDist(coords[i], coords[i + 1], ax, ay, bx, by);
 
         if (d > maxSqDist) {
             index = i;
@@ -33536,7 +34604,7 @@ function simplify(coords, first, last, sqTolerance) {
             // a workaround to ensure we choose a pivot close to the middle of the list,
             // reducing recursion depth, for certain degenerate inputs
             // https://github.com/mapbox/geojson-vt/issues/104
-            var posToMid = Math.abs(i - mid);
+            const posToMid = Math.abs(i - mid);
             if (posToMid < minPosToMid) {
                 index = i;
                 minPosToMid = posToMid;
@@ -33554,12 +34622,12 @@ function simplify(coords, first, last, sqTolerance) {
 // square distance from a point to a segment
 function getSqSegDist(px, py, x, y, bx, by) {
 
-    var dx = bx - x;
-    var dy = by - y;
+    let dx = bx - x;
+    let dy = by - y;
 
     if (dx !== 0 || dy !== 0) {
 
-        var t = ((px - x) * dx + (py - y) * dy) / (dx * dx + dy * dy);
+        const t = ((px - x) * dx + (py - y) * dy) / (dx * dx + dy * dy);
 
         if (t > 1) {
             x = bx;
@@ -33578,43 +34646,41 @@ function getSqSegDist(px, py, x, y, bx, by) {
 }
 
 function createFeature(id, type, geom, tags) {
-    var feature = {
-        id: typeof id === 'undefined' ? null : id,
-        type: type,
+    const feature = {
+        id: id == null ? null : id,
+        type,
         geometry: geom,
-        tags: tags,
+        tags,
         minX: Infinity,
         minY: Infinity,
         maxX: -Infinity,
         maxY: -Infinity
     };
-    calcBBox(feature);
-    return feature;
-}
-
-function calcBBox(feature) {
-    var geom = feature.geometry;
-    var type = feature.type;
 
     if (type === 'Point' || type === 'MultiPoint' || type === 'LineString') {
         calcLineBBox(feature, geom);
 
-    } else if (type === 'Polygon' || type === 'MultiLineString') {
-        for (var i = 0; i < geom.length; i++) {
-            calcLineBBox(feature, geom[i]);
+    } else if (type === 'Polygon') {
+        // the outer ring (ie [0]) contains all inner rings
+        calcLineBBox(feature, geom[0]);
+
+    } else if (type === 'MultiLineString') {
+        for (const line of geom) {
+            calcLineBBox(feature, line);
         }
 
     } else if (type === 'MultiPolygon') {
-        for (i = 0; i < geom.length; i++) {
-            for (var j = 0; j < geom[i].length; j++) {
-                calcLineBBox(feature, geom[i][j]);
-            }
+        for (const polygon of geom) {
+            // the outer ring (ie [0]) contains all inner rings
+            calcLineBBox(feature, polygon[0]);
         }
     }
+
+    return feature;
 }
 
 function calcLineBBox(feature, geom) {
-    for (var i = 0; i < geom.length; i += 3) {
+    for (let i = 0; i < geom.length; i += 3) {
         feature.minX = Math.min(feature.minX, geom[i]);
         feature.minY = Math.min(feature.minY, geom[i + 1]);
         feature.maxX = Math.max(feature.maxX, geom[i]);
@@ -33625,9 +34691,9 @@ function calcLineBBox(feature, geom) {
 // converts GeoJSON feature into an intermediate projected JSON vector format with simplification data
 
 function convert(data, options) {
-    var features = [];
+    const features = [];
     if (data.type === 'FeatureCollection') {
-        for (var i = 0; i < data.features.length; i++) {
+        for (let i = 0; i < data.features.length; i++) {
             convertFeature(features, data.features[i], options, i);
         }
 
@@ -33645,11 +34711,13 @@ function convert(data, options) {
 function convertFeature(features, geojson, options, index) {
     if (!geojson.geometry) return;
 
-    var coords = geojson.geometry.coordinates;
-    var type = geojson.geometry.type;
-    var tolerance = Math.pow(options.tolerance / ((1 << options.maxZoom) * options.extent), 2);
-    var geometry = [];
-    var id = geojson.id;
+    const coords = geojson.geometry.coordinates;
+    if (coords && coords.length === 0) return;
+
+    const type = geojson.geometry.type;
+    const tolerance = Math.pow(options.tolerance / ((1 << options.maxZoom) * options.extent), 2);
+    let geometry = [];
+    let id = geojson.id;
     if (options.promoteId) {
         id = geojson.properties[options.promoteId];
     } else if (options.generateId) {
@@ -33659,8 +34727,8 @@ function convertFeature(features, geojson, options, index) {
         convertPoint(coords, geometry);
 
     } else if (type === 'MultiPoint') {
-        for (var i = 0; i < coords.length; i++) {
-            convertPoint(coords[i], geometry);
+        for (const p of coords) {
+            convertPoint(p, geometry);
         }
 
     } else if (type === 'LineString') {
@@ -33669,9 +34737,9 @@ function convertFeature(features, geojson, options, index) {
     } else if (type === 'MultiLineString') {
         if (options.lineMetrics) {
             // explode into linestrings to be able to track metrics
-            for (i = 0; i < coords.length; i++) {
+            for (const line of coords) {
                 geometry = [];
-                convertLine(coords[i], geometry, tolerance, false);
+                convertLine(line, geometry, tolerance, false);
                 features.push(createFeature(id, 'LineString', geometry, geojson.properties));
             }
             return;
@@ -33683,16 +34751,16 @@ function convertFeature(features, geojson, options, index) {
         convertLines(coords, geometry, tolerance, true);
 
     } else if (type === 'MultiPolygon') {
-        for (i = 0; i < coords.length; i++) {
-            var polygon = [];
-            convertLines(coords[i], polygon, tolerance, true);
-            geometry.push(polygon);
+        for (const polygon of coords) {
+            const newPolygon = [];
+            convertLines(polygon, newPolygon, tolerance, true);
+            geometry.push(newPolygon);
         }
     } else if (type === 'GeometryCollection') {
-        for (i = 0; i < geojson.geometry.geometries.length; i++) {
+        for (const singleGeometry of geojson.geometry.geometries) {
             convertFeature(features, {
-                id: id,
-                geometry: geojson.geometry.geometries[i],
+                id,
+                geometry: singleGeometry,
                 properties: geojson.properties
             }, options, index);
         }
@@ -33705,22 +34773,18 @@ function convertFeature(features, geojson, options, index) {
 }
 
 function convertPoint(coords, out) {
-    out.push(projectX(coords[0]));
-    out.push(projectY(coords[1]));
-    out.push(0);
+    out.push(projectX(coords[0]), projectY(coords[1]), 0);
 }
 
 function convertLine(ring, out, tolerance, isPolygon) {
-    var x0, y0;
-    var size = 0;
+    let x0, y0;
+    let size = 0;
 
-    for (var j = 0; j < ring.length; j++) {
-        var x = projectX(ring[j][0]);
-        var y = projectY(ring[j][1]);
+    for (let j = 0; j < ring.length; j++) {
+        const x = projectX(ring[j][0]);
+        const y = projectY(ring[j][1]);
 
-        out.push(x);
-        out.push(y);
-        out.push(0);
+        out.push(x, y, 0);
 
         if (j > 0) {
             if (isPolygon) {
@@ -33733,7 +34797,7 @@ function convertLine(ring, out, tolerance, isPolygon) {
         y0 = y;
     }
 
-    var last = out.length - 3;
+    const last = out.length - 3;
     out[2] = 1;
     simplify(out, 0, last, tolerance);
     out[last + 2] = 1;
@@ -33744,8 +34808,8 @@ function convertLine(ring, out, tolerance, isPolygon) {
 }
 
 function convertLines(rings, out, tolerance, isPolygon) {
-    for (var i = 0; i < rings.length; i++) {
-        var geom = [];
+    for (let i = 0; i < rings.length; i++) {
+        const geom = [];
         convertLine(rings[i], geom, tolerance, isPolygon);
         out.push(geom);
     }
@@ -33756,36 +34820,36 @@ function projectX(x) {
 }
 
 function projectY(y) {
-    var sin = Math.sin(y * Math.PI / 180);
-    var y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
+    const sin = Math.sin(y * Math.PI / 180);
+    const y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
     return y2 < 0 ? 0 : y2 > 1 ? 1 : y2;
 }
 
-/* clip features between two axis-parallel lines:
+/* clip features between two vertical or horizontal axis-parallel lines:
  *     |        |
  *  ___|___     |     /
  * /   |   \____|____/
  *     |        |
+ *
+ * k1 and k2 are the line coordinates
+ * axis: 0 for x, 1 for y
+ * minAll and maxAll: minimum and maximum coordinate value for all features
  */
-
 function clip(features, scale, k1, k2, axis, minAll, maxAll, options) {
-
     k1 /= scale;
     k2 /= scale;
 
     if (minAll >= k1 && maxAll < k2) return features; // trivial accept
     else if (maxAll < k1 || minAll >= k2) return null; // trivial reject
 
-    var clipped = [];
+    const clipped = [];
 
-    for (var i = 0; i < features.length; i++) {
+    for (const feature of features) {
+        const geometry = feature.geometry;
+        let type = feature.type;
 
-        var feature = features[i];
-        var geometry = feature.geometry;
-        var type = feature.type;
-
-        var min = axis === 0 ? feature.minX : feature.minY;
-        var max = axis === 0 ? feature.maxX : feature.maxY;
+        const min = axis === 0 ? feature.minX : feature.minY;
+        const max = axis === 0 ? feature.maxX : feature.maxY;
 
         if (min >= k1 && max < k2) { // trivial accept
             clipped.push(feature);
@@ -33794,7 +34858,7 @@ function clip(features, scale, k1, k2, axis, minAll, maxAll, options) {
             continue;
         }
 
-        var newGeometry = [];
+        let newGeometry = [];
 
         if (type === 'Point' || type === 'MultiPoint') {
             clipPoints(geometry, newGeometry, k1, k2, axis);
@@ -33809,19 +34873,19 @@ function clip(features, scale, k1, k2, axis, minAll, maxAll, options) {
             clipLines(geometry, newGeometry, k1, k2, axis, true);
 
         } else if (type === 'MultiPolygon') {
-            for (var j = 0; j < geometry.length; j++) {
-                var polygon = [];
-                clipLines(geometry[j], polygon, k1, k2, axis, true);
-                if (polygon.length) {
-                    newGeometry.push(polygon);
+            for (const polygon of geometry) {
+                const newPolygon = [];
+                clipLines(polygon, newPolygon, k1, k2, axis, true);
+                if (newPolygon.length) {
+                    newGeometry.push(newPolygon);
                 }
             }
         }
 
         if (newGeometry.length) {
             if (options.lineMetrics && type === 'LineString') {
-                for (j = 0; j < newGeometry.length; j++) {
-                    clipped.push(createFeature(feature.id, type, newGeometry[j], feature.tags));
+                for (const line of newGeometry) {
+                    clipped.push(createFeature(feature.id, type, line, feature.tags));
                 }
                 continue;
             }
@@ -33846,33 +34910,31 @@ function clip(features, scale, k1, k2, axis, minAll, maxAll, options) {
 }
 
 function clipPoints(geom, newGeom, k1, k2, axis) {
-    for (var i = 0; i < geom.length; i += 3) {
-        var a = geom[i + axis];
+    for (let i = 0; i < geom.length; i += 3) {
+        const a = geom[i + axis];
 
         if (a >= k1 && a <= k2) {
-            newGeom.push(geom[i]);
-            newGeom.push(geom[i + 1]);
-            newGeom.push(geom[i + 2]);
+            addPoint(newGeom, geom[i], geom[i + 1], geom[i + 2]);
         }
     }
 }
 
 function clipLine(geom, newGeom, k1, k2, axis, isPolygon, trackMetrics) {
 
-    var slice = newSlice(geom);
-    var intersect = axis === 0 ? intersectX : intersectY;
-    var len = geom.start;
-    var segLen, t;
+    let slice = newSlice(geom);
+    const intersect = axis === 0 ? intersectX : intersectY;
+    let len = geom.start;
+    let segLen, t;
 
-    for (var i = 0; i < geom.length - 3; i += 3) {
-        var ax = geom[i];
-        var ay = geom[i + 1];
-        var az = geom[i + 2];
-        var bx = geom[i + 3];
-        var by = geom[i + 4];
-        var a = axis === 0 ? ax : ay;
-        var b = axis === 0 ? bx : by;
-        var exited = false;
+    for (let i = 0; i < geom.length - 3; i += 3) {
+        const ax = geom[i];
+        const ay = geom[i + 1];
+        const az = geom[i + 2];
+        const bx = geom[i + 3];
+        const by = geom[i + 4];
+        const a = axis === 0 ? ax : ay;
+        const b = axis === 0 ? bx : by;
+        let exited = false;
 
         if (trackMetrics) segLen = Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
 
@@ -33912,11 +34974,11 @@ function clipLine(geom, newGeom, k1, k2, axis, isPolygon, trackMetrics) {
     }
 
     // add the last point
-    var last = geom.length - 3;
-    ax = geom[last];
-    ay = geom[last + 1];
-    az = geom[last + 2];
-    a = axis === 0 ? ax : ay;
+    let last = geom.length - 3;
+    const ax = geom[last];
+    const ay = geom[last + 1];
+    const az = geom[last + 2];
+    const a = axis === 0 ? ax : ay;
     if (a >= k1 && a <= k2) addPoint(slice, ax, ay, az);
 
     // close the polygon if its endpoints are not the same after clipping
@@ -33932,7 +34994,7 @@ function clipLine(geom, newGeom, k1, k2, axis, isPolygon, trackMetrics) {
 }
 
 function newSlice(line) {
-    var slice = [];
+    const slice = [];
     slice.size = line.size;
     slice.start = line.start;
     slice.end = line.end;
@@ -33940,38 +35002,32 @@ function newSlice(line) {
 }
 
 function clipLines(geom, newGeom, k1, k2, axis, isPolygon) {
-    for (var i = 0; i < geom.length; i++) {
-        clipLine(geom[i], newGeom, k1, k2, axis, isPolygon, false);
+    for (const line of geom) {
+        clipLine(line, newGeom, k1, k2, axis, isPolygon, false);
     }
 }
 
 function addPoint(out, x, y, z) {
-    out.push(x);
-    out.push(y);
-    out.push(z);
+    out.push(x, y, z);
 }
 
 function intersectX(out, ax, ay, bx, by, x) {
-    var t = (x - ax) / (bx - ax);
-    out.push(x);
-    out.push(ay + (by - ay) * t);
-    out.push(1);
+    const t = (x - ax) / (bx - ax);
+    addPoint(out, x, ay + (by - ay) * t, 1);
     return t;
 }
 
 function intersectY(out, ax, ay, bx, by, y) {
-    var t = (y - ay) / (by - ay);
-    out.push(ax + (bx - ax) * t);
-    out.push(y);
-    out.push(1);
+    const t = (y - ay) / (by - ay);
+    addPoint(out, ax + (bx - ax) * t, y, 1);
     return t;
 }
 
 function wrap(features, options) {
-    var buffer = options.buffer / options.extent;
-    var merged = features;
-    var left  = clip(features, 1, -1 - buffer, buffer,     0, -1, 2, options); // left world copy
-    var right = clip(features, 1,  1 - buffer, 2 + buffer, 0, -1, 2, options); // right world copy
+    const buffer = options.buffer / options.extent;
+    let merged = features;
+    const left  = clip(features, 1, -1 - buffer, buffer,     0, -1, 2, options); // left world copy
+    const right = clip(features, 1,  1 - buffer, 2 + buffer, 0, -1, 2, options); // right world copy
 
     if (left || right) {
         merged = clip(features, 1, -buffer, 1 + buffer, 0, -1, 2, options) || []; // center world copy
@@ -33984,28 +35040,28 @@ function wrap(features, options) {
 }
 
 function shiftFeatureCoords(features, offset) {
-    var newFeatures = [];
+    const newFeatures = [];
 
-    for (var i = 0; i < features.length; i++) {
-        var feature = features[i],
-            type = feature.type;
+    for (let i = 0; i < features.length; i++) {
+        const feature = features[i];
+        const type = feature.type;
 
-        var newGeometry;
+        let newGeometry;
 
         if (type === 'Point' || type === 'MultiPoint' || type === 'LineString') {
             newGeometry = shiftCoords(feature.geometry, offset);
 
         } else if (type === 'MultiLineString' || type === 'Polygon') {
             newGeometry = [];
-            for (var j = 0; j < feature.geometry.length; j++) {
-                newGeometry.push(shiftCoords(feature.geometry[j], offset));
+            for (const line of feature.geometry) {
+                newGeometry.push(shiftCoords(line, offset));
             }
         } else if (type === 'MultiPolygon') {
             newGeometry = [];
-            for (j = 0; j < feature.geometry.length; j++) {
-                var newPolygon = [];
-                for (var k = 0; k < feature.geometry[j].length; k++) {
-                    newPolygon.push(shiftCoords(feature.geometry[j][k], offset));
+            for (const polygon of feature.geometry) {
+                const newPolygon = [];
+                for (const line of polygon) {
+                    newPolygon.push(shiftCoords(line, offset));
                 }
                 newGeometry.push(newPolygon);
             }
@@ -34018,7 +35074,7 @@ function shiftFeatureCoords(features, offset) {
 }
 
 function shiftCoords(points, offset) {
-    var newPoints = [];
+    const newPoints = [];
     newPoints.size = points.size;
 
     if (points.start !== undefined) {
@@ -34026,7 +35082,7 @@ function shiftCoords(points, offset) {
         newPoints.end = points.end;
     }
 
-    for (var i = 0; i < points.length; i += 3) {
+    for (let i = 0; i < points.length; i += 3) {
         newPoints.push(points[i] + offset, points[i + 1], points[i + 2]);
     }
     return newPoints;
@@ -34037,26 +35093,24 @@ function shiftCoords(points, offset) {
 function transformTile(tile, extent) {
     if (tile.transformed) return tile;
 
-    var z2 = 1 << tile.z,
-        tx = tile.x,
-        ty = tile.y,
-        i, j, k;
+    const z2 = 1 << tile.z;
+    const tx = tile.x;
+    const ty = tile.y;
 
-    for (i = 0; i < tile.features.length; i++) {
-        var feature = tile.features[i],
-            geom = feature.geometry,
-            type = feature.type;
+    for (const feature of tile.features) {
+        const geom = feature.geometry;
+        const type = feature.type;
 
         feature.geometry = [];
 
         if (type === 1) {
-            for (j = 0; j < geom.length; j += 2) {
+            for (let j = 0; j < geom.length; j += 2) {
                 feature.geometry.push(transformPoint(geom[j], geom[j + 1], extent, z2, tx, ty));
             }
         } else {
-            for (j = 0; j < geom.length; j++) {
-                var ring = [];
-                for (k = 0; k < geom[j].length; k += 2) {
+            for (let j = 0; j < geom.length; j++) {
+                const ring = [];
+                for (let k = 0; k < geom[j].length; k += 2) {
                     ring.push(transformPoint(geom[j][k], geom[j][k + 1], extent, z2, tx, ty));
                 }
                 feature.geometry.push(ring);
@@ -34076,49 +35130,41 @@ function transformPoint(x, y, extent, z2, tx, ty) {
 }
 
 function createTile(features, z, tx, ty, options) {
-    var tolerance = z === options.maxZoom ? 0 : options.tolerance / ((1 << z) * options.extent);
-    var tile = {
+    const tolerance = z === options.maxZoom ? 0 : options.tolerance / ((1 << z) * options.extent);
+    const tile = {
         features: [],
         numPoints: 0,
         numSimplified: 0,
-        numFeatures: 0,
+        numFeatures: features.length,
         source: null,
         x: tx,
         y: ty,
-        z: z,
+        z,
         transformed: false,
         minX: 2,
         minY: 1,
         maxX: -1,
         maxY: 0
     };
-    for (var i = 0; i < features.length; i++) {
-        tile.numFeatures++;
-        addFeature(tile, features[i], tolerance, options);
-
-        var minX = features[i].minX;
-        var minY = features[i].minY;
-        var maxX = features[i].maxX;
-        var maxY = features[i].maxY;
-
-        if (minX < tile.minX) tile.minX = minX;
-        if (minY < tile.minY) tile.minY = minY;
-        if (maxX > tile.maxX) tile.maxX = maxX;
-        if (maxY > tile.maxY) tile.maxY = maxY;
+    for (const feature of features) {
+        addFeature(tile, feature, tolerance, options);
     }
     return tile;
 }
 
 function addFeature(tile, feature, tolerance, options) {
+    const geom = feature.geometry;
+    const type = feature.type;
+    const simplified = [];
 
-    var geom = feature.geometry,
-        type = feature.type,
-        simplified = [];
+    tile.minX = Math.min(tile.minX, feature.minX);
+    tile.minY = Math.min(tile.minY, feature.minY);
+    tile.maxX = Math.max(tile.maxX, feature.maxX);
+    tile.maxY = Math.max(tile.maxY, feature.maxY);
 
     if (type === 'Point' || type === 'MultiPoint') {
-        for (var i = 0; i < geom.length; i += 3) {
-            simplified.push(geom[i]);
-            simplified.push(geom[i + 1]);
+        for (let i = 0; i < geom.length; i += 3) {
+            simplified.push(geom[i], geom[i + 1]);
             tile.numPoints++;
             tile.numSimplified++;
         }
@@ -34127,33 +35173,35 @@ function addFeature(tile, feature, tolerance, options) {
         addLine(simplified, geom, tile, tolerance, false, false);
 
     } else if (type === 'MultiLineString' || type === 'Polygon') {
-        for (i = 0; i < geom.length; i++) {
+        for (let i = 0; i < geom.length; i++) {
             addLine(simplified, geom[i], tile, tolerance, type === 'Polygon', i === 0);
         }
 
     } else if (type === 'MultiPolygon') {
 
-        for (var k = 0; k < geom.length; k++) {
-            var polygon = geom[k];
-            for (i = 0; i < polygon.length; i++) {
+        for (let k = 0; k < geom.length; k++) {
+            const polygon = geom[k];
+            for (let i = 0; i < polygon.length; i++) {
                 addLine(simplified, polygon[i], tile, tolerance, true, i === 0);
             }
         }
     }
 
     if (simplified.length) {
-        var tags = feature.tags || null;
+        let tags = feature.tags || null;
+
         if (type === 'LineString' && options.lineMetrics) {
             tags = {};
-            for (var key in feature.tags) tags[key] = feature.tags[key];
+            for (const key in feature.tags) tags[key] = feature.tags[key];
             tags['mapbox_clip_start'] = geom.start / geom.size;
             tags['mapbox_clip_end'] = geom.end / geom.size;
         }
-        var tileFeature = {
+
+        const tileFeature = {
             geometry: simplified,
             type: type === 'Polygon' || type === 'MultiPolygon' ? 3 :
-                type === 'LineString' || type === 'MultiLineString' ? 2 : 1,
-            tags: tags
+            (type === 'LineString' || type === 'MultiLineString' ? 2 : 1),
+            tags
         };
         if (feature.id !== null) {
             tileFeature.id = feature.id;
@@ -34163,20 +35211,19 @@ function addFeature(tile, feature, tolerance, options) {
 }
 
 function addLine(result, geom, tile, tolerance, isPolygon, isOuter) {
-    var sqTolerance = tolerance * tolerance;
+    const sqTolerance = tolerance * tolerance;
 
     if (tolerance > 0 && (geom.size < (isPolygon ? sqTolerance : tolerance))) {
         tile.numPoints += geom.length / 3;
         return;
     }
 
-    var ring = [];
+    const ring = [];
 
-    for (var i = 0; i < geom.length; i += 3) {
+    for (let i = 0; i < geom.length; i += 3) {
         if (tolerance === 0 || geom[i + 2] > sqTolerance) {
             tile.numSimplified++;
-            ring.push(geom[i]);
-            ring.push(geom[i + 1]);
+            ring.push(geom[i], geom[i + 1]);
         }
         tile.numPoints++;
     }
@@ -34187,14 +35234,14 @@ function addLine(result, geom, tile, tolerance, isPolygon, isOuter) {
 }
 
 function rewind(ring, clockwise) {
-    var area = 0;
-    for (var i = 0, len = ring.length, j = len - 2; i < len; j = i, i += 2) {
+    let area = 0;
+    for (let i = 0, len = ring.length, j = len - 2; i < len; j = i, i += 2) {
         area += (ring[i] - ring[j]) * (ring[i + 1] + ring[j + 1]);
     }
     if (area > 0 === clockwise) {
-        for (i = 0, len = ring.length; i < len / 2; i += 2) {
-            var x = ring[i];
-            var y = ring[i + 1];
+        for (let i = 0, len = ring.length; i < len / 2; i += 2) {
+            const x = ring[i];
+            const y = ring[i + 1];
             ring[i] = ring[len - 2 - i];
             ring[i + 1] = ring[len - 1 - i];
             ring[len - 2 - i] = x;
@@ -34203,46 +35250,7 @@ function rewind(ring, clockwise) {
     }
 }
 
-function geojsonvt(data, options) {
-    return new GeoJSONVT(data, options);
-}
-
-function GeoJSONVT(data, options) {
-    options = this.options = extend(Object.create(this.options), options);
-
-    var debug = options.debug;
-
-    if (debug) console.time('preprocess data');
-
-    if (options.maxZoom < 0 || options.maxZoom > 24) throw new Error('maxZoom should be in the 0-24 range');
-    if (options.promoteId && options.generateId) throw new Error('promoteId and generateId cannot be used together.');
-
-    var features = convert(data, options);
-
-    this.tiles = {};
-    this.tileCoords = [];
-
-    if (debug) {
-        console.timeEnd('preprocess data');
-        console.log('index: maxZoom: %d, maxPoints: %d', options.indexMaxZoom, options.indexMaxPoints);
-        console.time('generate tiles');
-        this.stats = {};
-        this.total = 0;
-    }
-
-    features = wrap(features, options);
-
-    // start slicing from the top tile down
-    if (features.length) this.splitTile(features, 0, 0, 0);
-
-    if (debug) {
-        if (features.length) console.log('features: %d, points: %d', this.tiles[0].numFeatures, this.tiles[0].numPoints);
-        console.timeEnd('generate tiles');
-        console.log('tiles generated:', this.total, JSON.stringify(this.stats));
-    }
-}
-
-GeoJSONVT.prototype.options = {
+const defaultOptions = {
     maxZoom: 14,            // max zoom to preserve detail on
     indexMaxZoom: 5,        // max zoom in the tile index
     indexMaxPoints: 100000, // max number of points per tile in the tile index
@@ -34255,146 +35263,201 @@ GeoJSONVT.prototype.options = {
     debug: 0                // logging level (0, 1 or 2)
 };
 
-GeoJSONVT.prototype.splitTile = function (features, z, x, y, cz, cx, cy) {
+class GeoJSONVT {
+    constructor(data, options) {
+        options = this.options = extend(Object.create(defaultOptions), options);
 
-    var stack = [features, z, x, y],
-        options = this.options,
-        debug = options.debug;
+        const debug = options.debug;
 
-    // avoid recursion by using a processing queue
-    while (stack.length) {
-        y = stack.pop();
-        x = stack.pop();
-        z = stack.pop();
-        features = stack.pop();
+        if (debug) console.time('preprocess data');
 
-        var z2 = 1 << z,
-            id = toID(z, x, y),
-            tile = this.tiles[id];
+        if (options.maxZoom < 0 || options.maxZoom > 24) throw new Error('maxZoom should be in the 0-24 range');
+        if (options.promoteId && options.generateId) throw new Error('promoteId and generateId cannot be used together.');
 
-        if (!tile) {
-            if (debug > 1) console.time('creation');
+        // projects and adds simplification info
+        let features = convert(data, options);
 
-            tile = this.tiles[id] = createTile(features, z, x, y, options);
-            this.tileCoords.push({z: z, x: x, y: y});
+        // tiles and tileCoords are part of the public API
+        this.tiles = {};
+        this.tileCoords = [];
 
-            if (debug) {
-                if (debug > 1) {
-                    console.log('tile z%d-%d-%d (features: %d, points: %d, simplified: %d)',
-                        z, x, y, tile.numFeatures, tile.numPoints, tile.numSimplified);
-                    console.timeEnd('creation');
+        if (debug) {
+            console.timeEnd('preprocess data');
+            console.log('index: maxZoom: %d, maxPoints: %d', options.indexMaxZoom, options.indexMaxPoints);
+            console.time('generate tiles');
+            this.stats = {};
+            this.total = 0;
+        }
+
+        // wraps features (ie extreme west and extreme east)
+        features = wrap(features, options);
+
+        // start slicing from the top tile down
+        if (features.length) this.splitTile(features, 0, 0, 0);
+
+        if (debug) {
+            if (features.length) console.log('features: %d, points: %d', this.tiles[0].numFeatures, this.tiles[0].numPoints);
+            console.timeEnd('generate tiles');
+            console.log('tiles generated:', this.total, JSON.stringify(this.stats));
+        }
+    }
+
+    // splits features from a parent tile to sub-tiles.
+    // z, x, and y are the coordinates of the parent tile
+    // cz, cx, and cy are the coordinates of the target tile
+    //
+    // If no target tile is specified, splitting stops when we reach the maximum
+    // zoom or the number of points is low as specified in the options.
+    splitTile(features, z, x, y, cz, cx, cy) {
+
+        const stack = [features, z, x, y];
+        const options = this.options;
+        const debug = options.debug;
+
+        // avoid recursion by using a processing queue
+        while (stack.length) {
+            y = stack.pop();
+            x = stack.pop();
+            z = stack.pop();
+            features = stack.pop();
+
+            const z2 = 1 << z;
+            const id = toID(z, x, y);
+            let tile = this.tiles[id];
+
+            if (!tile) {
+                if (debug > 1) console.time('creation');
+
+                tile = this.tiles[id] = createTile(features, z, x, y, options);
+                this.tileCoords.push({z, x, y});
+
+                if (debug) {
+                    if (debug > 1) {
+                        console.log('tile z%d-%d-%d (features: %d, points: %d, simplified: %d)',
+                            z, x, y, tile.numFeatures, tile.numPoints, tile.numSimplified);
+                        console.timeEnd('creation');
+                    }
+                    const key = `z${  z}`;
+                    this.stats[key] = (this.stats[key] || 0) + 1;
+                    this.total++;
                 }
-                var key = 'z' + z;
-                this.stats[key] = (this.stats[key] || 0) + 1;
-                this.total++;
             }
+
+            // save reference to original geometry in tile so that we can drill down later if we stop now
+            tile.source = features;
+
+            // if it's the first-pass tiling
+            if (cz == null) {
+                // stop tiling if we reached max zoom, or if the tile is too simple
+                if (z === options.indexMaxZoom || tile.numPoints <= options.indexMaxPoints) continue;
+            // if a drilldown to a specific tile
+            } else if (z === options.maxZoom || z === cz) {
+                // stop tiling if we reached base zoom or our target tile zoom
+                continue;
+            } else if (cz != null) {
+                // stop tiling if it's not an ancestor of the target tile
+                const zoomSteps = cz - z;
+                if (x !== cx >> zoomSteps || y !== cy >> zoomSteps) continue;
+            }
+
+            // if we slice further down, no need to keep source geometry
+            tile.source = null;
+
+            if (features.length === 0) continue;
+
+            if (debug > 1) console.time('clipping');
+
+            // values we'll use for clipping
+            const k1 = 0.5 * options.buffer / options.extent;
+            const k2 = 0.5 - k1;
+            const k3 = 0.5 + k1;
+            const k4 = 1 + k1;
+
+            let tl = null;
+            let bl = null;
+            let tr = null;
+            let br = null;
+
+            let left  = clip(features, z2, x - k1, x + k3, 0, tile.minX, tile.maxX, options);
+            let right = clip(features, z2, x + k2, x + k4, 0, tile.minX, tile.maxX, options);
+            features = null;
+
+            if (left) {
+                tl = clip(left, z2, y - k1, y + k3, 1, tile.minY, tile.maxY, options);
+                bl = clip(left, z2, y + k2, y + k4, 1, tile.minY, tile.maxY, options);
+                left = null;
+            }
+
+            if (right) {
+                tr = clip(right, z2, y - k1, y + k3, 1, tile.minY, tile.maxY, options);
+                br = clip(right, z2, y + k2, y + k4, 1, tile.minY, tile.maxY, options);
+                right = null;
+            }
+
+            if (debug > 1) console.timeEnd('clipping');
+
+            stack.push(tl || [], z + 1, x * 2,     y * 2);
+            stack.push(bl || [], z + 1, x * 2,     y * 2 + 1);
+            stack.push(tr || [], z + 1, x * 2 + 1, y * 2);
+            stack.push(br || [], z + 1, x * 2 + 1, y * 2 + 1);
         }
-
-        // save reference to original geometry in tile so that we can drill down later if we stop now
-        tile.source = features;
-
-        // if it's the first-pass tiling
-        if (!cz) {
-            // stop tiling if we reached max zoom, or if the tile is too simple
-            if (z === options.indexMaxZoom || tile.numPoints <= options.indexMaxPoints) continue;
-
-        // if a drilldown to a specific tile
-        } else {
-            // stop tiling if we reached base zoom or our target tile zoom
-            if (z === options.maxZoom || z === cz) continue;
-
-            // stop tiling if it's not an ancestor of the target tile
-            var m = 1 << (cz - z);
-            if (x !== Math.floor(cx / m) || y !== Math.floor(cy / m)) continue;
-        }
-
-        // if we slice further down, no need to keep source geometry
-        tile.source = null;
-
-        if (features.length === 0) continue;
-
-        if (debug > 1) console.time('clipping');
-
-        // values we'll use for clipping
-        var k1 = 0.5 * options.buffer / options.extent,
-            k2 = 0.5 - k1,
-            k3 = 0.5 + k1,
-            k4 = 1 + k1,
-            tl, bl, tr, br, left, right;
-
-        tl = bl = tr = br = null;
-
-        left  = clip(features, z2, x - k1, x + k3, 0, tile.minX, tile.maxX, options);
-        right = clip(features, z2, x + k2, x + k4, 0, tile.minX, tile.maxX, options);
-        features = null;
-
-        if (left) {
-            tl = clip(left, z2, y - k1, y + k3, 1, tile.minY, tile.maxY, options);
-            bl = clip(left, z2, y + k2, y + k4, 1, tile.minY, tile.maxY, options);
-            left = null;
-        }
-
-        if (right) {
-            tr = clip(right, z2, y - k1, y + k3, 1, tile.minY, tile.maxY, options);
-            br = clip(right, z2, y + k2, y + k4, 1, tile.minY, tile.maxY, options);
-            right = null;
-        }
-
-        if (debug > 1) console.timeEnd('clipping');
-
-        stack.push(tl || [], z + 1, x * 2,     y * 2);
-        stack.push(bl || [], z + 1, x * 2,     y * 2 + 1);
-        stack.push(tr || [], z + 1, x * 2 + 1, y * 2);
-        stack.push(br || [], z + 1, x * 2 + 1, y * 2 + 1);
-    }
-};
-
-GeoJSONVT.prototype.getTile = function (z, x, y) {
-    var options = this.options,
-        extent = options.extent,
-        debug = options.debug;
-
-    if (z < 0 || z > 24) return null;
-
-    var z2 = 1 << z;
-    x = ((x % z2) + z2) % z2; // wrap tile x coordinate
-
-    var id = toID(z, x, y);
-    if (this.tiles[id]) return transformTile(this.tiles[id], extent);
-
-    if (debug > 1) console.log('drilling down to z%d-%d-%d', z, x, y);
-
-    var z0 = z,
-        x0 = x,
-        y0 = y,
-        parent;
-
-    while (!parent && z0 > 0) {
-        z0--;
-        x0 = Math.floor(x0 / 2);
-        y0 = Math.floor(y0 / 2);
-        parent = this.tiles[toID(z0, x0, y0)];
     }
 
-    if (!parent || !parent.source) return null;
+    getTile(z, x, y) {
+        z = +z;
+        x = +x;
+        y = +y;
 
-    // if we found a parent tile containing the original geometry, we can drill down from it
-    if (debug > 1) console.log('found parent tile z%d-%d-%d', z0, x0, y0);
+        const options = this.options;
+        const {extent, debug} = options;
 
-    if (debug > 1) console.time('drilling down');
-    this.splitTile(parent.source, z0, x0, y0, z, x, y);
-    if (debug > 1) console.timeEnd('drilling down');
+        if (z < 0 || z > 24) return null;
 
-    return this.tiles[id] ? transformTile(this.tiles[id], extent) : null;
-};
+        const z2 = 1 << z;
+        x = (x + z2) & (z2 - 1); // wrap tile x coordinate
+
+        const id = toID(z, x, y);
+        if (this.tiles[id]) return transformTile(this.tiles[id], extent);
+
+        if (debug > 1) console.log('drilling down to z%d-%d-%d', z, x, y);
+
+        let z0 = z;
+        let x0 = x;
+        let y0 = y;
+        let parent;
+
+        while (!parent && z0 > 0) {
+            z0--;
+            x0 = x0 >> 1;
+            y0 = y0 >> 1;
+            parent = this.tiles[toID(z0, x0, y0)];
+        }
+
+        if (!parent || !parent.source) return null;
+
+        // if we found a parent tile containing the original geometry, we can drill down from it
+        if (debug > 1) {
+            console.log('found parent tile z%d-%d-%d', z0, x0, y0);
+            console.time('drilling down');
+        }
+        this.splitTile(parent.source, z0, x0, y0, z, x, y);
+        if (debug > 1) console.timeEnd('drilling down');
+
+        return this.tiles[id] ? transformTile(this.tiles[id], extent) : null;
+    }
+}
 
 function toID(z, x, y) {
     return (((1 << z) * y + x) * 32) + z;
 }
 
 function extend(dest, src) {
-    for (var i in src) dest[i] = src[i];
+    for (const i in src) dest[i] = src[i];
     return dest;
+}
+
+function geojsonvt(data, options) {
+    return new GeoJSONVT(data, options);
 }
 
 function getFeatureId(feature, promoteId) {
@@ -34523,7 +35586,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
             if (!geoJSONTile) {
                 return null;
             }
-            const geojsonWrapper = new GeoJSONWrapper$2(geoJSONTile.features);
+            const geojsonWrapper = new GeoJSONWrapper(geoJSONTile.features);
             // Encode the geojson-vt tile into binary vector tile form.  This
             // is a convenience that allows `FeatureIndex` to operate the same way
             // across `VectorTileSource` and `GeoJSONSource` data.
@@ -34543,7 +35606,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * preparatory method must be called before {@link GeoJSONWorkerSource#loadTile}
      * can correctly serve up tiles.
      *
-     * Defers to {@link GeoJSONWorkerSource#loadGeoJSON} for the fetching/parsing,
+     * Defers to {@link GeoJSONWorkerSource#loadAndProcessGeoJSON} for the pre-processing.
      *
      * When a `loadData` request comes in while a previous one is being processed,
      * the previous one is aborted.
@@ -34552,29 +35615,17 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * @returns a promise that resolves when the data is loaded and parsed into a GeoJSON object
      */
     loadData(params) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             (_a = this._pendingRequest) === null || _a === void 0 ? void 0 : _a.abort();
             const perf = (params && params.request && params.request.collectResourceTiming) ?
                 new RequestPerformance(params.request) : false;
             this._pendingRequest = new AbortController();
             try {
-                let data = yield this.loadGeoJSON(params, this._pendingRequest);
-                delete this._pendingRequest;
-                if (typeof data !== 'object') {
-                    throw new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`);
-                }
-                rewind$2(data, true);
-                if (params.filter) {
-                    const compiled = createExpression(params.filter, { type: 'boolean', 'property-type': 'data-driven', overridable: false, transition: false });
-                    if (compiled.result === 'error')
-                        throw new Error(compiled.value.map(err => `${err.key}: ${err.message}`).join(', '));
-                    const features = data.features.filter(feature => compiled.value.evaluate({ zoom: 0 }, feature));
-                    data = { type: 'FeatureCollection', features };
-                }
+                this._pendingData = this.loadAndProcessGeoJSON(params, this._pendingRequest);
                 this._geoJSONIndex = params.cluster ?
-                    new Supercluster(getSuperclusterOptions(params)).load(data.features) :
-                    geojsonvt(data, params.geojsonVtOptions);
+                    new Supercluster(getSuperclusterOptions(params)).load((yield this._pendingData).features) :
+                    geojsonvt(yield this._pendingData, params.geojsonVtOptions);
                 this.loaded = {};
                 const result = {};
                 if (perf) {
@@ -34598,6 +35649,16 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
         });
     }
     /**
+     * Allows to get the source's actual GeoJSON.
+     *
+     * @returns a promise which is resolved with the source's actual GeoJSON
+     */
+    getData() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this._pendingData;
+        });
+    }
+    /**
     * Implements {@link WorkerSource#reloadTile}.
     *
     * If the tile is loaded, uses the implementation in VectorTileWorkerSource.
@@ -34614,6 +35675,33 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
         else {
             return this.loadTile(params);
         }
+    }
+    /**
+     * Fetch, parse and process GeoJSON according to the given params.
+     *
+     * Defers to {@link GeoJSONWorkerSource#loadGeoJSON} for the fetching and parsing.
+     *
+     * @param params - the parameters
+     * @param abortController - the abort controller that allows aborting this operation
+     * @returns a promise that is resolved with the processes GeoJSON
+     */
+    loadAndProcessGeoJSON(params, abortController) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let data = yield this.loadGeoJSON(params, abortController);
+            delete this._pendingRequest;
+            if (typeof data !== 'object') {
+                throw new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`);
+            }
+            rewind$1(data, true);
+            if (params.filter) {
+                const compiled = createExpression(params.filter, { type: 'boolean', 'property-type': 'data-driven', overridable: false, transition: false });
+                if (compiled.result === 'error')
+                    throw new Error(compiled.value.map(err => `${err.key}: ${err.message}`).join(', '));
+                const features = data.features.filter(feature => compiled.value.evaluate({ zoom: 0 }, feature));
+                data = { type: 'FeatureCollection', features };
+            }
+            return data;
+        });
     }
     /**
      * Fetch and parse GeoJSON according to the given params.
@@ -34704,7 +35792,7 @@ function getSuperclusterOptions({ superclusterOptions, clusterProperties }) {
 }
 
 /**
- * The Worker class responsidble for background thread related execution
+ * The Worker class responsible for background thread related execution
  */
 class Worker {
     constructor(self) {
@@ -34730,37 +35818,40 @@ class Worker {
             }
             rtlWorkerPlugin.setMethods(rtlTextPlugin);
         };
-        this.actor.registerMessageHandler('loadDEMTile', (mapId, params) => {
+        this.actor.registerMessageHandler("LDT" /* MessageType.loadDEMTile */, (mapId, params) => {
             return this._getDEMWorkerSource(mapId, params.source).loadTile(params);
         });
-        this.actor.registerMessageHandler('removeDEMTile', (mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("RDT" /* MessageType.removeDEMTile */, (mapId, params) => __awaiter(this, void 0, void 0, function* () {
             this._getDEMWorkerSource(mapId, params.source).removeTile(params);
         }));
-        this.actor.registerMessageHandler('getClusterExpansionZoom', (mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("GCEZ" /* MessageType.getClusterExpansionZoom */, (mapId, params) => __awaiter(this, void 0, void 0, function* () {
             return this._getWorkerSource(mapId, params.type, params.source).getClusterExpansionZoom(params);
         }));
-        this.actor.registerMessageHandler('getClusterChildren', (mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("GCC" /* MessageType.getClusterChildren */, (mapId, params) => __awaiter(this, void 0, void 0, function* () {
             return this._getWorkerSource(mapId, params.type, params.source).getClusterChildren(params);
         }));
-        this.actor.registerMessageHandler('getClusterLeaves', (mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("GCL" /* MessageType.getClusterLeaves */, (mapId, params) => __awaiter(this, void 0, void 0, function* () {
             return this._getWorkerSource(mapId, params.type, params.source).getClusterLeaves(params);
         }));
-        this.actor.registerMessageHandler('loadData', (mapId, params) => {
+        this.actor.registerMessageHandler("LD" /* MessageType.loadData */, (mapId, params) => {
             return this._getWorkerSource(mapId, params.type, params.source).loadData(params);
         });
-        this.actor.registerMessageHandler('loadTile', (mapId, params) => {
+        this.actor.registerMessageHandler("GD" /* MessageType.getData */, (mapId, params) => {
+            return this._getWorkerSource(mapId, params.type, params.source).getData();
+        });
+        this.actor.registerMessageHandler("LT" /* MessageType.loadTile */, (mapId, params) => {
             return this._getWorkerSource(mapId, params.type, params.source).loadTile(params);
         });
-        this.actor.registerMessageHandler('reloadTile', (mapId, params) => {
+        this.actor.registerMessageHandler("RT" /* MessageType.reloadTile */, (mapId, params) => {
             return this._getWorkerSource(mapId, params.type, params.source).reloadTile(params);
         });
-        this.actor.registerMessageHandler('abortTile', (mapId, params) => {
+        this.actor.registerMessageHandler("AT" /* MessageType.abortTile */, (mapId, params) => {
             return this._getWorkerSource(mapId, params.type, params.source).abortTile(params);
         });
-        this.actor.registerMessageHandler('removeTile', (mapId, params) => {
+        this.actor.registerMessageHandler("RMT" /* MessageType.removeTile */, (mapId, params) => {
             return this._getWorkerSource(mapId, params.type, params.source).removeTile(params);
         });
-        this.actor.registerMessageHandler('removeSource', (mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("RS" /* MessageType.removeSource */, (mapId, params) => __awaiter(this, void 0, void 0, function* () {
             if (!this.workerSources[mapId] ||
                 !this.workerSources[mapId][params.type] ||
                 !this.workerSources[mapId][params.type][params.source]) {
@@ -34772,22 +35863,28 @@ class Worker {
                 worker.removeSource(params);
             }
         }));
-        this.actor.registerMessageHandler('setReferrer', (_mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("RM" /* MessageType.removeMap */, (mapId) => __awaiter(this, void 0, void 0, function* () {
+            delete this.layerIndexes[mapId];
+            delete this.availableImages[mapId];
+            delete this.workerSources[mapId];
+            delete this.demWorkerSources[mapId];
+        }));
+        this.actor.registerMessageHandler("SR" /* MessageType.setReferrer */, (_mapId, params) => __awaiter(this, void 0, void 0, function* () {
             this.referrer = params;
         }));
-        this.actor.registerMessageHandler('syncRTLPluginState', (mapId, params) => {
+        this.actor.registerMessageHandler("SRPS" /* MessageType.syncRTLPluginState */, (mapId, params) => {
             return this._syncRTLPluginState(mapId, params);
         });
-        this.actor.registerMessageHandler('importScript', (_mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("IS" /* MessageType.importScript */, (_mapId, params) => __awaiter(this, void 0, void 0, function* () {
             this.self.importScripts(params);
         }));
-        this.actor.registerMessageHandler('setImages', (mapId, params) => {
+        this.actor.registerMessageHandler("SI" /* MessageType.setImages */, (mapId, params) => {
             return this._setImages(mapId, params);
         });
-        this.actor.registerMessageHandler('updateLayers', (mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("UL" /* MessageType.updateLayers */, (mapId, params) => __awaiter(this, void 0, void 0, function* () {
             this._getLayerIndex(mapId).update(params.layers, params.removedIds);
         }));
-        this.actor.registerMessageHandler('setLayers', (mapId, params) => __awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("SL" /* MessageType.setLayers */, (mapId, params) => __awaiter(this, void 0, void 0, function* () {
             this._getLayerIndex(mapId).replace(params);
         }));
     }
@@ -34802,19 +35899,34 @@ class Worker {
             }
         });
     }
-    _syncRTLPluginState(map, state) {
+    _syncRTLPluginState(mapId, incomingState) {
         return __awaiter(this, void 0, void 0, function* () {
-            rtlWorkerPlugin.setState(state);
-            const pluginURL = rtlWorkerPlugin.getPluginURL();
-            if (state.pluginStatus === 'loaded' && !rtlWorkerPlugin.isParsed() && pluginURL != null) {
-                this.self.importScripts(pluginURL);
-                const complete = rtlWorkerPlugin.isParsed();
-                if (complete) {
-                    return complete;
-                }
-                throw new Error(`RTL Text Plugin failed to import scripts from ${pluginURL}`);
+            // Parsed plugin cannot be changed, so just return its current state.
+            if (rtlWorkerPlugin.isParsed()) {
+                return rtlWorkerPlugin.getState();
             }
-            return false;
+            if (incomingState.pluginStatus !== 'loading') {
+                // simply sync and done
+                rtlWorkerPlugin.setState(incomingState);
+                return incomingState;
+            }
+            const urlToLoad = incomingState.pluginURL;
+            this.self.importScripts(urlToLoad);
+            const complete = rtlWorkerPlugin.isParsed();
+            if (complete) {
+                const loadedState = {
+                    pluginStatus: 'loaded',
+                    pluginURL: urlToLoad
+                };
+                rtlWorkerPlugin.setState(loadedState);
+                return loadedState;
+            }
+            // error case
+            rtlWorkerPlugin.setState({
+                pluginStatus: 'error',
+                pluginURL: ''
+            });
+            throw new Error(`RTL Text Plugin failed to import scripts from ${urlToLoad}`);
         });
     }
     _getAvailableImages(mapId) {

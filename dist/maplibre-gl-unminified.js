@@ -57,103 +57,6 @@ PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 /* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
-var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-    return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-    if (typeof b !== "function" && b !== null)
-        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
-function __rest(s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-}
-
-function __decorate(decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-}
-
-function __param(paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-}
-
-function __esDecorate(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
-    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-    var _, done = false;
-    for (var i = decorators.length - 1; i >= 0; i--) {
-        var context = {};
-        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
-        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-        if (kind === "accessor") {
-            if (result === void 0) continue;
-            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-            if (_ = accept(result.get)) descriptor.get = _;
-            if (_ = accept(result.set)) descriptor.set = _;
-            if (_ = accept(result.init)) initializers.unshift(_);
-        }
-        else if (_ = accept(result)) {
-            if (kind === "field") initializers.unshift(_);
-            else descriptor[key] = _;
-        }
-    }
-    if (target) Object.defineProperty(target, contextIn.name, descriptor);
-    done = true;
-};
-
-function __runInitializers(thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i = 0; i < initializers.length; i++) {
-        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-    }
-    return useValue ? value : void 0;
-};
-
-function __propKey(x) {
-    return typeof x === "symbol" ? x : "".concat(x);
-};
-
-function __setFunctionName(f, name, prefix) {
-    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
-    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
-};
-
-function __metadata(metadataKey, metadataValue) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
-}
 
 function __awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -165,299 +68,13 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
-    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-}
-
-var __createBinding = Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-
-function __exportStar(m, o) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
-}
-
-function __values(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-}
-
-function __read(o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-}
-
-/** @deprecated */
-function __spread() {
-    for (var ar = [], i = 0; i < arguments.length; i++)
-        ar = ar.concat(__read(arguments[i]));
-    return ar;
-}
-
-/** @deprecated */
-function __spreadArrays() {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-}
-
-function __spreadArray(to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-}
-
-function __await(v) {
-    return this instanceof __await ? (this.v = v, this) : new __await(v);
-}
-
-function __asyncGenerator(thisArg, _arguments, generator) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
-    function awaitReturn(f) { return function (v) { return Promise.resolve(v).then(f, reject); }; }
-    function verb(n, f) { if (g[n]) { i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; if (f) i[n] = f(i[n]); } }
-    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-    function fulfill(value) { resume("next", value); }
-    function reject(value) { resume("throw", value); }
-    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-}
-
-function __asyncDelegator(o) {
-    var i, p;
-    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
-    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: false } : f ? f(v) : v; } : f; }
-}
-
-function __asyncValues(o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-}
-
-function __makeTemplateObject(cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
-
-var __setModuleDefault = Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-};
-
-function __importStar(mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-}
-
-function __importDefault(mod) {
-    return (mod && mod.__esModule) ? mod : { default: mod };
-}
-
-function __classPrivateFieldGet(receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-}
-
-function __classPrivateFieldSet(receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-}
-
-function __classPrivateFieldIn(state, receiver) {
-    if (receiver === null || (typeof receiver !== "object" && typeof receiver !== "function")) throw new TypeError("Cannot use 'in' operator on non-object");
-    return typeof state === "function" ? receiver === state : state.has(receiver);
-}
-
-function __addDisposableResource(env, value, async) {
-    if (value !== null && value !== void 0) {
-        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose, inner;
-        if (async) {
-            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
-            dispose = value[Symbol.asyncDispose];
-        }
-        if (dispose === void 0) {
-            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
-            dispose = value[Symbol.dispose];
-            if (async) inner = dispose;
-        }
-        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
-        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
-        env.stack.push({ value: value, dispose: dispose, async: async });
-    }
-    else if (async) {
-        env.stack.push({ async: true });
-    }
-    return value;
-
-}
-
-var _SuppressedError = typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
-function __disposeResources(env) {
-    function fail(e) {
-        env.error = env.hasError ? new _SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
-        env.hasError = true;
-    }
-    var r, s = 0;
-    function next() {
-        while (r = env.stack.pop()) {
-            try {
-                if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
-                if (r.dispose) {
-                    var result = r.dispose.call(r.value);
-                    if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
-                }
-                else s |= 1;
-            }
-            catch (e) {
-                fail(e);
-            }
-        }
-        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
-        if (env.hasError) throw env.error;
-    }
-    return next();
-}
-
-var tslib_es6 = {
-    __extends: __extends,
-    __assign: __assign,
-    __rest: __rest,
-    __decorate: __decorate,
-    __param: __param,
-    __metadata: __metadata,
-    __awaiter: __awaiter,
-    __generator: __generator,
-    __createBinding: __createBinding,
-    __exportStar: __exportStar,
-    __values: __values,
-    __read: __read,
-    __spread: __spread,
-    __spreadArrays: __spreadArrays,
-    __spreadArray: __spreadArray,
-    __await: __await,
-    __asyncGenerator: __asyncGenerator,
-    __asyncDelegator: __asyncDelegator,
-    __asyncValues: __asyncValues,
-    __makeTemplateObject: __makeTemplateObject,
-    __importStar: __importStar,
-    __importDefault: __importDefault,
-    __classPrivateFieldGet: __classPrivateFieldGet,
-    __classPrivateFieldSet: __classPrivateFieldSet,
-    __classPrivateFieldIn: __classPrivateFieldIn,
-    __addDisposableResource: __addDisposableResource,
-    __disposeResources: __disposeResources,
-};
-
-var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
 function getDefaultExportFromCjs$1 (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-function getDefaultExportFromNamespaceIfPresent (n) {
-	return n && Object.prototype.hasOwnProperty.call(n, 'default') ? n['default'] : n;
-}
-
-function getDefaultExportFromNamespaceIfNotNamed (n) {
-	return n && Object.prototype.hasOwnProperty.call(n, 'default') && Object.keys(n).length === 1 ? n['default'] : n;
-}
-
-function getAugmentedNamespace(n) {
-  if (n.__esModule) return n;
-  var f = n.default;
-	if (typeof f == "function") {
-		var a = function a () {
-			if (this instanceof a) {
-        return Reflect.construct(f, arguments, this.constructor);
-			}
-			return f.apply(this, arguments);
-		};
-		a.prototype = f.prototype;
-  } else a = {};
-  Object.defineProperty(a, '__esModule', {value: true});
-	Object.keys(n).forEach(function (k) {
-		var d = Object.getOwnPropertyDescriptor(n, k);
-		Object.defineProperty(a, k, d.get ? d : {
-			enumerable: true,
-			get: function () {
-				return n[k];
-			}
-		});
-	});
-	return a;
 }
 
 var pointGeometry;
@@ -466,7 +83,6 @@ var hasRequiredPointGeometry;
 function requirePointGeometry () {
 	if (hasRequiredPointGeometry) return pointGeometry;
 	hasRequiredPointGeometry = 1;
-	'use strict';
 
 	pointGeometry = Point;
 
@@ -790,7 +406,6 @@ var hasRequiredUnitbezier;
 function requireUnitbezier () {
 	if (hasRequiredUnitbezier) return unitbezier$1;
 	hasRequiredUnitbezier = 1;
-	'use strict';
 
 	unitbezier$1 = UnitBezier;
 
@@ -959,7 +574,7 @@ function easeCubicInOut(t) {
  * @param p2x - control point 2 x coordinate
  * @param p2y - control point 2 y coordinate
  */
-function bezier$1(p1x, p1y, p2x, p2y) {
+function bezier(p1x, p1y, p2x, p2y) {
     const bezier = new UnitBezier$2(p1x, p1y, p2x, p2y);
     return (t) => {
         return bezier.solve(t);
@@ -969,7 +584,7 @@ function bezier$1(p1x, p1y, p2x, p2y) {
  * A default bezier-curve powered easing function with
  * control points (0.25, 0.1) and (0.25, 1)
  */
-const defaultEasing = bezier$1(0.25, 0.1, 0.25, 1);
+const defaultEasing = bezier(0.25, 0.1, 0.25, 1);
 /**
  * constrain n to the given range via min + max
  *
@@ -1072,7 +687,7 @@ function nextPowerOfTwo(value) {
 function mapObject(input, iterator, context) {
     const output = {};
     for (const key in input) {
-        output[key] = iterator.call(context || this, input[key], key, input);
+        output[key] = iterator.call(this, input[key], key, input);
     }
     return output;
 }
@@ -1082,7 +697,7 @@ function mapObject(input, iterator, context) {
 function filterObject(input, iterator, context) {
     const output = {};
     for (const key in input) {
-        if (iterator.call(context || this, input[key], key, input)) {
+        if (iterator.call(this, input[key], key, input)) {
             output[key] = input[key];
         }
     }
@@ -1121,12 +736,12 @@ function deepEqual$1(a, b) {
 /**
  * Deeply clones two objects.
  */
-function clone$9(input) {
+function clone$1(input) {
     if (Array.isArray(input)) {
-        return input.map(clone$9);
+        return input.map(clone$1);
     }
     else if (typeof input === 'object' && input) {
-        return mapObject(input, clone$9);
+        return mapObject(input, clone$1);
     }
     else {
         return input;
@@ -1263,30 +878,6 @@ function isSafari(scope) {
             !!(userAgent && (/\b(iPad|iPhone|iPod)\b/.test(userAgent) || (!!userAgent.match('Safari') && !userAgent.match('Chrome'))));
     }
     return _isSafari;
-}
-function storageAvailable(type) {
-    try {
-        const storage = window[type];
-        storage.setItem('_mapbox_test_', 1);
-        storage.removeItem('_mapbox_test_');
-        return true;
-    }
-    catch (e) {
-        return false;
-    }
-}
-// The following methods are from https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_Unicode_Problem
-//Unicode compliant base64 encoder for strings
-function b64EncodeUnicode(str) {
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-        return String.fromCharCode(Number('0x' + p1)); //eslint-disable-line
-    }));
-}
-// Unicode compliant decoder for base64-encoded strings
-function b64DecodeUnicode(str) {
-    return decodeURIComponent(atob(str).split('').map((c) => {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); //eslint-disable-line
-    }).join(''));
 }
 function isImageBitmap(image) {
     return typeof ImageBitmap !== 'undefined' && image instanceof ImageBitmap;
@@ -3711,7 +3302,7 @@ var terrain = {
 		"default": 1
 	}
 };
-var projection$1 = {
+var projection = {
 	type: {
 		type: "enum",
 		"default": "mercator",
@@ -4941,7 +4532,7 @@ var v8Spec = {
 	light: light,
 	sky: sky,
 	terrain: terrain,
-	projection: projection$1,
+	projection: projection,
 	paint: paint$9,
 	paint_fill: paint_fill,
 	"paint_fill-extrusion": {
@@ -5483,16 +5074,6 @@ class ValidationError {
         if (value !== null && value !== undefined && value.__line__) {
             this.line = value.__line__;
         }
-    }
-}
-
-// Note: Do not inherit from Error. It breaks when transpiling to ES5.
-class ParsingError {
-    constructor(error) {
-        this.error = error;
-        this.message = error.message;
-        const match = error.message.match(/line (\d+)/);
-        this.line = match ? parseInt(match[1], 10) : 0;
     }
 }
 
@@ -7478,20 +7059,6 @@ var UnitBezier$1 = /*@__PURE__*/getDefaultExportFromCjs(unitbezier);
 function isSupportedInterpolationColorSpace(colorSpace) {
     return colorSpace === 'rgb' || colorSpace === 'hcl' || colorSpace === 'lab';
 }
-/**
- * @param interpolationType Interpolation type
- * @returns interpolation fn
- * @deprecated use `interpolate[type]` instead
- */
-const interpolateFactory = (interpolationType) => {
-    switch (interpolationType) {
-        case 'number': return number;
-        case 'color': return color;
-        case 'array': return array;
-        case 'padding': return padding;
-        case 'variableAnchorOffsetCollection': return variableAnchorOffsetCollection;
-    }
-};
 function number(from, to, t) {
     return from + t * (to - from);
 }
@@ -10773,505 +10340,6 @@ function convertNegation(filter) {
     return ['!', filter];
 }
 
-/*
- * Convert the given filter to an expression, storing the expected types for
- * any feature properties referenced in expectedTypes.
- *
- * These expected types are needed in order to construct preflight type checks
- * needed for handling 'any' filters. A preflight type check is necessary in
- * order to mimic legacy filters' semantics around expected type mismatches.
- * For example, consider the legacy filter:
- *
- *     ["any", ["all", [">", "y", 0], [">", "y", 0]], [">", "x", 0]]
- *
- * Naively, we might convert this to the expression:
- *
- *     ["any", ["all", [">", ["get", "y"], 0], [">", ["get", "z"], 0]], [">", ["get", "x"], 0]]
- *
- * But if we tried to evaluate this against, say `{x: 1, y: null, z: 0}`, the
- * [">", ["get", "y"], 0] would cause an evaluation error, leading to the
- * entire filter returning false. Legacy filter semantics, though, ask for
- * [">", "y", 0] to simply return `false` when `y` is of the wrong type,
- * allowing the subsequent terms of the outer "any" expression to be evaluated
- * (resulting, in this case, in a `true` value, because x > 0).
- *
- * We account for this by inserting a preflight type-checking expression before
- * each "any" term, allowing us to avoid evaluating the actual converted filter
- * if any type mismatches would cause it to produce an evaluation error:
- *
- *     ["any",
- *       ["case",
- *         ["all", ["==", ["typeof", ["get", "y"]], "number"], ["==", ["typeof", ["get", "z"], "number]],
- *         ["all", [">", ["get", "y"], 0], [">", ["get", "z"], 0]],
- *         false
- *       ],
- *       ["case",
- *         ["==", ["typeof", ["get", "x"], "number"]],
- *         [">", ["get", "x"], 0],
- *         false
- *       ]
- *     ]
- *
- * An alternative, possibly more direct approach would be to use type checks
- * in the conversion of each comparison operator, so that the converted version
- * of each individual ==, >=, etc. would mimic the legacy filter semantics. The
- * downside of this approach is that it can lead to many more type checks than
- * would otherwise be necessary: outside the context of an "any" expression,
- * bailing out due to a runtime type error (expression semantics) and returning
- * false (legacy filter semantics) are equivalent: they cause the filter to
- * produce a `false` result.
- */
-function convertFilter(filter, expectedTypes = {}) {
-    if (isExpressionFilter(filter))
-        return filter;
-    if (!filter)
-        return true;
-    const legacyFilter = filter;
-    const legacyOp = legacyFilter[0];
-    if (filter.length <= 1)
-        return (legacyOp !== 'any');
-    switch (legacyOp) {
-        case '==':
-        case '!=':
-        case '<':
-        case '>':
-        case '<=':
-        case '>=': {
-            const [, property, value] = filter;
-            return convertComparisonOp(property, value, legacyOp, expectedTypes);
-        }
-        case 'any': {
-            const [, ...conditions] = legacyFilter;
-            const children = conditions.map((f) => {
-                const types = {};
-                const child = convertFilter(f, types);
-                const typechecks = runtimeTypeChecks(types);
-                return typechecks === true ? child : ['case', typechecks, child, false];
-            });
-            return ['any', ...children];
-        }
-        case 'all': {
-            const [, ...conditions] = legacyFilter;
-            const children = conditions.map(f => convertFilter(f, expectedTypes));
-            return children.length > 1 ? ['all', ...children] : children[0];
-        }
-        case 'none': {
-            const [, ...conditions] = legacyFilter;
-            return ['!', convertFilter(['any', ...conditions], {})];
-        }
-        case 'in': {
-            const [, property, ...values] = legacyFilter;
-            return convertInOp(property, values);
-        }
-        case '!in': {
-            const [, property, ...values] = legacyFilter;
-            return convertInOp(property, values, true);
-        }
-        case 'has':
-            return convertHasOp(legacyFilter[1]);
-        case '!has':
-            return ['!', convertHasOp(legacyFilter[1])];
-        default:
-            return true;
-    }
-}
-// Given a set of feature properties and an expected type for each one,
-// construct an boolean expression that tests whether each property has the
-// right type.
-// E.g.: for {name: 'string', population: 'number'}, return
-// [ 'all',
-//   ['==', ['typeof', ['get', 'name'], 'string']],
-//   ['==', ['typeof', ['get', 'population'], 'number]]
-// ]
-function runtimeTypeChecks(expectedTypes) {
-    const conditions = [];
-    for (const property in expectedTypes) {
-        const get = property === '$id' ? ['id'] : ['get', property];
-        conditions.push(['==', ['typeof', get], expectedTypes[property]]);
-    }
-    if (conditions.length === 0)
-        return true;
-    if (conditions.length === 1)
-        return conditions[0];
-    return ['all', ...conditions];
-}
-function convertComparisonOp(property, value, op, expectedTypes) {
-    let get;
-    if (property === '$type') {
-        return [op, ['geometry-type'], value];
-    }
-    else if (property === '$id') {
-        get = ['id'];
-    }
-    else {
-        get = ['get', property];
-    }
-    if (expectedTypes && value !== null) {
-        const type = typeof value;
-        expectedTypes[property] = type;
-    }
-    if (op === '==' && property !== '$id' && value === null) {
-        return [
-            'all',
-            ['has', property], // missing property != null for legacy filters
-            ['==', get, null]
-        ];
-    }
-    else if (op === '!=' && property !== '$id' && value === null) {
-        return [
-            'any',
-            ['!', ['has', property]], // missing property != null for legacy filters
-            ['!=', get, null]
-        ];
-    }
-    return [op, get, value];
-}
-function convertInOp(property, values, negate = false) {
-    if (values.length === 0)
-        return negate;
-    let get;
-    if (property === '$type') {
-        get = ['geometry-type'];
-    }
-    else if (property === '$id') {
-        get = ['id'];
-    }
-    else {
-        get = ['get', property];
-    }
-    // Determine if the list of values to be searched is homogenously typed.
-    // If so (and if the type is string or number), then we can use a
-    // [match, input, [...values], true, false] construction rather than a
-    // bunch of `==` tests.
-    let uniformTypes = true;
-    const type = typeof values[0];
-    for (const value of values) {
-        if (typeof value !== type) {
-            uniformTypes = false;
-            break;
-        }
-    }
-    if (uniformTypes && (type === 'string' || type === 'number')) {
-        // Match expressions must have unique values.
-        const uniqueValues = values.sort().filter((v, i) => i === 0 || values[i - 1] !== v);
-        return ['match', get, uniqueValues, !negate, negate];
-    }
-    if (negate) {
-        return ['all', ...values.map(v => ['!=', get, v])];
-    }
-    else {
-        return ['any', ...values.map(v => ['==', get, v])];
-    }
-}
-function convertHasOp(property) {
-    if (property === '$type') {
-        return true;
-    }
-    else if (property === '$id') {
-        return ['!=', ['id'], null];
-    }
-    else {
-        return ['has', property];
-    }
-}
-
-function convertLiteral(value) {
-    return typeof value === 'object' ? ['literal', value] : value;
-}
-function convertFunction(parameters, propertySpec) {
-    let stops = parameters.stops;
-    if (!stops) {
-        // identity function
-        return convertIdentityFunction(parameters, propertySpec);
-    }
-    const zoomAndFeatureDependent = stops && typeof stops[0][0] === 'object';
-    const featureDependent = zoomAndFeatureDependent || parameters.property !== undefined;
-    const zoomDependent = zoomAndFeatureDependent || !featureDependent;
-    stops = stops.map((stop) => {
-        if (!featureDependent && propertySpec.tokens && typeof stop[1] === 'string') {
-            return [stop[0], convertTokenString(stop[1])];
-        }
-        return [stop[0], convertLiteral(stop[1])];
-    });
-    if (zoomAndFeatureDependent) {
-        return convertZoomAndPropertyFunction(parameters, propertySpec, stops);
-    }
-    else if (zoomDependent) {
-        return convertZoomFunction(parameters, propertySpec, stops);
-    }
-    else {
-        return convertPropertyFunction(parameters, propertySpec, stops);
-    }
-}
-function convertIdentityFunction(parameters, propertySpec) {
-    const get = ['get', parameters.property];
-    if (parameters.default === undefined) {
-        // By default, expressions for string-valued properties get coerced. To preserve
-        // legacy function semantics, insert an explicit assertion instead.
-        return propertySpec.type === 'string' ? ['string', get] : get;
-    }
-    else if (propertySpec.type === 'enum') {
-        return [
-            'match',
-            get,
-            Object.keys(propertySpec.values),
-            get,
-            parameters.default
-        ];
-    }
-    else {
-        const expression = [propertySpec.type === 'color' ? 'to-color' : propertySpec.type, get, convertLiteral(parameters.default)];
-        if (propertySpec.type === 'array') {
-            expression.splice(1, 0, propertySpec.value, propertySpec.length || null);
-        }
-        return expression;
-    }
-}
-function getInterpolateOperator(parameters) {
-    switch (parameters.colorSpace) {
-        case 'hcl': return 'interpolate-hcl';
-        case 'lab': return 'interpolate-lab';
-        default: return 'interpolate';
-    }
-}
-function convertZoomAndPropertyFunction(parameters, propertySpec, stops) {
-    const featureFunctionParameters = {};
-    const featureFunctionStops = {};
-    const zoomStops = [];
-    for (let s = 0; s < stops.length; s++) {
-        const stop = stops[s];
-        const zoom = stop[0].zoom;
-        if (featureFunctionParameters[zoom] === undefined) {
-            featureFunctionParameters[zoom] = {
-                zoom,
-                type: parameters.type,
-                property: parameters.property,
-                default: parameters.default,
-            };
-            featureFunctionStops[zoom] = [];
-            zoomStops.push(zoom);
-        }
-        featureFunctionStops[zoom].push([stop[0].value, stop[1]]);
-    }
-    // the interpolation type for the zoom dimension of a zoom-and-property
-    // function is determined directly from the style property specification
-    // for which it's being used: linear for interpolatable properties, step
-    // otherwise.
-    const functionType = getFunctionType({}, propertySpec);
-    if (functionType === 'exponential') {
-        const expression = [getInterpolateOperator(parameters), ['linear'], ['zoom']];
-        for (const z of zoomStops) {
-            const output = convertPropertyFunction(featureFunctionParameters[z], propertySpec, featureFunctionStops[z]);
-            appendStopPair(expression, z, output, false);
-        }
-        return expression;
-    }
-    else {
-        const expression = ['step', ['zoom']];
-        for (const z of zoomStops) {
-            const output = convertPropertyFunction(featureFunctionParameters[z], propertySpec, featureFunctionStops[z]);
-            appendStopPair(expression, z, output, true);
-        }
-        fixupDegenerateStepCurve(expression);
-        return expression;
-    }
-}
-function coalesce(a, b) {
-    if (a !== undefined)
-        return a;
-    if (b !== undefined)
-        return b;
-}
-function getFallback(parameters, propertySpec) {
-    const defaultValue = convertLiteral(coalesce(parameters.default, propertySpec.default));
-    /*
-     * Some fields with type: resolvedImage have an undefined default.
-     * Because undefined is an invalid value for resolvedImage, set fallback to
-     * an empty string instead of undefined to ensure output
-     * passes validation.
-     */
-    if (defaultValue === undefined && propertySpec.type === 'resolvedImage') {
-        return '';
-    }
-    return defaultValue;
-}
-function convertPropertyFunction(parameters, propertySpec, stops) {
-    const type = getFunctionType(parameters, propertySpec);
-    const get = ['get', parameters.property];
-    if (type === 'categorical' && typeof stops[0][0] === 'boolean') {
-        const expression = ['case'];
-        for (const stop of stops) {
-            expression.push(['==', get, stop[0]], stop[1]);
-        }
-        expression.push(getFallback(parameters, propertySpec));
-        return expression;
-    }
-    else if (type === 'categorical') {
-        const expression = ['match', get];
-        for (const stop of stops) {
-            appendStopPair(expression, stop[0], stop[1], false);
-        }
-        expression.push(getFallback(parameters, propertySpec));
-        return expression;
-    }
-    else if (type === 'interval') {
-        const expression = ['step', ['number', get]];
-        for (const stop of stops) {
-            appendStopPair(expression, stop[0], stop[1], true);
-        }
-        fixupDegenerateStepCurve(expression);
-        return parameters.default === undefined ? expression : [
-            'case',
-            ['==', ['typeof', get], 'number'],
-            expression,
-            convertLiteral(parameters.default)
-        ];
-    }
-    else if (type === 'exponential') {
-        const base = parameters.base !== undefined ? parameters.base : 1;
-        const expression = [
-            getInterpolateOperator(parameters),
-            base === 1 ? ['linear'] : ['exponential', base],
-            ['number', get]
-        ];
-        for (const stop of stops) {
-            appendStopPair(expression, stop[0], stop[1], false);
-        }
-        return parameters.default === undefined ? expression : [
-            'case',
-            ['==', ['typeof', get], 'number'],
-            expression,
-            convertLiteral(parameters.default)
-        ];
-    }
-    else {
-        throw new Error(`Unknown property function type ${type}`);
-    }
-}
-function convertZoomFunction(parameters, propertySpec, stops, input = ['zoom']) {
-    const type = getFunctionType(parameters, propertySpec);
-    let expression;
-    let isStep = false;
-    if (type === 'interval') {
-        expression = ['step', input];
-        isStep = true;
-    }
-    else if (type === 'exponential') {
-        const base = parameters.base !== undefined ? parameters.base : 1;
-        expression = [getInterpolateOperator(parameters), base === 1 ? ['linear'] : ['exponential', base], input];
-    }
-    else {
-        throw new Error(`Unknown zoom function type "${type}"`);
-    }
-    for (const stop of stops) {
-        appendStopPair(expression, stop[0], stop[1], isStep);
-    }
-    fixupDegenerateStepCurve(expression);
-    return expression;
-}
-function fixupDegenerateStepCurve(expression) {
-    // degenerate step curve (i.e. a constant function): add a noop stop
-    if (expression[0] === 'step' && expression.length === 3) {
-        expression.push(0);
-        expression.push(expression[3]);
-    }
-}
-function appendStopPair(curve, input, output, isStep) {
-    // Skip duplicate stop values. They were not validated for functions, but they are for expressions.
-    // https://github.com/mapbox/mapbox-gl-js/issues/4107
-    if (curve.length > 3 && input === curve[curve.length - 2]) {
-        return;
-    }
-    // step curves don't get the first input value, as it is redundant.
-    if (!(isStep && curve.length === 2)) {
-        curve.push(input);
-    }
-    curve.push(output);
-}
-function getFunctionType(parameters, propertySpec) {
-    if (parameters.type) {
-        return parameters.type;
-    }
-    else {
-        return propertySpec.expression.interpolated ? 'exponential' : 'interval';
-    }
-}
-// "String with {name} token" => ["concat", "String with ", ["get", "name"], " token"]
-function convertTokenString(s) {
-    const result = ['concat'];
-    const re = /{([^{}]+)}/g;
-    let pos = 0;
-    for (let match = re.exec(s); match !== null; match = re.exec(s)) {
-        const literal = s.slice(pos, re.lastIndex - match[0].length);
-        pos = re.lastIndex;
-        if (literal.length > 0)
-            result.push(literal);
-        result.push(['get', match[1]]);
-    }
-    if (result.length === 1) {
-        return s;
-    }
-    if (pos < s.length) {
-        result.push(s.slice(pos));
-    }
-    else if (result.length === 2) {
-        return ['to-string', result[1]];
-    }
-    return result;
-}
-
-function getPropertyReference(propertyName) {
-    for (let i = 0; i < v8Spec.layout.length; i++) {
-        for (const key in v8Spec[v8Spec.layout[i]]) {
-            if (key === propertyName)
-                return v8Spec[v8Spec.layout[i]][key];
-        }
-    }
-    for (let i = 0; i < v8Spec.paint.length; i++) {
-        for (const key in v8Spec[v8Spec.paint[i]]) {
-            if (key === propertyName)
-                return v8Spec[v8Spec.paint[i]][key];
-        }
-    }
-    return null;
-}
-function eachSource(style, callback) {
-    for (const k in style.sources) {
-        callback(style.sources[k]);
-    }
-}
-function eachLayer(style, callback) {
-    for (const layer of style.layers) {
-        callback(layer);
-    }
-}
-function eachProperty(style, options, callback) {
-    function inner(layer, propertyType) {
-        const properties = layer[propertyType];
-        if (!properties)
-            return;
-        Object.keys(properties).forEach((key) => {
-            callback({
-                path: [layer.id, propertyType, key],
-                key,
-                value: properties[key],
-                reference: getPropertyReference(key),
-                set(x) {
-                    properties[key] = x;
-                }
-            });
-        });
-    }
-    eachLayer(style, (layer) => {
-        if (options.paint) {
-            inner(layer, 'paint');
-        }
-        if (options.layout) {
-            inner(layer, 'layout');
-        }
-    });
-}
-
 function stringify$1(obj) {
     const type = typeof obj;
     if (type === 'number' || type === 'boolean' || type === 'string' || obj === undefined || obj === null)
@@ -11757,7 +10825,7 @@ function validateEnum(options) {
     return errors;
 }
 
-function validateFilter$1(options) {
+function validateFilter(options) {
     if (isExpressionFilter(deepUnbundle(options.value))) {
         return validateExpression(extendBy({}, options, {
             expressionContext: 'filter',
@@ -12007,7 +11075,7 @@ function validateLayer(options) {
                     objectKey: 'type'
                 });
             },
-            filter: validateFilter$1,
+            filter: validateFilter,
             layout(options) {
                 return validateObject({
                     layer,
@@ -12097,7 +11165,7 @@ function validateRasterDEMSource(options) {
 const objectElementValidators = {
     promoteId: validatePromoteId
 };
-function validateSource$1(options) {
+function validateSource(options) {
     const value = options.value;
     const key = options.key;
     const styleSpec = options.styleSpec;
@@ -12276,7 +11344,7 @@ function validateSky$1(options) {
     return errors;
 }
 
-function validateTerrain$1(options) {
+function validateTerrain(options) {
     const terrain = options.value;
     const styleSpec = options.styleSpec;
     const terrainSpec = styleSpec.terrain;
@@ -12466,14 +11534,14 @@ const VALIDATORS = {
     'color': validateColor,
     'constants': validateConstants,
     'enum': validateEnum,
-    'filter': validateFilter$1,
+    'filter': validateFilter,
     'function': validateFunction,
     'layer': validateLayer,
     'object': validateObject,
-    'source': validateSource$1,
+    'source': validateSource,
     'light': validateLight$1,
     'sky': validateSky$1,
-    'terrain': validateTerrain$1,
+    'terrain': validateTerrain,
     'projection': validateProjection,
     'string': validateString,
     'formatted': validateFormatted,
@@ -12574,14 +11642,14 @@ function validateStyleMin(style, styleSpec = v8Spec) {
     }
     return sortErrors(errors);
 }
-validateStyleMin.source = wrapCleanErrors(injectValidateSpec(validateSource$1));
+validateStyleMin.source = wrapCleanErrors(injectValidateSpec(validateSource));
 validateStyleMin.sprite = wrapCleanErrors(injectValidateSpec(validateSprite));
 validateStyleMin.glyphs = wrapCleanErrors(injectValidateSpec(validateGlyphsUrl));
 validateStyleMin.light = wrapCleanErrors(injectValidateSpec(validateLight$1));
 validateStyleMin.sky = wrapCleanErrors(injectValidateSpec(validateSky$1));
-validateStyleMin.terrain = wrapCleanErrors(injectValidateSpec(validateTerrain$1));
+validateStyleMin.terrain = wrapCleanErrors(injectValidateSpec(validateTerrain));
 validateStyleMin.layer = wrapCleanErrors(injectValidateSpec(validateLayer));
-validateStyleMin.filter = wrapCleanErrors(injectValidateSpec(validateFilter$1));
+validateStyleMin.filter = wrapCleanErrors(injectValidateSpec(validateFilter));
 validateStyleMin.paintProperty = wrapCleanErrors(injectValidateSpec(validatePaintProperty$1));
 validateStyleMin.layoutProperty = wrapCleanErrors(injectValidateSpec(validateLayoutProperty$1));
 function injectValidateSpec(validator) {
@@ -12603,419 +11671,12 @@ function wrapCleanErrors(inner) {
     };
 }
 
-// Note: This regex matches even invalid JSON strings, but since we’re
-// working on the output of `JSON.stringify` we know that only valid strings
-// are present (unless the user supplied a weird `options.indent` but in
-// that case we don’t care since the output would be invalid anyway).
-const stringOrChar = /("(?:[^\\"]|\\.)*")|[:,]/g;
-
-function stringify(passedObj, options = {}) {
-  const indent = JSON.stringify(
-    [1],
-    undefined,
-    options.indent === undefined ? 2 : options.indent
-  ).slice(2, -3);
-
-  const maxLength =
-    indent === ""
-      ? Infinity
-      : options.maxLength === undefined
-      ? 80
-      : options.maxLength;
-
-  let { replacer } = options;
-
-  return (function _stringify(obj, currentIndent, reserved) {
-    if (obj && typeof obj.toJSON === "function") {
-      obj = obj.toJSON();
-    }
-
-    const string = JSON.stringify(obj, replacer);
-
-    if (string === undefined) {
-      return string;
-    }
-
-    const length = maxLength - currentIndent.length - reserved;
-
-    if (string.length <= length) {
-      const prettified = string.replace(
-        stringOrChar,
-        (match, stringLiteral) => {
-          return stringLiteral || `${match} `;
-        }
-      );
-      if (prettified.length <= length) {
-        return prettified;
-      }
-    }
-
-    if (replacer != null) {
-      obj = JSON.parse(string);
-      replacer = undefined;
-    }
-
-    if (typeof obj === "object" && obj !== null) {
-      const nextIndent = currentIndent + indent;
-      const items = [];
-      let index = 0;
-      let start;
-      let end;
-
-      if (Array.isArray(obj)) {
-        start = "[";
-        end = "]";
-        const { length } = obj;
-        for (; index < length; index++) {
-          items.push(
-            _stringify(obj[index], nextIndent, index === length - 1 ? 0 : 1) ||
-              "null"
-          );
-        }
-      } else {
-        start = "{";
-        end = "}";
-        const keys = Object.keys(obj);
-        const { length } = keys;
-        for (; index < length; index++) {
-          const key = keys[index];
-          const keyPart = `${JSON.stringify(key)}: `;
-          const value = _stringify(
-            obj[key],
-            nextIndent,
-            keyPart.length + (index === length - 1 ? 0 : 1)
-          );
-          if (value !== undefined) {
-            items.push(keyPart + value);
-          }
-        }
-      }
-
-      if (items.length > 0) {
-        return [start, indent + items.join(`,\n${nextIndent}`), end].join(
-          `\n${currentIndent}`
-        );
-      }
-    }
-
-    return string;
-  })(passedObj, "", 0);
-}
-
-function sortKeysBy(obj, reference) {
-    const result = {};
-    for (const key in reference) {
-        if (obj[key] !== undefined) {
-            result[key] = obj[key];
-        }
-    }
-    for (const key in obj) {
-        if (result[key] === undefined) {
-            result[key] = obj[key];
-        }
-    }
-    return result;
-}
-/**
- * Format a MapLibre Style.  Returns a stringified style with its keys
- * sorted in the same order as the reference style.
- *
- * The optional `space` argument is passed to
- * [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
- * to generate formatted output.
- *
- * If `space` is unspecified, a default of `2` spaces will be used.
- *
- * @private
- * @param {Object} style a MapLibre Style
- * @param {number} [space] space argument to pass to `JSON.stringify`
- * @returns {string} stringified formatted JSON
- * @example
- * var fs = require('fs');
- * var format = require('maplibre-gl-style-spec').format;
- * var style = fs.readFileSync('./source.json', 'utf8');
- * fs.writeFileSync('./dest.json', format(style));
- * fs.writeFileSync('./dest.min.json', format(style, 0));
- */
-function format(style, space = 2) {
-    style = sortKeysBy(style, v8Spec.$root);
-    if (style.layers) {
-        style.layers = style.layers.map((layer) => sortKeysBy(layer, v8Spec.layer));
-    }
-    return stringify(style, { indent: space });
-}
-
-function eachLayout(layer, callback) {
-    for (const k in layer) {
-        if (k.indexOf('layout') === 0) {
-            callback(layer[k], k);
-        }
-    }
-}
-function eachPaint(layer, callback) {
-    for (const k in layer) {
-        if (k.indexOf('paint') === 0) {
-            callback(layer[k], k);
-        }
-    }
-}
-function resolveConstant(style, value) {
-    if (typeof value === 'string' && value[0] === '@') {
-        return resolveConstant(style, style.constants[value]);
-    }
-    else {
-        return value;
-    }
-}
-function isFunction(value) {
-    return Array.isArray(value.stops);
-}
-function renameProperty(obj, from, to) {
-    obj[to] = obj[from];
-    delete obj[from];
-}
-function migrateV8(style) {
-    style.version = 8;
-    // Rename properties, reverse coordinates in source and layers
-    eachSource(style, (source) => {
-        if (source.type === 'video' && source['url'] !== undefined) {
-            renameProperty(source, 'url', 'urls');
-        }
-        if (source.type === 'video') {
-            source.coordinates.forEach((coord) => {
-                return coord.reverse();
-            });
-        }
-    });
-    eachLayer(style, (layer) => {
-        eachLayout(layer, (layout) => {
-            if (layout['symbol-min-distance'] !== undefined) {
-                renameProperty(layout, 'symbol-min-distance', 'symbol-spacing');
-            }
-        });
-        eachPaint(layer, (paint) => {
-            if (paint['background-image'] !== undefined) {
-                renameProperty(paint, 'background-image', 'background-pattern');
-            }
-            if (paint['line-image'] !== undefined) {
-                renameProperty(paint, 'line-image', 'line-pattern');
-            }
-            if (paint['fill-image'] !== undefined) {
-                renameProperty(paint, 'fill-image', 'fill-pattern');
-            }
-        });
-    });
-    // Inline Constants
-    eachProperty(style, { paint: true, layout: true }, (property) => {
-        const value = resolveConstant(style, property.value);
-        if (isFunction(value)) {
-            value.stops.forEach((stop) => {
-                stop[1] = resolveConstant(style, stop[1]);
-            });
-        }
-        property.set(value);
-    });
-    delete style['constants'];
-    eachLayer(style, (layer) => {
-        // get rid of text-max-size, icon-max-size
-        // turn text-size, icon-size into layout properties
-        // https://github.com/mapbox/mapbox-gl-style-spec/issues/255
-        eachLayout(layer, (layout) => {
-            delete layout['text-max-size'];
-            delete layout['icon-max-size'];
-        });
-        eachPaint(layer, (paint) => {
-            if (paint['text-size']) {
-                if (!layer.layout)
-                    layer.layout = {};
-                layer.layout['text-size'] = paint['text-size'];
-                delete paint['text-size'];
-            }
-            if (paint['icon-size']) {
-                if (!layer.layout)
-                    layer.layout = {};
-                layer.layout['icon-size'] = paint['icon-size'];
-                delete paint['icon-size'];
-            }
-        });
-    });
-    function migrateFontStack(font) {
-        function splitAndTrim(string) {
-            return string.split(',').map((s) => {
-                return s.trim();
-            });
-        }
-        if (Array.isArray(font)) {
-            // Assume it's a previously migrated font-array.
-            return font;
-        }
-        else if (typeof font === 'string') {
-            return splitAndTrim(font);
-        }
-        else if (typeof font === 'object') {
-            font.stops.forEach((stop) => {
-                stop[1] = splitAndTrim(stop[1]);
-            });
-            return font;
-        }
-        else {
-            throw new Error('unexpected font value');
-        }
-    }
-    eachLayer(style, (layer) => {
-        eachLayout(layer, (layout) => {
-            if (layout['text-font']) {
-                layout['text-font'] = migrateFontStack(layout['text-font']);
-            }
-        });
-    });
-    // Reverse order of symbol layers. This is an imperfect migration.
-    //
-    // The order of a symbol layer in the layers list affects two things:
-    // - how it is drawn relative to other layers (like oneway arrows below bridges)
-    // - the placement priority compared to other layers
-    //
-    // It's impossible to reverse the placement priority without breaking the draw order
-    // in some cases. This migration only reverses the order of symbol layers that
-    // are above all other types of layers.
-    //
-    // Symbol layers that are at the top of the map preserve their priority.
-    // Symbol layers that are below another type (line, fill) of layer preserve their draw order.
-    let firstSymbolLayer = 0;
-    for (let i = style.layers.length - 1; i >= 0; i--) {
-        const layer = style.layers[i];
-        if (layer.type !== 'symbol') {
-            firstSymbolLayer = i + 1;
-            break;
-        }
-    }
-    const symbolLayers = style.layers.splice(firstSymbolLayer);
-    symbolLayers.reverse();
-    style.layers = style.layers.concat(symbolLayers);
-    return style;
-}
-
-/**
- * Migrate the given style object in place to use expressions. Specifically,
- * this will convert (a) "stop" functions, and (b) legacy filters to their
- * expression equivalents.
- * @param style The style object to migrate.
- * @returns The migrated style object.
- */
-function expressions(style) {
-    const converted = [];
-    eachLayer(style, (layer) => {
-        if (layer.filter) {
-            layer.filter = convertFilter(layer.filter);
-        }
-    });
-    eachProperty(style, { paint: true, layout: true }, ({ path, value, reference, set }) => {
-        if (isExpression(value))
-            return;
-        if (typeof value === 'object' && !Array.isArray(value)) {
-            set(convertFunction(value, reference));
-            converted.push(path.join('.'));
-        }
-        else if (reference.tokens && typeof value === 'string') {
-            set(convertTokenString(value));
-        }
-    });
-    return style;
-}
-
-/**
- * Migrate color style values to supported format.
- *
- * @param colorToMigrate Color value to migrate, could be a string or an expression.
- * @returns Color style value in supported format.
- */
-function migrateColors(colorToMigrate) {
-    return JSON.parse(migrateHslColors(JSON.stringify(colorToMigrate)));
-}
-/**
- * Created to migrate from colors supported by the former CSS color parsing
- * library `csscolorparser` but not compliant with the CSS Color specification,
- * like `hsl(900, 0.15, 90%)`.
- *
- * @param colorToMigrate Serialized color style value.
- * @returns A serialized color style value in which all non-standard hsl color values
- * have been converted to a format that complies with the CSS Color specification.
- *
- * @example
- * migrateHslColors('"hsl(900, 0.15, 90%)"'); // returns '"hsl(900, 15%, 90%)"'
- * migrateHslColors('"hsla(900, .15, .9)"'); // returns '"hsl(900, 15%, 90%)"'
- * migrateHslColors('"hsl(900, 15%, 90%)"'); // returns '"hsl(900, 15%, 90%)"' - no changes
- */
-function migrateHslColors(colorToMigrate) {
-    return colorToMigrate.replace(/"hsla?\((.+?)\)"/gi, (match, hslArgs) => {
-        const argsMatch = hslArgs.match(/^(.+?)\s*,\s*(.+?)\s*,\s*(.+?)(?:\s*,\s*(.+))?$/i);
-        if (argsMatch) {
-            let [h, s, l, a] = argsMatch.slice(1);
-            [s, l] = [s, l].map(v => v.endsWith('%') ? v : `${parseFloat(v) * 100}%`);
-            return `"hsl${typeof a === 'string' ? 'a' : ''}(${[h, s, l, a].filter(Boolean).join(',')})"`;
-        }
-        return match;
-    });
-}
-
-/**
- * Migrate a Mapbox/MapLibre GL Style to the latest version.
- *
- * @param style - a MapLibre Style
- * @returns a migrated style
- * @example
- * const fs = require('fs');
- * const migrate = require('@maplibre/maplibre-gl-style-spec').migrate;
- * const style = fs.readFileSync('./style.json', 'utf8');
- * fs.writeFileSync('./style.json', JSON.stringify(migrate(style)));
- */
-function migrate(style) {
-    let migrated = false;
-    if (style.version === 7) {
-        style = migrateV8(style);
-        migrated = true;
-    }
-    if (style.version === 8) {
-        migrated = !!expressions(style);
-        migrated = true;
-    }
-    eachProperty(style, { paint: true, layout: true }, ({ value, reference, set }) => {
-        if (reference.type === 'color') {
-            set(migrateColors(value));
-        }
-    });
-    if (!migrated) {
-        throw new Error(`Cannot migrate from ${style.version}`);
-    }
-    return style;
-}
-
-const v8 = v8Spec;
-const expression = {
-    StyleExpression,
-    StylePropertyFunction,
-    ZoomConstantExpression,
-    ZoomDependentExpression,
-    createExpression,
-    createPropertyExpression,
-    isExpression,
-    isExpressionFilter,
-    isZoomExpression,
-    normalizePropertyExpression,
-};
-const styleFunction = {
-    convertFunction,
-    createFunction,
-    isFunction: isFunction$1
-};
-const visit = { eachLayer, eachProperty, eachSource };
-
 const validateStyle = validateStyleMin;
-const validateSource = validateStyle.source;
+validateStyle.source;
 const validateLight = validateStyle.light;
 const validateSky = validateStyle.sky;
-const validateTerrain = validateStyle.terrain;
-const validateFilter = validateStyle.filter;
+validateStyle.terrain;
+validateStyle.filter;
 const validatePaintProperty = validateStyle.paintProperty;
 const validateLayoutProperty = validateStyle.layoutProperty;
 function emitValidationErrors(emitter, errors) {
@@ -13765,13 +12426,6 @@ const unicodeBlockLookup = {
 };
 
 /* eslint-disable new-cap */
-function allowsIdeographicBreaking(chars) {
-    for (const char of chars) {
-        if (!charAllowsIdeographicBreaking(char.charCodeAt(0)))
-            return false;
-    }
-    return true;
-}
 function allowsVerticalWritingMode(chars) {
     for (const char of chars) {
         if (charHasUprightVerticalOrientation(char.charCodeAt(0)))
@@ -14290,7 +12944,7 @@ class Transitionable {
         this._values = Object.create(properties.defaultTransitionablePropertyValues);
     }
     getValue(name) {
-        return clone$9(this._values[name].value.value);
+        return clone$1(this._values[name].value.value);
     }
     setValue(name, value) {
         if (!Object.prototype.hasOwnProperty.call(this._values, name)) {
@@ -14298,16 +12952,16 @@ class Transitionable {
         }
         // Note that we do not _remove_ an own property in the case where a value is being reset
         // to the default: the transition might still be non-default.
-        this._values[name].value = new PropertyValue(this._values[name].property, value === null ? undefined : clone$9(value));
+        this._values[name].value = new PropertyValue(this._values[name].property, value === null ? undefined : clone$1(value));
     }
     getTransition(name) {
-        return clone$9(this._values[name].transition);
+        return clone$1(this._values[name].transition);
     }
     setTransition(name, value) {
         if (!Object.prototype.hasOwnProperty.call(this._values, name)) {
             this._values[name] = new TransitionablePropertyValue(this._values[name].property);
         }
-        this._values[name].transition = clone$9(value) || undefined;
+        this._values[name].transition = clone$1(value) || undefined;
     }
     serialize() {
         const result = {};
@@ -14433,10 +13087,10 @@ class Layout {
         return this._values[name].value !== undefined;
     }
     getValue(name) {
-        return clone$9(this._values[name].value);
+        return clone$1(this._values[name].value);
     }
     setValue(name, value) {
-        this._values[name] = new PropertyValue(this._values[name].property, value === null ? undefined : clone$9(value));
+        this._values[name] = new PropertyValue(this._values[name].property, value === null ? undefined : clone$1(value));
     }
     serialize() {
         const result = {};
@@ -15937,8 +14591,6 @@ class FillLayoutArray extends StructArrayLayout2i4 {
 }
 class FillExtrusionLayoutArray extends StructArrayLayout2i4i12 {
 }
-class HeatmapLayoutArray extends StructArrayLayout2i4 {
-}
 class LineLayoutArray extends StructArrayLayout2i4ub8 {
 }
 class LineExtLayoutArray extends StructArrayLayout2f8 {
@@ -16044,9 +14696,9 @@ const patternAttributes = createLayout([
     { name: 'a_pixel_ratio_to', components: 1, type: 'Uint16' },
 ]);
 
-var murmurhashJs$1 = {exports: {}};
+var murmurhashJs = {exports: {}};
 
-var murmurhash3_gc$1 = {exports: {}};
+var murmurhash3_gc = {exports: {}};
 
 /**
  * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
@@ -16060,16 +14712,15 @@ var murmurhash3_gc$1 = {exports: {}};
  * @param {number} seed Positive integer only
  * @return {number} 32-bit positive integer hash 
  */
-var murmurhash3_gc = murmurhash3_gc$1.exports;
 
 var hasRequiredMurmurhash3_gc;
 
 function requireMurmurhash3_gc () {
-	if (hasRequiredMurmurhash3_gc) return murmurhash3_gc$1.exports;
+	if (hasRequiredMurmurhash3_gc) return murmurhash3_gc.exports;
 	hasRequiredMurmurhash3_gc = 1;
 	(function (module) {
 		function murmurhash3_32_gc(key, seed) {
-			var remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
+			var remainder, bytes, h1, h1b, c1, c2, k1, i;
 			
 			remainder = key.length & 3; // key.length % 4
 			bytes = key.length - remainder;
@@ -16120,14 +14771,14 @@ function requireMurmurhash3_gc () {
 			return h1 >>> 0;
 		}
 
-		if('object' !== "undefined") {
+		{
 		  module.exports = murmurhash3_32_gc;
 		} 
-	} (murmurhash3_gc$1));
-	return murmurhash3_gc$1.exports;
+	} (murmurhash3_gc));
+	return murmurhash3_gc.exports;
 }
 
-var murmurhash2_gc$1 = {exports: {}};
+var murmurhash2_gc = {exports: {}};
 
 /**
  * JS Implementation of MurmurHash2
@@ -16141,12 +14792,11 @@ var murmurhash2_gc$1 = {exports: {}};
  * @param {number} seed Positive integer only
  * @return {number} 32-bit positive integer hash
  */
-var murmurhash2_gc = murmurhash2_gc$1.exports;
 
 var hasRequiredMurmurhash2_gc;
 
 function requireMurmurhash2_gc () {
-	if (hasRequiredMurmurhash2_gc) return murmurhash2_gc$1.exports;
+	if (hasRequiredMurmurhash2_gc) return murmurhash2_gc.exports;
 	hasRequiredMurmurhash2_gc = 1;
 	(function (module) {
 		function murmurhash2_32_gc(str, seed) {
@@ -16187,27 +14837,25 @@ function requireMurmurhash2_gc () {
 		  return h >>> 0;
 		}
 
-		if('object' !== undefined) {
+		{
 		  module.exports = murmurhash2_32_gc;
 		} 
-	} (murmurhash2_gc$1));
-	return murmurhash2_gc$1.exports;
+	} (murmurhash2_gc));
+	return murmurhash2_gc.exports;
 }
-
-var murmurhashJs = murmurhashJs$1.exports;
 
 var hasRequiredMurmurhashJs;
 
 function requireMurmurhashJs () {
-	if (hasRequiredMurmurhashJs) return murmurhashJs$1.exports;
+	if (hasRequiredMurmurhashJs) return murmurhashJs.exports;
 	hasRequiredMurmurhashJs = 1;
 	var murmur3 = requireMurmurhash3_gc();
 	var murmur2 = requireMurmurhash2_gc();
 
-	murmurhashJs$1.exports = murmur3;
-	murmurhashJs$1.exports.murmur3 = murmur3;
-	murmurhashJs$1.exports.murmur2 = murmur2;
-	return murmurhashJs$1.exports;
+	murmurhashJs.exports = murmur3;
+	murmurhashJs.exports.murmur3 = murmur3;
+	murmurhashJs.exports.murmur2 = murmur2;
+	return murmurhashJs.exports;
 }
 
 var murmurhashJsExports = requireMurmurhashJs();
@@ -17316,7 +15964,7 @@ function getMaximumPaintValue(property, layer, bucket) {
 function translateDistance(translate) {
     return Math.sqrt(translate[0] * translate[0] + translate[1] * translate[1]);
 }
-function translate$4(queryGeometry, translate, translateAnchor, bearing, pixelsToTileUnits) {
+function translate$1(queryGeometry, translate, translateAnchor, bearing, pixelsToTileUnits) {
     if (!translate[0] && !translate[1]) {
         return queryGeometry;
     }
@@ -17383,39 +16031,6 @@ var properties$8 = ({ get paint() { return getPaint$8(); }, get layout() { retur
 // Configuration Constants
 var EPSILON = 0.000001;
 var ARRAY_TYPE = typeof Float32Array !== 'undefined' ? Float32Array : Array;
-var RANDOM = Math.random;
-/**
- * Sets the type of array used when creating new vectors and matrices
- *
- * @param {Float32ArrayConstructor | ArrayConstructor} type Array type, such as Float32Array or Array
- */
-
-function setMatrixArrayType(type) {
-  ARRAY_TYPE = type;
-}
-var degree = Math.PI / 180;
-/**
- * Convert Degree To Radian
- *
- * @param {Number} a Angle in Degrees
- */
-
-function toRadian(a) {
-  return a * degree;
-}
-/**
- * Tests whether or not the arguments have approximately the same value, within an absolute
- * or relative tolerance of glMatrix.EPSILON (an absolute tolerance is used for values less
- * than or equal to 1.0, and a relative tolerance is used for larger values)
- *
- * @param {Number} a The first number to test.
- * @param {Number} b The second number to test.
- * @returns {Boolean} True if the numbers are approximately equal, false otherwise.
- */
-
-function equals$a(a, b) {
-  return Math.abs(a - b) <= EPSILON * Math.max(1.0, Math.abs(a), Math.abs(b));
-}
 if (!Math.hypot) Math.hypot = function () {
   var y = 0,
       i = arguments.length;
@@ -17426,1807 +16041,6 @@ if (!Math.hypot) Math.hypot = function () {
 
   return Math.sqrt(y);
 };
-
-var common = /*#__PURE__*/Object.freeze({
-__proto__: null,
-get ARRAY_TYPE () { return ARRAY_TYPE; },
-EPSILON: EPSILON,
-RANDOM: RANDOM,
-equals: equals$a,
-setMatrixArrayType: setMatrixArrayType,
-toRadian: toRadian
-});
-
-/**
- * 2x2 Matrix
- * @module mat2
- */
-
-/**
- * Creates a new identity mat2
- *
- * @returns {mat2} a new 2x2 matrix
- */
-
-function create$8() {
-  var out = new ARRAY_TYPE(4);
-
-  if (ARRAY_TYPE != Float32Array) {
-    out[1] = 0;
-    out[2] = 0;
-  }
-
-  out[0] = 1;
-  out[3] = 1;
-  return out;
-}
-/**
- * Creates a new mat2 initialized with values from an existing matrix
- *
- * @param {ReadonlyMat2} a matrix to clone
- * @returns {mat2} a new 2x2 matrix
- */
-
-function clone$8(a) {
-  var out = new ARRAY_TYPE(4);
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  return out;
-}
-/**
- * Copy the values from one mat2 to another
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the source matrix
- * @returns {mat2} out
- */
-
-function copy$8(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  return out;
-}
-/**
- * Set a mat2 to the identity matrix
- *
- * @param {mat2} out the receiving matrix
- * @returns {mat2} out
- */
-
-function identity$5(out) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 1;
-  return out;
-}
-/**
- * Create a new mat2 with the given values
- *
- * @param {Number} m00 Component in column 0, row 0 position (index 0)
- * @param {Number} m01 Component in column 0, row 1 position (index 1)
- * @param {Number} m10 Component in column 1, row 0 position (index 2)
- * @param {Number} m11 Component in column 1, row 1 position (index 3)
- * @returns {mat2} out A new 2x2 matrix
- */
-
-function fromValues$8(m00, m01, m10, m11) {
-  var out = new ARRAY_TYPE(4);
-  out[0] = m00;
-  out[1] = m01;
-  out[2] = m10;
-  out[3] = m11;
-  return out;
-}
-/**
- * Set the components of a mat2 to the given values
- *
- * @param {mat2} out the receiving matrix
- * @param {Number} m00 Component in column 0, row 0 position (index 0)
- * @param {Number} m01 Component in column 0, row 1 position (index 1)
- * @param {Number} m10 Component in column 1, row 0 position (index 2)
- * @param {Number} m11 Component in column 1, row 1 position (index 3)
- * @returns {mat2} out
- */
-
-function set$8(out, m00, m01, m10, m11) {
-  out[0] = m00;
-  out[1] = m01;
-  out[2] = m10;
-  out[3] = m11;
-  return out;
-}
-/**
- * Transpose the values of a mat2
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the source matrix
- * @returns {mat2} out
- */
-
-function transpose$2(out, a) {
-  // If we are transposing ourselves we can skip a few steps but have to cache
-  // some values
-  if (out === a) {
-    var a1 = a[1];
-    out[1] = a[2];
-    out[2] = a1;
-  } else {
-    out[0] = a[0];
-    out[1] = a[2];
-    out[2] = a[1];
-    out[3] = a[3];
-  }
-
-  return out;
-}
-/**
- * Inverts a mat2
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the source matrix
- * @returns {mat2} out
- */
-
-function invert$5(out, a) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3]; // Calculate the determinant
-
-  var det = a0 * a3 - a2 * a1;
-
-  if (!det) {
-    return null;
-  }
-
-  det = 1.0 / det;
-  out[0] = a3 * det;
-  out[1] = -a1 * det;
-  out[2] = -a2 * det;
-  out[3] = a0 * det;
-  return out;
-}
-/**
- * Calculates the adjugate of a mat2
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the source matrix
- * @returns {mat2} out
- */
-
-function adjoint$2(out, a) {
-  // Caching this value is nessecary if out == a
-  var a0 = a[0];
-  out[0] = a[3];
-  out[1] = -a[1];
-  out[2] = -a[2];
-  out[3] = a0;
-  return out;
-}
-/**
- * Calculates the determinant of a mat2
- *
- * @param {ReadonlyMat2} a the source matrix
- * @returns {Number} determinant of a
- */
-
-function determinant$3(a) {
-  return a[0] * a[3] - a[2] * a[1];
-}
-/**
- * Multiplies two mat2's
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the first operand
- * @param {ReadonlyMat2} b the second operand
- * @returns {mat2} out
- */
-
-function multiply$8(out, a, b) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3];
-  var b0 = b[0],
-      b1 = b[1],
-      b2 = b[2],
-      b3 = b[3];
-  out[0] = a0 * b0 + a2 * b1;
-  out[1] = a1 * b0 + a3 * b1;
-  out[2] = a0 * b2 + a2 * b3;
-  out[3] = a1 * b2 + a3 * b3;
-  return out;
-}
-/**
- * Rotates a mat2 by the given angle
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat2} out
- */
-
-function rotate$4(out, a, rad) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3];
-  var s = Math.sin(rad);
-  var c = Math.cos(rad);
-  out[0] = a0 * c + a2 * s;
-  out[1] = a1 * c + a3 * s;
-  out[2] = a0 * -s + a2 * c;
-  out[3] = a1 * -s + a3 * c;
-  return out;
-}
-/**
- * Scales the mat2 by the dimensions in the given vec2
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the matrix to rotate
- * @param {ReadonlyVec2} v the vec2 to scale the matrix by
- * @returns {mat2} out
- **/
-
-function scale$8(out, a, v) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3];
-  var v0 = v[0],
-      v1 = v[1];
-  out[0] = a0 * v0;
-  out[1] = a1 * v0;
-  out[2] = a2 * v1;
-  out[3] = a3 * v1;
-  return out;
-}
-/**
- * Creates a matrix from a given angle
- * This is equivalent to (but much faster than):
- *
- *     mat2.identity(dest);
- *     mat2.rotate(dest, dest, rad);
- *
- * @param {mat2} out mat2 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat2} out
- */
-
-function fromRotation$4(out, rad) {
-  var s = Math.sin(rad);
-  var c = Math.cos(rad);
-  out[0] = c;
-  out[1] = s;
-  out[2] = -s;
-  out[3] = c;
-  return out;
-}
-/**
- * Creates a matrix from a vector scaling
- * This is equivalent to (but much faster than):
- *
- *     mat2.identity(dest);
- *     mat2.scale(dest, dest, vec);
- *
- * @param {mat2} out mat2 receiving operation result
- * @param {ReadonlyVec2} v Scaling vector
- * @returns {mat2} out
- */
-
-function fromScaling$3(out, v) {
-  out[0] = v[0];
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = v[1];
-  return out;
-}
-/**
- * Returns a string representation of a mat2
- *
- * @param {ReadonlyMat2} a matrix to represent as a string
- * @returns {String} string representation of the matrix
- */
-
-function str$8(a) {
-  return "mat2(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ")";
-}
-/**
- * Returns Frobenius norm of a mat2
- *
- * @param {ReadonlyMat2} a the matrix to calculate Frobenius norm of
- * @returns {Number} Frobenius norm
- */
-
-function frob$3(a) {
-  return Math.hypot(a[0], a[1], a[2], a[3]);
-}
-/**
- * Returns L, D and U matrices (Lower triangular, Diagonal and Upper triangular) by factorizing the input matrix
- * @param {ReadonlyMat2} L the lower triangular matrix
- * @param {ReadonlyMat2} D the diagonal matrix
- * @param {ReadonlyMat2} U the upper triangular matrix
- * @param {ReadonlyMat2} a the input matrix to factorize
- */
-
-function LDU(L, D, U, a) {
-  L[2] = a[2] / a[0];
-  U[0] = a[0];
-  U[1] = a[1];
-  U[3] = a[3] - L[2] * U[1];
-  return [L, D, U];
-}
-/**
- * Adds two mat2's
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the first operand
- * @param {ReadonlyMat2} b the second operand
- * @returns {mat2} out
- */
-
-function add$8(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  out[3] = a[3] + b[3];
-  return out;
-}
-/**
- * Subtracts matrix b from matrix a
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the first operand
- * @param {ReadonlyMat2} b the second operand
- * @returns {mat2} out
- */
-
-function subtract$6(out, a, b) {
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  out[2] = a[2] - b[2];
-  out[3] = a[3] - b[3];
-  return out;
-}
-/**
- * Returns whether or not the matrices have exactly the same elements in the same position (when compared with ===)
- *
- * @param {ReadonlyMat2} a The first matrix.
- * @param {ReadonlyMat2} b The second matrix.
- * @returns {Boolean} True if the matrices are equal, false otherwise.
- */
-
-function exactEquals$8(a, b) {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
-}
-/**
- * Returns whether or not the matrices have approximately the same elements in the same position.
- *
- * @param {ReadonlyMat2} a The first matrix.
- * @param {ReadonlyMat2} b The second matrix.
- * @returns {Boolean} True if the matrices are equal, false otherwise.
- */
-
-function equals$9(a, b) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3];
-  var b0 = b[0],
-      b1 = b[1],
-      b2 = b[2],
-      b3 = b[3];
-  return Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3));
-}
-/**
- * Multiply each element of the matrix by a scalar.
- *
- * @param {mat2} out the receiving matrix
- * @param {ReadonlyMat2} a the matrix to scale
- * @param {Number} b amount to scale the matrix's elements by
- * @returns {mat2} out
- */
-
-function multiplyScalar$3(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  out[3] = a[3] * b;
-  return out;
-}
-/**
- * Adds two mat2's after multiplying each element of the second operand by a scalar value.
- *
- * @param {mat2} out the receiving vector
- * @param {ReadonlyMat2} a the first operand
- * @param {ReadonlyMat2} b the second operand
- * @param {Number} scale the amount to scale b's elements by before adding
- * @returns {mat2} out
- */
-
-function multiplyScalarAndAdd$3(out, a, b, scale) {
-  out[0] = a[0] + b[0] * scale;
-  out[1] = a[1] + b[1] * scale;
-  out[2] = a[2] + b[2] * scale;
-  out[3] = a[3] + b[3] * scale;
-  return out;
-}
-/**
- * Alias for {@link mat2.multiply}
- * @function
- */
-
-var mul$8 = multiply$8;
-/**
- * Alias for {@link mat2.subtract}
- * @function
- */
-
-var sub$6 = subtract$6;
-
-var mat2 = /*#__PURE__*/Object.freeze({
-__proto__: null,
-LDU: LDU,
-add: add$8,
-adjoint: adjoint$2,
-clone: clone$8,
-copy: copy$8,
-create: create$8,
-determinant: determinant$3,
-equals: equals$9,
-exactEquals: exactEquals$8,
-frob: frob$3,
-fromRotation: fromRotation$4,
-fromScaling: fromScaling$3,
-fromValues: fromValues$8,
-identity: identity$5,
-invert: invert$5,
-mul: mul$8,
-multiply: multiply$8,
-multiplyScalar: multiplyScalar$3,
-multiplyScalarAndAdd: multiplyScalarAndAdd$3,
-rotate: rotate$4,
-scale: scale$8,
-set: set$8,
-str: str$8,
-sub: sub$6,
-subtract: subtract$6,
-transpose: transpose$2
-});
-
-/**
- * 2x3 Matrix
- * @module mat2d
- * @description
- * A mat2d contains six elements defined as:
- * <pre>
- * [a, b,
- *  c, d,
- *  tx, ty]
- * </pre>
- * This is a short form for the 3x3 matrix:
- * <pre>
- * [a, b, 0,
- *  c, d, 0,
- *  tx, ty, 1]
- * </pre>
- * The last column is ignored so the array is shorter and operations are faster.
- */
-
-/**
- * Creates a new identity mat2d
- *
- * @returns {mat2d} a new 2x3 matrix
- */
-
-function create$7() {
-  var out = new ARRAY_TYPE(6);
-
-  if (ARRAY_TYPE != Float32Array) {
-    out[1] = 0;
-    out[2] = 0;
-    out[4] = 0;
-    out[5] = 0;
-  }
-
-  out[0] = 1;
-  out[3] = 1;
-  return out;
-}
-/**
- * Creates a new mat2d initialized with values from an existing matrix
- *
- * @param {ReadonlyMat2d} a matrix to clone
- * @returns {mat2d} a new 2x3 matrix
- */
-
-function clone$7(a) {
-  var out = new ARRAY_TYPE(6);
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  out[4] = a[4];
-  out[5] = a[5];
-  return out;
-}
-/**
- * Copy the values from one mat2d to another
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the source matrix
- * @returns {mat2d} out
- */
-
-function copy$7(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  out[4] = a[4];
-  out[5] = a[5];
-  return out;
-}
-/**
- * Set a mat2d to the identity matrix
- *
- * @param {mat2d} out the receiving matrix
- * @returns {mat2d} out
- */
-
-function identity$4(out) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 1;
-  out[4] = 0;
-  out[5] = 0;
-  return out;
-}
-/**
- * Create a new mat2d with the given values
- *
- * @param {Number} a Component A (index 0)
- * @param {Number} b Component B (index 1)
- * @param {Number} c Component C (index 2)
- * @param {Number} d Component D (index 3)
- * @param {Number} tx Component TX (index 4)
- * @param {Number} ty Component TY (index 5)
- * @returns {mat2d} A new mat2d
- */
-
-function fromValues$7(a, b, c, d, tx, ty) {
-  var out = new ARRAY_TYPE(6);
-  out[0] = a;
-  out[1] = b;
-  out[2] = c;
-  out[3] = d;
-  out[4] = tx;
-  out[5] = ty;
-  return out;
-}
-/**
- * Set the components of a mat2d to the given values
- *
- * @param {mat2d} out the receiving matrix
- * @param {Number} a Component A (index 0)
- * @param {Number} b Component B (index 1)
- * @param {Number} c Component C (index 2)
- * @param {Number} d Component D (index 3)
- * @param {Number} tx Component TX (index 4)
- * @param {Number} ty Component TY (index 5)
- * @returns {mat2d} out
- */
-
-function set$7(out, a, b, c, d, tx, ty) {
-  out[0] = a;
-  out[1] = b;
-  out[2] = c;
-  out[3] = d;
-  out[4] = tx;
-  out[5] = ty;
-  return out;
-}
-/**
- * Inverts a mat2d
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the source matrix
- * @returns {mat2d} out
- */
-
-function invert$4(out, a) {
-  var aa = a[0],
-      ab = a[1],
-      ac = a[2],
-      ad = a[3];
-  var atx = a[4],
-      aty = a[5];
-  var det = aa * ad - ab * ac;
-
-  if (!det) {
-    return null;
-  }
-
-  det = 1.0 / det;
-  out[0] = ad * det;
-  out[1] = -ab * det;
-  out[2] = -ac * det;
-  out[3] = aa * det;
-  out[4] = (ac * aty - ad * atx) * det;
-  out[5] = (ab * atx - aa * aty) * det;
-  return out;
-}
-/**
- * Calculates the determinant of a mat2d
- *
- * @param {ReadonlyMat2d} a the source matrix
- * @returns {Number} determinant of a
- */
-
-function determinant$2(a) {
-  return a[0] * a[3] - a[1] * a[2];
-}
-/**
- * Multiplies two mat2d's
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the first operand
- * @param {ReadonlyMat2d} b the second operand
- * @returns {mat2d} out
- */
-
-function multiply$7(out, a, b) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3],
-      a4 = a[4],
-      a5 = a[5];
-  var b0 = b[0],
-      b1 = b[1],
-      b2 = b[2],
-      b3 = b[3],
-      b4 = b[4],
-      b5 = b[5];
-  out[0] = a0 * b0 + a2 * b1;
-  out[1] = a1 * b0 + a3 * b1;
-  out[2] = a0 * b2 + a2 * b3;
-  out[3] = a1 * b2 + a3 * b3;
-  out[4] = a0 * b4 + a2 * b5 + a4;
-  out[5] = a1 * b4 + a3 * b5 + a5;
-  return out;
-}
-/**
- * Rotates a mat2d by the given angle
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat2d} out
- */
-
-function rotate$3(out, a, rad) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3],
-      a4 = a[4],
-      a5 = a[5];
-  var s = Math.sin(rad);
-  var c = Math.cos(rad);
-  out[0] = a0 * c + a2 * s;
-  out[1] = a1 * c + a3 * s;
-  out[2] = a0 * -s + a2 * c;
-  out[3] = a1 * -s + a3 * c;
-  out[4] = a4;
-  out[5] = a5;
-  return out;
-}
-/**
- * Scales the mat2d by the dimensions in the given vec2
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the matrix to translate
- * @param {ReadonlyVec2} v the vec2 to scale the matrix by
- * @returns {mat2d} out
- **/
-
-function scale$7(out, a, v) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3],
-      a4 = a[4],
-      a5 = a[5];
-  var v0 = v[0],
-      v1 = v[1];
-  out[0] = a0 * v0;
-  out[1] = a1 * v0;
-  out[2] = a2 * v1;
-  out[3] = a3 * v1;
-  out[4] = a4;
-  out[5] = a5;
-  return out;
-}
-/**
- * Translates the mat2d by the dimensions in the given vec2
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the matrix to translate
- * @param {ReadonlyVec2} v the vec2 to translate the matrix by
- * @returns {mat2d} out
- **/
-
-function translate$3(out, a, v) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3],
-      a4 = a[4],
-      a5 = a[5];
-  var v0 = v[0],
-      v1 = v[1];
-  out[0] = a0;
-  out[1] = a1;
-  out[2] = a2;
-  out[3] = a3;
-  out[4] = a0 * v0 + a2 * v1 + a4;
-  out[5] = a1 * v0 + a3 * v1 + a5;
-  return out;
-}
-/**
- * Creates a matrix from a given angle
- * This is equivalent to (but much faster than):
- *
- *     mat2d.identity(dest);
- *     mat2d.rotate(dest, dest, rad);
- *
- * @param {mat2d} out mat2d receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat2d} out
- */
-
-function fromRotation$3(out, rad) {
-  var s = Math.sin(rad),
-      c = Math.cos(rad);
-  out[0] = c;
-  out[1] = s;
-  out[2] = -s;
-  out[3] = c;
-  out[4] = 0;
-  out[5] = 0;
-  return out;
-}
-/**
- * Creates a matrix from a vector scaling
- * This is equivalent to (but much faster than):
- *
- *     mat2d.identity(dest);
- *     mat2d.scale(dest, dest, vec);
- *
- * @param {mat2d} out mat2d receiving operation result
- * @param {ReadonlyVec2} v Scaling vector
- * @returns {mat2d} out
- */
-
-function fromScaling$2(out, v) {
-  out[0] = v[0];
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = v[1];
-  out[4] = 0;
-  out[5] = 0;
-  return out;
-}
-/**
- * Creates a matrix from a vector translation
- * This is equivalent to (but much faster than):
- *
- *     mat2d.identity(dest);
- *     mat2d.translate(dest, dest, vec);
- *
- * @param {mat2d} out mat2d receiving operation result
- * @param {ReadonlyVec2} v Translation vector
- * @returns {mat2d} out
- */
-
-function fromTranslation$3(out, v) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 1;
-  out[4] = v[0];
-  out[5] = v[1];
-  return out;
-}
-/**
- * Returns a string representation of a mat2d
- *
- * @param {ReadonlyMat2d} a matrix to represent as a string
- * @returns {String} string representation of the matrix
- */
-
-function str$7(a) {
-  return "mat2d(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ", " + a[4] + ", " + a[5] + ")";
-}
-/**
- * Returns Frobenius norm of a mat2d
- *
- * @param {ReadonlyMat2d} a the matrix to calculate Frobenius norm of
- * @returns {Number} Frobenius norm
- */
-
-function frob$2(a) {
-  return Math.hypot(a[0], a[1], a[2], a[3], a[4], a[5], 1);
-}
-/**
- * Adds two mat2d's
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the first operand
- * @param {ReadonlyMat2d} b the second operand
- * @returns {mat2d} out
- */
-
-function add$7(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  out[3] = a[3] + b[3];
-  out[4] = a[4] + b[4];
-  out[5] = a[5] + b[5];
-  return out;
-}
-/**
- * Subtracts matrix b from matrix a
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the first operand
- * @param {ReadonlyMat2d} b the second operand
- * @returns {mat2d} out
- */
-
-function subtract$5(out, a, b) {
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  out[2] = a[2] - b[2];
-  out[3] = a[3] - b[3];
-  out[4] = a[4] - b[4];
-  out[5] = a[5] - b[5];
-  return out;
-}
-/**
- * Multiply each element of the matrix by a scalar.
- *
- * @param {mat2d} out the receiving matrix
- * @param {ReadonlyMat2d} a the matrix to scale
- * @param {Number} b amount to scale the matrix's elements by
- * @returns {mat2d} out
- */
-
-function multiplyScalar$2(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  out[3] = a[3] * b;
-  out[4] = a[4] * b;
-  out[5] = a[5] * b;
-  return out;
-}
-/**
- * Adds two mat2d's after multiplying each element of the second operand by a scalar value.
- *
- * @param {mat2d} out the receiving vector
- * @param {ReadonlyMat2d} a the first operand
- * @param {ReadonlyMat2d} b the second operand
- * @param {Number} scale the amount to scale b's elements by before adding
- * @returns {mat2d} out
- */
-
-function multiplyScalarAndAdd$2(out, a, b, scale) {
-  out[0] = a[0] + b[0] * scale;
-  out[1] = a[1] + b[1] * scale;
-  out[2] = a[2] + b[2] * scale;
-  out[3] = a[3] + b[3] * scale;
-  out[4] = a[4] + b[4] * scale;
-  out[5] = a[5] + b[5] * scale;
-  return out;
-}
-/**
- * Returns whether or not the matrices have exactly the same elements in the same position (when compared with ===)
- *
- * @param {ReadonlyMat2d} a The first matrix.
- * @param {ReadonlyMat2d} b The second matrix.
- * @returns {Boolean} True if the matrices are equal, false otherwise.
- */
-
-function exactEquals$7(a, b) {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5];
-}
-/**
- * Returns whether or not the matrices have approximately the same elements in the same position.
- *
- * @param {ReadonlyMat2d} a The first matrix.
- * @param {ReadonlyMat2d} b The second matrix.
- * @returns {Boolean} True if the matrices are equal, false otherwise.
- */
-
-function equals$8(a, b) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3],
-      a4 = a[4],
-      a5 = a[5];
-  var b0 = b[0],
-      b1 = b[1],
-      b2 = b[2],
-      b3 = b[3],
-      b4 = b[4],
-      b5 = b[5];
-  return Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3)) && Math.abs(a4 - b4) <= EPSILON * Math.max(1.0, Math.abs(a4), Math.abs(b4)) && Math.abs(a5 - b5) <= EPSILON * Math.max(1.0, Math.abs(a5), Math.abs(b5));
-}
-/**
- * Alias for {@link mat2d.multiply}
- * @function
- */
-
-var mul$7 = multiply$7;
-/**
- * Alias for {@link mat2d.subtract}
- * @function
- */
-
-var sub$5 = subtract$5;
-
-var mat2d = /*#__PURE__*/Object.freeze({
-__proto__: null,
-add: add$7,
-clone: clone$7,
-copy: copy$7,
-create: create$7,
-determinant: determinant$2,
-equals: equals$8,
-exactEquals: exactEquals$7,
-frob: frob$2,
-fromRotation: fromRotation$3,
-fromScaling: fromScaling$2,
-fromTranslation: fromTranslation$3,
-fromValues: fromValues$7,
-identity: identity$4,
-invert: invert$4,
-mul: mul$7,
-multiply: multiply$7,
-multiplyScalar: multiplyScalar$2,
-multiplyScalarAndAdd: multiplyScalarAndAdd$2,
-rotate: rotate$3,
-scale: scale$7,
-set: set$7,
-str: str$7,
-sub: sub$5,
-subtract: subtract$5,
-translate: translate$3
-});
-
-/**
- * 3x3 Matrix
- * @module mat3
- */
-
-/**
- * Creates a new identity mat3
- *
- * @returns {mat3} a new 3x3 matrix
- */
-
-function create$6() {
-  var out = new ARRAY_TYPE(9);
-
-  if (ARRAY_TYPE != Float32Array) {
-    out[1] = 0;
-    out[2] = 0;
-    out[3] = 0;
-    out[5] = 0;
-    out[6] = 0;
-    out[7] = 0;
-  }
-
-  out[0] = 1;
-  out[4] = 1;
-  out[8] = 1;
-  return out;
-}
-/**
- * Copies the upper-left 3x3 values into the given mat3.
- *
- * @param {mat3} out the receiving 3x3 matrix
- * @param {ReadonlyMat4} a   the source 4x4 matrix
- * @returns {mat3} out
- */
-
-function fromMat4$1(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[4];
-  out[4] = a[5];
-  out[5] = a[6];
-  out[6] = a[8];
-  out[7] = a[9];
-  out[8] = a[10];
-  return out;
-}
-/**
- * Creates a new mat3 initialized with values from an existing matrix
- *
- * @param {ReadonlyMat3} a matrix to clone
- * @returns {mat3} a new 3x3 matrix
- */
-
-function clone$6(a) {
-  var out = new ARRAY_TYPE(9);
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  out[4] = a[4];
-  out[5] = a[5];
-  out[6] = a[6];
-  out[7] = a[7];
-  out[8] = a[8];
-  return out;
-}
-/**
- * Copy the values from one mat3 to another
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the source matrix
- * @returns {mat3} out
- */
-
-function copy$6(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  out[4] = a[4];
-  out[5] = a[5];
-  out[6] = a[6];
-  out[7] = a[7];
-  out[8] = a[8];
-  return out;
-}
-/**
- * Create a new mat3 with the given values
- *
- * @param {Number} m00 Component in column 0, row 0 position (index 0)
- * @param {Number} m01 Component in column 0, row 1 position (index 1)
- * @param {Number} m02 Component in column 0, row 2 position (index 2)
- * @param {Number} m10 Component in column 1, row 0 position (index 3)
- * @param {Number} m11 Component in column 1, row 1 position (index 4)
- * @param {Number} m12 Component in column 1, row 2 position (index 5)
- * @param {Number} m20 Component in column 2, row 0 position (index 6)
- * @param {Number} m21 Component in column 2, row 1 position (index 7)
- * @param {Number} m22 Component in column 2, row 2 position (index 8)
- * @returns {mat3} A new mat3
- */
-
-function fromValues$6(m00, m01, m02, m10, m11, m12, m20, m21, m22) {
-  var out = new ARRAY_TYPE(9);
-  out[0] = m00;
-  out[1] = m01;
-  out[2] = m02;
-  out[3] = m10;
-  out[4] = m11;
-  out[5] = m12;
-  out[6] = m20;
-  out[7] = m21;
-  out[8] = m22;
-  return out;
-}
-/**
- * Set the components of a mat3 to the given values
- *
- * @param {mat3} out the receiving matrix
- * @param {Number} m00 Component in column 0, row 0 position (index 0)
- * @param {Number} m01 Component in column 0, row 1 position (index 1)
- * @param {Number} m02 Component in column 0, row 2 position (index 2)
- * @param {Number} m10 Component in column 1, row 0 position (index 3)
- * @param {Number} m11 Component in column 1, row 1 position (index 4)
- * @param {Number} m12 Component in column 1, row 2 position (index 5)
- * @param {Number} m20 Component in column 2, row 0 position (index 6)
- * @param {Number} m21 Component in column 2, row 1 position (index 7)
- * @param {Number} m22 Component in column 2, row 2 position (index 8)
- * @returns {mat3} out
- */
-
-function set$6(out, m00, m01, m02, m10, m11, m12, m20, m21, m22) {
-  out[0] = m00;
-  out[1] = m01;
-  out[2] = m02;
-  out[3] = m10;
-  out[4] = m11;
-  out[5] = m12;
-  out[6] = m20;
-  out[7] = m21;
-  out[8] = m22;
-  return out;
-}
-/**
- * Set a mat3 to the identity matrix
- *
- * @param {mat3} out the receiving matrix
- * @returns {mat3} out
- */
-
-function identity$3(out) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 1;
-  out[5] = 0;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 1;
-  return out;
-}
-/**
- * Transpose the values of a mat3
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the source matrix
- * @returns {mat3} out
- */
-
-function transpose$1(out, a) {
-  // If we are transposing ourselves we can skip a few steps but have to cache some values
-  if (out === a) {
-    var a01 = a[1],
-        a02 = a[2],
-        a12 = a[5];
-    out[1] = a[3];
-    out[2] = a[6];
-    out[3] = a01;
-    out[5] = a[7];
-    out[6] = a02;
-    out[7] = a12;
-  } else {
-    out[0] = a[0];
-    out[1] = a[3];
-    out[2] = a[6];
-    out[3] = a[1];
-    out[4] = a[4];
-    out[5] = a[7];
-    out[6] = a[2];
-    out[7] = a[5];
-    out[8] = a[8];
-  }
-
-  return out;
-}
-/**
- * Inverts a mat3
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the source matrix
- * @returns {mat3} out
- */
-
-function invert$3(out, a) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2];
-  var a10 = a[3],
-      a11 = a[4],
-      a12 = a[5];
-  var a20 = a[6],
-      a21 = a[7],
-      a22 = a[8];
-  var b01 = a22 * a11 - a12 * a21;
-  var b11 = -a22 * a10 + a12 * a20;
-  var b21 = a21 * a10 - a11 * a20; // Calculate the determinant
-
-  var det = a00 * b01 + a01 * b11 + a02 * b21;
-
-  if (!det) {
-    return null;
-  }
-
-  det = 1.0 / det;
-  out[0] = b01 * det;
-  out[1] = (-a22 * a01 + a02 * a21) * det;
-  out[2] = (a12 * a01 - a02 * a11) * det;
-  out[3] = b11 * det;
-  out[4] = (a22 * a00 - a02 * a20) * det;
-  out[5] = (-a12 * a00 + a02 * a10) * det;
-  out[6] = b21 * det;
-  out[7] = (-a21 * a00 + a01 * a20) * det;
-  out[8] = (a11 * a00 - a01 * a10) * det;
-  return out;
-}
-/**
- * Calculates the adjugate of a mat3
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the source matrix
- * @returns {mat3} out
- */
-
-function adjoint$1(out, a) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2];
-  var a10 = a[3],
-      a11 = a[4],
-      a12 = a[5];
-  var a20 = a[6],
-      a21 = a[7],
-      a22 = a[8];
-  out[0] = a11 * a22 - a12 * a21;
-  out[1] = a02 * a21 - a01 * a22;
-  out[2] = a01 * a12 - a02 * a11;
-  out[3] = a12 * a20 - a10 * a22;
-  out[4] = a00 * a22 - a02 * a20;
-  out[5] = a02 * a10 - a00 * a12;
-  out[6] = a10 * a21 - a11 * a20;
-  out[7] = a01 * a20 - a00 * a21;
-  out[8] = a00 * a11 - a01 * a10;
-  return out;
-}
-/**
- * Calculates the determinant of a mat3
- *
- * @param {ReadonlyMat3} a the source matrix
- * @returns {Number} determinant of a
- */
-
-function determinant$1(a) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2];
-  var a10 = a[3],
-      a11 = a[4],
-      a12 = a[5];
-  var a20 = a[6],
-      a21 = a[7],
-      a22 = a[8];
-  return a00 * (a22 * a11 - a12 * a21) + a01 * (-a22 * a10 + a12 * a20) + a02 * (a21 * a10 - a11 * a20);
-}
-/**
- * Multiplies two mat3's
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the first operand
- * @param {ReadonlyMat3} b the second operand
- * @returns {mat3} out
- */
-
-function multiply$6(out, a, b) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2];
-  var a10 = a[3],
-      a11 = a[4],
-      a12 = a[5];
-  var a20 = a[6],
-      a21 = a[7],
-      a22 = a[8];
-  var b00 = b[0],
-      b01 = b[1],
-      b02 = b[2];
-  var b10 = b[3],
-      b11 = b[4],
-      b12 = b[5];
-  var b20 = b[6],
-      b21 = b[7],
-      b22 = b[8];
-  out[0] = b00 * a00 + b01 * a10 + b02 * a20;
-  out[1] = b00 * a01 + b01 * a11 + b02 * a21;
-  out[2] = b00 * a02 + b01 * a12 + b02 * a22;
-  out[3] = b10 * a00 + b11 * a10 + b12 * a20;
-  out[4] = b10 * a01 + b11 * a11 + b12 * a21;
-  out[5] = b10 * a02 + b11 * a12 + b12 * a22;
-  out[6] = b20 * a00 + b21 * a10 + b22 * a20;
-  out[7] = b20 * a01 + b21 * a11 + b22 * a21;
-  out[8] = b20 * a02 + b21 * a12 + b22 * a22;
-  return out;
-}
-/**
- * Translate a mat3 by the given vector
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the matrix to translate
- * @param {ReadonlyVec2} v vector to translate by
- * @returns {mat3} out
- */
-
-function translate$2(out, a, v) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2],
-      a10 = a[3],
-      a11 = a[4],
-      a12 = a[5],
-      a20 = a[6],
-      a21 = a[7],
-      a22 = a[8],
-      x = v[0],
-      y = v[1];
-  out[0] = a00;
-  out[1] = a01;
-  out[2] = a02;
-  out[3] = a10;
-  out[4] = a11;
-  out[5] = a12;
-  out[6] = x * a00 + y * a10 + a20;
-  out[7] = x * a01 + y * a11 + a21;
-  out[8] = x * a02 + y * a12 + a22;
-  return out;
-}
-/**
- * Rotates a mat3 by the given angle
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat3} out
- */
-
-function rotate$2(out, a, rad) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2],
-      a10 = a[3],
-      a11 = a[4],
-      a12 = a[5],
-      a20 = a[6],
-      a21 = a[7],
-      a22 = a[8],
-      s = Math.sin(rad),
-      c = Math.cos(rad);
-  out[0] = c * a00 + s * a10;
-  out[1] = c * a01 + s * a11;
-  out[2] = c * a02 + s * a12;
-  out[3] = c * a10 - s * a00;
-  out[4] = c * a11 - s * a01;
-  out[5] = c * a12 - s * a02;
-  out[6] = a20;
-  out[7] = a21;
-  out[8] = a22;
-  return out;
-}
-/**
- * Scales the mat3 by the dimensions in the given vec2
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the matrix to rotate
- * @param {ReadonlyVec2} v the vec2 to scale the matrix by
- * @returns {mat3} out
- **/
-
-function scale$6(out, a, v) {
-  var x = v[0],
-      y = v[1];
-  out[0] = x * a[0];
-  out[1] = x * a[1];
-  out[2] = x * a[2];
-  out[3] = y * a[3];
-  out[4] = y * a[4];
-  out[5] = y * a[5];
-  out[6] = a[6];
-  out[7] = a[7];
-  out[8] = a[8];
-  return out;
-}
-/**
- * Creates a matrix from a vector translation
- * This is equivalent to (but much faster than):
- *
- *     mat3.identity(dest);
- *     mat3.translate(dest, dest, vec);
- *
- * @param {mat3} out mat3 receiving operation result
- * @param {ReadonlyVec2} v Translation vector
- * @returns {mat3} out
- */
-
-function fromTranslation$2(out, v) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 1;
-  out[5] = 0;
-  out[6] = v[0];
-  out[7] = v[1];
-  out[8] = 1;
-  return out;
-}
-/**
- * Creates a matrix from a given angle
- * This is equivalent to (but much faster than):
- *
- *     mat3.identity(dest);
- *     mat3.rotate(dest, dest, rad);
- *
- * @param {mat3} out mat3 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat3} out
- */
-
-function fromRotation$2(out, rad) {
-  var s = Math.sin(rad),
-      c = Math.cos(rad);
-  out[0] = c;
-  out[1] = s;
-  out[2] = 0;
-  out[3] = -s;
-  out[4] = c;
-  out[5] = 0;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 1;
-  return out;
-}
-/**
- * Creates a matrix from a vector scaling
- * This is equivalent to (but much faster than):
- *
- *     mat3.identity(dest);
- *     mat3.scale(dest, dest, vec);
- *
- * @param {mat3} out mat3 receiving operation result
- * @param {ReadonlyVec2} v Scaling vector
- * @returns {mat3} out
- */
-
-function fromScaling$1(out, v) {
-  out[0] = v[0];
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = v[1];
-  out[5] = 0;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 1;
-  return out;
-}
-/**
- * Copies the values from a mat2d into a mat3
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat2d} a the matrix to copy
- * @returns {mat3} out
- **/
-
-function fromMat2d(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = 0;
-  out[3] = a[2];
-  out[4] = a[3];
-  out[5] = 0;
-  out[6] = a[4];
-  out[7] = a[5];
-  out[8] = 1;
-  return out;
-}
-/**
- * Calculates a 3x3 matrix from the given quaternion
- *
- * @param {mat3} out mat3 receiving operation result
- * @param {ReadonlyQuat} q Quaternion to create matrix from
- *
- * @returns {mat3} out
- */
-
-function fromQuat$1(out, q) {
-  var x = q[0],
-      y = q[1],
-      z = q[2],
-      w = q[3];
-  var x2 = x + x;
-  var y2 = y + y;
-  var z2 = z + z;
-  var xx = x * x2;
-  var yx = y * x2;
-  var yy = y * y2;
-  var zx = z * x2;
-  var zy = z * y2;
-  var zz = z * z2;
-  var wx = w * x2;
-  var wy = w * y2;
-  var wz = w * z2;
-  out[0] = 1 - yy - zz;
-  out[3] = yx - wz;
-  out[6] = zx + wy;
-  out[1] = yx + wz;
-  out[4] = 1 - xx - zz;
-  out[7] = zy - wx;
-  out[2] = zx - wy;
-  out[5] = zy + wx;
-  out[8] = 1 - xx - yy;
-  return out;
-}
-/**
- * Calculates a 3x3 normal matrix (transpose inverse) from the 4x4 matrix
- *
- * @param {mat3} out mat3 receiving operation result
- * @param {ReadonlyMat4} a Mat4 to derive the normal matrix from
- *
- * @returns {mat3} out
- */
-
-function normalFromMat4(out, a) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2],
-      a03 = a[3];
-  var a10 = a[4],
-      a11 = a[5],
-      a12 = a[6],
-      a13 = a[7];
-  var a20 = a[8],
-      a21 = a[9],
-      a22 = a[10],
-      a23 = a[11];
-  var a30 = a[12],
-      a31 = a[13],
-      a32 = a[14],
-      a33 = a[15];
-  var b00 = a00 * a11 - a01 * a10;
-  var b01 = a00 * a12 - a02 * a10;
-  var b02 = a00 * a13 - a03 * a10;
-  var b03 = a01 * a12 - a02 * a11;
-  var b04 = a01 * a13 - a03 * a11;
-  var b05 = a02 * a13 - a03 * a12;
-  var b06 = a20 * a31 - a21 * a30;
-  var b07 = a20 * a32 - a22 * a30;
-  var b08 = a20 * a33 - a23 * a30;
-  var b09 = a21 * a32 - a22 * a31;
-  var b10 = a21 * a33 - a23 * a31;
-  var b11 = a22 * a33 - a23 * a32; // Calculate the determinant
-
-  var det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-
-  if (!det) {
-    return null;
-  }
-
-  det = 1.0 / det;
-  out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-  out[1] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-  out[2] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-  out[3] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-  out[4] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-  out[5] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-  out[6] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-  out[7] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-  out[8] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-  return out;
-}
-/**
- * Generates a 2D projection matrix with the given bounds
- *
- * @param {mat3} out mat3 frustum matrix will be written into
- * @param {number} width Width of your gl context
- * @param {number} height Height of gl context
- * @returns {mat3} out
- */
-
-function projection(out, width, height) {
-  out[0] = 2 / width;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = -2 / height;
-  out[5] = 0;
-  out[6] = -1;
-  out[7] = 1;
-  out[8] = 1;
-  return out;
-}
-/**
- * Returns a string representation of a mat3
- *
- * @param {ReadonlyMat3} a matrix to represent as a string
- * @returns {String} string representation of the matrix
- */
-
-function str$6(a) {
-  return "mat3(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ", " + a[4] + ", " + a[5] + ", " + a[6] + ", " + a[7] + ", " + a[8] + ")";
-}
-/**
- * Returns Frobenius norm of a mat3
- *
- * @param {ReadonlyMat3} a the matrix to calculate Frobenius norm of
- * @returns {Number} Frobenius norm
- */
-
-function frob$1(a) {
-  return Math.hypot(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
-}
-/**
- * Adds two mat3's
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the first operand
- * @param {ReadonlyMat3} b the second operand
- * @returns {mat3} out
- */
-
-function add$6(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  out[3] = a[3] + b[3];
-  out[4] = a[4] + b[4];
-  out[5] = a[5] + b[5];
-  out[6] = a[6] + b[6];
-  out[7] = a[7] + b[7];
-  out[8] = a[8] + b[8];
-  return out;
-}
-/**
- * Subtracts matrix b from matrix a
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the first operand
- * @param {ReadonlyMat3} b the second operand
- * @returns {mat3} out
- */
-
-function subtract$4(out, a, b) {
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  out[2] = a[2] - b[2];
-  out[3] = a[3] - b[3];
-  out[4] = a[4] - b[4];
-  out[5] = a[5] - b[5];
-  out[6] = a[6] - b[6];
-  out[7] = a[7] - b[7];
-  out[8] = a[8] - b[8];
-  return out;
-}
-/**
- * Multiply each element of the matrix by a scalar.
- *
- * @param {mat3} out the receiving matrix
- * @param {ReadonlyMat3} a the matrix to scale
- * @param {Number} b amount to scale the matrix's elements by
- * @returns {mat3} out
- */
-
-function multiplyScalar$1(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  out[3] = a[3] * b;
-  out[4] = a[4] * b;
-  out[5] = a[5] * b;
-  out[6] = a[6] * b;
-  out[7] = a[7] * b;
-  out[8] = a[8] * b;
-  return out;
-}
-/**
- * Adds two mat3's after multiplying each element of the second operand by a scalar value.
- *
- * @param {mat3} out the receiving vector
- * @param {ReadonlyMat3} a the first operand
- * @param {ReadonlyMat3} b the second operand
- * @param {Number} scale the amount to scale b's elements by before adding
- * @returns {mat3} out
- */
-
-function multiplyScalarAndAdd$1(out, a, b, scale) {
-  out[0] = a[0] + b[0] * scale;
-  out[1] = a[1] + b[1] * scale;
-  out[2] = a[2] + b[2] * scale;
-  out[3] = a[3] + b[3] * scale;
-  out[4] = a[4] + b[4] * scale;
-  out[5] = a[5] + b[5] * scale;
-  out[6] = a[6] + b[6] * scale;
-  out[7] = a[7] + b[7] * scale;
-  out[8] = a[8] + b[8] * scale;
-  return out;
-}
-/**
- * Returns whether or not the matrices have exactly the same elements in the same position (when compared with ===)
- *
- * @param {ReadonlyMat3} a The first matrix.
- * @param {ReadonlyMat3} b The second matrix.
- * @returns {Boolean} True if the matrices are equal, false otherwise.
- */
-
-function exactEquals$6(a, b) {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5] && a[6] === b[6] && a[7] === b[7] && a[8] === b[8];
-}
-/**
- * Returns whether or not the matrices have approximately the same elements in the same position.
- *
- * @param {ReadonlyMat3} a The first matrix.
- * @param {ReadonlyMat3} b The second matrix.
- * @returns {Boolean} True if the matrices are equal, false otherwise.
- */
-
-function equals$7(a, b) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3],
-      a4 = a[4],
-      a5 = a[5],
-      a6 = a[6],
-      a7 = a[7],
-      a8 = a[8];
-  var b0 = b[0],
-      b1 = b[1],
-      b2 = b[2],
-      b3 = b[3],
-      b4 = b[4],
-      b5 = b[5],
-      b6 = b[6],
-      b7 = b[7],
-      b8 = b[8];
-  return Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3)) && Math.abs(a4 - b4) <= EPSILON * Math.max(1.0, Math.abs(a4), Math.abs(b4)) && Math.abs(a5 - b5) <= EPSILON * Math.max(1.0, Math.abs(a5), Math.abs(b5)) && Math.abs(a6 - b6) <= EPSILON * Math.max(1.0, Math.abs(a6), Math.abs(b6)) && Math.abs(a7 - b7) <= EPSILON * Math.max(1.0, Math.abs(a7), Math.abs(b7)) && Math.abs(a8 - b8) <= EPSILON * Math.max(1.0, Math.abs(a8), Math.abs(b8));
-}
-/**
- * Alias for {@link mat3.multiply}
- * @function
- */
-
-var mul$6 = multiply$6;
-/**
- * Alias for {@link mat3.subtract}
- * @function
- */
-
-var sub$4 = subtract$4;
-
-var mat3 = /*#__PURE__*/Object.freeze({
-__proto__: null,
-add: add$6,
-adjoint: adjoint$1,
-clone: clone$6,
-copy: copy$6,
-create: create$6,
-determinant: determinant$1,
-equals: equals$7,
-exactEquals: exactEquals$6,
-frob: frob$1,
-fromMat2d: fromMat2d,
-fromMat4: fromMat4$1,
-fromQuat: fromQuat$1,
-fromRotation: fromRotation$2,
-fromScaling: fromScaling$1,
-fromTranslation: fromTranslation$2,
-fromValues: fromValues$6,
-identity: identity$3,
-invert: invert$3,
-mul: mul$6,
-multiply: multiply$6,
-multiplyScalar: multiplyScalar$1,
-multiplyScalarAndAdd: multiplyScalarAndAdd$1,
-normalFromMat4: normalFromMat4,
-projection: projection,
-rotate: rotate$2,
-scale: scale$6,
-set: set$6,
-str: str$6,
-sub: sub$4,
-subtract: subtract$4,
-translate: translate$2,
-transpose: transpose$1
-});
 
 /**
  * 4x4 Matrix<br>Format: column-major, when typed out it looks like row-major<br>The matrices are being post multiplied.
@@ -19239,7 +16053,7 @@ transpose: transpose$1
  * @returns {mat4} a new 4x4 matrix
  */
 
-function create$5() {
+function create$1() {
   var out = new ARRAY_TYPE(16);
 
   if (ARRAY_TYPE != Float32Array) {
@@ -19270,7 +16084,7 @@ function create$5() {
  * @returns {mat4} a new 4x4 matrix
  */
 
-function clone$5(a) {
+function clone(a) {
   var out = new ARRAY_TYPE(16);
   out[0] = a[0];
   out[1] = a[1];
@@ -19298,7 +16112,7 @@ function clone$5(a) {
  * @returns {mat4} out
  */
 
-function copy$5(out, a) {
+function copy(out, a) {
   out[0] = a[0];
   out[1] = a[1];
   out[2] = a[2];
@@ -19318,97 +16132,13 @@ function copy$5(out, a) {
   return out;
 }
 /**
- * Create a new mat4 with the given values
- *
- * @param {Number} m00 Component in column 0, row 0 position (index 0)
- * @param {Number} m01 Component in column 0, row 1 position (index 1)
- * @param {Number} m02 Component in column 0, row 2 position (index 2)
- * @param {Number} m03 Component in column 0, row 3 position (index 3)
- * @param {Number} m10 Component in column 1, row 0 position (index 4)
- * @param {Number} m11 Component in column 1, row 1 position (index 5)
- * @param {Number} m12 Component in column 1, row 2 position (index 6)
- * @param {Number} m13 Component in column 1, row 3 position (index 7)
- * @param {Number} m20 Component in column 2, row 0 position (index 8)
- * @param {Number} m21 Component in column 2, row 1 position (index 9)
- * @param {Number} m22 Component in column 2, row 2 position (index 10)
- * @param {Number} m23 Component in column 2, row 3 position (index 11)
- * @param {Number} m30 Component in column 3, row 0 position (index 12)
- * @param {Number} m31 Component in column 3, row 1 position (index 13)
- * @param {Number} m32 Component in column 3, row 2 position (index 14)
- * @param {Number} m33 Component in column 3, row 3 position (index 15)
- * @returns {mat4} A new mat4
- */
-
-function fromValues$5(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
-  var out = new ARRAY_TYPE(16);
-  out[0] = m00;
-  out[1] = m01;
-  out[2] = m02;
-  out[3] = m03;
-  out[4] = m10;
-  out[5] = m11;
-  out[6] = m12;
-  out[7] = m13;
-  out[8] = m20;
-  out[9] = m21;
-  out[10] = m22;
-  out[11] = m23;
-  out[12] = m30;
-  out[13] = m31;
-  out[14] = m32;
-  out[15] = m33;
-  return out;
-}
-/**
- * Set the components of a mat4 to the given values
- *
- * @param {mat4} out the receiving matrix
- * @param {Number} m00 Component in column 0, row 0 position (index 0)
- * @param {Number} m01 Component in column 0, row 1 position (index 1)
- * @param {Number} m02 Component in column 0, row 2 position (index 2)
- * @param {Number} m03 Component in column 0, row 3 position (index 3)
- * @param {Number} m10 Component in column 1, row 0 position (index 4)
- * @param {Number} m11 Component in column 1, row 1 position (index 5)
- * @param {Number} m12 Component in column 1, row 2 position (index 6)
- * @param {Number} m13 Component in column 1, row 3 position (index 7)
- * @param {Number} m20 Component in column 2, row 0 position (index 8)
- * @param {Number} m21 Component in column 2, row 1 position (index 9)
- * @param {Number} m22 Component in column 2, row 2 position (index 10)
- * @param {Number} m23 Component in column 2, row 3 position (index 11)
- * @param {Number} m30 Component in column 3, row 0 position (index 12)
- * @param {Number} m31 Component in column 3, row 1 position (index 13)
- * @param {Number} m32 Component in column 3, row 2 position (index 14)
- * @param {Number} m33 Component in column 3, row 3 position (index 15)
- * @returns {mat4} out
- */
-
-function set$5(out, m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
-  out[0] = m00;
-  out[1] = m01;
-  out[2] = m02;
-  out[3] = m03;
-  out[4] = m10;
-  out[5] = m11;
-  out[6] = m12;
-  out[7] = m13;
-  out[8] = m20;
-  out[9] = m21;
-  out[10] = m22;
-  out[11] = m23;
-  out[12] = m30;
-  out[13] = m31;
-  out[14] = m32;
-  out[15] = m33;
-  return out;
-}
-/**
  * Set a mat4 to the identity matrix
  *
  * @param {mat4} out the receiving matrix
  * @returns {mat4} out
  */
 
-function identity$2(out) {
+function identity(out) {
   out[0] = 1;
   out[1] = 0;
   out[2] = 0;
@@ -19428,56 +16158,6 @@ function identity$2(out) {
   return out;
 }
 /**
- * Transpose the values of a mat4
- *
- * @param {mat4} out the receiving matrix
- * @param {ReadonlyMat4} a the source matrix
- * @returns {mat4} out
- */
-
-function transpose(out, a) {
-  // If we are transposing ourselves we can skip a few steps but have to cache some values
-  if (out === a) {
-    var a01 = a[1],
-        a02 = a[2],
-        a03 = a[3];
-    var a12 = a[6],
-        a13 = a[7];
-    var a23 = a[11];
-    out[1] = a[4];
-    out[2] = a[8];
-    out[3] = a[12];
-    out[4] = a01;
-    out[6] = a[9];
-    out[7] = a[13];
-    out[8] = a02;
-    out[9] = a12;
-    out[11] = a[14];
-    out[12] = a03;
-    out[13] = a13;
-    out[14] = a23;
-  } else {
-    out[0] = a[0];
-    out[1] = a[4];
-    out[2] = a[8];
-    out[3] = a[12];
-    out[4] = a[1];
-    out[5] = a[5];
-    out[6] = a[9];
-    out[7] = a[13];
-    out[8] = a[2];
-    out[9] = a[6];
-    out[10] = a[10];
-    out[11] = a[14];
-    out[12] = a[3];
-    out[13] = a[7];
-    out[14] = a[11];
-    out[15] = a[15];
-  }
-
-  return out;
-}
-/**
  * Inverts a mat4
  *
  * @param {mat4} out the receiving matrix
@@ -19485,7 +16165,7 @@ function transpose(out, a) {
  * @returns {mat4} out
  */
 
-function invert$2(out, a) {
+function invert(out, a) {
   var a00 = a[0],
       a01 = a[1],
       a02 = a[2],
@@ -19541,88 +16221,6 @@ function invert$2(out, a) {
   return out;
 }
 /**
- * Calculates the adjugate of a mat4
- *
- * @param {mat4} out the receiving matrix
- * @param {ReadonlyMat4} a the source matrix
- * @returns {mat4} out
- */
-
-function adjoint(out, a) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2],
-      a03 = a[3];
-  var a10 = a[4],
-      a11 = a[5],
-      a12 = a[6],
-      a13 = a[7];
-  var a20 = a[8],
-      a21 = a[9],
-      a22 = a[10],
-      a23 = a[11];
-  var a30 = a[12],
-      a31 = a[13],
-      a32 = a[14],
-      a33 = a[15];
-  out[0] = a11 * (a22 * a33 - a23 * a32) - a21 * (a12 * a33 - a13 * a32) + a31 * (a12 * a23 - a13 * a22);
-  out[1] = -(a01 * (a22 * a33 - a23 * a32) - a21 * (a02 * a33 - a03 * a32) + a31 * (a02 * a23 - a03 * a22));
-  out[2] = a01 * (a12 * a33 - a13 * a32) - a11 * (a02 * a33 - a03 * a32) + a31 * (a02 * a13 - a03 * a12);
-  out[3] = -(a01 * (a12 * a23 - a13 * a22) - a11 * (a02 * a23 - a03 * a22) + a21 * (a02 * a13 - a03 * a12));
-  out[4] = -(a10 * (a22 * a33 - a23 * a32) - a20 * (a12 * a33 - a13 * a32) + a30 * (a12 * a23 - a13 * a22));
-  out[5] = a00 * (a22 * a33 - a23 * a32) - a20 * (a02 * a33 - a03 * a32) + a30 * (a02 * a23 - a03 * a22);
-  out[6] = -(a00 * (a12 * a33 - a13 * a32) - a10 * (a02 * a33 - a03 * a32) + a30 * (a02 * a13 - a03 * a12));
-  out[7] = a00 * (a12 * a23 - a13 * a22) - a10 * (a02 * a23 - a03 * a22) + a20 * (a02 * a13 - a03 * a12);
-  out[8] = a10 * (a21 * a33 - a23 * a31) - a20 * (a11 * a33 - a13 * a31) + a30 * (a11 * a23 - a13 * a21);
-  out[9] = -(a00 * (a21 * a33 - a23 * a31) - a20 * (a01 * a33 - a03 * a31) + a30 * (a01 * a23 - a03 * a21));
-  out[10] = a00 * (a11 * a33 - a13 * a31) - a10 * (a01 * a33 - a03 * a31) + a30 * (a01 * a13 - a03 * a11);
-  out[11] = -(a00 * (a11 * a23 - a13 * a21) - a10 * (a01 * a23 - a03 * a21) + a20 * (a01 * a13 - a03 * a11));
-  out[12] = -(a10 * (a21 * a32 - a22 * a31) - a20 * (a11 * a32 - a12 * a31) + a30 * (a11 * a22 - a12 * a21));
-  out[13] = a00 * (a21 * a32 - a22 * a31) - a20 * (a01 * a32 - a02 * a31) + a30 * (a01 * a22 - a02 * a21);
-  out[14] = -(a00 * (a11 * a32 - a12 * a31) - a10 * (a01 * a32 - a02 * a31) + a30 * (a01 * a12 - a02 * a11));
-  out[15] = a00 * (a11 * a22 - a12 * a21) - a10 * (a01 * a22 - a02 * a21) + a20 * (a01 * a12 - a02 * a11);
-  return out;
-}
-/**
- * Calculates the determinant of a mat4
- *
- * @param {ReadonlyMat4} a the source matrix
- * @returns {Number} determinant of a
- */
-
-function determinant(a) {
-  var a00 = a[0],
-      a01 = a[1],
-      a02 = a[2],
-      a03 = a[3];
-  var a10 = a[4],
-      a11 = a[5],
-      a12 = a[6],
-      a13 = a[7];
-  var a20 = a[8],
-      a21 = a[9],
-      a22 = a[10],
-      a23 = a[11];
-  var a30 = a[12],
-      a31 = a[13],
-      a32 = a[14],
-      a33 = a[15];
-  var b00 = a00 * a11 - a01 * a10;
-  var b01 = a00 * a12 - a02 * a10;
-  var b02 = a00 * a13 - a03 * a10;
-  var b03 = a01 * a12 - a02 * a11;
-  var b04 = a01 * a13 - a03 * a11;
-  var b05 = a02 * a13 - a03 * a12;
-  var b06 = a20 * a31 - a21 * a30;
-  var b07 = a20 * a32 - a22 * a30;
-  var b08 = a20 * a33 - a23 * a30;
-  var b09 = a21 * a32 - a22 * a31;
-  var b10 = a21 * a33 - a23 * a31;
-  var b11 = a22 * a33 - a23 * a32; // Calculate the determinant
-
-  return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-}
-/**
  * Multiplies two mat4s
  *
  * @param {mat4} out the receiving matrix
@@ -19631,7 +16229,7 @@ function determinant(a) {
  * @returns {mat4} out
  */
 
-function multiply$5(out, a, b) {
+function multiply$1(out, a, b) {
   var a00 = a[0],
       a01 = a[1],
       a02 = a[2],
@@ -19692,7 +16290,7 @@ function multiply$5(out, a, b) {
  * @returns {mat4} out
  */
 
-function translate$1(out, a, v) {
+function translate(out, a, v) {
   var x = v[0],
       y = v[1],
       z = v[2];
@@ -19747,7 +16345,7 @@ function translate$1(out, a, v) {
  * @returns {mat4} out
  **/
 
-function scale$5(out, a, v) {
+function scale(out, a, v) {
   var x = v[0],
       y = v[1],
       z = v[2];
@@ -19770,86 +16368,6 @@ function scale$5(out, a, v) {
   return out;
 }
 /**
- * Rotates a mat4 by the given angle around the given axis
- *
- * @param {mat4} out the receiving matrix
- * @param {ReadonlyMat4} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @param {ReadonlyVec3} axis the axis to rotate around
- * @returns {mat4} out
- */
-
-function rotate$1(out, a, rad, axis) {
-  var x = axis[0],
-      y = axis[1],
-      z = axis[2];
-  var len = Math.hypot(x, y, z);
-  var s, c, t;
-  var a00, a01, a02, a03;
-  var a10, a11, a12, a13;
-  var a20, a21, a22, a23;
-  var b00, b01, b02;
-  var b10, b11, b12;
-  var b20, b21, b22;
-
-  if (len < EPSILON) {
-    return null;
-  }
-
-  len = 1 / len;
-  x *= len;
-  y *= len;
-  z *= len;
-  s = Math.sin(rad);
-  c = Math.cos(rad);
-  t = 1 - c;
-  a00 = a[0];
-  a01 = a[1];
-  a02 = a[2];
-  a03 = a[3];
-  a10 = a[4];
-  a11 = a[5];
-  a12 = a[6];
-  a13 = a[7];
-  a20 = a[8];
-  a21 = a[9];
-  a22 = a[10];
-  a23 = a[11]; // Construct the elements of the rotation matrix
-
-  b00 = x * x * t + c;
-  b01 = y * x * t + z * s;
-  b02 = z * x * t - y * s;
-  b10 = x * y * t - z * s;
-  b11 = y * y * t + c;
-  b12 = z * y * t + x * s;
-  b20 = x * z * t + y * s;
-  b21 = y * z * t - x * s;
-  b22 = z * z * t + c; // Perform rotation-specific matrix multiplication
-
-  out[0] = a00 * b00 + a10 * b01 + a20 * b02;
-  out[1] = a01 * b00 + a11 * b01 + a21 * b02;
-  out[2] = a02 * b00 + a12 * b01 + a22 * b02;
-  out[3] = a03 * b00 + a13 * b01 + a23 * b02;
-  out[4] = a00 * b10 + a10 * b11 + a20 * b12;
-  out[5] = a01 * b10 + a11 * b11 + a21 * b12;
-  out[6] = a02 * b10 + a12 * b11 + a22 * b12;
-  out[7] = a03 * b10 + a13 * b11 + a23 * b12;
-  out[8] = a00 * b20 + a10 * b21 + a20 * b22;
-  out[9] = a01 * b20 + a11 * b21 + a21 * b22;
-  out[10] = a02 * b20 + a12 * b21 + a22 * b22;
-  out[11] = a03 * b20 + a13 * b21 + a23 * b22;
-
-  if (a !== out) {
-    // If the source and destination differ, copy the unchanged last row
-    out[12] = a[12];
-    out[13] = a[13];
-    out[14] = a[14];
-    out[15] = a[15];
-  }
-
-  return out;
-}
-/**
  * Rotates a matrix by the given angle around the X axis
  *
  * @param {mat4} out the receiving matrix
@@ -19858,7 +16376,7 @@ function rotate$1(out, a, rad, axis) {
  * @returns {mat4} out
  */
 
-function rotateX$3(out, a, rad) {
+function rotateX(out, a, rad) {
   var s = Math.sin(rad);
   var c = Math.cos(rad);
   var a10 = a[4];
@@ -19894,50 +16412,6 @@ function rotateX$3(out, a, rad) {
   return out;
 }
 /**
- * Rotates a matrix by the given angle around the Y axis
- *
- * @param {mat4} out the receiving matrix
- * @param {ReadonlyMat4} a the matrix to rotate
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */
-
-function rotateY$3(out, a, rad) {
-  var s = Math.sin(rad);
-  var c = Math.cos(rad);
-  var a00 = a[0];
-  var a01 = a[1];
-  var a02 = a[2];
-  var a03 = a[3];
-  var a20 = a[8];
-  var a21 = a[9];
-  var a22 = a[10];
-  var a23 = a[11];
-
-  if (a !== out) {
-    // If the source and destination differ, copy the unchanged rows
-    out[4] = a[4];
-    out[5] = a[5];
-    out[6] = a[6];
-    out[7] = a[7];
-    out[12] = a[12];
-    out[13] = a[13];
-    out[14] = a[14];
-    out[15] = a[15];
-  } // Perform axis-specific matrix multiplication
-
-
-  out[0] = a00 * c - a20 * s;
-  out[1] = a01 * c - a21 * s;
-  out[2] = a02 * c - a22 * s;
-  out[3] = a03 * c - a23 * s;
-  out[8] = a00 * s + a20 * c;
-  out[9] = a01 * s + a21 * c;
-  out[10] = a02 * s + a22 * c;
-  out[11] = a03 * s + a23 * c;
-  return out;
-}
-/**
  * Rotates a matrix by the given angle around the Z axis
  *
  * @param {mat4} out the receiving matrix
@@ -19946,7 +16420,7 @@ function rotateY$3(out, a, rad) {
  * @returns {mat4} out
  */
 
-function rotateZ$3(out, a, rad) {
+function rotateZ(out, a, rad) {
   var s = Math.sin(rad);
   var c = Math.cos(rad);
   var a00 = a[0];
@@ -19982,37 +16456,6 @@ function rotateZ$3(out, a, rad) {
   return out;
 }
 /**
- * Creates a matrix from a vector translation
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.translate(dest, dest, vec);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {ReadonlyVec3} v Translation vector
- * @returns {mat4} out
- */
-
-function fromTranslation$1(out, v) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = 1;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = 0;
-  out[10] = 1;
-  out[11] = 0;
-  out[12] = v[0];
-  out[13] = v[1];
-  out[14] = v[2];
-  out[15] = 1;
-  return out;
-}
-/**
  * Creates a matrix from a vector scaling
  * This is equivalent to (but much faster than):
  *
@@ -20041,549 +16484,6 @@ function fromScaling(out, v) {
   out[13] = 0;
   out[14] = 0;
   out[15] = 1;
-  return out;
-}
-/**
- * Creates a matrix from a given angle around a given axis
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.rotate(dest, dest, rad, axis);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @param {ReadonlyVec3} axis the axis to rotate around
- * @returns {mat4} out
- */
-
-function fromRotation$1(out, rad, axis) {
-  var x = axis[0],
-      y = axis[1],
-      z = axis[2];
-  var len = Math.hypot(x, y, z);
-  var s, c, t;
-
-  if (len < EPSILON) {
-    return null;
-  }
-
-  len = 1 / len;
-  x *= len;
-  y *= len;
-  z *= len;
-  s = Math.sin(rad);
-  c = Math.cos(rad);
-  t = 1 - c; // Perform rotation-specific matrix multiplication
-
-  out[0] = x * x * t + c;
-  out[1] = y * x * t + z * s;
-  out[2] = z * x * t - y * s;
-  out[3] = 0;
-  out[4] = x * y * t - z * s;
-  out[5] = y * y * t + c;
-  out[6] = z * y * t + x * s;
-  out[7] = 0;
-  out[8] = x * z * t + y * s;
-  out[9] = y * z * t - x * s;
-  out[10] = z * z * t + c;
-  out[11] = 0;
-  out[12] = 0;
-  out[13] = 0;
-  out[14] = 0;
-  out[15] = 1;
-  return out;
-}
-/**
- * Creates a matrix from the given angle around the X axis
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.rotateX(dest, dest, rad);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */
-
-function fromXRotation(out, rad) {
-  var s = Math.sin(rad);
-  var c = Math.cos(rad); // Perform axis-specific matrix multiplication
-
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = c;
-  out[6] = s;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = -s;
-  out[10] = c;
-  out[11] = 0;
-  out[12] = 0;
-  out[13] = 0;
-  out[14] = 0;
-  out[15] = 1;
-  return out;
-}
-/**
- * Creates a matrix from the given angle around the Y axis
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.rotateY(dest, dest, rad);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */
-
-function fromYRotation(out, rad) {
-  var s = Math.sin(rad);
-  var c = Math.cos(rad); // Perform axis-specific matrix multiplication
-
-  out[0] = c;
-  out[1] = 0;
-  out[2] = -s;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = 1;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = s;
-  out[9] = 0;
-  out[10] = c;
-  out[11] = 0;
-  out[12] = 0;
-  out[13] = 0;
-  out[14] = 0;
-  out[15] = 1;
-  return out;
-}
-/**
- * Creates a matrix from the given angle around the Z axis
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.rotateZ(dest, dest, rad);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {Number} rad the angle to rotate the matrix by
- * @returns {mat4} out
- */
-
-function fromZRotation(out, rad) {
-  var s = Math.sin(rad);
-  var c = Math.cos(rad); // Perform axis-specific matrix multiplication
-
-  out[0] = c;
-  out[1] = s;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = -s;
-  out[5] = c;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = 0;
-  out[10] = 1;
-  out[11] = 0;
-  out[12] = 0;
-  out[13] = 0;
-  out[14] = 0;
-  out[15] = 1;
-  return out;
-}
-/**
- * Creates a matrix from a quaternion rotation and vector translation
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.translate(dest, vec);
- *     let quatMat = mat4.create();
- *     quat4.toMat4(quat, quatMat);
- *     mat4.multiply(dest, quatMat);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {quat4} q Rotation quaternion
- * @param {ReadonlyVec3} v Translation vector
- * @returns {mat4} out
- */
-
-function fromRotationTranslation$1(out, q, v) {
-  // Quaternion math
-  var x = q[0],
-      y = q[1],
-      z = q[2],
-      w = q[3];
-  var x2 = x + x;
-  var y2 = y + y;
-  var z2 = z + z;
-  var xx = x * x2;
-  var xy = x * y2;
-  var xz = x * z2;
-  var yy = y * y2;
-  var yz = y * z2;
-  var zz = z * z2;
-  var wx = w * x2;
-  var wy = w * y2;
-  var wz = w * z2;
-  out[0] = 1 - (yy + zz);
-  out[1] = xy + wz;
-  out[2] = xz - wy;
-  out[3] = 0;
-  out[4] = xy - wz;
-  out[5] = 1 - (xx + zz);
-  out[6] = yz + wx;
-  out[7] = 0;
-  out[8] = xz + wy;
-  out[9] = yz - wx;
-  out[10] = 1 - (xx + yy);
-  out[11] = 0;
-  out[12] = v[0];
-  out[13] = v[1];
-  out[14] = v[2];
-  out[15] = 1;
-  return out;
-}
-/**
- * Creates a new mat4 from a dual quat.
- *
- * @param {mat4} out Matrix
- * @param {ReadonlyQuat2} a Dual Quaternion
- * @returns {mat4} mat4 receiving operation result
- */
-
-function fromQuat2(out, a) {
-  var translation = new ARRAY_TYPE(3);
-  var bx = -a[0],
-      by = -a[1],
-      bz = -a[2],
-      bw = a[3],
-      ax = a[4],
-      ay = a[5],
-      az = a[6],
-      aw = a[7];
-  var magnitude = bx * bx + by * by + bz * bz + bw * bw; //Only scale if it makes sense
-
-  if (magnitude > 0) {
-    translation[0] = (ax * bw + aw * bx + ay * bz - az * by) * 2 / magnitude;
-    translation[1] = (ay * bw + aw * by + az * bx - ax * bz) * 2 / magnitude;
-    translation[2] = (az * bw + aw * bz + ax * by - ay * bx) * 2 / magnitude;
-  } else {
-    translation[0] = (ax * bw + aw * bx + ay * bz - az * by) * 2;
-    translation[1] = (ay * bw + aw * by + az * bx - ax * bz) * 2;
-    translation[2] = (az * bw + aw * bz + ax * by - ay * bx) * 2;
-  }
-
-  fromRotationTranslation$1(out, a, translation);
-  return out;
-}
-/**
- * Returns the translation vector component of a transformation
- *  matrix. If a matrix is built with fromRotationTranslation,
- *  the returned vector will be the same as the translation vector
- *  originally supplied.
- * @param  {vec3} out Vector to receive translation component
- * @param  {ReadonlyMat4} mat Matrix to be decomposed (input)
- * @return {vec3} out
- */
-
-function getTranslation$1(out, mat) {
-  out[0] = mat[12];
-  out[1] = mat[13];
-  out[2] = mat[14];
-  return out;
-}
-/**
- * Returns the scaling factor component of a transformation
- *  matrix. If a matrix is built with fromRotationTranslationScale
- *  with a normalized Quaternion paramter, the returned vector will be
- *  the same as the scaling vector
- *  originally supplied.
- * @param  {vec3} out Vector to receive scaling factor component
- * @param  {ReadonlyMat4} mat Matrix to be decomposed (input)
- * @return {vec3} out
- */
-
-function getScaling(out, mat) {
-  var m11 = mat[0];
-  var m12 = mat[1];
-  var m13 = mat[2];
-  var m21 = mat[4];
-  var m22 = mat[5];
-  var m23 = mat[6];
-  var m31 = mat[8];
-  var m32 = mat[9];
-  var m33 = mat[10];
-  out[0] = Math.hypot(m11, m12, m13);
-  out[1] = Math.hypot(m21, m22, m23);
-  out[2] = Math.hypot(m31, m32, m33);
-  return out;
-}
-/**
- * Returns a quaternion representing the rotational component
- *  of a transformation matrix. If a matrix is built with
- *  fromRotationTranslation, the returned quaternion will be the
- *  same as the quaternion originally supplied.
- * @param {quat} out Quaternion to receive the rotation component
- * @param {ReadonlyMat4} mat Matrix to be decomposed (input)
- * @return {quat} out
- */
-
-function getRotation(out, mat) {
-  var scaling = new ARRAY_TYPE(3);
-  getScaling(scaling, mat);
-  var is1 = 1 / scaling[0];
-  var is2 = 1 / scaling[1];
-  var is3 = 1 / scaling[2];
-  var sm11 = mat[0] * is1;
-  var sm12 = mat[1] * is2;
-  var sm13 = mat[2] * is3;
-  var sm21 = mat[4] * is1;
-  var sm22 = mat[5] * is2;
-  var sm23 = mat[6] * is3;
-  var sm31 = mat[8] * is1;
-  var sm32 = mat[9] * is2;
-  var sm33 = mat[10] * is3;
-  var trace = sm11 + sm22 + sm33;
-  var S = 0;
-
-  if (trace > 0) {
-    S = Math.sqrt(trace + 1.0) * 2;
-    out[3] = 0.25 * S;
-    out[0] = (sm23 - sm32) / S;
-    out[1] = (sm31 - sm13) / S;
-    out[2] = (sm12 - sm21) / S;
-  } else if (sm11 > sm22 && sm11 > sm33) {
-    S = Math.sqrt(1.0 + sm11 - sm22 - sm33) * 2;
-    out[3] = (sm23 - sm32) / S;
-    out[0] = 0.25 * S;
-    out[1] = (sm12 + sm21) / S;
-    out[2] = (sm31 + sm13) / S;
-  } else if (sm22 > sm33) {
-    S = Math.sqrt(1.0 + sm22 - sm11 - sm33) * 2;
-    out[3] = (sm31 - sm13) / S;
-    out[0] = (sm12 + sm21) / S;
-    out[1] = 0.25 * S;
-    out[2] = (sm23 + sm32) / S;
-  } else {
-    S = Math.sqrt(1.0 + sm33 - sm11 - sm22) * 2;
-    out[3] = (sm12 - sm21) / S;
-    out[0] = (sm31 + sm13) / S;
-    out[1] = (sm23 + sm32) / S;
-    out[2] = 0.25 * S;
-  }
-
-  return out;
-}
-/**
- * Creates a matrix from a quaternion rotation, vector translation and vector scale
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.translate(dest, vec);
- *     let quatMat = mat4.create();
- *     quat4.toMat4(quat, quatMat);
- *     mat4.multiply(dest, quatMat);
- *     mat4.scale(dest, scale)
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {quat4} q Rotation quaternion
- * @param {ReadonlyVec3} v Translation vector
- * @param {ReadonlyVec3} s Scaling vector
- * @returns {mat4} out
- */
-
-function fromRotationTranslationScale(out, q, v, s) {
-  // Quaternion math
-  var x = q[0],
-      y = q[1],
-      z = q[2],
-      w = q[3];
-  var x2 = x + x;
-  var y2 = y + y;
-  var z2 = z + z;
-  var xx = x * x2;
-  var xy = x * y2;
-  var xz = x * z2;
-  var yy = y * y2;
-  var yz = y * z2;
-  var zz = z * z2;
-  var wx = w * x2;
-  var wy = w * y2;
-  var wz = w * z2;
-  var sx = s[0];
-  var sy = s[1];
-  var sz = s[2];
-  out[0] = (1 - (yy + zz)) * sx;
-  out[1] = (xy + wz) * sx;
-  out[2] = (xz - wy) * sx;
-  out[3] = 0;
-  out[4] = (xy - wz) * sy;
-  out[5] = (1 - (xx + zz)) * sy;
-  out[6] = (yz + wx) * sy;
-  out[7] = 0;
-  out[8] = (xz + wy) * sz;
-  out[9] = (yz - wx) * sz;
-  out[10] = (1 - (xx + yy)) * sz;
-  out[11] = 0;
-  out[12] = v[0];
-  out[13] = v[1];
-  out[14] = v[2];
-  out[15] = 1;
-  return out;
-}
-/**
- * Creates a matrix from a quaternion rotation, vector translation and vector scale, rotating and scaling around the given origin
- * This is equivalent to (but much faster than):
- *
- *     mat4.identity(dest);
- *     mat4.translate(dest, vec);
- *     mat4.translate(dest, origin);
- *     let quatMat = mat4.create();
- *     quat4.toMat4(quat, quatMat);
- *     mat4.multiply(dest, quatMat);
- *     mat4.scale(dest, scale)
- *     mat4.translate(dest, negativeOrigin);
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {quat4} q Rotation quaternion
- * @param {ReadonlyVec3} v Translation vector
- * @param {ReadonlyVec3} s Scaling vector
- * @param {ReadonlyVec3} o The origin vector around which to scale and rotate
- * @returns {mat4} out
- */
-
-function fromRotationTranslationScaleOrigin(out, q, v, s, o) {
-  // Quaternion math
-  var x = q[0],
-      y = q[1],
-      z = q[2],
-      w = q[3];
-  var x2 = x + x;
-  var y2 = y + y;
-  var z2 = z + z;
-  var xx = x * x2;
-  var xy = x * y2;
-  var xz = x * z2;
-  var yy = y * y2;
-  var yz = y * z2;
-  var zz = z * z2;
-  var wx = w * x2;
-  var wy = w * y2;
-  var wz = w * z2;
-  var sx = s[0];
-  var sy = s[1];
-  var sz = s[2];
-  var ox = o[0];
-  var oy = o[1];
-  var oz = o[2];
-  var out0 = (1 - (yy + zz)) * sx;
-  var out1 = (xy + wz) * sx;
-  var out2 = (xz - wy) * sx;
-  var out4 = (xy - wz) * sy;
-  var out5 = (1 - (xx + zz)) * sy;
-  var out6 = (yz + wx) * sy;
-  var out8 = (xz + wy) * sz;
-  var out9 = (yz - wx) * sz;
-  var out10 = (1 - (xx + yy)) * sz;
-  out[0] = out0;
-  out[1] = out1;
-  out[2] = out2;
-  out[3] = 0;
-  out[4] = out4;
-  out[5] = out5;
-  out[6] = out6;
-  out[7] = 0;
-  out[8] = out8;
-  out[9] = out9;
-  out[10] = out10;
-  out[11] = 0;
-  out[12] = v[0] + ox - (out0 * ox + out4 * oy + out8 * oz);
-  out[13] = v[1] + oy - (out1 * ox + out5 * oy + out9 * oz);
-  out[14] = v[2] + oz - (out2 * ox + out6 * oy + out10 * oz);
-  out[15] = 1;
-  return out;
-}
-/**
- * Calculates a 4x4 matrix from the given quaternion
- *
- * @param {mat4} out mat4 receiving operation result
- * @param {ReadonlyQuat} q Quaternion to create matrix from
- *
- * @returns {mat4} out
- */
-
-function fromQuat(out, q) {
-  var x = q[0],
-      y = q[1],
-      z = q[2],
-      w = q[3];
-  var x2 = x + x;
-  var y2 = y + y;
-  var z2 = z + z;
-  var xx = x * x2;
-  var yx = y * x2;
-  var yy = y * y2;
-  var zx = z * x2;
-  var zy = z * y2;
-  var zz = z * z2;
-  var wx = w * x2;
-  var wy = w * y2;
-  var wz = w * z2;
-  out[0] = 1 - yy - zz;
-  out[1] = yx + wz;
-  out[2] = zx - wy;
-  out[3] = 0;
-  out[4] = yx - wz;
-  out[5] = 1 - xx - zz;
-  out[6] = zy + wx;
-  out[7] = 0;
-  out[8] = zx + wy;
-  out[9] = zy - wx;
-  out[10] = 1 - xx - yy;
-  out[11] = 0;
-  out[12] = 0;
-  out[13] = 0;
-  out[14] = 0;
-  out[15] = 1;
-  return out;
-}
-/**
- * Generates a frustum matrix with the given bounds
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {Number} left Left bound of the frustum
- * @param {Number} right Right bound of the frustum
- * @param {Number} bottom Bottom bound of the frustum
- * @param {Number} top Top bound of the frustum
- * @param {Number} near Near bound of the frustum
- * @param {Number} far Far bound of the frustum
- * @returns {mat4} out
- */
-
-function frustum(out, left, right, bottom, top, near, far) {
-  var rl = 1 / (right - left);
-  var tb = 1 / (top - bottom);
-  var nf = 1 / (near - far);
-  out[0] = near * 2 * rl;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = near * 2 * tb;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = (right + left) * rl;
-  out[9] = (top + bottom) * tb;
-  out[10] = (far + near) * nf;
-  out[11] = -1;
-  out[12] = 0;
-  out[13] = 0;
-  out[14] = far * near * 2 * nf;
-  out[15] = 0;
   return out;
 }
 /**
@@ -20636,86 +16536,6 @@ function perspectiveNO(out, fovy, aspect, near, far) {
 
 var perspective = perspectiveNO;
 /**
- * Generates a perspective projection matrix suitable for WebGPU with the given bounds.
- * The near/far clip planes correspond to a normalized device coordinate Z range of [0, 1],
- * which matches WebGPU/Vulkan/DirectX/Metal's clip volume.
- * Passing null/undefined/no value for far will generate infinite projection matrix.
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {number} fovy Vertical field of view in radians
- * @param {number} aspect Aspect ratio. typically viewport width/height
- * @param {number} near Near bound of the frustum
- * @param {number} far Far bound of the frustum, can be null or Infinity
- * @returns {mat4} out
- */
-
-function perspectiveZO(out, fovy, aspect, near, far) {
-  var f = 1.0 / Math.tan(fovy / 2),
-      nf;
-  out[0] = f / aspect;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = f;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = 0;
-  out[11] = -1;
-  out[12] = 0;
-  out[13] = 0;
-  out[15] = 0;
-
-  if (far != null && far !== Infinity) {
-    nf = 1 / (near - far);
-    out[10] = far * nf;
-    out[14] = far * near * nf;
-  } else {
-    out[10] = -1;
-    out[14] = -near;
-  }
-
-  return out;
-}
-/**
- * Generates a perspective projection matrix with the given field of view.
- * This is primarily useful for generating projection matrices to be used
- * with the still experiemental WebVR API.
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {Object} fov Object containing the following values: upDegrees, downDegrees, leftDegrees, rightDegrees
- * @param {number} near Near bound of the frustum
- * @param {number} far Far bound of the frustum
- * @returns {mat4} out
- */
-
-function perspectiveFromFieldOfView(out, fov, near, far) {
-  var upTan = Math.tan(fov.upDegrees * Math.PI / 180.0);
-  var downTan = Math.tan(fov.downDegrees * Math.PI / 180.0);
-  var leftTan = Math.tan(fov.leftDegrees * Math.PI / 180.0);
-  var rightTan = Math.tan(fov.rightDegrees * Math.PI / 180.0);
-  var xScale = 2.0 / (leftTan + rightTan);
-  var yScale = 2.0 / (upTan + downTan);
-  out[0] = xScale;
-  out[1] = 0.0;
-  out[2] = 0.0;
-  out[3] = 0.0;
-  out[4] = 0.0;
-  out[5] = yScale;
-  out[6] = 0.0;
-  out[7] = 0.0;
-  out[8] = -((leftTan - rightTan) * xScale * 0.5);
-  out[9] = (upTan - downTan) * yScale * 0.5;
-  out[10] = far / (near - far);
-  out[11] = -1.0;
-  out[12] = 0.0;
-  out[13] = 0.0;
-  out[14] = far * near / (near - far);
-  out[15] = 0.0;
-  return out;
-}
-/**
  * Generates a orthogonal projection matrix with the given bounds.
  * The near/far clip planes correspond to a normalized device coordinate Z range of [-1, 1],
  * which matches WebGL/OpenGL's clip volume.
@@ -20759,319 +16579,6 @@ function orthoNO(out, left, right, bottom, top, near, far) {
 
 var ortho = orthoNO;
 /**
- * Generates a orthogonal projection matrix with the given bounds.
- * The near/far clip planes correspond to a normalized device coordinate Z range of [0, 1],
- * which matches WebGPU/Vulkan/DirectX/Metal's clip volume.
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {number} left Left bound of the frustum
- * @param {number} right Right bound of the frustum
- * @param {number} bottom Bottom bound of the frustum
- * @param {number} top Top bound of the frustum
- * @param {number} near Near bound of the frustum
- * @param {number} far Far bound of the frustum
- * @returns {mat4} out
- */
-
-function orthoZO(out, left, right, bottom, top, near, far) {
-  var lr = 1 / (left - right);
-  var bt = 1 / (bottom - top);
-  var nf = 1 / (near - far);
-  out[0] = -2 * lr;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = -2 * bt;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = 0;
-  out[10] = nf;
-  out[11] = 0;
-  out[12] = (left + right) * lr;
-  out[13] = (top + bottom) * bt;
-  out[14] = near * nf;
-  out[15] = 1;
-  return out;
-}
-/**
- * Generates a look-at matrix with the given eye position, focal point, and up axis.
- * If you want a matrix that actually makes an object look at another object, you should use targetTo instead.
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {ReadonlyVec3} eye Position of the viewer
- * @param {ReadonlyVec3} center Point the viewer is looking at
- * @param {ReadonlyVec3} up vec3 pointing up
- * @returns {mat4} out
- */
-
-function lookAt(out, eye, center, up) {
-  var x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
-  var eyex = eye[0];
-  var eyey = eye[1];
-  var eyez = eye[2];
-  var upx = up[0];
-  var upy = up[1];
-  var upz = up[2];
-  var centerx = center[0];
-  var centery = center[1];
-  var centerz = center[2];
-
-  if (Math.abs(eyex - centerx) < EPSILON && Math.abs(eyey - centery) < EPSILON && Math.abs(eyez - centerz) < EPSILON) {
-    return identity$2(out);
-  }
-
-  z0 = eyex - centerx;
-  z1 = eyey - centery;
-  z2 = eyez - centerz;
-  len = 1 / Math.hypot(z0, z1, z2);
-  z0 *= len;
-  z1 *= len;
-  z2 *= len;
-  x0 = upy * z2 - upz * z1;
-  x1 = upz * z0 - upx * z2;
-  x2 = upx * z1 - upy * z0;
-  len = Math.hypot(x0, x1, x2);
-
-  if (!len) {
-    x0 = 0;
-    x1 = 0;
-    x2 = 0;
-  } else {
-    len = 1 / len;
-    x0 *= len;
-    x1 *= len;
-    x2 *= len;
-  }
-
-  y0 = z1 * x2 - z2 * x1;
-  y1 = z2 * x0 - z0 * x2;
-  y2 = z0 * x1 - z1 * x0;
-  len = Math.hypot(y0, y1, y2);
-
-  if (!len) {
-    y0 = 0;
-    y1 = 0;
-    y2 = 0;
-  } else {
-    len = 1 / len;
-    y0 *= len;
-    y1 *= len;
-    y2 *= len;
-  }
-
-  out[0] = x0;
-  out[1] = y0;
-  out[2] = z0;
-  out[3] = 0;
-  out[4] = x1;
-  out[5] = y1;
-  out[6] = z1;
-  out[7] = 0;
-  out[8] = x2;
-  out[9] = y2;
-  out[10] = z2;
-  out[11] = 0;
-  out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
-  out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
-  out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
-  out[15] = 1;
-  return out;
-}
-/**
- * Generates a matrix that makes something look at something else.
- *
- * @param {mat4} out mat4 frustum matrix will be written into
- * @param {ReadonlyVec3} eye Position of the viewer
- * @param {ReadonlyVec3} center Point the viewer is looking at
- * @param {ReadonlyVec3} up vec3 pointing up
- * @returns {mat4} out
- */
-
-function targetTo(out, eye, target, up) {
-  var eyex = eye[0],
-      eyey = eye[1],
-      eyez = eye[2],
-      upx = up[0],
-      upy = up[1],
-      upz = up[2];
-  var z0 = eyex - target[0],
-      z1 = eyey - target[1],
-      z2 = eyez - target[2];
-  var len = z0 * z0 + z1 * z1 + z2 * z2;
-
-  if (len > 0) {
-    len = 1 / Math.sqrt(len);
-    z0 *= len;
-    z1 *= len;
-    z2 *= len;
-  }
-
-  var x0 = upy * z2 - upz * z1,
-      x1 = upz * z0 - upx * z2,
-      x2 = upx * z1 - upy * z0;
-  len = x0 * x0 + x1 * x1 + x2 * x2;
-
-  if (len > 0) {
-    len = 1 / Math.sqrt(len);
-    x0 *= len;
-    x1 *= len;
-    x2 *= len;
-  }
-
-  out[0] = x0;
-  out[1] = x1;
-  out[2] = x2;
-  out[3] = 0;
-  out[4] = z1 * x2 - z2 * x1;
-  out[5] = z2 * x0 - z0 * x2;
-  out[6] = z0 * x1 - z1 * x0;
-  out[7] = 0;
-  out[8] = z0;
-  out[9] = z1;
-  out[10] = z2;
-  out[11] = 0;
-  out[12] = eyex;
-  out[13] = eyey;
-  out[14] = eyez;
-  out[15] = 1;
-  return out;
-}
-/**
- * Returns a string representation of a mat4
- *
- * @param {ReadonlyMat4} a matrix to represent as a string
- * @returns {String} string representation of the matrix
- */
-
-function str$5(a) {
-  return "mat4(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ", " + a[4] + ", " + a[5] + ", " + a[6] + ", " + a[7] + ", " + a[8] + ", " + a[9] + ", " + a[10] + ", " + a[11] + ", " + a[12] + ", " + a[13] + ", " + a[14] + ", " + a[15] + ")";
-}
-/**
- * Returns Frobenius norm of a mat4
- *
- * @param {ReadonlyMat4} a the matrix to calculate Frobenius norm of
- * @returns {Number} Frobenius norm
- */
-
-function frob(a) {
-  return Math.hypot(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15]);
-}
-/**
- * Adds two mat4's
- *
- * @param {mat4} out the receiving matrix
- * @param {ReadonlyMat4} a the first operand
- * @param {ReadonlyMat4} b the second operand
- * @returns {mat4} out
- */
-
-function add$5(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  out[3] = a[3] + b[3];
-  out[4] = a[4] + b[4];
-  out[5] = a[5] + b[5];
-  out[6] = a[6] + b[6];
-  out[7] = a[7] + b[7];
-  out[8] = a[8] + b[8];
-  out[9] = a[9] + b[9];
-  out[10] = a[10] + b[10];
-  out[11] = a[11] + b[11];
-  out[12] = a[12] + b[12];
-  out[13] = a[13] + b[13];
-  out[14] = a[14] + b[14];
-  out[15] = a[15] + b[15];
-  return out;
-}
-/**
- * Subtracts matrix b from matrix a
- *
- * @param {mat4} out the receiving matrix
- * @param {ReadonlyMat4} a the first operand
- * @param {ReadonlyMat4} b the second operand
- * @returns {mat4} out
- */
-
-function subtract$3(out, a, b) {
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  out[2] = a[2] - b[2];
-  out[3] = a[3] - b[3];
-  out[4] = a[4] - b[4];
-  out[5] = a[5] - b[5];
-  out[6] = a[6] - b[6];
-  out[7] = a[7] - b[7];
-  out[8] = a[8] - b[8];
-  out[9] = a[9] - b[9];
-  out[10] = a[10] - b[10];
-  out[11] = a[11] - b[11];
-  out[12] = a[12] - b[12];
-  out[13] = a[13] - b[13];
-  out[14] = a[14] - b[14];
-  out[15] = a[15] - b[15];
-  return out;
-}
-/**
- * Multiply each element of the matrix by a scalar.
- *
- * @param {mat4} out the receiving matrix
- * @param {ReadonlyMat4} a the matrix to scale
- * @param {Number} b amount to scale the matrix's elements by
- * @returns {mat4} out
- */
-
-function multiplyScalar(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  out[3] = a[3] * b;
-  out[4] = a[4] * b;
-  out[5] = a[5] * b;
-  out[6] = a[6] * b;
-  out[7] = a[7] * b;
-  out[8] = a[8] * b;
-  out[9] = a[9] * b;
-  out[10] = a[10] * b;
-  out[11] = a[11] * b;
-  out[12] = a[12] * b;
-  out[13] = a[13] * b;
-  out[14] = a[14] * b;
-  out[15] = a[15] * b;
-  return out;
-}
-/**
- * Adds two mat4's after multiplying each element of the second operand by a scalar value.
- *
- * @param {mat4} out the receiving vector
- * @param {ReadonlyMat4} a the first operand
- * @param {ReadonlyMat4} b the second operand
- * @param {Number} scale the amount to scale b's elements by before adding
- * @returns {mat4} out
- */
-
-function multiplyScalarAndAdd(out, a, b, scale) {
-  out[0] = a[0] + b[0] * scale;
-  out[1] = a[1] + b[1] * scale;
-  out[2] = a[2] + b[2] * scale;
-  out[3] = a[3] + b[3] * scale;
-  out[4] = a[4] + b[4] * scale;
-  out[5] = a[5] + b[5] * scale;
-  out[6] = a[6] + b[6] * scale;
-  out[7] = a[7] + b[7] * scale;
-  out[8] = a[8] + b[8] * scale;
-  out[9] = a[9] + b[9] * scale;
-  out[10] = a[10] + b[10] * scale;
-  out[11] = a[11] + b[11] * scale;
-  out[12] = a[12] + b[12] * scale;
-  out[13] = a[13] + b[13] * scale;
-  out[14] = a[14] + b[14] * scale;
-  out[15] = a[15] + b[15] * scale;
-  return out;
-}
-/**
  * Returns whether or not the matrices have exactly the same elements in the same position (when compared with ===)
  *
  * @param {ReadonlyMat4} a The first matrix.
@@ -21079,7 +16586,7 @@ function multiplyScalarAndAdd(out, a, b, scale) {
  * @returns {Boolean} True if the matrices are equal, false otherwise.
  */
 
-function exactEquals$5(a, b) {
+function exactEquals(a, b) {
   return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5] && a[6] === b[6] && a[7] === b[7] && a[8] === b[8] && a[9] === b[9] && a[10] === b[10] && a[11] === b[11] && a[12] === b[12] && a[13] === b[13] && a[14] === b[14] && a[15] === b[15];
 }
 /**
@@ -21090,7 +16597,7 @@ function exactEquals$5(a, b) {
  * @returns {Boolean} True if the matrices are equal, false otherwise.
  */
 
-function equals$6(a, b) {
+function equals$1(a, b) {
   var a0 = a[0],
       a1 = a[1],
       a2 = a[2],
@@ -21130,907 +16637,7 @@ function equals$6(a, b) {
  * @function
  */
 
-var mul$5 = multiply$5;
-/**
- * Alias for {@link mat4.subtract}
- * @function
- */
-
-var sub$3 = subtract$3;
-
-var mat4 = /*#__PURE__*/Object.freeze({
-__proto__: null,
-add: add$5,
-adjoint: adjoint,
-clone: clone$5,
-copy: copy$5,
-create: create$5,
-determinant: determinant,
-equals: equals$6,
-exactEquals: exactEquals$5,
-frob: frob,
-fromQuat: fromQuat,
-fromQuat2: fromQuat2,
-fromRotation: fromRotation$1,
-fromRotationTranslation: fromRotationTranslation$1,
-fromRotationTranslationScale: fromRotationTranslationScale,
-fromRotationTranslationScaleOrigin: fromRotationTranslationScaleOrigin,
-fromScaling: fromScaling,
-fromTranslation: fromTranslation$1,
-fromValues: fromValues$5,
-fromXRotation: fromXRotation,
-fromYRotation: fromYRotation,
-fromZRotation: fromZRotation,
-frustum: frustum,
-getRotation: getRotation,
-getScaling: getScaling,
-getTranslation: getTranslation$1,
-identity: identity$2,
-invert: invert$2,
-lookAt: lookAt,
-mul: mul$5,
-multiply: multiply$5,
-multiplyScalar: multiplyScalar,
-multiplyScalarAndAdd: multiplyScalarAndAdd,
-ortho: ortho,
-orthoNO: orthoNO,
-orthoZO: orthoZO,
-perspective: perspective,
-perspectiveFromFieldOfView: perspectiveFromFieldOfView,
-perspectiveNO: perspectiveNO,
-perspectiveZO: perspectiveZO,
-rotate: rotate$1,
-rotateX: rotateX$3,
-rotateY: rotateY$3,
-rotateZ: rotateZ$3,
-scale: scale$5,
-set: set$5,
-str: str$5,
-sub: sub$3,
-subtract: subtract$3,
-targetTo: targetTo,
-translate: translate$1,
-transpose: transpose
-});
-
-/**
- * 3 Dimensional Vector
- * @module vec3
- */
-
-/**
- * Creates a new, empty vec3
- *
- * @returns {vec3} a new 3D vector
- */
-
-function create$4() {
-  var out = new ARRAY_TYPE(3);
-
-  if (ARRAY_TYPE != Float32Array) {
-    out[0] = 0;
-    out[1] = 0;
-    out[2] = 0;
-  }
-
-  return out;
-}
-/**
- * Creates a new vec3 initialized with values from an existing vector
- *
- * @param {ReadonlyVec3} a vector to clone
- * @returns {vec3} a new 3D vector
- */
-
-function clone$4(a) {
-  var out = new ARRAY_TYPE(3);
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  return out;
-}
-/**
- * Calculates the length of a vec3
- *
- * @param {ReadonlyVec3} a vector to calculate length of
- * @returns {Number} length of a
- */
-
-function length$4(a) {
-  var x = a[0];
-  var y = a[1];
-  var z = a[2];
-  return Math.hypot(x, y, z);
-}
-/**
- * Creates a new vec3 initialized with the given values
- *
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @returns {vec3} a new 3D vector
- */
-
-function fromValues$4(x, y, z) {
-  var out = new ARRAY_TYPE(3);
-  out[0] = x;
-  out[1] = y;
-  out[2] = z;
-  return out;
-}
-/**
- * Copy the values from one vec3 to another
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the source vector
- * @returns {vec3} out
- */
-
-function copy$4(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  return out;
-}
-/**
- * Set the components of a vec3 to the given values
- *
- * @param {vec3} out the receiving vector
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @returns {vec3} out
- */
-
-function set$4(out, x, y, z) {
-  out[0] = x;
-  out[1] = y;
-  out[2] = z;
-  return out;
-}
-/**
- * Adds two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {vec3} out
- */
-
-function add$4(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  return out;
-}
-/**
- * Subtracts vector b from vector a
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {vec3} out
- */
-
-function subtract$2(out, a, b) {
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  out[2] = a[2] - b[2];
-  return out;
-}
-/**
- * Multiplies two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {vec3} out
- */
-
-function multiply$4(out, a, b) {
-  out[0] = a[0] * b[0];
-  out[1] = a[1] * b[1];
-  out[2] = a[2] * b[2];
-  return out;
-}
-/**
- * Divides two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {vec3} out
- */
-
-function divide$2(out, a, b) {
-  out[0] = a[0] / b[0];
-  out[1] = a[1] / b[1];
-  out[2] = a[2] / b[2];
-  return out;
-}
-/**
- * Math.ceil the components of a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a vector to ceil
- * @returns {vec3} out
- */
-
-function ceil$2(out, a) {
-  out[0] = Math.ceil(a[0]);
-  out[1] = Math.ceil(a[1]);
-  out[2] = Math.ceil(a[2]);
-  return out;
-}
-/**
- * Math.floor the components of a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a vector to floor
- * @returns {vec3} out
- */
-
-function floor$2(out, a) {
-  out[0] = Math.floor(a[0]);
-  out[1] = Math.floor(a[1]);
-  out[2] = Math.floor(a[2]);
-  return out;
-}
-/**
- * Returns the minimum of two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {vec3} out
- */
-
-function min$2(out, a, b) {
-  out[0] = Math.min(a[0], b[0]);
-  out[1] = Math.min(a[1], b[1]);
-  out[2] = Math.min(a[2], b[2]);
-  return out;
-}
-/**
- * Returns the maximum of two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {vec3} out
- */
-
-function max$2(out, a, b) {
-  out[0] = Math.max(a[0], b[0]);
-  out[1] = Math.max(a[1], b[1]);
-  out[2] = Math.max(a[2], b[2]);
-  return out;
-}
-/**
- * Math.round the components of a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a vector to round
- * @returns {vec3} out
- */
-
-function round$2(out, a) {
-  out[0] = Math.round(a[0]);
-  out[1] = Math.round(a[1]);
-  out[2] = Math.round(a[2]);
-  return out;
-}
-/**
- * Scales a vec3 by a scalar number
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the vector to scale
- * @param {Number} b amount to scale the vector by
- * @returns {vec3} out
- */
-
-function scale$4(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  return out;
-}
-/**
- * Adds two vec3's after scaling the second operand by a scalar value
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @param {Number} scale the amount to scale b by before adding
- * @returns {vec3} out
- */
-
-function scaleAndAdd$2(out, a, b, scale) {
-  out[0] = a[0] + b[0] * scale;
-  out[1] = a[1] + b[1] * scale;
-  out[2] = a[2] + b[2] * scale;
-  return out;
-}
-/**
- * Calculates the euclidian distance between two vec3's
- *
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {Number} distance between a and b
- */
-
-function distance$2(a, b) {
-  var x = b[0] - a[0];
-  var y = b[1] - a[1];
-  var z = b[2] - a[2];
-  return Math.hypot(x, y, z);
-}
-/**
- * Calculates the squared euclidian distance between two vec3's
- *
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {Number} squared distance between a and b
- */
-
-function squaredDistance$2(a, b) {
-  var x = b[0] - a[0];
-  var y = b[1] - a[1];
-  var z = b[2] - a[2];
-  return x * x + y * y + z * z;
-}
-/**
- * Calculates the squared length of a vec3
- *
- * @param {ReadonlyVec3} a vector to calculate squared length of
- * @returns {Number} squared length of a
- */
-
-function squaredLength$4(a) {
-  var x = a[0];
-  var y = a[1];
-  var z = a[2];
-  return x * x + y * y + z * z;
-}
-/**
- * Negates the components of a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a vector to negate
- * @returns {vec3} out
- */
-
-function negate$2(out, a) {
-  out[0] = -a[0];
-  out[1] = -a[1];
-  out[2] = -a[2];
-  return out;
-}
-/**
- * Returns the inverse of the components of a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a vector to invert
- * @returns {vec3} out
- */
-
-function inverse$2(out, a) {
-  out[0] = 1.0 / a[0];
-  out[1] = 1.0 / a[1];
-  out[2] = 1.0 / a[2];
-  return out;
-}
-/**
- * Normalize a vec3
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a vector to normalize
- * @returns {vec3} out
- */
-
-function normalize$4(out, a) {
-  var x = a[0];
-  var y = a[1];
-  var z = a[2];
-  var len = x * x + y * y + z * z;
-
-  if (len > 0) {
-    //TODO: evaluate use of glm_invsqrt here?
-    len = 1 / Math.sqrt(len);
-  }
-
-  out[0] = a[0] * len;
-  out[1] = a[1] * len;
-  out[2] = a[2] * len;
-  return out;
-}
-/**
- * Calculates the dot product of two vec3's
- *
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {Number} dot product of a and b
- */
-
-function dot$5(a, b) {
-  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-}
-/**
- * Computes the cross product of two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @returns {vec3} out
- */
-
-function cross$2(out, a, b) {
-  var ax = a[0],
-      ay = a[1],
-      az = a[2];
-  var bx = b[0],
-      by = b[1],
-      bz = b[2];
-  out[0] = ay * bz - az * by;
-  out[1] = az * bx - ax * bz;
-  out[2] = ax * by - ay * bx;
-  return out;
-}
-/**
- * Performs a linear interpolation between two vec3's
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {vec3} out
- */
-
-function lerp$4(out, a, b, t) {
-  var ax = a[0];
-  var ay = a[1];
-  var az = a[2];
-  out[0] = ax + t * (b[0] - ax);
-  out[1] = ay + t * (b[1] - ay);
-  out[2] = az + t * (b[2] - az);
-  return out;
-}
-/**
- * Performs a hermite interpolation with two control points
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @param {ReadonlyVec3} c the third operand
- * @param {ReadonlyVec3} d the fourth operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {vec3} out
- */
-
-function hermite(out, a, b, c, d, t) {
-  var factorTimes2 = t * t;
-  var factor1 = factorTimes2 * (2 * t - 3) + 1;
-  var factor2 = factorTimes2 * (t - 2) + t;
-  var factor3 = factorTimes2 * (t - 1);
-  var factor4 = factorTimes2 * (3 - 2 * t);
-  out[0] = a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4;
-  out[1] = a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4;
-  out[2] = a[2] * factor1 + b[2] * factor2 + c[2] * factor3 + d[2] * factor4;
-  return out;
-}
-/**
- * Performs a bezier interpolation with two control points
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the first operand
- * @param {ReadonlyVec3} b the second operand
- * @param {ReadonlyVec3} c the third operand
- * @param {ReadonlyVec3} d the fourth operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {vec3} out
- */
-
-function bezier(out, a, b, c, d, t) {
-  var inverseFactor = 1 - t;
-  var inverseFactorTimesTwo = inverseFactor * inverseFactor;
-  var factorTimes2 = t * t;
-  var factor1 = inverseFactorTimesTwo * inverseFactor;
-  var factor2 = 3 * t * inverseFactorTimesTwo;
-  var factor3 = 3 * factorTimes2 * inverseFactor;
-  var factor4 = factorTimes2 * t;
-  out[0] = a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4;
-  out[1] = a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4;
-  out[2] = a[2] * factor1 + b[2] * factor2 + c[2] * factor3 + d[2] * factor4;
-  return out;
-}
-/**
- * Generates a random vector with the given scale
- *
- * @param {vec3} out the receiving vector
- * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
- * @returns {vec3} out
- */
-
-function random$3(out, scale) {
-  scale = scale || 1.0;
-  var r = RANDOM() * 2.0 * Math.PI;
-  var z = RANDOM() * 2.0 - 1.0;
-  var zScale = Math.sqrt(1.0 - z * z) * scale;
-  out[0] = Math.cos(r) * zScale;
-  out[1] = Math.sin(r) * zScale;
-  out[2] = z * scale;
-  return out;
-}
-/**
- * Transforms the vec3 with a mat4.
- * 4th vector component is implicitly '1'
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the vector to transform
- * @param {ReadonlyMat4} m matrix to transform with
- * @returns {vec3} out
- */
-
-function transformMat4$2(out, a, m) {
-  var x = a[0],
-      y = a[1],
-      z = a[2];
-  var w = m[3] * x + m[7] * y + m[11] * z + m[15];
-  w = w || 1.0;
-  out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
-  out[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
-  out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
-  return out;
-}
-/**
- * Transforms the vec3 with a mat3.
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the vector to transform
- * @param {ReadonlyMat3} m the 3x3 matrix to transform with
- * @returns {vec3} out
- */
-
-function transformMat3$1(out, a, m) {
-  var x = a[0],
-      y = a[1],
-      z = a[2];
-  out[0] = x * m[0] + y * m[3] + z * m[6];
-  out[1] = x * m[1] + y * m[4] + z * m[7];
-  out[2] = x * m[2] + y * m[5] + z * m[8];
-  return out;
-}
-/**
- * Transforms the vec3 with a quat
- * Can also be used for dual quaternions. (Multiply it with the real part)
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec3} a the vector to transform
- * @param {ReadonlyQuat} q quaternion to transform with
- * @returns {vec3} out
- */
-
-function transformQuat$1(out, a, q) {
-  // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
-  var qx = q[0],
-      qy = q[1],
-      qz = q[2],
-      qw = q[3];
-  var x = a[0],
-      y = a[1],
-      z = a[2]; // var qvec = [qx, qy, qz];
-  // var uv = vec3.cross([], qvec, a);
-
-  var uvx = qy * z - qz * y,
-      uvy = qz * x - qx * z,
-      uvz = qx * y - qy * x; // var uuv = vec3.cross([], qvec, uv);
-
-  var uuvx = qy * uvz - qz * uvy,
-      uuvy = qz * uvx - qx * uvz,
-      uuvz = qx * uvy - qy * uvx; // vec3.scale(uv, uv, 2 * w);
-
-  var w2 = qw * 2;
-  uvx *= w2;
-  uvy *= w2;
-  uvz *= w2; // vec3.scale(uuv, uuv, 2);
-
-  uuvx *= 2;
-  uuvy *= 2;
-  uuvz *= 2; // return vec3.add(out, a, vec3.add(out, uv, uuv));
-
-  out[0] = x + uvx + uuvx;
-  out[1] = y + uvy + uuvy;
-  out[2] = z + uvz + uuvz;
-  return out;
-}
-/**
- * Rotate a 3D vector around the x-axis
- * @param {vec3} out The receiving vec3
- * @param {ReadonlyVec3} a The vec3 point to rotate
- * @param {ReadonlyVec3} b The origin of the rotation
- * @param {Number} rad The angle of rotation in radians
- * @returns {vec3} out
- */
-
-function rotateX$2(out, a, b, rad) {
-  var p = [],
-      r = []; //Translate point to the origin
-
-  p[0] = a[0] - b[0];
-  p[1] = a[1] - b[1];
-  p[2] = a[2] - b[2]; //perform rotation
-
-  r[0] = p[0];
-  r[1] = p[1] * Math.cos(rad) - p[2] * Math.sin(rad);
-  r[2] = p[1] * Math.sin(rad) + p[2] * Math.cos(rad); //translate to correct position
-
-  out[0] = r[0] + b[0];
-  out[1] = r[1] + b[1];
-  out[2] = r[2] + b[2];
-  return out;
-}
-/**
- * Rotate a 3D vector around the y-axis
- * @param {vec3} out The receiving vec3
- * @param {ReadonlyVec3} a The vec3 point to rotate
- * @param {ReadonlyVec3} b The origin of the rotation
- * @param {Number} rad The angle of rotation in radians
- * @returns {vec3} out
- */
-
-function rotateY$2(out, a, b, rad) {
-  var p = [],
-      r = []; //Translate point to the origin
-
-  p[0] = a[0] - b[0];
-  p[1] = a[1] - b[1];
-  p[2] = a[2] - b[2]; //perform rotation
-
-  r[0] = p[2] * Math.sin(rad) + p[0] * Math.cos(rad);
-  r[1] = p[1];
-  r[2] = p[2] * Math.cos(rad) - p[0] * Math.sin(rad); //translate to correct position
-
-  out[0] = r[0] + b[0];
-  out[1] = r[1] + b[1];
-  out[2] = r[2] + b[2];
-  return out;
-}
-/**
- * Rotate a 3D vector around the z-axis
- * @param {vec3} out The receiving vec3
- * @param {ReadonlyVec3} a The vec3 point to rotate
- * @param {ReadonlyVec3} b The origin of the rotation
- * @param {Number} rad The angle of rotation in radians
- * @returns {vec3} out
- */
-
-function rotateZ$2(out, a, b, rad) {
-  var p = [],
-      r = []; //Translate point to the origin
-
-  p[0] = a[0] - b[0];
-  p[1] = a[1] - b[1];
-  p[2] = a[2] - b[2]; //perform rotation
-
-  r[0] = p[0] * Math.cos(rad) - p[1] * Math.sin(rad);
-  r[1] = p[0] * Math.sin(rad) + p[1] * Math.cos(rad);
-  r[2] = p[2]; //translate to correct position
-
-  out[0] = r[0] + b[0];
-  out[1] = r[1] + b[1];
-  out[2] = r[2] + b[2];
-  return out;
-}
-/**
- * Get the angle between two 3D vectors
- * @param {ReadonlyVec3} a The first operand
- * @param {ReadonlyVec3} b The second operand
- * @returns {Number} The angle in radians
- */
-
-function angle$1(a, b) {
-  var ax = a[0],
-      ay = a[1],
-      az = a[2],
-      bx = b[0],
-      by = b[1],
-      bz = b[2],
-      mag1 = Math.sqrt(ax * ax + ay * ay + az * az),
-      mag2 = Math.sqrt(bx * bx + by * by + bz * bz),
-      mag = mag1 * mag2,
-      cosine = mag && dot$5(a, b) / mag;
-  return Math.acos(Math.min(Math.max(cosine, -1), 1));
-}
-/**
- * Set the components of a vec3 to zero
- *
- * @param {vec3} out the receiving vector
- * @returns {vec3} out
- */
-
-function zero$2(out) {
-  out[0] = 0.0;
-  out[1] = 0.0;
-  out[2] = 0.0;
-  return out;
-}
-/**
- * Returns a string representation of a vector
- *
- * @param {ReadonlyVec3} a vector to represent as a string
- * @returns {String} string representation of the vector
- */
-
-function str$4(a) {
-  return "vec3(" + a[0] + ", " + a[1] + ", " + a[2] + ")";
-}
-/**
- * Returns whether or not the vectors have exactly the same elements in the same position (when compared with ===)
- *
- * @param {ReadonlyVec3} a The first vector.
- * @param {ReadonlyVec3} b The second vector.
- * @returns {Boolean} True if the vectors are equal, false otherwise.
- */
-
-function exactEquals$4(a, b) {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
-}
-/**
- * Returns whether or not the vectors have approximately the same elements in the same position.
- *
- * @param {ReadonlyVec3} a The first vector.
- * @param {ReadonlyVec3} b The second vector.
- * @returns {Boolean} True if the vectors are equal, false otherwise.
- */
-
-function equals$5(a, b) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2];
-  var b0 = b[0],
-      b1 = b[1],
-      b2 = b[2];
-  return Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2));
-}
-/**
- * Alias for {@link vec3.subtract}
- * @function
- */
-
-var sub$2 = subtract$2;
-/**
- * Alias for {@link vec3.multiply}
- * @function
- */
-
-var mul$4 = multiply$4;
-/**
- * Alias for {@link vec3.divide}
- * @function
- */
-
-var div$2 = divide$2;
-/**
- * Alias for {@link vec3.distance}
- * @function
- */
-
-var dist$2 = distance$2;
-/**
- * Alias for {@link vec3.squaredDistance}
- * @function
- */
-
-var sqrDist$2 = squaredDistance$2;
-/**
- * Alias for {@link vec3.length}
- * @function
- */
-
-var len$4 = length$4;
-/**
- * Alias for {@link vec3.squaredLength}
- * @function
- */
-
-var sqrLen$4 = squaredLength$4;
-/**
- * Perform some operation over an array of vec3s.
- *
- * @param {Array} a the array of vectors to iterate over
- * @param {Number} stride Number of elements between the start of each vec3. If 0 assumes tightly packed
- * @param {Number} offset Number of elements to skip at the beginning of the array
- * @param {Number} count Number of vec3s to iterate over. If 0 iterates over entire array
- * @param {Function} fn Function to call for each vector in the array
- * @param {Object} [arg] additional argument to pass to fn
- * @returns {Array} a
- * @function
- */
-
-var forEach$2 = function () {
-  var vec = create$4();
-  return function (a, stride, offset, count, fn, arg) {
-    var i, l;
-
-    if (!stride) {
-      stride = 3;
-    }
-
-    if (!offset) {
-      offset = 0;
-    }
-
-    if (count) {
-      l = Math.min(count * stride + offset, a.length);
-    } else {
-      l = a.length;
-    }
-
-    for (i = offset; i < l; i += stride) {
-      vec[0] = a[i];
-      vec[1] = a[i + 1];
-      vec[2] = a[i + 2];
-      fn(vec, vec, arg);
-      a[i] = vec[0];
-      a[i + 1] = vec[1];
-      a[i + 2] = vec[2];
-    }
-
-    return a;
-  };
-}();
-
-var vec3 = /*#__PURE__*/Object.freeze({
-__proto__: null,
-add: add$4,
-angle: angle$1,
-bezier: bezier,
-ceil: ceil$2,
-clone: clone$4,
-copy: copy$4,
-create: create$4,
-cross: cross$2,
-dist: dist$2,
-distance: distance$2,
-div: div$2,
-divide: divide$2,
-dot: dot$5,
-equals: equals$5,
-exactEquals: exactEquals$4,
-floor: floor$2,
-forEach: forEach$2,
-fromValues: fromValues$4,
-hermite: hermite,
-inverse: inverse$2,
-len: len$4,
-length: length$4,
-lerp: lerp$4,
-max: max$2,
-min: min$2,
-mul: mul$4,
-multiply: multiply$4,
-negate: negate$2,
-normalize: normalize$4,
-random: random$3,
-rotateX: rotateX$2,
-rotateY: rotateY$2,
-rotateZ: rotateZ$2,
-round: round$2,
-scale: scale$4,
-scaleAndAdd: scaleAndAdd$2,
-set: set$4,
-sqrDist: sqrDist$2,
-sqrLen: sqrLen$4,
-squaredDistance: squaredDistance$2,
-squaredLength: squaredLength$4,
-str: str$4,
-sub: sub$2,
-subtract: subtract$2,
-transformMat3: transformMat3$1,
-transformMat4: transformMat4$2,
-transformQuat: transformQuat$1,
-zero: zero$2
-});
+var mul$1 = multiply$1;
 
 /**
  * 4 Dimensional Vector
@@ -22043,7 +16650,7 @@ zero: zero$2
  * @returns {vec4} a new 4D vector
  */
 
-function create$3() {
+function create() {
   var out = new ARRAY_TYPE(4);
 
   if (ARRAY_TYPE != Float32Array) {
@@ -22056,104 +16663,6 @@ function create$3() {
   return out;
 }
 /**
- * Creates a new vec4 initialized with values from an existing vector
- *
- * @param {ReadonlyVec4} a vector to clone
- * @returns {vec4} a new 4D vector
- */
-
-function clone$3(a) {
-  var out = new ARRAY_TYPE(4);
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  return out;
-}
-/**
- * Creates a new vec4 initialized with the given values
- *
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @param {Number} w W component
- * @returns {vec4} a new 4D vector
- */
-
-function fromValues$3(x, y, z, w) {
-  var out = new ARRAY_TYPE(4);
-  out[0] = x;
-  out[1] = y;
-  out[2] = z;
-  out[3] = w;
-  return out;
-}
-/**
- * Copy the values from one vec4 to another
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the source vector
- * @returns {vec4} out
- */
-
-function copy$3(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  return out;
-}
-/**
- * Set the components of a vec4 to the given values
- *
- * @param {vec4} out the receiving vector
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @param {Number} w W component
- * @returns {vec4} out
- */
-
-function set$3(out, x, y, z, w) {
-  out[0] = x;
-  out[1] = y;
-  out[2] = z;
-  out[3] = w;
-  return out;
-}
-/**
- * Adds two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @returns {vec4} out
- */
-
-function add$3(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  out[3] = a[3] + b[3];
-  return out;
-}
-/**
- * Subtracts vector b from vector a
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @returns {vec4} out
- */
-
-function subtract$1(out, a, b) {
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  out[2] = a[2] - b[2];
-  out[3] = a[3] - b[3];
-  return out;
-}
-/**
  * Multiplies two vec4's
  *
  * @param {vec4} out the receiving vector
@@ -22162,250 +16671,11 @@ function subtract$1(out, a, b) {
  * @returns {vec4} out
  */
 
-function multiply$3(out, a, b) {
+function multiply(out, a, b) {
   out[0] = a[0] * b[0];
   out[1] = a[1] * b[1];
   out[2] = a[2] * b[2];
   out[3] = a[3] * b[3];
-  return out;
-}
-/**
- * Divides two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @returns {vec4} out
- */
-
-function divide$1(out, a, b) {
-  out[0] = a[0] / b[0];
-  out[1] = a[1] / b[1];
-  out[2] = a[2] / b[2];
-  out[3] = a[3] / b[3];
-  return out;
-}
-/**
- * Math.ceil the components of a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a vector to ceil
- * @returns {vec4} out
- */
-
-function ceil$1(out, a) {
-  out[0] = Math.ceil(a[0]);
-  out[1] = Math.ceil(a[1]);
-  out[2] = Math.ceil(a[2]);
-  out[3] = Math.ceil(a[3]);
-  return out;
-}
-/**
- * Math.floor the components of a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a vector to floor
- * @returns {vec4} out
- */
-
-function floor$1(out, a) {
-  out[0] = Math.floor(a[0]);
-  out[1] = Math.floor(a[1]);
-  out[2] = Math.floor(a[2]);
-  out[3] = Math.floor(a[3]);
-  return out;
-}
-/**
- * Returns the minimum of two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @returns {vec4} out
- */
-
-function min$1(out, a, b) {
-  out[0] = Math.min(a[0], b[0]);
-  out[1] = Math.min(a[1], b[1]);
-  out[2] = Math.min(a[2], b[2]);
-  out[3] = Math.min(a[3], b[3]);
-  return out;
-}
-/**
- * Returns the maximum of two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @returns {vec4} out
- */
-
-function max$1(out, a, b) {
-  out[0] = Math.max(a[0], b[0]);
-  out[1] = Math.max(a[1], b[1]);
-  out[2] = Math.max(a[2], b[2]);
-  out[3] = Math.max(a[3], b[3]);
-  return out;
-}
-/**
- * Math.round the components of a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a vector to round
- * @returns {vec4} out
- */
-
-function round$1(out, a) {
-  out[0] = Math.round(a[0]);
-  out[1] = Math.round(a[1]);
-  out[2] = Math.round(a[2]);
-  out[3] = Math.round(a[3]);
-  return out;
-}
-/**
- * Scales a vec4 by a scalar number
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the vector to scale
- * @param {Number} b amount to scale the vector by
- * @returns {vec4} out
- */
-
-function scale$3(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  out[3] = a[3] * b;
-  return out;
-}
-/**
- * Adds two vec4's after scaling the second operand by a scalar value
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @param {Number} scale the amount to scale b by before adding
- * @returns {vec4} out
- */
-
-function scaleAndAdd$1(out, a, b, scale) {
-  out[0] = a[0] + b[0] * scale;
-  out[1] = a[1] + b[1] * scale;
-  out[2] = a[2] + b[2] * scale;
-  out[3] = a[3] + b[3] * scale;
-  return out;
-}
-/**
- * Calculates the euclidian distance between two vec4's
- *
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @returns {Number} distance between a and b
- */
-
-function distance$1(a, b) {
-  var x = b[0] - a[0];
-  var y = b[1] - a[1];
-  var z = b[2] - a[2];
-  var w = b[3] - a[3];
-  return Math.hypot(x, y, z, w);
-}
-/**
- * Calculates the squared euclidian distance between two vec4's
- *
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @returns {Number} squared distance between a and b
- */
-
-function squaredDistance$1(a, b) {
-  var x = b[0] - a[0];
-  var y = b[1] - a[1];
-  var z = b[2] - a[2];
-  var w = b[3] - a[3];
-  return x * x + y * y + z * z + w * w;
-}
-/**
- * Calculates the length of a vec4
- *
- * @param {ReadonlyVec4} a vector to calculate length of
- * @returns {Number} length of a
- */
-
-function length$3(a) {
-  var x = a[0];
-  var y = a[1];
-  var z = a[2];
-  var w = a[3];
-  return Math.hypot(x, y, z, w);
-}
-/**
- * Calculates the squared length of a vec4
- *
- * @param {ReadonlyVec4} a vector to calculate squared length of
- * @returns {Number} squared length of a
- */
-
-function squaredLength$3(a) {
-  var x = a[0];
-  var y = a[1];
-  var z = a[2];
-  var w = a[3];
-  return x * x + y * y + z * z + w * w;
-}
-/**
- * Negates the components of a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a vector to negate
- * @returns {vec4} out
- */
-
-function negate$1(out, a) {
-  out[0] = -a[0];
-  out[1] = -a[1];
-  out[2] = -a[2];
-  out[3] = -a[3];
-  return out;
-}
-/**
- * Returns the inverse of the components of a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a vector to invert
- * @returns {vec4} out
- */
-
-function inverse$1(out, a) {
-  out[0] = 1.0 / a[0];
-  out[1] = 1.0 / a[1];
-  out[2] = 1.0 / a[2];
-  out[3] = 1.0 / a[3];
-  return out;
-}
-/**
- * Normalize a vec4
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a vector to normalize
- * @returns {vec4} out
- */
-
-function normalize$3(out, a) {
-  var x = a[0];
-  var y = a[1];
-  var z = a[2];
-  var w = a[3];
-  var len = x * x + y * y + z * z + w * w;
-
-  if (len > 0) {
-    len = 1 / Math.sqrt(len);
-  }
-
-  out[0] = x * len;
-  out[1] = y * len;
-  out[2] = z * len;
-  out[3] = w * len;
   return out;
 }
 /**
@@ -22416,91 +16686,8 @@ function normalize$3(out, a) {
  * @returns {Number} dot product of a and b
  */
 
-function dot$4(a, b) {
+function dot$1(a, b) {
   return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
-}
-/**
- * Returns the cross-product of three vectors in a 4-dimensional space
- *
- * @param {ReadonlyVec4} result the receiving vector
- * @param {ReadonlyVec4} U the first vector
- * @param {ReadonlyVec4} V the second vector
- * @param {ReadonlyVec4} W the third vector
- * @returns {vec4} result
- */
-
-function cross$1(out, u, v, w) {
-  var A = v[0] * w[1] - v[1] * w[0],
-      B = v[0] * w[2] - v[2] * w[0],
-      C = v[0] * w[3] - v[3] * w[0],
-      D = v[1] * w[2] - v[2] * w[1],
-      E = v[1] * w[3] - v[3] * w[1],
-      F = v[2] * w[3] - v[3] * w[2];
-  var G = u[0];
-  var H = u[1];
-  var I = u[2];
-  var J = u[3];
-  out[0] = H * F - I * E + J * D;
-  out[1] = -(G * F) + I * C - J * B;
-  out[2] = G * E - H * C + J * A;
-  out[3] = -(G * D) + H * B - I * A;
-  return out;
-}
-/**
- * Performs a linear interpolation between two vec4's
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the first operand
- * @param {ReadonlyVec4} b the second operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {vec4} out
- */
-
-function lerp$3(out, a, b, t) {
-  var ax = a[0];
-  var ay = a[1];
-  var az = a[2];
-  var aw = a[3];
-  out[0] = ax + t * (b[0] - ax);
-  out[1] = ay + t * (b[1] - ay);
-  out[2] = az + t * (b[2] - az);
-  out[3] = aw + t * (b[3] - aw);
-  return out;
-}
-/**
- * Generates a random vector with the given scale
- *
- * @param {vec4} out the receiving vector
- * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
- * @returns {vec4} out
- */
-
-function random$2(out, scale) {
-  scale = scale || 1.0; // Marsaglia, George. Choosing a Point from the Surface of a
-  // Sphere. Ann. Math. Statist. 43 (1972), no. 2, 645--646.
-  // http://projecteuclid.org/euclid.aoms/1177692644;
-
-  var v1, v2, v3, v4;
-  var s1, s2;
-
-  do {
-    v1 = RANDOM() * 2 - 1;
-    v2 = RANDOM() * 2 - 1;
-    s1 = v1 * v1 + v2 * v2;
-  } while (s1 >= 1);
-
-  do {
-    v3 = RANDOM() * 2 - 1;
-    v4 = RANDOM() * 2 - 1;
-    s2 = v3 * v3 + v4 * v4;
-  } while (s2 >= 1);
-
-  var d = Math.sqrt((1 - s1) / s2);
-  out[0] = scale * v1;
-  out[1] = scale * v2;
-  out[2] = scale * v3 * d;
-  out[3] = scale * v4 * d;
-  return out;
 }
 /**
  * Transforms the vec4 with a mat4.
@@ -22511,7 +16698,7 @@ function random$2(out, scale) {
  * @returns {vec4} out
  */
 
-function transformMat4$1(out, a, m) {
+function transformMat4(out, a, m) {
   var x = a[0],
       y = a[1],
       z = a[2],
@@ -22523,130 +16710,11 @@ function transformMat4$1(out, a, m) {
   return out;
 }
 /**
- * Transforms the vec4 with a quat
- *
- * @param {vec4} out the receiving vector
- * @param {ReadonlyVec4} a the vector to transform
- * @param {ReadonlyQuat} q quaternion to transform with
- * @returns {vec4} out
- */
-
-function transformQuat(out, a, q) {
-  var x = a[0],
-      y = a[1],
-      z = a[2];
-  var qx = q[0],
-      qy = q[1],
-      qz = q[2],
-      qw = q[3]; // calculate quat * vec
-
-  var ix = qw * x + qy * z - qz * y;
-  var iy = qw * y + qz * x - qx * z;
-  var iz = qw * z + qx * y - qy * x;
-  var iw = -qx * x - qy * y - qz * z; // calculate result * inverse quat
-
-  out[0] = ix * qw + iw * -qx + iy * -qz - iz * -qy;
-  out[1] = iy * qw + iw * -qy + iz * -qx - ix * -qz;
-  out[2] = iz * qw + iw * -qz + ix * -qy - iy * -qx;
-  out[3] = a[3];
-  return out;
-}
-/**
- * Set the components of a vec4 to zero
- *
- * @param {vec4} out the receiving vector
- * @returns {vec4} out
- */
-
-function zero$1(out) {
-  out[0] = 0.0;
-  out[1] = 0.0;
-  out[2] = 0.0;
-  out[3] = 0.0;
-  return out;
-}
-/**
- * Returns a string representation of a vector
- *
- * @param {ReadonlyVec4} a vector to represent as a string
- * @returns {String} string representation of the vector
- */
-
-function str$3(a) {
-  return "vec4(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ")";
-}
-/**
- * Returns whether or not the vectors have exactly the same elements in the same position (when compared with ===)
- *
- * @param {ReadonlyVec4} a The first vector.
- * @param {ReadonlyVec4} b The second vector.
- * @returns {Boolean} True if the vectors are equal, false otherwise.
- */
-
-function exactEquals$3(a, b) {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
-}
-/**
- * Returns whether or not the vectors have approximately the same elements in the same position.
- *
- * @param {ReadonlyVec4} a The first vector.
- * @param {ReadonlyVec4} b The second vector.
- * @returns {Boolean} True if the vectors are equal, false otherwise.
- */
-
-function equals$4(a, b) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3];
-  var b0 = b[0],
-      b1 = b[1],
-      b2 = b[2],
-      b3 = b[3];
-  return Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3));
-}
-/**
- * Alias for {@link vec4.subtract}
- * @function
- */
-
-var sub$1 = subtract$1;
-/**
  * Alias for {@link vec4.multiply}
  * @function
  */
 
-var mul$3 = multiply$3;
-/**
- * Alias for {@link vec4.divide}
- * @function
- */
-
-var div$1 = divide$1;
-/**
- * Alias for {@link vec4.distance}
- * @function
- */
-
-var dist$1 = distance$1;
-/**
- * Alias for {@link vec4.squaredDistance}
- * @function
- */
-
-var sqrDist$1 = squaredDistance$1;
-/**
- * Alias for {@link vec4.length}
- * @function
- */
-
-var len$3 = length$3;
-/**
- * Alias for {@link vec4.squaredLength}
- * @function
- */
-
-var sqrLen$3 = squaredLength$3;
+var mul = multiply;
 /**
  * Perform some operation over an array of vec4s.
  *
@@ -22660,8 +16728,8 @@ var sqrLen$3 = squaredLength$3;
  * @function
  */
 
-var forEach$1 = function () {
-  var vec = create$3();
+(function () {
+  var vec = create();
   return function (a, stride, offset, count, fn, arg) {
     var i, l;
 
@@ -22693,2351 +16761,7 @@ var forEach$1 = function () {
 
     return a;
   };
-}();
-
-var vec4 = /*#__PURE__*/Object.freeze({
-__proto__: null,
-add: add$3,
-ceil: ceil$1,
-clone: clone$3,
-copy: copy$3,
-create: create$3,
-cross: cross$1,
-dist: dist$1,
-distance: distance$1,
-div: div$1,
-divide: divide$1,
-dot: dot$4,
-equals: equals$4,
-exactEquals: exactEquals$3,
-floor: floor$1,
-forEach: forEach$1,
-fromValues: fromValues$3,
-inverse: inverse$1,
-len: len$3,
-length: length$3,
-lerp: lerp$3,
-max: max$1,
-min: min$1,
-mul: mul$3,
-multiply: multiply$3,
-negate: negate$1,
-normalize: normalize$3,
-random: random$2,
-round: round$1,
-scale: scale$3,
-scaleAndAdd: scaleAndAdd$1,
-set: set$3,
-sqrDist: sqrDist$1,
-sqrLen: sqrLen$3,
-squaredDistance: squaredDistance$1,
-squaredLength: squaredLength$3,
-str: str$3,
-sub: sub$1,
-subtract: subtract$1,
-transformMat4: transformMat4$1,
-transformQuat: transformQuat,
-zero: zero$1
-});
-
-/**
- * Quaternion
- * @module quat
- */
-
-/**
- * Creates a new identity quat
- *
- * @returns {quat} a new quaternion
- */
-
-function create$2() {
-  var out = new ARRAY_TYPE(4);
-
-  if (ARRAY_TYPE != Float32Array) {
-    out[0] = 0;
-    out[1] = 0;
-    out[2] = 0;
-  }
-
-  out[3] = 1;
-  return out;
-}
-/**
- * Set a quat to the identity quaternion
- *
- * @param {quat} out the receiving quaternion
- * @returns {quat} out
- */
-
-function identity$1(out) {
-  out[0] = 0;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 1;
-  return out;
-}
-/**
- * Sets a quat from the given angle and rotation axis,
- * then returns it.
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyVec3} axis the axis around which to rotate
- * @param {Number} rad the angle in radians
- * @returns {quat} out
- **/
-
-function setAxisAngle(out, axis, rad) {
-  rad = rad * 0.5;
-  var s = Math.sin(rad);
-  out[0] = s * axis[0];
-  out[1] = s * axis[1];
-  out[2] = s * axis[2];
-  out[3] = Math.cos(rad);
-  return out;
-}
-/**
- * Gets the rotation axis and angle for a given
- *  quaternion. If a quaternion is created with
- *  setAxisAngle, this method will return the same
- *  values as providied in the original parameter list
- *  OR functionally equivalent values.
- * Example: The quaternion formed by axis [0, 0, 1] and
- *  angle -90 is the same as the quaternion formed by
- *  [0, 0, 1] and 270. This method favors the latter.
- * @param  {vec3} out_axis  Vector receiving the axis of rotation
- * @param  {ReadonlyQuat} q     Quaternion to be decomposed
- * @return {Number}     Angle, in radians, of the rotation
- */
-
-function getAxisAngle(out_axis, q) {
-  var rad = Math.acos(q[3]) * 2.0;
-  var s = Math.sin(rad / 2.0);
-
-  if (s > EPSILON) {
-    out_axis[0] = q[0] / s;
-    out_axis[1] = q[1] / s;
-    out_axis[2] = q[2] / s;
-  } else {
-    // If s is zero, return any axis (no rotation - axis does not matter)
-    out_axis[0] = 1;
-    out_axis[1] = 0;
-    out_axis[2] = 0;
-  }
-
-  return rad;
-}
-/**
- * Gets the angular distance between two unit quaternions
- *
- * @param  {ReadonlyQuat} a     Origin unit quaternion
- * @param  {ReadonlyQuat} b     Destination unit quaternion
- * @return {Number}     Angle, in radians, between the two quaternions
- */
-
-function getAngle(a, b) {
-  var dotproduct = dot$3(a, b);
-  return Math.acos(2 * dotproduct * dotproduct - 1);
-}
-/**
- * Multiplies two quat's
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a the first operand
- * @param {ReadonlyQuat} b the second operand
- * @returns {quat} out
- */
-
-function multiply$2(out, a, b) {
-  var ax = a[0],
-      ay = a[1],
-      az = a[2],
-      aw = a[3];
-  var bx = b[0],
-      by = b[1],
-      bz = b[2],
-      bw = b[3];
-  out[0] = ax * bw + aw * bx + ay * bz - az * by;
-  out[1] = ay * bw + aw * by + az * bx - ax * bz;
-  out[2] = az * bw + aw * bz + ax * by - ay * bx;
-  out[3] = aw * bw - ax * bx - ay * by - az * bz;
-  return out;
-}
-/**
- * Rotates a quaternion by the given angle about the X axis
- *
- * @param {quat} out quat receiving operation result
- * @param {ReadonlyQuat} a quat to rotate
- * @param {number} rad angle (in radians) to rotate
- * @returns {quat} out
- */
-
-function rotateX$1(out, a, rad) {
-  rad *= 0.5;
-  var ax = a[0],
-      ay = a[1],
-      az = a[2],
-      aw = a[3];
-  var bx = Math.sin(rad),
-      bw = Math.cos(rad);
-  out[0] = ax * bw + aw * bx;
-  out[1] = ay * bw + az * bx;
-  out[2] = az * bw - ay * bx;
-  out[3] = aw * bw - ax * bx;
-  return out;
-}
-/**
- * Rotates a quaternion by the given angle about the Y axis
- *
- * @param {quat} out quat receiving operation result
- * @param {ReadonlyQuat} a quat to rotate
- * @param {number} rad angle (in radians) to rotate
- * @returns {quat} out
- */
-
-function rotateY$1(out, a, rad) {
-  rad *= 0.5;
-  var ax = a[0],
-      ay = a[1],
-      az = a[2],
-      aw = a[3];
-  var by = Math.sin(rad),
-      bw = Math.cos(rad);
-  out[0] = ax * bw - az * by;
-  out[1] = ay * bw + aw * by;
-  out[2] = az * bw + ax * by;
-  out[3] = aw * bw - ay * by;
-  return out;
-}
-/**
- * Rotates a quaternion by the given angle about the Z axis
- *
- * @param {quat} out quat receiving operation result
- * @param {ReadonlyQuat} a quat to rotate
- * @param {number} rad angle (in radians) to rotate
- * @returns {quat} out
- */
-
-function rotateZ$1(out, a, rad) {
-  rad *= 0.5;
-  var ax = a[0],
-      ay = a[1],
-      az = a[2],
-      aw = a[3];
-  var bz = Math.sin(rad),
-      bw = Math.cos(rad);
-  out[0] = ax * bw + ay * bz;
-  out[1] = ay * bw - ax * bz;
-  out[2] = az * bw + aw * bz;
-  out[3] = aw * bw - az * bz;
-  return out;
-}
-/**
- * Calculates the W component of a quat from the X, Y, and Z components.
- * Assumes that quaternion is 1 unit in length.
- * Any existing W component will be ignored.
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a quat to calculate W component of
- * @returns {quat} out
- */
-
-function calculateW(out, a) {
-  var x = a[0],
-      y = a[1],
-      z = a[2];
-  out[0] = x;
-  out[1] = y;
-  out[2] = z;
-  out[3] = Math.sqrt(Math.abs(1.0 - x * x - y * y - z * z));
-  return out;
-}
-/**
- * Calculate the exponential of a unit quaternion.
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a quat to calculate the exponential of
- * @returns {quat} out
- */
-
-function exp(out, a) {
-  var x = a[0],
-      y = a[1],
-      z = a[2],
-      w = a[3];
-  var r = Math.sqrt(x * x + y * y + z * z);
-  var et = Math.exp(w);
-  var s = r > 0 ? et * Math.sin(r) / r : 0;
-  out[0] = x * s;
-  out[1] = y * s;
-  out[2] = z * s;
-  out[3] = et * Math.cos(r);
-  return out;
-}
-/**
- * Calculate the natural logarithm of a unit quaternion.
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a quat to calculate the exponential of
- * @returns {quat} out
- */
-
-function ln(out, a) {
-  var x = a[0],
-      y = a[1],
-      z = a[2],
-      w = a[3];
-  var r = Math.sqrt(x * x + y * y + z * z);
-  var t = r > 0 ? Math.atan2(r, w) / r : 0;
-  out[0] = x * t;
-  out[1] = y * t;
-  out[2] = z * t;
-  out[3] = 0.5 * Math.log(x * x + y * y + z * z + w * w);
-  return out;
-}
-/**
- * Calculate the scalar power of a unit quaternion.
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a quat to calculate the exponential of
- * @param {Number} b amount to scale the quaternion by
- * @returns {quat} out
- */
-
-function pow(out, a, b) {
-  ln(out, a);
-  scale$2(out, out, b);
-  exp(out, out);
-  return out;
-}
-/**
- * Performs a spherical linear interpolation between two quat
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a the first operand
- * @param {ReadonlyQuat} b the second operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {quat} out
- */
-
-function slerp(out, a, b, t) {
-  // benchmarks:
-  //    http://jsperf.com/quaternion-slerp-implementations
-  var ax = a[0],
-      ay = a[1],
-      az = a[2],
-      aw = a[3];
-  var bx = b[0],
-      by = b[1],
-      bz = b[2],
-      bw = b[3];
-  var omega, cosom, sinom, scale0, scale1; // calc cosine
-
-  cosom = ax * bx + ay * by + az * bz + aw * bw; // adjust signs (if necessary)
-
-  if (cosom < 0.0) {
-    cosom = -cosom;
-    bx = -bx;
-    by = -by;
-    bz = -bz;
-    bw = -bw;
-  } // calculate coefficients
-
-
-  if (1.0 - cosom > EPSILON) {
-    // standard case (slerp)
-    omega = Math.acos(cosom);
-    sinom = Math.sin(omega);
-    scale0 = Math.sin((1.0 - t) * omega) / sinom;
-    scale1 = Math.sin(t * omega) / sinom;
-  } else {
-    // "from" and "to" quaternions are very close
-    //  ... so we can do a linear interpolation
-    scale0 = 1.0 - t;
-    scale1 = t;
-  } // calculate final values
-
-
-  out[0] = scale0 * ax + scale1 * bx;
-  out[1] = scale0 * ay + scale1 * by;
-  out[2] = scale0 * az + scale1 * bz;
-  out[3] = scale0 * aw + scale1 * bw;
-  return out;
-}
-/**
- * Generates a random unit quaternion
- *
- * @param {quat} out the receiving quaternion
- * @returns {quat} out
- */
-
-function random$1(out) {
-  // Implementation of http://planning.cs.uiuc.edu/node198.html
-  // TODO: Calling random 3 times is probably not the fastest solution
-  var u1 = RANDOM();
-  var u2 = RANDOM();
-  var u3 = RANDOM();
-  var sqrt1MinusU1 = Math.sqrt(1 - u1);
-  var sqrtU1 = Math.sqrt(u1);
-  out[0] = sqrt1MinusU1 * Math.sin(2.0 * Math.PI * u2);
-  out[1] = sqrt1MinusU1 * Math.cos(2.0 * Math.PI * u2);
-  out[2] = sqrtU1 * Math.sin(2.0 * Math.PI * u3);
-  out[3] = sqrtU1 * Math.cos(2.0 * Math.PI * u3);
-  return out;
-}
-/**
- * Calculates the inverse of a quat
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a quat to calculate inverse of
- * @returns {quat} out
- */
-
-function invert$1(out, a) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3];
-  var dot = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
-  var invDot = dot ? 1.0 / dot : 0; // TODO: Would be faster to return [0,0,0,0] immediately if dot == 0
-
-  out[0] = -a0 * invDot;
-  out[1] = -a1 * invDot;
-  out[2] = -a2 * invDot;
-  out[3] = a3 * invDot;
-  return out;
-}
-/**
- * Calculates the conjugate of a quat
- * If the quaternion is normalized, this function is faster than quat.inverse and produces the same result.
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a quat to calculate conjugate of
- * @returns {quat} out
- */
-
-function conjugate$1(out, a) {
-  out[0] = -a[0];
-  out[1] = -a[1];
-  out[2] = -a[2];
-  out[3] = a[3];
-  return out;
-}
-/**
- * Creates a quaternion from the given 3x3 rotation matrix.
- *
- * NOTE: The resultant quaternion is not normalized, so you should be sure
- * to renormalize the quaternion yourself where necessary.
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyMat3} m rotation matrix
- * @returns {quat} out
- * @function
- */
-
-function fromMat3(out, m) {
-  // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
-  // article "Quaternion Calculus and Fast Animation".
-  var fTrace = m[0] + m[4] + m[8];
-  var fRoot;
-
-  if (fTrace > 0.0) {
-    // |w| > 1/2, may as well choose w > 1/2
-    fRoot = Math.sqrt(fTrace + 1.0); // 2w
-
-    out[3] = 0.5 * fRoot;
-    fRoot = 0.5 / fRoot; // 1/(4w)
-
-    out[0] = (m[5] - m[7]) * fRoot;
-    out[1] = (m[6] - m[2]) * fRoot;
-    out[2] = (m[1] - m[3]) * fRoot;
-  } else {
-    // |w| <= 1/2
-    var i = 0;
-    if (m[4] > m[0]) i = 1;
-    if (m[8] > m[i * 3 + i]) i = 2;
-    var j = (i + 1) % 3;
-    var k = (i + 2) % 3;
-    fRoot = Math.sqrt(m[i * 3 + i] - m[j * 3 + j] - m[k * 3 + k] + 1.0);
-    out[i] = 0.5 * fRoot;
-    fRoot = 0.5 / fRoot;
-    out[3] = (m[j * 3 + k] - m[k * 3 + j]) * fRoot;
-    out[j] = (m[j * 3 + i] + m[i * 3 + j]) * fRoot;
-    out[k] = (m[k * 3 + i] + m[i * 3 + k]) * fRoot;
-  }
-
-  return out;
-}
-/**
- * Creates a quaternion from the given euler angle x, y, z.
- *
- * @param {quat} out the receiving quaternion
- * @param {x} Angle to rotate around X axis in degrees.
- * @param {y} Angle to rotate around Y axis in degrees.
- * @param {z} Angle to rotate around Z axis in degrees.
- * @returns {quat} out
- * @function
- */
-
-function fromEuler(out, x, y, z) {
-  var halfToRad = 0.5 * Math.PI / 180.0;
-  x *= halfToRad;
-  y *= halfToRad;
-  z *= halfToRad;
-  var sx = Math.sin(x);
-  var cx = Math.cos(x);
-  var sy = Math.sin(y);
-  var cy = Math.cos(y);
-  var sz = Math.sin(z);
-  var cz = Math.cos(z);
-  out[0] = sx * cy * cz - cx * sy * sz;
-  out[1] = cx * sy * cz + sx * cy * sz;
-  out[2] = cx * cy * sz - sx * sy * cz;
-  out[3] = cx * cy * cz + sx * sy * sz;
-  return out;
-}
-/**
- * Returns a string representation of a quatenion
- *
- * @param {ReadonlyQuat} a vector to represent as a string
- * @returns {String} string representation of the vector
- */
-
-function str$2(a) {
-  return "quat(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ")";
-}
-/**
- * Creates a new quat initialized with values from an existing quaternion
- *
- * @param {ReadonlyQuat} a quaternion to clone
- * @returns {quat} a new quaternion
- * @function
- */
-
-var clone$2 = clone$3;
-/**
- * Creates a new quat initialized with the given values
- *
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @param {Number} w W component
- * @returns {quat} a new quaternion
- * @function
- */
-
-var fromValues$2 = fromValues$3;
-/**
- * Copy the values from one quat to another
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a the source quaternion
- * @returns {quat} out
- * @function
- */
-
-var copy$2 = copy$3;
-/**
- * Set the components of a quat to the given values
- *
- * @param {quat} out the receiving quaternion
- * @param {Number} x X component
- * @param {Number} y Y component
- * @param {Number} z Z component
- * @param {Number} w W component
- * @returns {quat} out
- * @function
- */
-
-var set$2 = set$3;
-/**
- * Adds two quat's
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a the first operand
- * @param {ReadonlyQuat} b the second operand
- * @returns {quat} out
- * @function
- */
-
-var add$2 = add$3;
-/**
- * Alias for {@link quat.multiply}
- * @function
- */
-
-var mul$2 = multiply$2;
-/**
- * Scales a quat by a scalar number
- *
- * @param {quat} out the receiving vector
- * @param {ReadonlyQuat} a the vector to scale
- * @param {Number} b amount to scale the vector by
- * @returns {quat} out
- * @function
- */
-
-var scale$2 = scale$3;
-/**
- * Calculates the dot product of two quat's
- *
- * @param {ReadonlyQuat} a the first operand
- * @param {ReadonlyQuat} b the second operand
- * @returns {Number} dot product of a and b
- * @function
- */
-
-var dot$3 = dot$4;
-/**
- * Performs a linear interpolation between two quat's
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a the first operand
- * @param {ReadonlyQuat} b the second operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {quat} out
- * @function
- */
-
-var lerp$2 = lerp$3;
-/**
- * Calculates the length of a quat
- *
- * @param {ReadonlyQuat} a vector to calculate length of
- * @returns {Number} length of a
- */
-
-var length$2 = length$3;
-/**
- * Alias for {@link quat.length}
- * @function
- */
-
-var len$2 = length$2;
-/**
- * Calculates the squared length of a quat
- *
- * @param {ReadonlyQuat} a vector to calculate squared length of
- * @returns {Number} squared length of a
- * @function
- */
-
-var squaredLength$2 = squaredLength$3;
-/**
- * Alias for {@link quat.squaredLength}
- * @function
- */
-
-var sqrLen$2 = squaredLength$2;
-/**
- * Normalize a quat
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a quaternion to normalize
- * @returns {quat} out
- * @function
- */
-
-var normalize$2 = normalize$3;
-/**
- * Returns whether or not the quaternions have exactly the same elements in the same position (when compared with ===)
- *
- * @param {ReadonlyQuat} a The first quaternion.
- * @param {ReadonlyQuat} b The second quaternion.
- * @returns {Boolean} True if the vectors are equal, false otherwise.
- */
-
-var exactEquals$2 = exactEquals$3;
-/**
- * Returns whether or not the quaternions have approximately the same elements in the same position.
- *
- * @param {ReadonlyQuat} a The first vector.
- * @param {ReadonlyQuat} b The second vector.
- * @returns {Boolean} True if the vectors are equal, false otherwise.
- */
-
-var equals$3 = equals$4;
-/**
- * Sets a quaternion to represent the shortest rotation from one
- * vector to another.
- *
- * Both vectors are assumed to be unit length.
- *
- * @param {quat} out the receiving quaternion.
- * @param {ReadonlyVec3} a the initial vector
- * @param {ReadonlyVec3} b the destination vector
- * @returns {quat} out
- */
-
-var rotationTo = function () {
-  var tmpvec3 = create$4();
-  var xUnitVec3 = fromValues$4(1, 0, 0);
-  var yUnitVec3 = fromValues$4(0, 1, 0);
-  return function (out, a, b) {
-    var dot = dot$5(a, b);
-
-    if (dot < -0.999999) {
-      cross$2(tmpvec3, xUnitVec3, a);
-      if (len$4(tmpvec3) < 0.000001) cross$2(tmpvec3, yUnitVec3, a);
-      normalize$4(tmpvec3, tmpvec3);
-      setAxisAngle(out, tmpvec3, Math.PI);
-      return out;
-    } else if (dot > 0.999999) {
-      out[0] = 0;
-      out[1] = 0;
-      out[2] = 0;
-      out[3] = 1;
-      return out;
-    } else {
-      cross$2(tmpvec3, a, b);
-      out[0] = tmpvec3[0];
-      out[1] = tmpvec3[1];
-      out[2] = tmpvec3[2];
-      out[3] = 1 + dot;
-      return normalize$2(out, out);
-    }
-  };
-}();
-/**
- * Performs a spherical linear interpolation with two control points
- *
- * @param {quat} out the receiving quaternion
- * @param {ReadonlyQuat} a the first operand
- * @param {ReadonlyQuat} b the second operand
- * @param {ReadonlyQuat} c the third operand
- * @param {ReadonlyQuat} d the fourth operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {quat} out
- */
-
-var sqlerp = function () {
-  var temp1 = create$2();
-  var temp2 = create$2();
-  return function (out, a, b, c, d, t) {
-    slerp(temp1, a, d, t);
-    slerp(temp2, b, c, t);
-    slerp(out, temp1, temp2, 2 * t * (1 - t));
-    return out;
-  };
-}();
-/**
- * Sets the specified quaternion with values corresponding to the given
- * axes. Each axis is a vec3 and is expected to be unit length and
- * perpendicular to all other specified axes.
- *
- * @param {ReadonlyVec3} view  the vector representing the viewing direction
- * @param {ReadonlyVec3} right the vector representing the local "right" direction
- * @param {ReadonlyVec3} up    the vector representing the local "up" direction
- * @returns {quat} out
- */
-
-var setAxes = function () {
-  var matr = create$6();
-  return function (out, view, right, up) {
-    matr[0] = right[0];
-    matr[3] = right[1];
-    matr[6] = right[2];
-    matr[1] = up[0];
-    matr[4] = up[1];
-    matr[7] = up[2];
-    matr[2] = -view[0];
-    matr[5] = -view[1];
-    matr[8] = -view[2];
-    return normalize$2(out, fromMat3(out, matr));
-  };
-}();
-
-var quat = /*#__PURE__*/Object.freeze({
-__proto__: null,
-add: add$2,
-calculateW: calculateW,
-clone: clone$2,
-conjugate: conjugate$1,
-copy: copy$2,
-create: create$2,
-dot: dot$3,
-equals: equals$3,
-exactEquals: exactEquals$2,
-exp: exp,
-fromEuler: fromEuler,
-fromMat3: fromMat3,
-fromValues: fromValues$2,
-getAngle: getAngle,
-getAxisAngle: getAxisAngle,
-identity: identity$1,
-invert: invert$1,
-len: len$2,
-length: length$2,
-lerp: lerp$2,
-ln: ln,
-mul: mul$2,
-multiply: multiply$2,
-normalize: normalize$2,
-pow: pow,
-random: random$1,
-rotateX: rotateX$1,
-rotateY: rotateY$1,
-rotateZ: rotateZ$1,
-rotationTo: rotationTo,
-scale: scale$2,
-set: set$2,
-setAxes: setAxes,
-setAxisAngle: setAxisAngle,
-slerp: slerp,
-sqlerp: sqlerp,
-sqrLen: sqrLen$2,
-squaredLength: squaredLength$2,
-str: str$2
-});
-
-/**
- * Dual Quaternion<br>
- * Format: [real, dual]<br>
- * Quaternion format: XYZW<br>
- * Make sure to have normalized dual quaternions, otherwise the functions may not work as intended.<br>
- * @module quat2
- */
-
-/**
- * Creates a new identity dual quat
- *
- * @returns {quat2} a new dual quaternion [real -> rotation, dual -> translation]
- */
-
-function create$1() {
-  var dq = new ARRAY_TYPE(8);
-
-  if (ARRAY_TYPE != Float32Array) {
-    dq[0] = 0;
-    dq[1] = 0;
-    dq[2] = 0;
-    dq[4] = 0;
-    dq[5] = 0;
-    dq[6] = 0;
-    dq[7] = 0;
-  }
-
-  dq[3] = 1;
-  return dq;
-}
-/**
- * Creates a new quat initialized with values from an existing quaternion
- *
- * @param {ReadonlyQuat2} a dual quaternion to clone
- * @returns {quat2} new dual quaternion
- * @function
- */
-
-function clone$1(a) {
-  var dq = new ARRAY_TYPE(8);
-  dq[0] = a[0];
-  dq[1] = a[1];
-  dq[2] = a[2];
-  dq[3] = a[3];
-  dq[4] = a[4];
-  dq[5] = a[5];
-  dq[6] = a[6];
-  dq[7] = a[7];
-  return dq;
-}
-/**
- * Creates a new dual quat initialized with the given values
- *
- * @param {Number} x1 X component
- * @param {Number} y1 Y component
- * @param {Number} z1 Z component
- * @param {Number} w1 W component
- * @param {Number} x2 X component
- * @param {Number} y2 Y component
- * @param {Number} z2 Z component
- * @param {Number} w2 W component
- * @returns {quat2} new dual quaternion
- * @function
- */
-
-function fromValues$1(x1, y1, z1, w1, x2, y2, z2, w2) {
-  var dq = new ARRAY_TYPE(8);
-  dq[0] = x1;
-  dq[1] = y1;
-  dq[2] = z1;
-  dq[3] = w1;
-  dq[4] = x2;
-  dq[5] = y2;
-  dq[6] = z2;
-  dq[7] = w2;
-  return dq;
-}
-/**
- * Creates a new dual quat from the given values (quat and translation)
- *
- * @param {Number} x1 X component
- * @param {Number} y1 Y component
- * @param {Number} z1 Z component
- * @param {Number} w1 W component
- * @param {Number} x2 X component (translation)
- * @param {Number} y2 Y component (translation)
- * @param {Number} z2 Z component (translation)
- * @returns {quat2} new dual quaternion
- * @function
- */
-
-function fromRotationTranslationValues(x1, y1, z1, w1, x2, y2, z2) {
-  var dq = new ARRAY_TYPE(8);
-  dq[0] = x1;
-  dq[1] = y1;
-  dq[2] = z1;
-  dq[3] = w1;
-  var ax = x2 * 0.5,
-      ay = y2 * 0.5,
-      az = z2 * 0.5;
-  dq[4] = ax * w1 + ay * z1 - az * y1;
-  dq[5] = ay * w1 + az * x1 - ax * z1;
-  dq[6] = az * w1 + ax * y1 - ay * x1;
-  dq[7] = -ax * x1 - ay * y1 - az * z1;
-  return dq;
-}
-/**
- * Creates a dual quat from a quaternion and a translation
- *
- * @param {ReadonlyQuat2} dual quaternion receiving operation result
- * @param {ReadonlyQuat} q a normalized quaternion
- * @param {ReadonlyVec3} t tranlation vector
- * @returns {quat2} dual quaternion receiving operation result
- * @function
- */
-
-function fromRotationTranslation(out, q, t) {
-  var ax = t[0] * 0.5,
-      ay = t[1] * 0.5,
-      az = t[2] * 0.5,
-      bx = q[0],
-      by = q[1],
-      bz = q[2],
-      bw = q[3];
-  out[0] = bx;
-  out[1] = by;
-  out[2] = bz;
-  out[3] = bw;
-  out[4] = ax * bw + ay * bz - az * by;
-  out[5] = ay * bw + az * bx - ax * bz;
-  out[6] = az * bw + ax * by - ay * bx;
-  out[7] = -ax * bx - ay * by - az * bz;
-  return out;
-}
-/**
- * Creates a dual quat from a translation
- *
- * @param {ReadonlyQuat2} dual quaternion receiving operation result
- * @param {ReadonlyVec3} t translation vector
- * @returns {quat2} dual quaternion receiving operation result
- * @function
- */
-
-function fromTranslation(out, t) {
-  out[0] = 0;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 1;
-  out[4] = t[0] * 0.5;
-  out[5] = t[1] * 0.5;
-  out[6] = t[2] * 0.5;
-  out[7] = 0;
-  return out;
-}
-/**
- * Creates a dual quat from a quaternion
- *
- * @param {ReadonlyQuat2} dual quaternion receiving operation result
- * @param {ReadonlyQuat} q the quaternion
- * @returns {quat2} dual quaternion receiving operation result
- * @function
- */
-
-function fromRotation(out, q) {
-  out[0] = q[0];
-  out[1] = q[1];
-  out[2] = q[2];
-  out[3] = q[3];
-  out[4] = 0;
-  out[5] = 0;
-  out[6] = 0;
-  out[7] = 0;
-  return out;
-}
-/**
- * Creates a new dual quat from a matrix (4x4)
- *
- * @param {quat2} out the dual quaternion
- * @param {ReadonlyMat4} a the matrix
- * @returns {quat2} dual quat receiving operation result
- * @function
- */
-
-function fromMat4(out, a) {
-  //TODO Optimize this
-  var outer = create$2();
-  getRotation(outer, a);
-  var t = new ARRAY_TYPE(3);
-  getTranslation$1(t, a);
-  fromRotationTranslation(out, outer, t);
-  return out;
-}
-/**
- * Copy the values from one dual quat to another
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the source dual quaternion
- * @returns {quat2} out
- * @function
- */
-
-function copy$1(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  out[4] = a[4];
-  out[5] = a[5];
-  out[6] = a[6];
-  out[7] = a[7];
-  return out;
-}
-/**
- * Set a dual quat to the identity dual quaternion
- *
- * @param {quat2} out the receiving quaternion
- * @returns {quat2} out
- */
-
-function identity(out) {
-  out[0] = 0;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 1;
-  out[4] = 0;
-  out[5] = 0;
-  out[6] = 0;
-  out[7] = 0;
-  return out;
-}
-/**
- * Set the components of a dual quat to the given values
- *
- * @param {quat2} out the receiving quaternion
- * @param {Number} x1 X component
- * @param {Number} y1 Y component
- * @param {Number} z1 Z component
- * @param {Number} w1 W component
- * @param {Number} x2 X component
- * @param {Number} y2 Y component
- * @param {Number} z2 Z component
- * @param {Number} w2 W component
- * @returns {quat2} out
- * @function
- */
-
-function set$1(out, x1, y1, z1, w1, x2, y2, z2, w2) {
-  out[0] = x1;
-  out[1] = y1;
-  out[2] = z1;
-  out[3] = w1;
-  out[4] = x2;
-  out[5] = y2;
-  out[6] = z2;
-  out[7] = w2;
-  return out;
-}
-/**
- * Gets the real part of a dual quat
- * @param  {quat} out real part
- * @param  {ReadonlyQuat2} a Dual Quaternion
- * @return {quat} real part
- */
-
-var getReal = copy$2;
-/**
- * Gets the dual part of a dual quat
- * @param  {quat} out dual part
- * @param  {ReadonlyQuat2} a Dual Quaternion
- * @return {quat} dual part
- */
-
-function getDual(out, a) {
-  out[0] = a[4];
-  out[1] = a[5];
-  out[2] = a[6];
-  out[3] = a[7];
-  return out;
-}
-/**
- * Set the real component of a dual quat to the given quaternion
- *
- * @param {quat2} out the receiving quaternion
- * @param {ReadonlyQuat} q a quaternion representing the real part
- * @returns {quat2} out
- * @function
- */
-
-var setReal = copy$2;
-/**
- * Set the dual component of a dual quat to the given quaternion
- *
- * @param {quat2} out the receiving quaternion
- * @param {ReadonlyQuat} q a quaternion representing the dual part
- * @returns {quat2} out
- * @function
- */
-
-function setDual(out, q) {
-  out[4] = q[0];
-  out[5] = q[1];
-  out[6] = q[2];
-  out[7] = q[3];
-  return out;
-}
-/**
- * Gets the translation of a normalized dual quat
- * @param  {vec3} out translation
- * @param  {ReadonlyQuat2} a Dual Quaternion to be decomposed
- * @return {vec3} translation
- */
-
-function getTranslation(out, a) {
-  var ax = a[4],
-      ay = a[5],
-      az = a[6],
-      aw = a[7],
-      bx = -a[0],
-      by = -a[1],
-      bz = -a[2],
-      bw = a[3];
-  out[0] = (ax * bw + aw * bx + ay * bz - az * by) * 2;
-  out[1] = (ay * bw + aw * by + az * bx - ax * bz) * 2;
-  out[2] = (az * bw + aw * bz + ax * by - ay * bx) * 2;
-  return out;
-}
-/**
- * Translates a dual quat by the given vector
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the dual quaternion to translate
- * @param {ReadonlyVec3} v vector to translate by
- * @returns {quat2} out
- */
-
-function translate(out, a, v) {
-  var ax1 = a[0],
-      ay1 = a[1],
-      az1 = a[2],
-      aw1 = a[3],
-      bx1 = v[0] * 0.5,
-      by1 = v[1] * 0.5,
-      bz1 = v[2] * 0.5,
-      ax2 = a[4],
-      ay2 = a[5],
-      az2 = a[6],
-      aw2 = a[7];
-  out[0] = ax1;
-  out[1] = ay1;
-  out[2] = az1;
-  out[3] = aw1;
-  out[4] = aw1 * bx1 + ay1 * bz1 - az1 * by1 + ax2;
-  out[5] = aw1 * by1 + az1 * bx1 - ax1 * bz1 + ay2;
-  out[6] = aw1 * bz1 + ax1 * by1 - ay1 * bx1 + az2;
-  out[7] = -ax1 * bx1 - ay1 * by1 - az1 * bz1 + aw2;
-  return out;
-}
-/**
- * Rotates a dual quat around the X axis
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the dual quaternion to rotate
- * @param {number} rad how far should the rotation be
- * @returns {quat2} out
- */
-
-function rotateX(out, a, rad) {
-  var bx = -a[0],
-      by = -a[1],
-      bz = -a[2],
-      bw = a[3],
-      ax = a[4],
-      ay = a[5],
-      az = a[6],
-      aw = a[7],
-      ax1 = ax * bw + aw * bx + ay * bz - az * by,
-      ay1 = ay * bw + aw * by + az * bx - ax * bz,
-      az1 = az * bw + aw * bz + ax * by - ay * bx,
-      aw1 = aw * bw - ax * bx - ay * by - az * bz;
-  rotateX$1(out, a, rad);
-  bx = out[0];
-  by = out[1];
-  bz = out[2];
-  bw = out[3];
-  out[4] = ax1 * bw + aw1 * bx + ay1 * bz - az1 * by;
-  out[5] = ay1 * bw + aw1 * by + az1 * bx - ax1 * bz;
-  out[6] = az1 * bw + aw1 * bz + ax1 * by - ay1 * bx;
-  out[7] = aw1 * bw - ax1 * bx - ay1 * by - az1 * bz;
-  return out;
-}
-/**
- * Rotates a dual quat around the Y axis
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the dual quaternion to rotate
- * @param {number} rad how far should the rotation be
- * @returns {quat2} out
- */
-
-function rotateY(out, a, rad) {
-  var bx = -a[0],
-      by = -a[1],
-      bz = -a[2],
-      bw = a[3],
-      ax = a[4],
-      ay = a[5],
-      az = a[6],
-      aw = a[7],
-      ax1 = ax * bw + aw * bx + ay * bz - az * by,
-      ay1 = ay * bw + aw * by + az * bx - ax * bz,
-      az1 = az * bw + aw * bz + ax * by - ay * bx,
-      aw1 = aw * bw - ax * bx - ay * by - az * bz;
-  rotateY$1(out, a, rad);
-  bx = out[0];
-  by = out[1];
-  bz = out[2];
-  bw = out[3];
-  out[4] = ax1 * bw + aw1 * bx + ay1 * bz - az1 * by;
-  out[5] = ay1 * bw + aw1 * by + az1 * bx - ax1 * bz;
-  out[6] = az1 * bw + aw1 * bz + ax1 * by - ay1 * bx;
-  out[7] = aw1 * bw - ax1 * bx - ay1 * by - az1 * bz;
-  return out;
-}
-/**
- * Rotates a dual quat around the Z axis
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the dual quaternion to rotate
- * @param {number} rad how far should the rotation be
- * @returns {quat2} out
- */
-
-function rotateZ(out, a, rad) {
-  var bx = -a[0],
-      by = -a[1],
-      bz = -a[2],
-      bw = a[3],
-      ax = a[4],
-      ay = a[5],
-      az = a[6],
-      aw = a[7],
-      ax1 = ax * bw + aw * bx + ay * bz - az * by,
-      ay1 = ay * bw + aw * by + az * bx - ax * bz,
-      az1 = az * bw + aw * bz + ax * by - ay * bx,
-      aw1 = aw * bw - ax * bx - ay * by - az * bz;
-  rotateZ$1(out, a, rad);
-  bx = out[0];
-  by = out[1];
-  bz = out[2];
-  bw = out[3];
-  out[4] = ax1 * bw + aw1 * bx + ay1 * bz - az1 * by;
-  out[5] = ay1 * bw + aw1 * by + az1 * bx - ax1 * bz;
-  out[6] = az1 * bw + aw1 * bz + ax1 * by - ay1 * bx;
-  out[7] = aw1 * bw - ax1 * bx - ay1 * by - az1 * bz;
-  return out;
-}
-/**
- * Rotates a dual quat by a given quaternion (a * q)
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the dual quaternion to rotate
- * @param {ReadonlyQuat} q quaternion to rotate by
- * @returns {quat2} out
- */
-
-function rotateByQuatAppend(out, a, q) {
-  var qx = q[0],
-      qy = q[1],
-      qz = q[2],
-      qw = q[3],
-      ax = a[0],
-      ay = a[1],
-      az = a[2],
-      aw = a[3];
-  out[0] = ax * qw + aw * qx + ay * qz - az * qy;
-  out[1] = ay * qw + aw * qy + az * qx - ax * qz;
-  out[2] = az * qw + aw * qz + ax * qy - ay * qx;
-  out[3] = aw * qw - ax * qx - ay * qy - az * qz;
-  ax = a[4];
-  ay = a[5];
-  az = a[6];
-  aw = a[7];
-  out[4] = ax * qw + aw * qx + ay * qz - az * qy;
-  out[5] = ay * qw + aw * qy + az * qx - ax * qz;
-  out[6] = az * qw + aw * qz + ax * qy - ay * qx;
-  out[7] = aw * qw - ax * qx - ay * qy - az * qz;
-  return out;
-}
-/**
- * Rotates a dual quat by a given quaternion (q * a)
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat} q quaternion to rotate by
- * @param {ReadonlyQuat2} a the dual quaternion to rotate
- * @returns {quat2} out
- */
-
-function rotateByQuatPrepend(out, q, a) {
-  var qx = q[0],
-      qy = q[1],
-      qz = q[2],
-      qw = q[3],
-      bx = a[0],
-      by = a[1],
-      bz = a[2],
-      bw = a[3];
-  out[0] = qx * bw + qw * bx + qy * bz - qz * by;
-  out[1] = qy * bw + qw * by + qz * bx - qx * bz;
-  out[2] = qz * bw + qw * bz + qx * by - qy * bx;
-  out[3] = qw * bw - qx * bx - qy * by - qz * bz;
-  bx = a[4];
-  by = a[5];
-  bz = a[6];
-  bw = a[7];
-  out[4] = qx * bw + qw * bx + qy * bz - qz * by;
-  out[5] = qy * bw + qw * by + qz * bx - qx * bz;
-  out[6] = qz * bw + qw * bz + qx * by - qy * bx;
-  out[7] = qw * bw - qx * bx - qy * by - qz * bz;
-  return out;
-}
-/**
- * Rotates a dual quat around a given axis. Does the normalisation automatically
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the dual quaternion to rotate
- * @param {ReadonlyVec3} axis the axis to rotate around
- * @param {Number} rad how far the rotation should be
- * @returns {quat2} out
- */
-
-function rotateAroundAxis(out, a, axis, rad) {
-  //Special case for rad = 0
-  if (Math.abs(rad) < EPSILON) {
-    return copy$1(out, a);
-  }
-
-  var axisLength = Math.hypot(axis[0], axis[1], axis[2]);
-  rad = rad * 0.5;
-  var s = Math.sin(rad);
-  var bx = s * axis[0] / axisLength;
-  var by = s * axis[1] / axisLength;
-  var bz = s * axis[2] / axisLength;
-  var bw = Math.cos(rad);
-  var ax1 = a[0],
-      ay1 = a[1],
-      az1 = a[2],
-      aw1 = a[3];
-  out[0] = ax1 * bw + aw1 * bx + ay1 * bz - az1 * by;
-  out[1] = ay1 * bw + aw1 * by + az1 * bx - ax1 * bz;
-  out[2] = az1 * bw + aw1 * bz + ax1 * by - ay1 * bx;
-  out[3] = aw1 * bw - ax1 * bx - ay1 * by - az1 * bz;
-  var ax = a[4],
-      ay = a[5],
-      az = a[6],
-      aw = a[7];
-  out[4] = ax * bw + aw * bx + ay * bz - az * by;
-  out[5] = ay * bw + aw * by + az * bx - ax * bz;
-  out[6] = az * bw + aw * bz + ax * by - ay * bx;
-  out[7] = aw * bw - ax * bx - ay * by - az * bz;
-  return out;
-}
-/**
- * Adds two dual quat's
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the first operand
- * @param {ReadonlyQuat2} b the second operand
- * @returns {quat2} out
- * @function
- */
-
-function add$1(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  out[3] = a[3] + b[3];
-  out[4] = a[4] + b[4];
-  out[5] = a[5] + b[5];
-  out[6] = a[6] + b[6];
-  out[7] = a[7] + b[7];
-  return out;
-}
-/**
- * Multiplies two dual quat's
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a the first operand
- * @param {ReadonlyQuat2} b the second operand
- * @returns {quat2} out
- */
-
-function multiply$1(out, a, b) {
-  var ax0 = a[0],
-      ay0 = a[1],
-      az0 = a[2],
-      aw0 = a[3],
-      bx1 = b[4],
-      by1 = b[5],
-      bz1 = b[6],
-      bw1 = b[7],
-      ax1 = a[4],
-      ay1 = a[5],
-      az1 = a[6],
-      aw1 = a[7],
-      bx0 = b[0],
-      by0 = b[1],
-      bz0 = b[2],
-      bw0 = b[3];
-  out[0] = ax0 * bw0 + aw0 * bx0 + ay0 * bz0 - az0 * by0;
-  out[1] = ay0 * bw0 + aw0 * by0 + az0 * bx0 - ax0 * bz0;
-  out[2] = az0 * bw0 + aw0 * bz0 + ax0 * by0 - ay0 * bx0;
-  out[3] = aw0 * bw0 - ax0 * bx0 - ay0 * by0 - az0 * bz0;
-  out[4] = ax0 * bw1 + aw0 * bx1 + ay0 * bz1 - az0 * by1 + ax1 * bw0 + aw1 * bx0 + ay1 * bz0 - az1 * by0;
-  out[5] = ay0 * bw1 + aw0 * by1 + az0 * bx1 - ax0 * bz1 + ay1 * bw0 + aw1 * by0 + az1 * bx0 - ax1 * bz0;
-  out[6] = az0 * bw1 + aw0 * bz1 + ax0 * by1 - ay0 * bx1 + az1 * bw0 + aw1 * bz0 + ax1 * by0 - ay1 * bx0;
-  out[7] = aw0 * bw1 - ax0 * bx1 - ay0 * by1 - az0 * bz1 + aw1 * bw0 - ax1 * bx0 - ay1 * by0 - az1 * bz0;
-  return out;
-}
-/**
- * Alias for {@link quat2.multiply}
- * @function
- */
-
-var mul$1 = multiply$1;
-/**
- * Scales a dual quat by a scalar number
- *
- * @param {quat2} out the receiving dual quat
- * @param {ReadonlyQuat2} a the dual quat to scale
- * @param {Number} b amount to scale the dual quat by
- * @returns {quat2} out
- * @function
- */
-
-function scale$1(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  out[3] = a[3] * b;
-  out[4] = a[4] * b;
-  out[5] = a[5] * b;
-  out[6] = a[6] * b;
-  out[7] = a[7] * b;
-  return out;
-}
-/**
- * Calculates the dot product of two dual quat's (The dot product of the real parts)
- *
- * @param {ReadonlyQuat2} a the first operand
- * @param {ReadonlyQuat2} b the second operand
- * @returns {Number} dot product of a and b
- * @function
- */
-
-var dot$2 = dot$3;
-/**
- * Performs a linear interpolation between two dual quats's
- * NOTE: The resulting dual quaternions won't always be normalized (The error is most noticeable when t = 0.5)
- *
- * @param {quat2} out the receiving dual quat
- * @param {ReadonlyQuat2} a the first operand
- * @param {ReadonlyQuat2} b the second operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {quat2} out
- */
-
-function lerp$1(out, a, b, t) {
-  var mt = 1 - t;
-  if (dot$2(a, b) < 0) t = -t;
-  out[0] = a[0] * mt + b[0] * t;
-  out[1] = a[1] * mt + b[1] * t;
-  out[2] = a[2] * mt + b[2] * t;
-  out[3] = a[3] * mt + b[3] * t;
-  out[4] = a[4] * mt + b[4] * t;
-  out[5] = a[5] * mt + b[5] * t;
-  out[6] = a[6] * mt + b[6] * t;
-  out[7] = a[7] * mt + b[7] * t;
-  return out;
-}
-/**
- * Calculates the inverse of a dual quat. If they are normalized, conjugate is cheaper
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a dual quat to calculate inverse of
- * @returns {quat2} out
- */
-
-function invert(out, a) {
-  var sqlen = squaredLength$1(a);
-  out[0] = -a[0] / sqlen;
-  out[1] = -a[1] / sqlen;
-  out[2] = -a[2] / sqlen;
-  out[3] = a[3] / sqlen;
-  out[4] = -a[4] / sqlen;
-  out[5] = -a[5] / sqlen;
-  out[6] = -a[6] / sqlen;
-  out[7] = a[7] / sqlen;
-  return out;
-}
-/**
- * Calculates the conjugate of a dual quat
- * If the dual quaternion is normalized, this function is faster than quat2.inverse and produces the same result.
- *
- * @param {quat2} out the receiving quaternion
- * @param {ReadonlyQuat2} a quat to calculate conjugate of
- * @returns {quat2} out
- */
-
-function conjugate(out, a) {
-  out[0] = -a[0];
-  out[1] = -a[1];
-  out[2] = -a[2];
-  out[3] = a[3];
-  out[4] = -a[4];
-  out[5] = -a[5];
-  out[6] = -a[6];
-  out[7] = a[7];
-  return out;
-}
-/**
- * Calculates the length of a dual quat
- *
- * @param {ReadonlyQuat2} a dual quat to calculate length of
- * @returns {Number} length of a
- * @function
- */
-
-var length$1 = length$2;
-/**
- * Alias for {@link quat2.length}
- * @function
- */
-
-var len$1 = length$1;
-/**
- * Calculates the squared length of a dual quat
- *
- * @param {ReadonlyQuat2} a dual quat to calculate squared length of
- * @returns {Number} squared length of a
- * @function
- */
-
-var squaredLength$1 = squaredLength$2;
-/**
- * Alias for {@link quat2.squaredLength}
- * @function
- */
-
-var sqrLen$1 = squaredLength$1;
-/**
- * Normalize a dual quat
- *
- * @param {quat2} out the receiving dual quaternion
- * @param {ReadonlyQuat2} a dual quaternion to normalize
- * @returns {quat2} out
- * @function
- */
-
-function normalize$1(out, a) {
-  var magnitude = squaredLength$1(a);
-
-  if (magnitude > 0) {
-    magnitude = Math.sqrt(magnitude);
-    var a0 = a[0] / magnitude;
-    var a1 = a[1] / magnitude;
-    var a2 = a[2] / magnitude;
-    var a3 = a[3] / magnitude;
-    var b0 = a[4];
-    var b1 = a[5];
-    var b2 = a[6];
-    var b3 = a[7];
-    var a_dot_b = a0 * b0 + a1 * b1 + a2 * b2 + a3 * b3;
-    out[0] = a0;
-    out[1] = a1;
-    out[2] = a2;
-    out[3] = a3;
-    out[4] = (b0 - a0 * a_dot_b) / magnitude;
-    out[5] = (b1 - a1 * a_dot_b) / magnitude;
-    out[6] = (b2 - a2 * a_dot_b) / magnitude;
-    out[7] = (b3 - a3 * a_dot_b) / magnitude;
-  }
-
-  return out;
-}
-/**
- * Returns a string representation of a dual quatenion
- *
- * @param {ReadonlyQuat2} a dual quaternion to represent as a string
- * @returns {String} string representation of the dual quat
- */
-
-function str$1(a) {
-  return "quat2(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ", " + a[4] + ", " + a[5] + ", " + a[6] + ", " + a[7] + ")";
-}
-/**
- * Returns whether or not the dual quaternions have exactly the same elements in the same position (when compared with ===)
- *
- * @param {ReadonlyQuat2} a the first dual quaternion.
- * @param {ReadonlyQuat2} b the second dual quaternion.
- * @returns {Boolean} true if the dual quaternions are equal, false otherwise.
- */
-
-function exactEquals$1(a, b) {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5] && a[6] === b[6] && a[7] === b[7];
-}
-/**
- * Returns whether or not the dual quaternions have approximately the same elements in the same position.
- *
- * @param {ReadonlyQuat2} a the first dual quat.
- * @param {ReadonlyQuat2} b the second dual quat.
- * @returns {Boolean} true if the dual quats are equal, false otherwise.
- */
-
-function equals$2(a, b) {
-  var a0 = a[0],
-      a1 = a[1],
-      a2 = a[2],
-      a3 = a[3],
-      a4 = a[4],
-      a5 = a[5],
-      a6 = a[6],
-      a7 = a[7];
-  var b0 = b[0],
-      b1 = b[1],
-      b2 = b[2],
-      b3 = b[3],
-      b4 = b[4],
-      b5 = b[5],
-      b6 = b[6],
-      b7 = b[7];
-  return Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3)) && Math.abs(a4 - b4) <= EPSILON * Math.max(1.0, Math.abs(a4), Math.abs(b4)) && Math.abs(a5 - b5) <= EPSILON * Math.max(1.0, Math.abs(a5), Math.abs(b5)) && Math.abs(a6 - b6) <= EPSILON * Math.max(1.0, Math.abs(a6), Math.abs(b6)) && Math.abs(a7 - b7) <= EPSILON * Math.max(1.0, Math.abs(a7), Math.abs(b7));
-}
-
-var quat2 = /*#__PURE__*/Object.freeze({
-__proto__: null,
-add: add$1,
-clone: clone$1,
-conjugate: conjugate,
-copy: copy$1,
-create: create$1,
-dot: dot$2,
-equals: equals$2,
-exactEquals: exactEquals$1,
-fromMat4: fromMat4,
-fromRotation: fromRotation,
-fromRotationTranslation: fromRotationTranslation,
-fromRotationTranslationValues: fromRotationTranslationValues,
-fromTranslation: fromTranslation,
-fromValues: fromValues$1,
-getDual: getDual,
-getReal: getReal,
-getTranslation: getTranslation,
-identity: identity,
-invert: invert,
-len: len$1,
-length: length$1,
-lerp: lerp$1,
-mul: mul$1,
-multiply: multiply$1,
-normalize: normalize$1,
-rotateAroundAxis: rotateAroundAxis,
-rotateByQuatAppend: rotateByQuatAppend,
-rotateByQuatPrepend: rotateByQuatPrepend,
-rotateX: rotateX,
-rotateY: rotateY,
-rotateZ: rotateZ,
-scale: scale$1,
-set: set$1,
-setDual: setDual,
-setReal: setReal,
-sqrLen: sqrLen$1,
-squaredLength: squaredLength$1,
-str: str$1,
-translate: translate
-});
-
-/**
- * 2 Dimensional Vector
- * @module vec2
- */
-
-/**
- * Creates a new, empty vec2
- *
- * @returns {vec2} a new 2D vector
- */
-
-function create() {
-  var out = new ARRAY_TYPE(2);
-
-  if (ARRAY_TYPE != Float32Array) {
-    out[0] = 0;
-    out[1] = 0;
-  }
-
-  return out;
-}
-/**
- * Creates a new vec2 initialized with values from an existing vector
- *
- * @param {ReadonlyVec2} a vector to clone
- * @returns {vec2} a new 2D vector
- */
-
-function clone(a) {
-  var out = new ARRAY_TYPE(2);
-  out[0] = a[0];
-  out[1] = a[1];
-  return out;
-}
-/**
- * Creates a new vec2 initialized with the given values
- *
- * @param {Number} x X component
- * @param {Number} y Y component
- * @returns {vec2} a new 2D vector
- */
-
-function fromValues(x, y) {
-  var out = new ARRAY_TYPE(2);
-  out[0] = x;
-  out[1] = y;
-  return out;
-}
-/**
- * Copy the values from one vec2 to another
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the source vector
- * @returns {vec2} out
- */
-
-function copy(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  return out;
-}
-/**
- * Set the components of a vec2 to the given values
- *
- * @param {vec2} out the receiving vector
- * @param {Number} x X component
- * @param {Number} y Y component
- * @returns {vec2} out
- */
-
-function set(out, x, y) {
-  out[0] = x;
-  out[1] = y;
-  return out;
-}
-/**
- * Adds two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {vec2} out
- */
-
-function add(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  return out;
-}
-/**
- * Subtracts vector b from vector a
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {vec2} out
- */
-
-function subtract(out, a, b) {
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  return out;
-}
-/**
- * Multiplies two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {vec2} out
- */
-
-function multiply(out, a, b) {
-  out[0] = a[0] * b[0];
-  out[1] = a[1] * b[1];
-  return out;
-}
-/**
- * Divides two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {vec2} out
- */
-
-function divide(out, a, b) {
-  out[0] = a[0] / b[0];
-  out[1] = a[1] / b[1];
-  return out;
-}
-/**
- * Math.ceil the components of a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a vector to ceil
- * @returns {vec2} out
- */
-
-function ceil(out, a) {
-  out[0] = Math.ceil(a[0]);
-  out[1] = Math.ceil(a[1]);
-  return out;
-}
-/**
- * Math.floor the components of a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a vector to floor
- * @returns {vec2} out
- */
-
-function floor(out, a) {
-  out[0] = Math.floor(a[0]);
-  out[1] = Math.floor(a[1]);
-  return out;
-}
-/**
- * Returns the minimum of two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {vec2} out
- */
-
-function min(out, a, b) {
-  out[0] = Math.min(a[0], b[0]);
-  out[1] = Math.min(a[1], b[1]);
-  return out;
-}
-/**
- * Returns the maximum of two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {vec2} out
- */
-
-function max(out, a, b) {
-  out[0] = Math.max(a[0], b[0]);
-  out[1] = Math.max(a[1], b[1]);
-  return out;
-}
-/**
- * Math.round the components of a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a vector to round
- * @returns {vec2} out
- */
-
-function round(out, a) {
-  out[0] = Math.round(a[0]);
-  out[1] = Math.round(a[1]);
-  return out;
-}
-/**
- * Scales a vec2 by a scalar number
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the vector to scale
- * @param {Number} b amount to scale the vector by
- * @returns {vec2} out
- */
-
-function scale(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  return out;
-}
-/**
- * Adds two vec2's after scaling the second operand by a scalar value
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @param {Number} scale the amount to scale b by before adding
- * @returns {vec2} out
- */
-
-function scaleAndAdd(out, a, b, scale) {
-  out[0] = a[0] + b[0] * scale;
-  out[1] = a[1] + b[1] * scale;
-  return out;
-}
-/**
- * Calculates the euclidian distance between two vec2's
- *
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {Number} distance between a and b
- */
-
-function distance(a, b) {
-  var x = b[0] - a[0],
-      y = b[1] - a[1];
-  return Math.hypot(x, y);
-}
-/**
- * Calculates the squared euclidian distance between two vec2's
- *
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {Number} squared distance between a and b
- */
-
-function squaredDistance(a, b) {
-  var x = b[0] - a[0],
-      y = b[1] - a[1];
-  return x * x + y * y;
-}
-/**
- * Calculates the length of a vec2
- *
- * @param {ReadonlyVec2} a vector to calculate length of
- * @returns {Number} length of a
- */
-
-function length(a) {
-  var x = a[0],
-      y = a[1];
-  return Math.hypot(x, y);
-}
-/**
- * Calculates the squared length of a vec2
- *
- * @param {ReadonlyVec2} a vector to calculate squared length of
- * @returns {Number} squared length of a
- */
-
-function squaredLength(a) {
-  var x = a[0],
-      y = a[1];
-  return x * x + y * y;
-}
-/**
- * Negates the components of a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a vector to negate
- * @returns {vec2} out
- */
-
-function negate(out, a) {
-  out[0] = -a[0];
-  out[1] = -a[1];
-  return out;
-}
-/**
- * Returns the inverse of the components of a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a vector to invert
- * @returns {vec2} out
- */
-
-function inverse(out, a) {
-  out[0] = 1.0 / a[0];
-  out[1] = 1.0 / a[1];
-  return out;
-}
-/**
- * Normalize a vec2
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a vector to normalize
- * @returns {vec2} out
- */
-
-function normalize(out, a) {
-  var x = a[0],
-      y = a[1];
-  var len = x * x + y * y;
-
-  if (len > 0) {
-    //TODO: evaluate use of glm_invsqrt here?
-    len = 1 / Math.sqrt(len);
-  }
-
-  out[0] = a[0] * len;
-  out[1] = a[1] * len;
-  return out;
-}
-/**
- * Calculates the dot product of two vec2's
- *
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {Number} dot product of a and b
- */
-
-function dot$1(a, b) {
-  return a[0] * b[0] + a[1] * b[1];
-}
-/**
- * Computes the cross product of two vec2's
- * Note that the cross product must by definition produce a 3D vector
- *
- * @param {vec3} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @returns {vec3} out
- */
-
-function cross(out, a, b) {
-  var z = a[0] * b[1] - a[1] * b[0];
-  out[0] = out[1] = 0;
-  out[2] = z;
-  return out;
-}
-/**
- * Performs a linear interpolation between two vec2's
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the first operand
- * @param {ReadonlyVec2} b the second operand
- * @param {Number} t interpolation amount, in the range [0-1], between the two inputs
- * @returns {vec2} out
- */
-
-function lerp(out, a, b, t) {
-  var ax = a[0],
-      ay = a[1];
-  out[0] = ax + t * (b[0] - ax);
-  out[1] = ay + t * (b[1] - ay);
-  return out;
-}
-/**
- * Generates a random vector with the given scale
- *
- * @param {vec2} out the receiving vector
- * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
- * @returns {vec2} out
- */
-
-function random(out, scale) {
-  scale = scale || 1.0;
-  var r = RANDOM() * 2.0 * Math.PI;
-  out[0] = Math.cos(r) * scale;
-  out[1] = Math.sin(r) * scale;
-  return out;
-}
-/**
- * Transforms the vec2 with a mat2
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the vector to transform
- * @param {ReadonlyMat2} m matrix to transform with
- * @returns {vec2} out
- */
-
-function transformMat2(out, a, m) {
-  var x = a[0],
-      y = a[1];
-  out[0] = m[0] * x + m[2] * y;
-  out[1] = m[1] * x + m[3] * y;
-  return out;
-}
-/**
- * Transforms the vec2 with a mat2d
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the vector to transform
- * @param {ReadonlyMat2d} m matrix to transform with
- * @returns {vec2} out
- */
-
-function transformMat2d(out, a, m) {
-  var x = a[0],
-      y = a[1];
-  out[0] = m[0] * x + m[2] * y + m[4];
-  out[1] = m[1] * x + m[3] * y + m[5];
-  return out;
-}
-/**
- * Transforms the vec2 with a mat3
- * 3rd vector component is implicitly '1'
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the vector to transform
- * @param {ReadonlyMat3} m matrix to transform with
- * @returns {vec2} out
- */
-
-function transformMat3(out, a, m) {
-  var x = a[0],
-      y = a[1];
-  out[0] = m[0] * x + m[3] * y + m[6];
-  out[1] = m[1] * x + m[4] * y + m[7];
-  return out;
-}
-/**
- * Transforms the vec2 with a mat4
- * 3rd vector component is implicitly '0'
- * 4th vector component is implicitly '1'
- *
- * @param {vec2} out the receiving vector
- * @param {ReadonlyVec2} a the vector to transform
- * @param {ReadonlyMat4} m matrix to transform with
- * @returns {vec2} out
- */
-
-function transformMat4(out, a, m) {
-  var x = a[0];
-  var y = a[1];
-  out[0] = m[0] * x + m[4] * y + m[12];
-  out[1] = m[1] * x + m[5] * y + m[13];
-  return out;
-}
-/**
- * Rotate a 2D vector
- * @param {vec2} out The receiving vec2
- * @param {ReadonlyVec2} a The vec2 point to rotate
- * @param {ReadonlyVec2} b The origin of the rotation
- * @param {Number} rad The angle of rotation in radians
- * @returns {vec2} out
- */
-
-function rotate(out, a, b, rad) {
-  //Translate point to the origin
-  var p0 = a[0] - b[0],
-      p1 = a[1] - b[1],
-      sinC = Math.sin(rad),
-      cosC = Math.cos(rad); //perform rotation and translate to correct position
-
-  out[0] = p0 * cosC - p1 * sinC + b[0];
-  out[1] = p0 * sinC + p1 * cosC + b[1];
-  return out;
-}
-/**
- * Get the angle between two 2D vectors
- * @param {ReadonlyVec2} a The first operand
- * @param {ReadonlyVec2} b The second operand
- * @returns {Number} The angle in radians
- */
-
-function angle(a, b) {
-  var x1 = a[0],
-      y1 = a[1],
-      x2 = b[0],
-      y2 = b[1],
-      // mag is the product of the magnitudes of a and b
-  mag = Math.sqrt(x1 * x1 + y1 * y1) * Math.sqrt(x2 * x2 + y2 * y2),
-      // mag &&.. short circuits if mag == 0
-  cosine = mag && (x1 * x2 + y1 * y2) / mag; // Math.min(Math.max(cosine, -1), 1) clamps the cosine between -1 and 1
-
-  return Math.acos(Math.min(Math.max(cosine, -1), 1));
-}
-/**
- * Set the components of a vec2 to zero
- *
- * @param {vec2} out the receiving vector
- * @returns {vec2} out
- */
-
-function zero(out) {
-  out[0] = 0.0;
-  out[1] = 0.0;
-  return out;
-}
-/**
- * Returns a string representation of a vector
- *
- * @param {ReadonlyVec2} a vector to represent as a string
- * @returns {String} string representation of the vector
- */
-
-function str(a) {
-  return "vec2(" + a[0] + ", " + a[1] + ")";
-}
-/**
- * Returns whether or not the vectors exactly have the same elements in the same position (when compared with ===)
- *
- * @param {ReadonlyVec2} a The first vector.
- * @param {ReadonlyVec2} b The second vector.
- * @returns {Boolean} True if the vectors are equal, false otherwise.
- */
-
-function exactEquals(a, b) {
-  return a[0] === b[0] && a[1] === b[1];
-}
-/**
- * Returns whether or not the vectors have approximately the same elements in the same position.
- *
- * @param {ReadonlyVec2} a The first vector.
- * @param {ReadonlyVec2} b The second vector.
- * @returns {Boolean} True if the vectors are equal, false otherwise.
- */
-
-function equals$1(a, b) {
-  var a0 = a[0],
-      a1 = a[1];
-  var b0 = b[0],
-      b1 = b[1];
-  return Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1));
-}
-/**
- * Alias for {@link vec2.length}
- * @function
- */
-
-var len = length;
-/**
- * Alias for {@link vec2.subtract}
- * @function
- */
-
-var sub = subtract;
-/**
- * Alias for {@link vec2.multiply}
- * @function
- */
-
-var mul = multiply;
-/**
- * Alias for {@link vec2.divide}
- * @function
- */
-
-var div = divide;
-/**
- * Alias for {@link vec2.distance}
- * @function
- */
-
-var dist = distance;
-/**
- * Alias for {@link vec2.squaredDistance}
- * @function
- */
-
-var sqrDist = squaredDistance;
-/**
- * Alias for {@link vec2.squaredLength}
- * @function
- */
-
-var sqrLen = squaredLength;
-/**
- * Perform some operation over an array of vec2s.
- *
- * @param {Array} a the array of vectors to iterate over
- * @param {Number} stride Number of elements between the start of each vec2. If 0 assumes tightly packed
- * @param {Number} offset Number of elements to skip at the beginning of the array
- * @param {Number} count Number of vec2s to iterate over. If 0 iterates over entire array
- * @param {Function} fn Function to call for each vector in the array
- * @param {Object} [arg] additional argument to pass to fn
- * @returns {Array} a
- * @function
- */
-
-var forEach = function () {
-  var vec = create();
-  return function (a, stride, offset, count, fn, arg) {
-    var i, l;
-
-    if (!stride) {
-      stride = 2;
-    }
-
-    if (!offset) {
-      offset = 0;
-    }
-
-    if (count) {
-      l = Math.min(count * stride + offset, a.length);
-    } else {
-      l = a.length;
-    }
-
-    for (i = offset; i < l; i += stride) {
-      vec[0] = a[i];
-      vec[1] = a[i + 1];
-      fn(vec, vec, arg);
-      a[i] = vec[0];
-      a[i + 1] = vec[1];
-    }
-
-    return a;
-  };
-}();
-
-var vec2 = /*#__PURE__*/Object.freeze({
-__proto__: null,
-add: add,
-angle: angle,
-ceil: ceil,
-clone: clone,
-copy: copy,
-create: create,
-cross: cross,
-dist: dist,
-distance: distance,
-div: div,
-divide: divide,
-dot: dot$1,
-equals: equals$1,
-exactEquals: exactEquals,
-floor: floor,
-forEach: forEach,
-fromValues: fromValues,
-inverse: inverse,
-len: len,
-length: length,
-lerp: lerp,
-max: max,
-min: min,
-mul: mul,
-multiply: multiply,
-negate: negate,
-normalize: normalize,
-random: random,
-rotate: rotate,
-round: round,
-scale: scale,
-scaleAndAdd: scaleAndAdd,
-set: set,
-sqrDist: sqrDist,
-sqrLen: sqrLen,
-squaredDistance: squaredDistance,
-squaredLength: squaredLength,
-str: str,
-sub: sub,
-subtract: subtract,
-transformMat2: transformMat2,
-transformMat2d: transformMat2d,
-transformMat3: transformMat3,
-transformMat4: transformMat4,
-zero: zero
-});
+})();
 
 /**
  * A style layer that defines a circle
@@ -25056,7 +16780,7 @@ class CircleStyleLayer extends StyleLayer {
             translateDistance(this.paint.get('circle-translate'));
     }
     queryIntersectsFeature(queryGeometry, feature, featureState, geometry, zoom, transform, pixelsToTileUnits, pixelPosMatrix) {
-        const translatedPolygon = translate$4(queryGeometry, this.paint.get('circle-translate'), this.paint.get('circle-translate-anchor'), transform.angle, pixelsToTileUnits);
+        const translatedPolygon = translate$1(queryGeometry, this.paint.get('circle-translate'), this.paint.get('circle-translate-anchor'), transform.angle, pixelsToTileUnits);
         const radius = this.paint.get('circle-radius').evaluate(feature, featureState);
         const stroke = this.paint.get('circle-stroke-width').evaluate(feature, featureState);
         const size = radius + stroke;
@@ -25071,7 +16795,7 @@ class CircleStyleLayer extends StyleLayer {
             for (const point of ring) {
                 const transformedPoint = alignWithMap ? point : projectPoint(point, pixelPosMatrix);
                 let adjustedSize = transformedSize;
-                const projectedCenter = transformMat4$1([], [point.x, point.y, 0, 1], pixelPosMatrix);
+                const projectedCenter = transformMat4([], [point.x, point.y, 0, 1], pixelPosMatrix);
                 if (this.paint.get('circle-pitch-scale') === 'viewport' && this.paint.get('circle-pitch-alignment') === 'map') {
                     adjustedSize *= projectedCenter[3] / transform.cameraToCenterDistance;
                 }
@@ -25086,7 +16810,7 @@ class CircleStyleLayer extends StyleLayer {
     }
 }
 function projectPoint(p, pixelPosMatrix) {
-    const point = transformMat4$1([], [p.x, p.y, 0, 1], pixelPosMatrix);
+    const point = transformMat4([], [p.x, p.y, 0, 1], pixelPosMatrix);
     return new Point(point[0] / point[3], point[1] / point[3]);
 }
 function projectQueryGeometry$1(queryGeometry, pixelPosMatrix) {
@@ -25933,35 +17657,6 @@ function createNode(i, x, y) {
     };
 }
 
-// return a percentage difference between the polygon area and its triangulation area;
-// used to verify correctness of triangulation
-function deviation(data, holeIndices, dim, triangles) {
-    const hasHoles = holeIndices && holeIndices.length;
-    const outerLen = hasHoles ? holeIndices[0] * dim : data.length;
-
-    let polygonArea = Math.abs(signedArea(data, 0, outerLen, dim));
-    if (hasHoles) {
-        for (let i = 0, len = holeIndices.length; i < len; i++) {
-            const start = holeIndices[i] * dim;
-            const end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
-            polygonArea -= Math.abs(signedArea(data, start, end, dim));
-        }
-    }
-
-    let trianglesArea = 0;
-    for (let i = 0; i < triangles.length; i += 3) {
-        const a = triangles[i] * dim;
-        const b = triangles[i + 1] * dim;
-        const c = triangles[i + 2] * dim;
-        trianglesArea += Math.abs(
-            (data[a] - data[c]) * (data[b + 1] - data[a + 1]) -
-            (data[a] - data[b]) * (data[c + 1] - data[a + 1]));
-    }
-
-    return polygonArea === 0 && trianglesArea === 0 ? 0 :
-        Math.abs((trianglesArea - polygonArea) / polygonArea);
-}
-
 function signedArea(data, start, end, dim) {
     let sum = 0;
     for (let i = start, j = end - dim; i < end; i += dim) {
@@ -25969,27 +17664,6 @@ function signedArea(data, start, end, dim) {
         j = i;
     }
     return sum;
-}
-
-// turn a polygon in a multi-dimensional array form (e.g. as in GeoJSON) into a form Earcut accepts
-function flatten(data) {
-    const vertices = [];
-    const holes = [];
-    const dimensions = data[0][0].length;
-    let holeIndex = 0;
-    let prevLen = 0;
-
-    for (const ring of data) {
-        for (const p of ring) {
-            for (let d = 0; d < dimensions; d++) vertices.push(p[d]);
-        }
-        if (prevLen) {
-            holeIndex += prevLen;
-            holes.push(holeIndex);
-        }
-        prevLen = ring.length;
-    }
-    return {vertices, holes, dimensions};
 }
 
 function hasPattern(type, layers, options) {
@@ -26208,7 +17882,7 @@ class FillStyleLayer extends StyleLayer {
         return translateDistance(this.paint.get('fill-translate'));
     }
     queryIntersectsFeature(queryGeometry, feature, featureState, geometry, zoom, transform, pixelsToTileUnits) {
-        const translatedPolygon = translate$4(queryGeometry, this.paint.get('fill-translate'), this.paint.get('fill-translate-anchor'), transform.angle, pixelsToTileUnits);
+        const translatedPolygon = translate$1(queryGeometry, this.paint.get('fill-translate'), this.paint.get('fill-translate-anchor'), transform.angle, pixelsToTileUnits);
         return polygonIntersectsMultiPolygon(translatedPolygon, geometry);
     }
     isTileClipped() {
@@ -26233,7 +17907,6 @@ var hasRequiredVectortilefeature;
 function requireVectortilefeature () {
 	if (hasRequiredVectortilefeature) return vectortilefeature;
 	hasRequiredVectortilefeature = 1;
-	'use strict';
 
 	var Point = requirePointGeometry();
 
@@ -26475,7 +18148,6 @@ var hasRequiredVectortilelayer;
 function requireVectortilelayer () {
 	if (hasRequiredVectortilelayer) return vectortilelayer;
 	hasRequiredVectortilelayer = 1;
-	'use strict';
 
 	var VectorTileFeature = requireVectortilefeature();
 
@@ -26545,7 +18217,6 @@ var hasRequiredVectortile;
 function requireVectortile () {
 	if (hasRequiredVectortile) return vectortile;
 	hasRequiredVectortile = 1;
-	'use strict';
 
 	var VectorTileLayer = requireVectortilelayer();
 
@@ -26790,8 +18461,6 @@ const getPaint$4 = () => paint$4 = paint$4 || new Properties({
 });
 var properties$4 = ({ get paint() { return getPaint$4(); } });
 
-class Point3D extends Point {
-}
 class FillExtrusionStyleLayer extends StyleLayer {
     constructor(layer) {
         super(layer, properties$4);
@@ -26806,7 +18475,7 @@ class FillExtrusionStyleLayer extends StyleLayer {
         return true;
     }
     queryIntersectsFeature(queryGeometry, feature, featureState, geometry, zoom, transform, pixelsToTileUnits, pixelPosMatrix) {
-        const translatedPolygon = translate$4(queryGeometry, this.paint.get('fill-extrusion-translate'), this.paint.get('fill-extrusion-translate-anchor'), transform.angle, pixelsToTileUnits);
+        const translatedPolygon = translate$1(queryGeometry, this.paint.get('fill-extrusion-translate'), this.paint.get('fill-extrusion-translate-anchor'), transform.angle, pixelsToTileUnits);
         const height = this.paint.get('fill-extrusion-height').evaluate(feature, featureState);
         const base = this.paint.get('fill-extrusion-base').evaluate(feature, featureState);
         const projectedQueryGeometry = projectQueryGeometry(translatedPolygon, pixelPosMatrix, transform, 0);
@@ -26946,7 +18615,7 @@ function projectQueryGeometry(queryGeometry, pixelPosMatrix, transform, z) {
     const projectedQueryGeometry = [];
     for (const p of queryGeometry) {
         const v = [p.x, p.y, z, 1];
-        transformMat4$1(v, v, pixelPosMatrix);
+        transformMat4(v, v, pixelPosMatrix);
         projectedQueryGeometry.push(new Point(v[0] / v[3], v[1] / v[3]));
     }
     return projectedQueryGeometry;
@@ -27491,7 +19160,7 @@ class LineStyleLayer extends StyleLayer {
         return width / 2 + Math.abs(offset) + translateDistance(this.paint.get('line-translate'));
     }
     queryIntersectsFeature(queryGeometry, feature, featureState, geometry, zoom, transform, pixelsToTileUnits) {
-        const translatedPolygon = translate$4(queryGeometry, this.paint.get('line-translate'), this.paint.get('line-translate-anchor'), transform.angle, pixelsToTileUnits);
+        const translatedPolygon = translate$1(queryGeometry, this.paint.get('line-translate'), this.paint.get('line-translate-anchor'), transform.angle, pixelsToTileUnits);
         const halfWidth = pixelsToTileUnits / 2 * getLineWidth(this.paint.get('line-width').evaluate(feature, featureState), this.paint.get('line-gap-width').evaluate(feature, featureState));
         const lineOffset = this.paint.get('line-offset').evaluate(feature, featureState);
         if (lineOffset) {
@@ -27520,7 +19189,7 @@ const symbolLayoutAttributes = createLayout([
 const dynamicLayoutAttributes = createLayout([
     { name: 'a_projected_pos', components: 3, type: 'Float32' }
 ], 4);
-const placementOpacityAttributes = createLayout([
+createLayout([
     { name: 'a_fade_opacity', components: 1, type: 'Uint32' }
 ], 4);
 const collisionVertexAttributes = createLayout([
@@ -27528,7 +19197,7 @@ const collisionVertexAttributes = createLayout([
     { name: 'a_shift', components: 2, type: 'Float32' },
     { name: 'a_box_real', components: 2, type: 'Int16' },
 ]);
-const collisionBox = createLayout([
+createLayout([
     // the box is centered around the anchor point
     { type: 'Int16', name: 'anchorPointX' },
     { type: 'Int16', name: 'anchorPointY' },
@@ -27554,10 +19223,10 @@ const collisionCircleLayout = createLayout([
     { name: 'a_radius', components: 1, type: 'Float32' },
     { name: 'a_flags', components: 2, type: 'Int16' }
 ], 4);
-const quadTriangle = createLayout([
+createLayout([
     { name: 'triangle', components: 3, type: 'Uint16' },
 ]);
-const placement = createLayout([
+createLayout([
     { type: 'Int16', name: 'anchorX' },
     { type: 'Int16', name: 'anchorY' },
     { type: 'Uint16', name: 'glyphStartIndex' },
@@ -27576,7 +19245,7 @@ const placement = createLayout([
     { type: 'Uint32', name: 'crossTileID' },
     { type: 'Int16', name: 'associatedIconIndex' }
 ]);
-const symbolInstance = createLayout([
+createLayout([
     { type: 'Int16', name: 'anchorX' },
     { type: 'Int16', name: 'anchorY' },
     { type: 'Int16', name: 'rightJustifiedTextSymbolIndex' },
@@ -27606,15 +19275,15 @@ const symbolInstance = createLayout([
     { type: 'Uint16', name: 'textAnchorOffsetStartIndex' },
     { type: 'Uint16', name: 'textAnchorOffsetEndIndex' }
 ]);
-const glyphOffset = createLayout([
+createLayout([
     { type: 'Float32', name: 'offsetX' }
 ]);
-const lineVertex = createLayout([
+createLayout([
     { type: 'Int16', name: 'x' },
     { type: 'Int16', name: 'y' },
     { type: 'Int16', name: 'tileUnitDistanceFromAnchor' }
 ]);
-const textAnchorOffset = createLayout([
+createLayout([
     { type: 'Uint16', name: 'textAnchor' },
     { type: 'Float32', components: 2, name: 'textOffset' }
 ]);
@@ -27911,7 +19580,6 @@ var hasRequiredPbf;
 function requirePbf () {
 	if (hasRequiredPbf) return pbf;
 	hasRequiredPbf = 1;
-	'use strict';
 
 	pbf = Pbf;
 
@@ -28796,13 +20464,13 @@ class ImageAtlas {
 register('ImagePosition', ImagePosition);
 register('ImageAtlas', ImageAtlas);
 
-exports.WritingMode = void 0;
+exports.ah = void 0;
 (function (WritingMode) {
     WritingMode[WritingMode["none"] = 0] = "none";
     WritingMode[WritingMode["horizontal"] = 1] = "horizontal";
     WritingMode[WritingMode["vertical"] = 2] = "vertical";
     WritingMode[WritingMode["horizontalOnly"] = 3] = "horizontalOnly";
-})(exports.WritingMode || (exports.WritingMode = {}));
+})(exports.ah || (exports.ah = {}));
 const SHAPING_DEFAULT_OFFSET = -17;
 function isEmpty(positionedLines) {
     for (const line of positionedLines) {
@@ -28942,7 +20610,7 @@ function breakLines(input, lineBreakPoints) {
 }
 function shapeText(text, glyphMap, glyphPositions, imagePositions, defaultFontStack, maxWidth, lineHeight, textAnchor, textJustify, spacing, translate, writingMode, allowVerticalPlacement, layoutTextSize, layoutTextSizeThisZoom) {
     const logicalInput = TaggedString.fromFeature(text, defaultFontStack);
-    if (writingMode === exports.WritingMode.vertical) {
+    if (writingMode === exports.ah.vertical) {
         logicalInput.verticalizePunctuation();
     }
     let lines;
@@ -29193,7 +20861,7 @@ function shapeLines(shaping, glyphMap, glyphPositions, imagePositions, lines, li
             let rect = null;
             let imageName = null;
             let verticalAdvance = ONE_EM;
-            const vertical = !(writingMode === exports.WritingMode.horizontal ||
+            const vertical = !(writingMode === exports.ah.horizontal ||
                 // Don't verticalize glyphs that have no upright orientation if vertical placement is disabled.
                 (!allowVerticalPlacement && !charHasUprightVerticalOrientation(codePoint)) ||
                 // If vertical placement is enabled, don't verticalize glyphs that
@@ -29356,11 +21024,7 @@ function applyTextFit(shapedIcon) {
             iconHeight = newIconHeight;
         }
     }
-    else {
-        // If neither textFitHeight nor textFitWidth are proportional then
-        // there is no effect since the content rectangle should be precisely
-        // matched to the content
-    }
+    else ;
     return { x1: iconLeft, y1: iconTop, x2: iconLeft + iconWidth, y2: iconTop + iconHeight };
 }
 function fitIconToText(shapedIcon, shapedText, textFit, padding, iconOffset, fontScale) {
@@ -29644,8 +21308,8 @@ class SymbolBucket {
         this.hasRTLText = false;
         this.sortKeyRanges = [];
         this.collisionCircleArray = [];
-        this.placementInvProjMatrix = identity$2([]);
-        this.placementViewportMatrix = identity$2([]);
+        this.placementInvProjMatrix = identity([]);
+        this.placementViewportMatrix = identity([]);
         const layer = this.layers[0];
         const unevaluatedLayoutValues = layer._unevaluatedLayout._values;
         this.textSizeData = getSizeData(this.zoom, unevaluatedLayoutValues['text-size']);
@@ -29662,7 +21326,7 @@ class SymbolBucket {
         const zOrderByViewportY = zOrder === 'viewport-y' || (zOrder === 'auto' && !this.sortFeaturesByKey);
         this.sortFeaturesByY = zOrderByViewportY && this.canOverlap;
         if (layout.get('symbol-placement') === 'point') {
-            this.writingModes = layout.get('text-writing-mode').map(wm => exports.WritingMode[wm]);
+            this.writingModes = layout.get('text-writing-mode').map(wm => exports.ah[wm]);
         }
         this.stateDependentLayerIds = this.layers.filter((l) => l.isStateDependent()).map((l) => l.id);
         this.sourceID = options.sourceID;
@@ -29771,7 +21435,7 @@ class SymbolBucket {
             if (text) {
                 const fontStack = textFont.evaluate(evaluationFeature, {}, canonical).join(',');
                 const textAlongLine = layout.get('text-rotation-alignment') !== 'viewport' && layout.get('symbol-placement') !== 'point';
-                this.allowVerticalPlacement = this.writingModes && this.writingModes.indexOf(exports.WritingMode.vertical) >= 0;
+                this.allowVerticalPlacement = this.writingModes && this.writingModes.indexOf(exports.ah.vertical) >= 0;
                 for (const section of text.sections) {
                     if (!section.image) {
                         const doesAllowVerticalWritingMode = allowsVerticalWritingMode(text.toString());
@@ -29866,7 +21530,7 @@ class SymbolBucket {
         const segment = arrays.segments.prepareSegment(4 * quads.length, layoutVertexArray, indexArray, this.canOverlap ? feature.sortKey : undefined);
         const glyphOffsetArrayStart = this.glyphOffsetArray.length;
         const vertexStartIndex = segment.vertexLength;
-        const angle = (this.allowVerticalPlacement && writingMode === exports.WritingMode.vertical) ? Math.PI / 2 : 0;
+        const angle = (this.allowVerticalPlacement && writingMode === exports.ah.vertical) ? Math.PI / 2 : 0;
         const sections = feature.text && feature.text.sections;
         for (let i = 0; i < quads.length; i++) {
             const { tl, tr, bl, br, tex, pixelOffsetTL, pixelOffsetBR, minFontScaleX, minFontScaleY, glyphOffset, isSDF, sectionIndex } = quads[i];
@@ -30946,47 +22610,6 @@ class MercatorCoordinate {
         return 1 / earthCircumference * mercatorScale(latFromMercatorY(this.y));
     }
 }
-
-/**
- * getURL
- *
- * @param    {String}  baseUrl  Base url of the WMS server
- * @param    {String}  layer    Layer name
- * @param    {Number}  x        Tile coordinate x
- * @param    {Number}  y        Tile coordinate y
- * @param    {Number}  z        Tile zoom
- * @param    {Object}  [options]
- * @param    {String}  [options.format='image/png']
- * @param    {String}  [options.service='WMS']
- * @param    {String}  [options.version='1.1.1']
- * @param    {String}  [options.request='GetMap']
- * @param    {String}  [options.srs='EPSG:3857']
- * @param    {Number}  [options.width='256']
- * @param    {Number}  [options.height='256']
- * @returns  {String}  url
- * @example
- * var baseUrl = 'http://geodata.state.nj.us/imagerywms/Natural2015';
- * var layer = 'Natural2015';
- * var url = whoots.getURL(baseUrl, layer, 154308, 197167, 19);
- */
-function getURL(baseUrl, layer, x, y, z, options) {
-    options = options || {};
-
-    var url = baseUrl + '?' + [
-        'bbox='    + getTileBBox(x, y, z),
-        'format='  + (options.format || 'image/png'),
-        'service=' + (options.service || 'WMS'),
-        'version=' + (options.version || '1.1.1'),
-        'request=' + (options.request || 'GetMap'),
-        'srs='     + (options.srs || 'EPSG:3857'),
-        'width='   + (options.width || 256),
-        'height='  + (options.height || 256),
-        'layers='  + layer
-    ].join('&');
-
-    return url;
-}
-
 
 /**
  * getTileBBox
@@ -32394,7 +24017,7 @@ function getCentroidCell(polygon) {
     return new Cell(x / area, y / area, 0, polygon);
 }
 
-exports.TextAnchorEnum = void 0;
+exports.aq = void 0;
 (function (TextAnchorEnum) {
     TextAnchorEnum[TextAnchorEnum["center"] = 1] = "center";
     TextAnchorEnum[TextAnchorEnum["left"] = 2] = "left";
@@ -32405,7 +24028,7 @@ exports.TextAnchorEnum = void 0;
     TextAnchorEnum[TextAnchorEnum["top-right"] = 7] = "top-right";
     TextAnchorEnum[TextAnchorEnum["bottom-left"] = 8] = "bottom-left";
     TextAnchorEnum[TextAnchorEnum["bottom-right"] = 9] = "bottom-right";
-})(exports.TextAnchorEnum || (exports.TextAnchorEnum = {}));
+})(exports.aq || (exports.aq = {}));
 // The radial offset is to the edge of the text box
 // In the horizontal direction, the edge of the text box is where glyphs start
 // But in the vertical direction, the glyphs appear to "start" at the baseline
@@ -32609,7 +24232,7 @@ function performSymbolLayout(args) {
                     // Vertical POI label placement is meant to be used for scripts that support vertical
                     // writing mode, thus, default left justification is used. If Latin
                     // scripts would need to be supported, this should take into account other justifications.
-                    shapedTextOrientations.vertical = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, 'left', spacingIfAllowed, textOffset, exports.WritingMode.vertical, true, layoutTextSize, layoutTextSizeThisZoom);
+                    shapedTextOrientations.vertical = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, 'left', spacingIfAllowed, textOffset, exports.ah.vertical, true, layoutTextSize, layoutTextSizeThisZoom);
                 }
             };
             // If this layer uses text-variable-anchor, generate shapings for all justification possibilities.
@@ -32635,7 +24258,7 @@ function performSymbolLayout(args) {
                     else {
                         // If using text-variable-anchor for the layer, we use a center anchor for all shapings and apply
                         // the offsets for the anchor in the placement step.
-                        const shaping = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, 'center', justification, spacingIfAllowed, textOffset, exports.WritingMode.horizontal, false, layoutTextSize, layoutTextSizeThisZoom);
+                        const shaping = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, 'center', justification, spacingIfAllowed, textOffset, exports.ah.horizontal, false, layoutTextSize, layoutTextSizeThisZoom);
                         if (shaping) {
                             shapedTextOrientations.horizontal[justification] = shaping;
                             singleLine = shaping.positionedLines.length === 1;
@@ -32649,14 +24272,14 @@ function performSymbolLayout(args) {
                     textJustify = getAnchorJustification(textAnchor);
                 }
                 // Horizontal point or line label.
-                const shaping = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, textJustify, spacingIfAllowed, textOffset, exports.WritingMode.horizontal, false, layoutTextSize, layoutTextSizeThisZoom);
+                const shaping = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, textJustify, spacingIfAllowed, textOffset, exports.ah.horizontal, false, layoutTextSize, layoutTextSizeThisZoom);
                 if (shaping)
                     shapedTextOrientations.horizontal[textJustify] = shaping;
                 // Vertical point label (if allowVerticalPlacement is enabled).
                 addVerticalShapingForPointLabelIfNeeded();
                 // Verticalized line label.
                 if (allowsVerticalWritingMode(unformattedText) && textAlongLine && keepUpright) {
-                    shapedTextOrientations.vertical = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, textJustify, spacingIfAllowed, textOffset, exports.WritingMode.vertical, false, layoutTextSize, layoutTextSizeThisZoom);
+                    shapedTextOrientations.vertical = shapeText(text, args.glyphMap, args.glyphPositions, args.imagePositions, fontstack, maxWidth, lineHeight, textAnchor, textJustify, spacingIfAllowed, textOffset, exports.ah.vertical, false, layoutTextSize, layoutTextSizeThisZoom);
                 }
             }
         }
@@ -32796,7 +24419,7 @@ function addTextVariableAnchorOffsets(textAnchorOffsets, variableAnchorOffset) {
     const values = variableAnchorOffset === null || variableAnchorOffset === void 0 ? void 0 : variableAnchorOffset.values;
     if ((values === null || values === void 0 ? void 0 : values.length) > 0) {
         for (let i = 0; i < values.length; i += 2) {
-            const anchor = exports.TextAnchorEnum[values[i]];
+            const anchor = exports.aq[values[i]];
             const offset = values[i + 1];
             textAnchorOffsets.emplaceBack(anchor, offset[0], offset[1]);
         }
@@ -32893,13 +24516,13 @@ function addSymbol(bucket, anchor, line, shapedTextOrientations, shapedIcon, ima
                 warnOnce(`${bucket.layerIds[0]}: Value for "icon-size" is >= ${MAX_GLYPH_ICON_SIZE}. Reduce your "icon-size".`);
             }
         }
-        bucket.addSymbols(bucket.icon, iconQuads, iconSizeData, iconOffset, iconAlongLine, feature, exports.WritingMode.none, anchor, lineArray.lineStartIndex, lineArray.lineLength, 
+        bucket.addSymbols(bucket.icon, iconQuads, iconSizeData, iconOffset, iconAlongLine, feature, exports.ah.none, anchor, lineArray.lineStartIndex, lineArray.lineLength, 
         // The icon itself does not have an associated symbol since the text isn't placed yet
         -1, canonical);
         placedIconSymbolIndex = bucket.icon.placedSymbolArray.length - 1;
         if (verticalIconQuads) {
             numVerticalIconVertices = verticalIconQuads.length * 4;
-            bucket.addSymbols(bucket.icon, verticalIconQuads, iconSizeData, iconOffset, iconAlongLine, feature, exports.WritingMode.vertical, anchor, lineArray.lineStartIndex, lineArray.lineLength, 
+            bucket.addSymbols(bucket.icon, verticalIconQuads, iconSizeData, iconOffset, iconAlongLine, feature, exports.ah.vertical, anchor, lineArray.lineStartIndex, lineArray.lineLength, 
             // The icon itself does not have an associated symbol since the text isn't placed yet
             -1, canonical);
             verticalPlacedIconSymbolIndex = bucket.icon.placedSymbolArray.length - 1;
@@ -32916,13 +24539,13 @@ function addSymbol(bucket, anchor, line, shapedTextOrientations, shapedIcon, ima
             textCollisionFeature = new CollisionFeature(collisionBoxArray, anchor, featureIndex, sourceLayerIndex, bucketIndex, shaping, textBoxScale, textPadding, textAlongLine, textRotate);
         }
         const singleLine = shaping.positionedLines.length === 1;
-        numHorizontalGlyphVertices += addTextVertices(bucket, anchor, shaping, imageMap, layer, textAlongLine, feature, textOffset, lineArray, shapedTextOrientations.vertical ? exports.WritingMode.horizontal : exports.WritingMode.horizontalOnly, singleLine ? justifications : [justification], placedTextSymbolIndices, placedIconSymbolIndex, sizes, canonical);
+        numHorizontalGlyphVertices += addTextVertices(bucket, anchor, shaping, imageMap, layer, textAlongLine, feature, textOffset, lineArray, shapedTextOrientations.vertical ? exports.ah.horizontal : exports.ah.horizontalOnly, singleLine ? justifications : [justification], placedTextSymbolIndices, placedIconSymbolIndex, sizes, canonical);
         if (singleLine) {
             break;
         }
     }
     if (shapedTextOrientations.vertical) {
-        numVerticalGlyphVertices += addTextVertices(bucket, anchor, shapedTextOrientations.vertical, imageMap, layer, textAlongLine, feature, textOffset, lineArray, exports.WritingMode.vertical, ['vertical'], placedTextSymbolIndices, verticalPlacedIconSymbolIndex, sizes, canonical);
+        numVerticalGlyphVertices += addTextVertices(bucket, anchor, shapedTextOrientations.vertical, imageMap, layer, textAlongLine, feature, textOffset, lineArray, exports.ah.vertical, ['vertical'], placedTextSymbolIndices, verticalPlacedIconSymbolIndex, sizes, canonical);
     }
     const textBoxStartIndex = textCollisionFeature ? textCollisionFeature.boxStartIndex : bucket.collisionBoxArray.length;
     const textBoxEndIndex = textCollisionFeature ? textCollisionFeature.boxEndIndex : bucket.collisionBoxArray.length;
@@ -33304,12 +24927,12 @@ function sqDist(ax, ay, bx, by) {
     return dx * dx + dy * dy;
 }
 
-exports.PerformanceMarkers = void 0;
+exports.bg = void 0;
 (function (PerformanceMarkers) {
     PerformanceMarkers["create"] = "create";
     PerformanceMarkers["load"] = "load";
     PerformanceMarkers["fullLoad"] = "fullLoad";
-})(exports.PerformanceMarkers || (exports.PerformanceMarkers = {}));
+})(exports.bg || (exports.bg = {}));
 let lastFrameTime = null;
 let frameTimes = [];
 const minFramerateTarget = 60;
@@ -33333,13 +24956,13 @@ const PerformanceUtils = {
         frameTimes = [];
         performance.clearMeasures(loadTimeKey);
         performance.clearMeasures(fullLoadTimeKey);
-        for (const marker in exports.PerformanceMarkers) {
-            performance.clearMarks(exports.PerformanceMarkers[marker]);
+        for (const marker in exports.bg) {
+            performance.clearMarks(exports.bg[marker]);
         }
     },
     getPerformanceMetrics() {
-        performance.measure(loadTimeKey, exports.PerformanceMarkers.create, exports.PerformanceMarkers.load);
-        performance.measure(fullLoadTimeKey, exports.PerformanceMarkers.create, exports.PerformanceMarkers.fullLoad);
+        performance.measure(loadTimeKey, exports.bg.create, exports.bg.load);
+        performance.measure(fullLoadTimeKey, exports.bg.create, exports.bg.fullLoad);
         const loadTime = performance.getEntriesByName(loadTimeKey)[0].duration;
         const fullLoadTime = performance.getEntriesByName(fullLoadTimeKey)[0].duration;
         const totalFrames = frameTimes.length;
@@ -33389,177 +25012,163 @@ class RequestPerformance {
         return resourceTimingData;
     }
 }
-var performance$1 = performance;
 
-exports.AJAXError = AJAXError;
-exports.Actor = Actor;
-exports.AlphaImage = AlphaImage;
-exports.CanonicalTileID = CanonicalTileID;
-exports.CollisionBoxArray = CollisionBoxArray;
-exports.CollisionCircleLayoutArray = CollisionCircleLayoutArray;
-exports.Color = Color;
-exports.DEMData = DEMData;
-exports.DataConstantProperty = DataConstantProperty;
-exports.DictionaryCoder = DictionaryCoder;
-exports.EXTENT = EXTENT;
-exports.ErrorEvent = ErrorEvent;
-exports.EvaluationParameters = EvaluationParameters;
-exports.Event = Event;
-exports.Evented = Evented;
-exports.FeatureIndex = FeatureIndex;
-exports.FillBucket = FillBucket;
-exports.FillExtrusionBucket = FillExtrusionBucket;
-exports.GLOBAL_DISPATCHER_ID = GLOBAL_DISPATCHER_ID;
-exports.GeoJSONFeature = GeoJSONFeature;
-exports.HEATMAP_FULL_RENDER_FBO_KEY = HEATMAP_FULL_RENDER_FBO_KEY;
-exports.ImageAtlas = ImageAtlas;
-exports.ImagePosition = ImagePosition;
-exports.KDBush = KDBush;
-exports.LineBucket = LineBucket;
-exports.LineStripIndexArray = LineStripIndexArray;
-exports.LngLat = LngLat;
-exports.MercatorCoordinate = MercatorCoordinate;
-exports.ONE_EM = ONE_EM;
-exports.OverscaledTileID = OverscaledTileID;
-exports.PerformanceUtils = PerformanceUtils;
-exports.Point = Point;
-exports.Pos3dArray = Pos3dArray;
-exports.PosArray = PosArray;
-exports.Properties = Properties;
-exports.Protobuf = Protobuf;
-exports.QuadTriangleArray = QuadTriangleArray;
-exports.RGBAImage = RGBAImage;
-exports.RasterBoundsArray = RasterBoundsArray;
-exports.RequestPerformance = RequestPerformance;
-exports.SegmentVector = SegmentVector;
-exports.SymbolBucket = SymbolBucket;
-exports.Transitionable = Transitionable;
-exports.TriangleIndexArray = TriangleIndexArray;
-exports.Uniform1f = Uniform1f;
-exports.Uniform1i = Uniform1i;
-exports.Uniform2f = Uniform2f;
-exports.Uniform3f = Uniform3f;
-exports.Uniform4f = Uniform4f;
-exports.UniformColor = UniformColor;
-exports.UniformMatrix4f = UniformMatrix4f;
-exports.UnwrappedTileID = UnwrappedTileID;
-exports.ValidationError = ValidationError;
-exports.ZoomHistory = ZoomHistory;
-exports.__awaiter = __awaiter;
-exports.add = add$4;
-exports.addDynamicAttributes = addDynamicAttributes;
-exports.addProtocol = addProtocol;
-exports.arrayBufferToImage = arrayBufferToImage;
-exports.arrayBufferToImageBitmap = arrayBufferToImageBitmap;
-exports.bezier = bezier$1;
-exports.clamp = clamp$1;
-exports.clipLine = clipLine;
-exports.clone = clone$5;
-exports.clone$1 = clone$9;
-exports.clone$2 = clone$4;
-exports.collisionCircleLayout = collisionCircleLayout;
-exports.config = config;
-exports.copy = copy$5;
-exports.create = create$5;
-exports.create$1 = create$6;
-exports.create$2 = create$8;
-exports.createAbortError = createAbortError;
-exports.createExpression = createExpression;
-exports.createFilter = createFilter;
-exports.createLayout = createLayout;
-exports.createStyleLayer = createStyleLayer;
-exports.cross = cross$2;
-exports.deepEqual = deepEqual$1;
-exports.defaultEasing = defaultEasing;
-exports.degreesToRadians = degreesToRadians;
-exports.derefLayers = derefLayers;
-exports.diffStyles = diffStyles;
-exports.dot = dot$5;
-exports.dot$1 = dot$4;
-exports.earthRadius = earthRadius;
-exports.emitValidationErrors = emitValidationErrors;
-exports.emptyStyle = emptyStyle;
-exports.equals = equals$6;
-exports.evaluateSizeForFeature = evaluateSizeForFeature;
-exports.evaluateSizeForZoom = evaluateSizeForZoom;
-exports.exactEquals = exactEquals$5;
-exports.extend = extend;
-exports.filterObject = filterObject;
-exports.findLineIntersection = findLineIntersection;
-exports.fromRotation = fromRotation$2;
-exports.fromScaling = fromScaling;
-exports.getAABB = getAABB;
-exports.getAnchorAlignment = getAnchorAlignment;
-exports.getAnchorJustification = getAnchorJustification;
-exports.getArrayBuffer = getArrayBuffer;
-exports.getDefaultExportFromCjs = getDefaultExportFromCjs$1;
-exports.getImageData = getImageData;
-exports.getJSON = getJSON;
-exports.getOverlapMode = getOverlapMode;
-exports.getProtocol = getProtocol;
-exports.getReferrer = getReferrer;
-exports.getVideo = getVideo;
-exports.groupByLayout = groupByLayout;
-exports.identity = identity$2;
-exports.interpolate = interpolate;
-exports.invert = invert$2;
-exports.isAbortError = isAbortError;
-exports.isImageBitmap = isImageBitmap;
-exports.isInBoundsForZoomLngLat = isInBoundsForZoomLngLat;
-exports.isOffscreenCanvasDistorted = isOffscreenCanvasDistorted;
-exports.isSafari = isSafari;
-exports.isWorker = isWorker;
-exports.keysDifference = keysDifference;
-exports.makeRequest = makeRequest;
-exports.mapObject = mapObject;
-exports.mercatorXfromLng = mercatorXfromLng;
-exports.mercatorYfromLat = mercatorYfromLat;
-exports.mercatorZfromAltitude = mercatorZfromAltitude;
-exports.mul = mul$5;
-exports.mul$1 = mul$3;
-exports.multiply = multiply$5;
-exports.mvt = mvt;
-exports.nextPowerOfTwo = nextPowerOfTwo;
-exports.normalize = normalize$4;
-exports.offscreenCanvasSupported = offscreenCanvasSupported;
-exports.ortho = ortho;
-exports.parseCacheControl = parseCacheControl;
-exports.parseGlyphPbf = parseGlyphPbf;
-exports.performSymbolLayout = performSymbolLayout;
-exports.perspective = perspective;
-exports.pick = pick;
-exports.polygonIntersectsPolygon = polygonIntersectsPolygon;
-exports.potpack = potpack;
-exports.readImageUsingVideoFrame = readImageUsingVideoFrame;
-exports.register = register;
-exports.removeProtocol = removeProtocol;
-exports.renderColorRamp = renderColorRamp;
-exports.requirePbf = requirePbf;
-exports.requirePointGeometry = requirePointGeometry;
-exports.requireVectorTile = requireVectorTile;
-exports.rotate = rotate$4;
-exports.rotateX = rotateX$3;
-exports.rotateZ = rotateZ$3;
-exports.rtlWorkerPlugin = rtlWorkerPlugin;
-exports.sameOrigin = sameOrigin;
-exports.scale = scale$5;
-exports.scale$1 = scale$4;
-exports.sphericalToCartesian = sphericalToCartesian;
-exports.sqrLen = sqrLen;
-exports.sub = sub$2;
-exports.toEvaluationFeature = toEvaluationFeature;
-exports.transformMat3 = transformMat3$1;
-exports.transformMat4 = transformMat4$1;
-exports.transformMat4$1 = transformMat4;
-exports.translate = translate$1;
-exports.uniqueId = uniqueId;
-exports.v8Spec = v8Spec;
-exports.validateCustomStyleLayer = validateCustomStyleLayer;
-exports.validateLight = validateLight;
-exports.validateSky = validateSky;
-exports.validateStyle = validateStyle;
-exports.warnOnce = warnOnce;
-exports.wrap = wrap;
+exports.$ = RasterBoundsArray;
+exports.A = ARRAY_TYPE;
+exports.B = validateSky;
+exports.C = isSafari;
+exports.D = DataConstantProperty;
+exports.E = Evented;
+exports.F = Actor;
+exports.G = GLOBAL_DISPATCHER_ID;
+exports.H = create$1;
+exports.I = ImagePosition;
+exports.J = translate;
+exports.K = scale;
+exports.L = multiply$1;
+exports.M = pick;
+exports.N = LngLat;
+exports.O = mercatorXfromLng;
+exports.P = Point;
+exports.Q = mercatorYfromLat;
+exports.R = RGBAImage;
+exports.S = OverscaledTileID;
+exports.T = Transitionable;
+exports.U = offscreenCanvasSupported;
+exports.V = isOffscreenCanvasDistorted;
+exports.W = readImageUsingVideoFrame;
+exports.X = EXTENT;
+exports.Y = createLayout;
+exports.Z = MercatorCoordinate;
+exports._ = __awaiter;
+exports.a = config;
+exports.a$ = equals$1;
+exports.a0 = SegmentVector;
+exports.a1 = CanonicalTileID;
+exports.a2 = ValidationError;
+exports.a3 = getVideo;
+exports.a4 = uniqueId;
+exports.a5 = CollisionBoxArray;
+exports.a6 = SymbolBucket;
+exports.a7 = createFilter;
+exports.a8 = toEvaluationFeature;
+exports.a9 = GeoJSONFeature;
+exports.aA = createStyleLayer;
+exports.aB = clone$1;
+exports.aC = diffStyles;
+exports.aD = validateCustomStyleLayer;
+exports.aE = deepEqual$1;
+exports.aF = mapObject;
+exports.aG = filterObject;
+exports.aH = Uniform1i;
+exports.aI = Uniform1f;
+exports.aJ = UniformMatrix4f;
+exports.aK = Uniform4f;
+exports.aL = UniformColor;
+exports.aM = Color;
+exports.aN = Uniform3f;
+exports.aO = Uniform2f;
+exports.aP = ortho;
+exports.aQ = mul$1;
+exports.aR = CollisionCircleLayoutArray;
+exports.aS = collisionCircleLayout;
+exports.aT = QuadTriangleArray;
+exports.aU = HEATMAP_FULL_RENDER_FBO_KEY;
+exports.aV = nextPowerOfTwo;
+exports.aW = renderColorRamp;
+exports.aX = PosArray;
+exports.aY = TriangleIndexArray;
+exports.aZ = LineStripIndexArray;
+exports.a_ = exactEquals;
+exports.aa = parseCacheControl;
+exports.ab = keysDifference;
+exports.ac = clamp$1;
+exports.ad = rotateZ;
+exports.ae = clone;
+exports.af = transformMat4;
+exports.ag = evaluateSizeForZoom;
+exports.ai = evaluateSizeForFeature;
+exports.aj = addDynamicAttributes;
+exports.ak = findLineIntersection;
+exports.al = clipLine;
+exports.am = polygonIntersectsPolygon;
+exports.an = identity;
+exports.ao = getAABB;
+exports.ap = ONE_EM;
+exports.ar = getOverlapMode;
+exports.as = invert;
+exports.at = getAnchorJustification;
+exports.au = getAnchorAlignment;
+exports.av = KDBush;
+exports.aw = emptyStyle;
+exports.ax = ZoomHistory;
+exports.ay = getReferrer;
+exports.az = derefLayers;
+exports.b = isImageBitmap;
+exports.b0 = copy;
+exports.b1 = mul;
+exports.b2 = dot$1;
+exports.b3 = wrap;
+exports.b4 = UnwrappedTileID;
+exports.b5 = mercatorZfromAltitude;
+exports.b6 = perspective;
+exports.b7 = rotateX;
+exports.b8 = bezier;
+exports.b9 = defaultEasing;
+exports.bA = requireVectorTile;
+exports.bB = requirePbf;
+exports.bC = isAbortError;
+exports.bD = createExpression;
+exports.bE = rtlWorkerPlugin;
+exports.ba = degreesToRadians;
+exports.bb = isInBoundsForZoomLngLat;
+exports.bc = fromScaling;
+exports.bd = Pos3dArray;
+exports.be = earthRadius;
+exports.bf = PerformanceUtils;
+exports.bh = AJAXError;
+exports.bi = addProtocol;
+exports.bj = removeProtocol;
+exports.bk = groupByLayout;
+exports.bl = register;
+exports.bm = DictionaryCoder;
+exports.bn = FeatureIndex;
+exports.bo = ImageAtlas;
+exports.bp = performSymbolLayout;
+exports.bq = LineBucket;
+exports.br = FillBucket;
+exports.bs = FillExtrusionBucket;
+exports.bt = mvt;
+exports.bu = Protobuf;
+exports.bv = RequestPerformance;
+exports.bw = getImageData;
+exports.bx = DEMData;
+exports.by = getDefaultExportFromCjs$1;
+exports.bz = requirePointGeometry;
+exports.c = createAbortError;
+exports.d = arrayBufferToImageBitmap;
+exports.e = extend;
+exports.f = arrayBufferToImage;
+exports.g = getProtocol;
+exports.h = getJSON;
+exports.i = isWorker;
+exports.j = ErrorEvent;
+exports.k = Event;
+exports.l = getArrayBuffer;
+exports.m = makeRequest;
+exports.n = parseGlyphPbf;
+exports.o = AlphaImage;
+exports.p = potpack;
+exports.q = Properties;
+exports.r = validateLight;
+exports.s = sameOrigin;
+exports.t = emitValidationErrors;
+exports.u = validateStyle;
+exports.v = v8Spec;
+exports.w = warnOnce;
+exports.x = sphericalToCartesian;
+exports.y = interpolate;
+exports.z = EvaluationParameters;
 
 }));
 
@@ -33580,8 +25189,8 @@ class StyleLayerIndex {
     update(layerConfigs, removedIds) {
         for (const layerConfig of layerConfigs) {
             this._layerConfigs[layerConfig.id] = layerConfig;
-            const layer = this._layers[layerConfig.id] = performance.createStyleLayer(layerConfig);
-            layer._featureFilter = performance.createFilter(layer.filter);
+            const layer = this._layers[layerConfig.id] = performance.aA(layerConfig);
+            layer._featureFilter = performance.a7(layer.filter);
             if (this.keyCache[layerConfig.id])
                 delete this.keyCache[layerConfig.id];
         }
@@ -33591,7 +25200,7 @@ class StyleLayerIndex {
             delete this._layers[id];
         }
         this.familiesBySource = {};
-        const groups = performance.groupByLayout(Object.values(this._layerConfigs), this.keyCache);
+        const groups = performance.bk(Object.values(this._layerConfigs), this.keyCache);
         for (const layerConfigs of groups) {
             const layers = layerConfigs.map((layerConfig) => this._layers[layerConfig.id]);
             const layer = layers[0];
@@ -33635,8 +25244,8 @@ class GlyphAtlas {
                 stackPositions[id] = { rect: bin, metrics: src.metrics };
             }
         }
-        const { w, h } = performance.potpack(bins);
-        const image = new performance.AlphaImage({ width: w || 1, height: h || 1 });
+        const { w, h } = performance.p(bins);
+        const image = new performance.o({ width: w || 1, height: h || 1 });
         for (const stack in stacks) {
             const glyphs = stacks[stack];
             for (const id in glyphs) {
@@ -33644,18 +25253,18 @@ class GlyphAtlas {
                 if (!src || src.bitmap.width === 0 || src.bitmap.height === 0)
                     continue;
                 const bin = positions[stack][id].rect;
-                performance.AlphaImage.copy(src.bitmap, image, { x: 0, y: 0 }, { x: bin.x + padding, y: bin.y + padding }, src.bitmap);
+                performance.o.copy(src.bitmap, image, { x: 0, y: 0 }, { x: bin.x + padding, y: bin.y + padding }, src.bitmap);
             }
         }
         this.image = image;
         this.positions = positions;
     }
 }
-performance.register('GlyphAtlas', GlyphAtlas);
+performance.bl('GlyphAtlas', GlyphAtlas);
 
 class WorkerTile {
     constructor(params) {
-        this.tileID = new performance.OverscaledTileID(params.tileID.overscaledZ, params.tileID.wrap, params.tileID.canonical.z, params.tileID.canonical.x, params.tileID.canonical.y);
+        this.tileID = new performance.S(params.tileID.overscaledZ, params.tileID.wrap, params.tileID.canonical.z, params.tileID.canonical.x, params.tileID.canonical.y);
         this.uid = params.uid;
         this.zoom = params.zoom;
         this.pixelRatio = params.pixelRatio;
@@ -33669,12 +25278,12 @@ class WorkerTile {
         this.inFlightDependencies = [];
     }
     parse(data, layerIndex, availableImages, actor) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             this.status = 'parsing';
             this.data = data;
-            this.collisionBoxArray = new performance.CollisionBoxArray();
-            const sourceLayerCoder = new performance.DictionaryCoder(Object.keys(data.layers).sort());
-            const featureIndex = new performance.FeatureIndex(this.tileID, this.promoteId);
+            this.collisionBoxArray = new performance.a5();
+            const sourceLayerCoder = new performance.bm(Object.keys(data.layers).sort());
+            const featureIndex = new performance.bn(this.tileID, this.promoteId);
             featureIndex.bucketLayerIDs = [];
             const buckets = {};
             const options = {
@@ -33691,7 +25300,7 @@ class WorkerTile {
                     continue;
                 }
                 if (sourceLayer.version === 1) {
-                    performance.warnOnce(`Vector tile source "${this.source}" layer "${sourceLayerId}" ` +
+                    performance.w(`Vector tile source "${this.source}" layer "${sourceLayerId}" ` +
                         'does not use vector tile spec v2 and therefore may have some rendering errors.');
                 }
                 const sourceLayerIndex = sourceLayerCoder.encode(sourceLayerId);
@@ -33704,7 +25313,7 @@ class WorkerTile {
                 for (const family of layerFamilies[sourceLayerId]) {
                     const layer = family[0];
                     if (layer.source !== this.source) {
-                        performance.warnOnce(`layer.source = ${layer.source} does not equal this.source = ${this.source}`);
+                        performance.w(`layer.source = ${layer.source} does not equal this.source = ${this.source}`);
                     }
                     if (layer.minzoom && this.zoom < Math.floor(layer.minzoom))
                         continue;
@@ -33729,7 +25338,7 @@ class WorkerTile {
             }
             // options.glyphDependencies looks like: {"SomeFontName":{"10":true,"32":true}}
             // this line makes an object like: {"SomeFontName":[10,32]}
-            const stacks = performance.mapObject(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
+            const stacks = performance.aF(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
             this.inFlightDependencies.forEach((request) => request === null || request === void 0 ? void 0 : request.abort());
             this.inFlightDependencies = [];
             let getGlyphsPromise = Promise.resolve({});
@@ -33754,12 +25363,12 @@ class WorkerTile {
             }
             const [glyphMap, iconMap, patternMap] = yield Promise.all([getGlyphsPromise, getIconsPromise, getPatternsPromise]);
             const glyphAtlas = new GlyphAtlas(glyphMap);
-            const imageAtlas = new performance.ImageAtlas(iconMap, patternMap);
+            const imageAtlas = new performance.bo(iconMap, patternMap);
             for (const key in buckets) {
                 const bucket = buckets[key];
-                if (bucket instanceof performance.SymbolBucket) {
+                if (bucket instanceof performance.a6) {
                     recalculateLayers(bucket.layers, this.zoom, availableImages);
-                    performance.performSymbolLayout({
+                    performance.bp({
                         bucket,
                         glyphMap,
                         glyphPositions: glyphAtlas.positions,
@@ -33770,9 +25379,9 @@ class WorkerTile {
                     });
                 }
                 else if (bucket.hasPattern &&
-                    (bucket instanceof performance.LineBucket ||
-                        bucket instanceof performance.FillBucket ||
-                        bucket instanceof performance.FillExtrusionBucket)) {
+                    (bucket instanceof performance.bq ||
+                        bucket instanceof performance.br ||
+                        bucket instanceof performance.bs)) {
                     recalculateLayers(bucket.layers, this.zoom, availableImages);
                     bucket.addFeatures(options, this.tileID.canonical, imageAtlas.patternPositions);
                 }
@@ -33794,7 +25403,7 @@ class WorkerTile {
 }
 function recalculateLayers(layers, zoom, availableImages) {
     // Layers are shared and may have been used by a WorkerTile with a different zoom.
-    const parameters = new performance.EvaluationParameters(zoom);
+    const parameters = new performance.z(zoom);
     for (const layer of layers) {
         layer.recalculate(parameters, availableImages);
     }
@@ -33825,10 +25434,10 @@ class VectorTileWorkerSource {
      * Loads a vector tile
      */
     loadVectorTile(params, abortController) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
-            const response = yield performance.getArrayBuffer(params.request, abortController);
+        return performance._(this, void 0, void 0, function* () {
+            const response = yield performance.l(params.request, abortController);
             try {
-                const vectorTile = new performance.mvt.VectorTile(new performance.Protobuf(response.data));
+                const vectorTile = new performance.bt.VectorTile(new performance.bu(response.data));
                 return {
                     vectorTile,
                     rawData: response.data,
@@ -33856,10 +25465,10 @@ class VectorTileWorkerSource {
      * a `params.url` property) for fetching and producing a VectorTile object.
      */
     loadTile(params) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             const tileUid = params.uid;
             const perf = (params && params.request && params.request.collectResourceTiming) ?
-                new performance.RequestPerformance(params.request) : false;
+                new performance.bv(params.request) : false;
             const workerTile = new WorkerTile(params);
             this.loading[tileUid] = workerTile;
             const abortController = new AbortController();
@@ -33892,7 +25501,7 @@ class VectorTileWorkerSource {
                 try {
                     const result = yield parsePromise;
                     // Transferring a copy of rawTileData because the worker needs to retain its copy.
-                    return performance.extend({ rawTileData: rawTileData.slice(0) }, result, cacheControl, resourceTiming);
+                    return performance.e({ rawTileData: rawTileData.slice(0) }, result, cacheControl, resourceTiming);
                 }
                 finally {
                     delete this.fetching[tileUid];
@@ -33910,7 +25519,7 @@ class VectorTileWorkerSource {
      * Implements {@link WorkerSource#reloadTile}.
      */
     reloadTile(params) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             const uid = params.uid;
             if (!this.loaded || !this.loaded[uid]) {
                 throw new Error('Should not be trying to reload a tile that was never loaded or has been removed');
@@ -33924,7 +25533,7 @@ class VectorTileWorkerSource {
                 if (this.fetching[uid]) {
                     const { rawTileData, cacheControl, resourceTiming } = this.fetching[uid];
                     delete this.fetching[uid];
-                    parseResult = performance.extend({ rawTileData: rawTileData.slice(0) }, result, cacheControl, resourceTiming);
+                    parseResult = performance.e({ rawTileData: rawTileData.slice(0) }, result, cacheControl, resourceTiming);
                 }
                 else {
                     parseResult = result;
@@ -33942,7 +25551,7 @@ class VectorTileWorkerSource {
      * Implements {@link WorkerSource#abortTile}.
      */
     abortTile(params) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             const loading = this.loading;
             const uid = params.uid;
             if (loading && loading[uid] && loading[uid].abort) {
@@ -33955,7 +25564,7 @@ class VectorTileWorkerSource {
      * Implements {@link WorkerSource#removeTile}.
      */
     removeTile(params) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             if (this.loaded && this.loaded[params.uid]) {
                 delete this.loaded[params.uid];
             }
@@ -33968,14 +25577,14 @@ class RasterDEMTileWorkerSource {
         this.loaded = {};
     }
     loadTile(params) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             const { uid, encoding, rawImageData, redFactor, greenFactor, blueFactor, baseShift } = params;
             const width = rawImageData.width + 2;
             const height = rawImageData.height + 2;
-            const imagePixels = performance.isImageBitmap(rawImageData) ?
-                new performance.RGBAImage({ width, height }, yield performance.getImageData(rawImageData, -1, -1, width, height)) :
+            const imagePixels = performance.b(rawImageData) ?
+                new performance.R({ width, height }, yield performance.bw(rawImageData, -1, -1, width, height)) :
                 rawImageData;
-            const dem = new performance.DEMData(uid, imagePixels, encoding, redFactor, greenFactor, blueFactor, baseShift);
+            const dem = new performance.bx(uid, imagePixels, encoding, redFactor, greenFactor, blueFactor, baseShift);
             this.loaded = this.loaded || {};
             this.loaded[uid] = dem;
             return dem;
@@ -34042,13 +25651,13 @@ function requireGeojsonRewind () {
 }
 
 var geojsonRewindExports = requireGeojsonRewind();
-var rewind$1 = /*@__PURE__*/performance.getDefaultExportFromCjs(geojsonRewindExports);
+var rewind$1 = /*@__PURE__*/performance.by(geojsonRewindExports);
 
-const toGeoJSON = performance.mvt.VectorTileFeature.prototype.toGeoJSON;
+const toGeoJSON = performance.bt.VectorTileFeature.prototype.toGeoJSON;
 class FeatureWrapper {
     constructor(feature) {
         this._feature = feature;
-        this.extent = performance.EXTENT;
+        this.extent = performance.X;
         this.type = feature.type;
         this.properties = feature.tags;
         // If the feature has a top-level `id` property, copy it over, but only
@@ -34065,7 +25674,7 @@ class FeatureWrapper {
         if (this._feature.type === 1) {
             const geometry = [];
             for (const point of this._feature.geometry) {
-                geometry.push([new performance.Point(point[0], point[1])]);
+                geometry.push([new performance.P(point[0], point[1])]);
             }
             return geometry;
         }
@@ -34074,7 +25683,7 @@ class FeatureWrapper {
             for (const ring of this._feature.geometry) {
                 const newRing = [];
                 for (const point of ring) {
-                    newRing.push(new performance.Point(point[0], point[1]));
+                    newRing.push(new performance.P(point[0], point[1]));
                 }
                 geometry.push(newRing);
             }
@@ -34089,7 +25698,7 @@ class GeoJSONWrapper {
     constructor(features) {
         this.layers = { '_geojsonTileLayer': this };
         this.name = '_geojsonTileLayer';
-        this.extent = performance.EXTENT;
+        this.extent = performance.X;
         this.length = features.length;
         this._features = features;
     }
@@ -34098,7 +25707,7 @@ class GeoJSONWrapper {
     }
 }
 
-var vtPbf$1 = {exports: {}};
+var vtPbf = {exports: {}};
 
 var geojson_wrapper;
 var hasRequiredGeojson_wrapper;
@@ -34106,10 +25715,9 @@ var hasRequiredGeojson_wrapper;
 function requireGeojson_wrapper () {
 	if (hasRequiredGeojson_wrapper) return geojson_wrapper;
 	hasRequiredGeojson_wrapper = 1;
-	'use strict';
 
-	var Point = performance.requirePointGeometry();
-	var VectorTileFeature = performance.requireVectorTile().VectorTileFeature;
+	var Point = performance.bz();
+	var VectorTileFeature = performance.bA().VectorTileFeature;
 
 	geojson_wrapper = GeoJSONWrapper;
 
@@ -34176,20 +25784,18 @@ function requireGeojson_wrapper () {
 	return geojson_wrapper;
 }
 
-var vtPbf = vtPbf$1.exports;
-
 var hasRequiredVtPbf;
 
 function requireVtPbf () {
-	if (hasRequiredVtPbf) return vtPbf$1.exports;
+	if (hasRequiredVtPbf) return vtPbf.exports;
 	hasRequiredVtPbf = 1;
-	var Pbf = performance.requirePbf();
+	var Pbf = performance.bB();
 	var GeoJSONWrapper = requireGeojson_wrapper();
 
-	vtPbf$1.exports = fromVectorTileJs;
-	vtPbf$1.exports.fromVectorTileJs = fromVectorTileJs;
-	vtPbf$1.exports.fromGeojsonVt = fromGeojsonVt;
-	vtPbf$1.exports.GeoJSONWrapper = GeoJSONWrapper;
+	vtPbf.exports = fromVectorTileJs;
+	vtPbf.exports.fromVectorTileJs = fromVectorTileJs;
+	vtPbf.exports.fromGeojsonVt = fromGeojsonVt;
+	vtPbf.exports.GeoJSONWrapper = GeoJSONWrapper;
 
 	/**
 	 * Serialize a vector-tile-js-created tile to pbf
@@ -34362,11 +25968,11 @@ function requireVtPbf () {
 	    }
 	  }
 	}
-	return vtPbf$1.exports;
+	return vtPbf.exports;
 }
 
 var vtPbfExports = requireVtPbf();
-var vtpbf = /*@__PURE__*/performance.getDefaultExportFromCjs(vtPbfExports);
+var vtpbf = /*@__PURE__*/performance.by(vtPbfExports);
 
 const defaultOptions$1 = {
     minZoom: 0,   // min zoom to generate clusters on
@@ -34587,7 +26193,7 @@ class Supercluster {
     }
 
     _createTree(data) {
-        const tree = new performance.KDBush(data.length / this.stride | 0, this.options.nodeSize, Float32Array);
+        const tree = new performance.av(data.length / this.stride | 0, this.options.nodeSize, Float32Array);
         for (let i = 0; i < data.length; i += this.stride) tree.add(data[i], data[i + 1]);
         tree.finish();
         tree.data = data;
@@ -35702,9 +27308,7 @@ function isUpdateableGeoJSON(data, promoteId) {
 }
 function toUpdateable(data, promoteId) {
     const result = new Map();
-    if (data == null) {
-        // empty result
-    }
+    if (data == null) ;
     else if (data.type === 'Feature') {
         result.set(getFeatureId(data, promoteId), data);
     }
@@ -35787,7 +27391,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
         this._dataUpdateable = new Map();
     }
     loadVectorTile(params, _abortController) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             const canonical = params.tileID.canonical;
             if (!this._geoJSONIndex) {
                 throw new Error('Unable to parse the data into a cluster or geojson');
@@ -35825,11 +27429,11 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * @returns a promise that resolves when the data is loaded and parsed into a GeoJSON object
      */
     loadData(params) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             var _a;
             (_a = this._pendingRequest) === null || _a === void 0 ? void 0 : _a.abort();
             const perf = (params && params.request && params.request.collectResourceTiming) ?
-                new performance.RequestPerformance(params.request) : false;
+                new performance.bv(params.request) : false;
             this._pendingRequest = new AbortController();
             try {
                 this._pendingData = this.loadAndProcessGeoJSON(params, this._pendingRequest);
@@ -35851,7 +27455,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
             }
             catch (err) {
                 delete this._pendingRequest;
-                if (performance.isAbortError(err)) {
+                if (performance.bC(err)) {
                     return { abandoned: true };
                 }
                 throw err;
@@ -35864,7 +27468,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * @returns a promise which is resolved with the source's actual GeoJSON
      */
     getData() {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             return this._pendingData;
         });
     }
@@ -35896,7 +27500,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * @returns a promise that is resolved with the processes GeoJSON
      */
     loadAndProcessGeoJSON(params, abortController) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             let data = yield this.loadGeoJSON(params, abortController);
             delete this._pendingRequest;
             if (typeof data !== 'object') {
@@ -35904,7 +27508,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
             }
             rewind$1(data, true);
             if (params.filter) {
-                const compiled = performance.createExpression(params.filter, { type: 'boolean', 'property-type': 'data-driven', overridable: false, transition: false });
+                const compiled = performance.bD(params.filter, { type: 'boolean', 'property-type': 'data-driven', overridable: false, transition: false });
                 if (compiled.result === 'error')
                     throw new Error(compiled.value.map(err => `${err.key}: ${err.message}`).join(', '));
                 const features = data.features.filter(feature => compiled.value.evaluate({ zoom: 0 }, feature));
@@ -35924,10 +27528,10 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * @returns a promise that resolves when the data is loaded
      */
     loadGeoJSON(params, abortController) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             const { promoteId } = params;
             if (params.request) {
-                const response = yield performance.getJSON(params.request, abortController);
+                const response = yield performance.h(params.request, abortController);
                 this._dataUpdateable = isUpdateableGeoJSON(response.data, promoteId) ? toUpdateable(response.data, promoteId) : undefined;
                 return response.data;
             }
@@ -35952,7 +27556,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
         });
     }
     removeSource(_params) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             if (this._pendingRequest) {
                 this._pendingRequest.abort();
             }
@@ -35978,8 +27582,8 @@ function getSuperclusterOptions({ superclusterOptions, clusterProperties }) {
     const propertyNames = Object.keys(clusterProperties);
     for (const key of propertyNames) {
         const [operator, mapExpression] = clusterProperties[key];
-        const mapExpressionParsed = performance.createExpression(mapExpression);
-        const reduceExpressionParsed = performance.createExpression(typeof operator === 'string' ? [operator, ['accumulated'], ['get', key]] : operator);
+        const mapExpressionParsed = performance.bD(mapExpression);
+        const reduceExpressionParsed = performance.bD(typeof operator === 'string' ? [operator, ['accumulated'], ['get', key]] : operator);
         mapExpressions[key] = mapExpressionParsed.value;
         reduceExpressions[key] = reduceExpressionParsed.value;
     }
@@ -36007,7 +27611,7 @@ function getSuperclusterOptions({ superclusterOptions, clusterProperties }) {
 class Worker {
     constructor(self) {
         this.self = self;
-        this.actor = new performance.Actor(self);
+        this.actor = new performance.F(self);
         this.layerIndexes = {};
         this.availableImages = {};
         this.workerSources = {};
@@ -36019,28 +27623,28 @@ class Worker {
             }
             this.externalWorkerSourceTypes[name] = WorkerSource;
         };
-        this.self.addProtocol = performance.addProtocol;
-        this.self.removeProtocol = performance.removeProtocol;
+        this.self.addProtocol = performance.bi;
+        this.self.removeProtocol = performance.bj;
         // This is invoked by the RTL text plugin when the download via the `importScripts` call has finished, and the code has been parsed.
         this.self.registerRTLTextPlugin = (rtlTextPlugin) => {
-            if (performance.rtlWorkerPlugin.isParsed()) {
+            if (performance.bE.isParsed()) {
                 throw new Error('RTL text plugin already registered.');
             }
-            performance.rtlWorkerPlugin.setMethods(rtlTextPlugin);
+            performance.bE.setMethods(rtlTextPlugin);
         };
         this.actor.registerMessageHandler("LDT" /* MessageType.loadDEMTile */, (mapId, params) => {
             return this._getDEMWorkerSource(mapId, params.source).loadTile(params);
         });
-        this.actor.registerMessageHandler("RDT" /* MessageType.removeDEMTile */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("RDT" /* MessageType.removeDEMTile */, (mapId, params) => performance._(this, void 0, void 0, function* () {
             this._getDEMWorkerSource(mapId, params.source).removeTile(params);
         }));
-        this.actor.registerMessageHandler("GCEZ" /* MessageType.getClusterExpansionZoom */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("GCEZ" /* MessageType.getClusterExpansionZoom */, (mapId, params) => performance._(this, void 0, void 0, function* () {
             return this._getWorkerSource(mapId, params.type, params.source).getClusterExpansionZoom(params);
         }));
-        this.actor.registerMessageHandler("GCC" /* MessageType.getClusterChildren */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("GCC" /* MessageType.getClusterChildren */, (mapId, params) => performance._(this, void 0, void 0, function* () {
             return this._getWorkerSource(mapId, params.type, params.source).getClusterChildren(params);
         }));
-        this.actor.registerMessageHandler("GCL" /* MessageType.getClusterLeaves */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("GCL" /* MessageType.getClusterLeaves */, (mapId, params) => performance._(this, void 0, void 0, function* () {
             return this._getWorkerSource(mapId, params.type, params.source).getClusterLeaves(params);
         }));
         this.actor.registerMessageHandler("LD" /* MessageType.loadData */, (mapId, params) => {
@@ -36061,7 +27665,7 @@ class Worker {
         this.actor.registerMessageHandler("RMT" /* MessageType.removeTile */, (mapId, params) => {
             return this._getWorkerSource(mapId, params.type, params.source).removeTile(params);
         });
-        this.actor.registerMessageHandler("RS" /* MessageType.removeSource */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("RS" /* MessageType.removeSource */, (mapId, params) => performance._(this, void 0, void 0, function* () {
             if (!this.workerSources[mapId] ||
                 !this.workerSources[mapId][params.type] ||
                 !this.workerSources[mapId][params.type][params.source]) {
@@ -36073,33 +27677,33 @@ class Worker {
                 worker.removeSource(params);
             }
         }));
-        this.actor.registerMessageHandler("RM" /* MessageType.removeMap */, (mapId) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("RM" /* MessageType.removeMap */, (mapId) => performance._(this, void 0, void 0, function* () {
             delete this.layerIndexes[mapId];
             delete this.availableImages[mapId];
             delete this.workerSources[mapId];
             delete this.demWorkerSources[mapId];
         }));
-        this.actor.registerMessageHandler("SR" /* MessageType.setReferrer */, (_mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("SR" /* MessageType.setReferrer */, (_mapId, params) => performance._(this, void 0, void 0, function* () {
             this.referrer = params;
         }));
         this.actor.registerMessageHandler("SRPS" /* MessageType.syncRTLPluginState */, (mapId, params) => {
             return this._syncRTLPluginState(mapId, params);
         });
-        this.actor.registerMessageHandler("IS" /* MessageType.importScript */, (_mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("IS" /* MessageType.importScript */, (_mapId, params) => performance._(this, void 0, void 0, function* () {
             this.self.importScripts(params);
         }));
         this.actor.registerMessageHandler("SI" /* MessageType.setImages */, (mapId, params) => {
             return this._setImages(mapId, params);
         });
-        this.actor.registerMessageHandler("UL" /* MessageType.updateLayers */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("UL" /* MessageType.updateLayers */, (mapId, params) => performance._(this, void 0, void 0, function* () {
             this._getLayerIndex(mapId).update(params.layers, params.removedIds);
         }));
-        this.actor.registerMessageHandler("SL" /* MessageType.setLayers */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+        this.actor.registerMessageHandler("SL" /* MessageType.setLayers */, (mapId, params) => performance._(this, void 0, void 0, function* () {
             this._getLayerIndex(mapId).replace(params);
         }));
     }
     _setImages(mapId, images) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             this.availableImages[mapId] = images;
             for (const workerSource in this.workerSources[mapId]) {
                 const ws = this.workerSources[mapId][workerSource];
@@ -36110,29 +27714,29 @@ class Worker {
         });
     }
     _syncRTLPluginState(mapId, incomingState) {
-        return performance.__awaiter(this, void 0, void 0, function* () {
+        return performance._(this, void 0, void 0, function* () {
             // Parsed plugin cannot be changed, so just return its current state.
-            if (performance.rtlWorkerPlugin.isParsed()) {
-                return performance.rtlWorkerPlugin.getState();
+            if (performance.bE.isParsed()) {
+                return performance.bE.getState();
             }
             if (incomingState.pluginStatus !== 'loading') {
                 // simply sync and done
-                performance.rtlWorkerPlugin.setState(incomingState);
+                performance.bE.setState(incomingState);
                 return incomingState;
             }
             const urlToLoad = incomingState.pluginURL;
             this.self.importScripts(urlToLoad);
-            const complete = performance.rtlWorkerPlugin.isParsed();
+            const complete = performance.bE.isParsed();
             if (complete) {
                 const loadedState = {
                     pluginStatus: 'loaded',
                     pluginURL: urlToLoad
                 };
-                performance.rtlWorkerPlugin.setState(loadedState);
+                performance.bE.setState(loadedState);
                 return loadedState;
             }
             // error case
-            performance.rtlWorkerPlugin.setState({
+            performance.bE.setState({
                 pluginStatus: 'error',
                 pluginURL: ''
             });
@@ -36203,7 +27807,7 @@ class Worker {
         return this.demWorkerSources[mapId][sourceType];
     }
 }
-if (performance.isWorker(self)) {
+if (performance.i(self)) {
     self.worker = new Worker(self);
 }
 
@@ -36440,7 +28044,7 @@ const browser = {
             const frame = requestAnimationFrame(resolve);
             abortController.signal.addEventListener('abort', () => {
                 cancelAnimationFrame(frame);
-                reject(performance$1.createAbortError());
+                reject(performance$1.c());
             });
         });
     },
@@ -36553,7 +28157,7 @@ class DOM {
     }
     static getPoint(el, scale, e) {
         const rect = scale.boundingClientRect;
-        return new performance$1.Point(
+        return new performance$1.P(
         // rect.left/top values are in page scale (like clientX/Y),
         // whereas clientLeft/Top (border width) values are the original values (before CSS scale applies).
         ((e.clientX - rect.left) / scale.x) - el.clientLeft, ((e.clientY - rect.top) / scale.y) - el.clientTop);
@@ -36720,7 +28324,7 @@ var ImageRequest;
                 }
                 requestParameters.headers.accept = 'image/webp,*/*';
             }
-            performance$1.extend(requestParameters, { type: 'image' });
+            performance$1.e(requestParameters, { type: 'image' });
             const request = {
                 abortController,
                 requestParameters,
@@ -36740,13 +28344,13 @@ var ImageRequest;
     const arrayBufferToCanvasImageSource = (data) => {
         const imageBitmapSupported = typeof createImageBitmap === 'function';
         if (imageBitmapSupported) {
-            return performance$1.arrayBufferToImageBitmap(data);
+            return performance$1.d(data);
         }
         else {
-            return performance$1.arrayBufferToImage(data);
+            return performance$1.f(data);
         }
     };
-    const doImageRequest = (itemInQueue) => performance$1.__awaiter(this, void 0, void 0, function* () {
+    const doImageRequest = (itemInQueue) => performance$1._(this, void 0, void 0, function* () {
         itemInQueue.state = 'running';
         const { requestParameters, supportImageRefresh, onError, onSuccess, abortController } = itemInQueue;
         // - If refreshExpiredTiles is false, then we can use HTMLImageElement to download raster images.
@@ -36759,19 +28363,19 @@ var ImageRequest;
         //      let makeRequest handle it.
         // - HtmlImageElement request automatically adds accept header for all the browser supported images
         const canUseHTMLImageElement = supportImageRefresh === false &&
-            !performance$1.isWorker(self) &&
-            !performance$1.getProtocol(requestParameters.url) &&
+            !performance$1.i(self) &&
+            !performance$1.g(requestParameters.url) &&
             (!requestParameters.headers ||
                 Object.keys(requestParameters.headers).reduce((acc, item) => acc && item === 'accept', true));
         currentParallelImageRequests++;
         const getImagePromise = canUseHTMLImageElement ?
             getImageUsingHtmlImage(requestParameters, abortController) :
-            performance$1.makeRequest(requestParameters, abortController);
+            performance$1.m(requestParameters, abortController);
         try {
             const response = yield getImagePromise;
             delete itemInQueue.abortController;
             itemInQueue.state = 'completed';
-            if (response.data instanceof HTMLImageElement || performance$1.isImageBitmap(response.data)) {
+            if (response.data instanceof HTMLImageElement || performance$1.b(response.data)) {
                 // User using addProtocol can directly return HTMLImageElement/ImageBitmap type
                 // If HtmlImageElement is used to get image then response type will be HTMLImageElement
                 onSuccess(response);
@@ -36795,8 +28399,8 @@ var ImageRequest;
      */
     const processQueue = () => {
         const maxImageRequests = isThrottled() ?
-            performance$1.config.MAX_PARALLEL_IMAGE_REQUESTS_PER_FRAME :
-            performance$1.config.MAX_PARALLEL_IMAGE_REQUESTS;
+            performance$1.a.MAX_PARALLEL_IMAGE_REQUESTS_PER_FRAME :
+            performance$1.a.MAX_PARALLEL_IMAGE_REQUESTS;
         // limit concurrent image loads to help with raster sources performance on big screens
         for (let numImageRequests = currentParallelImageRequests; numImageRequests < maxImageRequests && imageRequestQueue.length > 0; numImageRequests++) {
             const topItemInQueue = imageRequestQueue.shift();
@@ -36815,13 +28419,13 @@ var ImageRequest;
             if (credentials && credentials === 'include') {
                 image.crossOrigin = 'use-credentials';
             }
-            else if ((credentials && credentials === 'same-origin') || !performance$1.sameOrigin(url)) {
+            else if ((credentials && credentials === 'same-origin') || !performance$1.s(url)) {
                 image.crossOrigin = 'anonymous';
             }
             abortController.signal.addEventListener('abort', () => {
                 // Set src to '' to actually cancel the request
                 image.src = '';
-                reject(performance$1.createAbortError());
+                reject(performance$1.c());
             });
             image.fetchPriority = 'high';
             image.onload = () => {
@@ -36857,6 +28461,415 @@ class RequestManager {
 }
 
 /**
+ * 2x2 Matrix
+ * @module mat2
+ */
+
+/**
+ * Creates a new identity mat2
+ *
+ * @returns {mat2} a new 2x2 matrix
+ */
+
+function create$4() {
+  var out = new performance$1.A(4);
+
+  if (performance$1.A != Float32Array) {
+    out[1] = 0;
+    out[2] = 0;
+  }
+
+  out[0] = 1;
+  out[3] = 1;
+  return out;
+}
+/**
+ * Rotates a mat2 by the given angle
+ *
+ * @param {mat2} out the receiving matrix
+ * @param {ReadonlyMat2} a the matrix to rotate
+ * @param {Number} rad the angle to rotate the matrix by
+ * @returns {mat2} out
+ */
+
+function rotate(out, a, rad) {
+  var a0 = a[0],
+      a1 = a[1],
+      a2 = a[2],
+      a3 = a[3];
+  var s = Math.sin(rad);
+  var c = Math.cos(rad);
+  out[0] = a0 * c + a2 * s;
+  out[1] = a1 * c + a3 * s;
+  out[2] = a0 * -s + a2 * c;
+  out[3] = a1 * -s + a3 * c;
+  return out;
+}
+
+/**
+ * 3x3 Matrix
+ * @module mat3
+ */
+
+/**
+ * Creates a new identity mat3
+ *
+ * @returns {mat3} a new 3x3 matrix
+ */
+
+function create$3() {
+  var out = new performance$1.A(9);
+
+  if (performance$1.A != Float32Array) {
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[5] = 0;
+    out[6] = 0;
+    out[7] = 0;
+  }
+
+  out[0] = 1;
+  out[4] = 1;
+  out[8] = 1;
+  return out;
+}
+/**
+ * Creates a matrix from a given angle
+ * This is equivalent to (but much faster than):
+ *
+ *     mat3.identity(dest);
+ *     mat3.rotate(dest, dest, rad);
+ *
+ * @param {mat3} out mat3 receiving operation result
+ * @param {Number} rad the angle to rotate the matrix by
+ * @returns {mat3} out
+ */
+
+function fromRotation(out, rad) {
+  var s = Math.sin(rad),
+      c = Math.cos(rad);
+  out[0] = c;
+  out[1] = s;
+  out[2] = 0;
+  out[3] = -s;
+  out[4] = c;
+  out[5] = 0;
+  out[6] = 0;
+  out[7] = 0;
+  out[8] = 1;
+  return out;
+}
+
+/**
+ * 3 Dimensional Vector
+ * @module vec3
+ */
+
+/**
+ * Creates a new, empty vec3
+ *
+ * @returns {vec3} a new 3D vector
+ */
+
+function create$2() {
+  var out = new performance$1.A(3);
+
+  if (performance$1.A != Float32Array) {
+    out[0] = 0;
+    out[1] = 0;
+    out[2] = 0;
+  }
+
+  return out;
+}
+/**
+ * Creates a new vec3 initialized with values from an existing vector
+ *
+ * @param {ReadonlyVec3} a vector to clone
+ * @returns {vec3} a new 3D vector
+ */
+
+function clone(a) {
+  var out = new performance$1.A(3);
+  out[0] = a[0];
+  out[1] = a[1];
+  out[2] = a[2];
+  return out;
+}
+/**
+ * Adds two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {ReadonlyVec3} a the first operand
+ * @param {ReadonlyVec3} b the second operand
+ * @returns {vec3} out
+ */
+
+function add(out, a, b) {
+  out[0] = a[0] + b[0];
+  out[1] = a[1] + b[1];
+  out[2] = a[2] + b[2];
+  return out;
+}
+/**
+ * Subtracts vector b from vector a
+ *
+ * @param {vec3} out the receiving vector
+ * @param {ReadonlyVec3} a the first operand
+ * @param {ReadonlyVec3} b the second operand
+ * @returns {vec3} out
+ */
+
+function subtract(out, a, b) {
+  out[0] = a[0] - b[0];
+  out[1] = a[1] - b[1];
+  out[2] = a[2] - b[2];
+  return out;
+}
+/**
+ * Scales a vec3 by a scalar number
+ *
+ * @param {vec3} out the receiving vector
+ * @param {ReadonlyVec3} a the vector to scale
+ * @param {Number} b amount to scale the vector by
+ * @returns {vec3} out
+ */
+
+function scale(out, a, b) {
+  out[0] = a[0] * b;
+  out[1] = a[1] * b;
+  out[2] = a[2] * b;
+  return out;
+}
+/**
+ * Normalize a vec3
+ *
+ * @param {vec3} out the receiving vector
+ * @param {ReadonlyVec3} a vector to normalize
+ * @returns {vec3} out
+ */
+
+function normalize(out, a) {
+  var x = a[0];
+  var y = a[1];
+  var z = a[2];
+  var len = x * x + y * y + z * z;
+
+  if (len > 0) {
+    //TODO: evaluate use of glm_invsqrt here?
+    len = 1 / Math.sqrt(len);
+  }
+
+  out[0] = a[0] * len;
+  out[1] = a[1] * len;
+  out[2] = a[2] * len;
+  return out;
+}
+/**
+ * Calculates the dot product of two vec3's
+ *
+ * @param {ReadonlyVec3} a the first operand
+ * @param {ReadonlyVec3} b the second operand
+ * @returns {Number} dot product of a and b
+ */
+
+function dot(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+/**
+ * Computes the cross product of two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {ReadonlyVec3} a the first operand
+ * @param {ReadonlyVec3} b the second operand
+ * @returns {vec3} out
+ */
+
+function cross(out, a, b) {
+  var ax = a[0],
+      ay = a[1],
+      az = a[2];
+  var bx = b[0],
+      by = b[1],
+      bz = b[2];
+  out[0] = ay * bz - az * by;
+  out[1] = az * bx - ax * bz;
+  out[2] = ax * by - ay * bx;
+  return out;
+}
+/**
+ * Transforms the vec3 with a mat3.
+ *
+ * @param {vec3} out the receiving vector
+ * @param {ReadonlyVec3} a the vector to transform
+ * @param {ReadonlyMat3} m the 3x3 matrix to transform with
+ * @returns {vec3} out
+ */
+
+function transformMat3(out, a, m) {
+  var x = a[0],
+      y = a[1],
+      z = a[2];
+  out[0] = x * m[0] + y * m[3] + z * m[6];
+  out[1] = x * m[1] + y * m[4] + z * m[7];
+  out[2] = x * m[2] + y * m[5] + z * m[8];
+  return out;
+}
+/**
+ * Alias for {@link vec3.subtract}
+ * @function
+ */
+
+var sub = subtract;
+/**
+ * Perform some operation over an array of vec3s.
+ *
+ * @param {Array} a the array of vectors to iterate over
+ * @param {Number} stride Number of elements between the start of each vec3. If 0 assumes tightly packed
+ * @param {Number} offset Number of elements to skip at the beginning of the array
+ * @param {Number} count Number of vec3s to iterate over. If 0 iterates over entire array
+ * @param {Function} fn Function to call for each vector in the array
+ * @param {Object} [arg] additional argument to pass to fn
+ * @returns {Array} a
+ * @function
+ */
+
+(function () {
+  var vec = create$2();
+  return function (a, stride, offset, count, fn, arg) {
+    var i, l;
+
+    if (!stride) {
+      stride = 3;
+    }
+
+    if (!offset) {
+      offset = 0;
+    }
+
+    if (count) {
+      l = Math.min(count * stride + offset, a.length);
+    } else {
+      l = a.length;
+    }
+
+    for (i = offset; i < l; i += stride) {
+      vec[0] = a[i];
+      vec[1] = a[i + 1];
+      vec[2] = a[i + 2];
+      fn(vec, vec, arg);
+      a[i] = vec[0];
+      a[i + 1] = vec[1];
+      a[i + 2] = vec[2];
+    }
+
+    return a;
+  };
+})();
+
+/**
+ * 2 Dimensional Vector
+ * @module vec2
+ */
+
+/**
+ * Creates a new, empty vec2
+ *
+ * @returns {vec2} a new 2D vector
+ */
+
+function create$1() {
+  var out = new performance$1.A(2);
+
+  if (performance$1.A != Float32Array) {
+    out[0] = 0;
+    out[1] = 0;
+  }
+
+  return out;
+}
+/**
+ * Calculates the squared length of a vec2
+ *
+ * @param {ReadonlyVec2} a vector to calculate squared length of
+ * @returns {Number} squared length of a
+ */
+
+function squaredLength(a) {
+  var x = a[0],
+      y = a[1];
+  return x * x + y * y;
+}
+/**
+ * Transforms the vec2 with a mat4
+ * 3rd vector component is implicitly '0'
+ * 4th vector component is implicitly '1'
+ *
+ * @param {vec2} out the receiving vector
+ * @param {ReadonlyVec2} a the vector to transform
+ * @param {ReadonlyMat4} m matrix to transform with
+ * @returns {vec2} out
+ */
+
+function transformMat4(out, a, m) {
+  var x = a[0];
+  var y = a[1];
+  out[0] = m[0] * x + m[4] * y + m[12];
+  out[1] = m[1] * x + m[5] * y + m[13];
+  return out;
+}
+/**
+ * Alias for {@link vec2.squaredLength}
+ * @function
+ */
+
+var sqrLen = squaredLength;
+/**
+ * Perform some operation over an array of vec2s.
+ *
+ * @param {Array} a the array of vectors to iterate over
+ * @param {Number} stride Number of elements between the start of each vec2. If 0 assumes tightly packed
+ * @param {Number} offset Number of elements to skip at the beginning of the array
+ * @param {Number} count Number of vec2s to iterate over. If 0 iterates over entire array
+ * @param {Function} fn Function to call for each vector in the array
+ * @param {Object} [arg] additional argument to pass to fn
+ * @returns {Array} a
+ * @function
+ */
+
+(function () {
+  var vec = create$1();
+  return function (a, stride, offset, count, fn, arg) {
+    var i, l;
+
+    if (!stride) {
+      stride = 2;
+    }
+
+    if (!offset) {
+      offset = 0;
+    }
+
+    if (count) {
+      l = Math.min(count * stride + offset, a.length);
+    } else {
+      l = a.length;
+    }
+
+    for (i = offset; i < l; i += stride) {
+      vec[0] = a[i];
+      vec[1] = a[i + 1];
+      fn(vec, vec, arg);
+      a[i] = vec[0];
+      a[i + 1] = vec[1];
+    }
+
+    return a;
+  };
+})();
+
+/**
  * Takes a SpriteSpecification value and returns it in its array form. If `undefined` is passed as an input value, an
  * empty array is returned.
  * duplicated entries with identical id/url will be removed in returned array
@@ -36887,14 +28900,14 @@ function normalizeSpriteURL(url, format, extension) {
     return split.join('?');
 }
 function loadSprite(originalSprite, requestManager, pixelRatio, abortController) {
-    return performance$1.__awaiter(this, void 0, void 0, function* () {
+    return performance$1._(this, void 0, void 0, function* () {
         const spriteArray = coerceSpriteToArray(originalSprite);
         const format = pixelRatio > 1 ? '@2x' : '';
         const jsonsMap = {};
         const imagesMap = {};
         for (const { id, url } of spriteArray) {
             const jsonRequestParameters = requestManager.transformRequest(normalizeSpriteURL(url, format, '.json'), "SpriteJSON" /* ResourceType.SpriteJSON */);
-            jsonsMap[id] = performance$1.getJSON(jsonRequestParameters, abortController);
+            jsonsMap[id] = performance$1.h(jsonRequestParameters, abortController);
             const imageRequestParameters = requestManager.transformRequest(normalizeSpriteURL(url, format, '.png'), "SpriteImage" /* ResourceType.SpriteImage */);
             imagesMap[id] = ImageRequest.getImage(imageRequestParameters, abortController);
         }
@@ -36907,7 +28920,7 @@ function loadSprite(originalSprite, requestManager, pixelRatio, abortController)
  * @param imagesMap - image data map
  */
 function doOnceCompleted(jsonsMap, imagesMap) {
-    return performance$1.__awaiter(this, void 0, void 0, function* () {
+    return performance$1._(this, void 0, void 0, function* () {
         const result = {};
         for (const spriteName in jsonsMap) {
             result[spriteName] = {};
@@ -36946,7 +28959,7 @@ class Texture {
         context.pixelStoreUnpackPremultiplyAlpha.set(this.format === gl.RGBA && (!options || options.premultiply !== false));
         if (resize) {
             this.size = [width, height];
-            if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || performance$1.isImageBitmap(image)) {
+            if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || performance$1.b(image)) {
                 gl.texImage2D(gl.TEXTURE_2D, 0, this.format, this.format, gl.UNSIGNED_BYTE, image);
             }
             else {
@@ -36955,7 +28968,7 @@ class Texture {
         }
         else {
             const { x, y } = position || { x: 0, y: 0 };
-            if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || performance$1.isImageBitmap(image)) {
+            if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || performance$1.b(image)) {
                 gl.texSubImage2D(gl.TEXTURE_2D, 0, x, y, gl.RGBA, gl.UNSIGNED_BYTE, image);
             }
             else {
@@ -37025,7 +29038,7 @@ const padding = 1;
  * data-driven support for `*-pattern`, we'll likely use per-bucket pattern atlases, and that would be a good time
  * to refactor this.
 */
-class ImageManager extends performance$1.Evented {
+class ImageManager extends performance$1.E {
     constructor() {
         super();
         this.images = {};
@@ -37034,7 +29047,7 @@ class ImageManager extends performance$1.Evented {
         this.loaded = false;
         this.requestors = [];
         this.patterns = {};
-        this.atlasImage = new performance$1.RGBAImage({ width: 1, height: 1 });
+        this.atlasImage = new performance$1.R({ width: 1, height: 1 });
         this.dirty = true;
     }
     isLoaded() {
@@ -37057,7 +29070,7 @@ class ImageManager extends performance$1.Evented {
         // Extract sprite image data on demand
         if (image && !image.data && image.spriteData) {
             const spriteData = image.spriteData;
-            image.data = new performance$1.RGBAImage({
+            image.data = new performance$1.R({
                 width: spriteData.width,
                 height: spriteData.height
             }, spriteData.context.getImageData(spriteData.x, spriteData.y, spriteData.width, spriteData.height).data);
@@ -37076,15 +29089,15 @@ class ImageManager extends performance$1.Evented {
         let valid = true;
         const data = image.data || image.spriteData;
         if (!this._validateStretch(image.stretchX, data && data.width)) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Image "${id}" has invalid "stretchX" value`)));
+            this.fire(new performance$1.j(new Error(`Image "${id}" has invalid "stretchX" value`)));
             valid = false;
         }
         if (!this._validateStretch(image.stretchY, data && data.height)) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Image "${id}" has invalid "stretchY" value`)));
+            this.fire(new performance$1.j(new Error(`Image "${id}" has invalid "stretchY" value`)));
             valid = false;
         }
         if (!this._validateContent(image.content, image)) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Image "${id}" has invalid "content" value`)));
+            this.fire(new performance$1.j(new Error(`Image "${id}" has invalid "content" value`)));
             valid = false;
         }
         return valid;
@@ -37169,7 +29182,7 @@ class ImageManager extends performance$1.Evented {
         for (const id of ids) {
             let image = this.getImage(id);
             if (!image) {
-                this.fire(new performance$1.Event('styleimagemissing', { id }));
+                this.fire(new performance$1.k('styleimagemissing', { id }));
                 //Try to acquire image again in case styleimagemissing has populated it
                 image = this.getImage(id);
             }
@@ -37189,7 +29202,7 @@ class ImageManager extends performance$1.Evented {
                 };
             }
             else {
-                performance$1.warnOnce(`Image "${id}" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event.`);
+                performance$1.w(`Image "${id}" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event.`);
             }
         }
         return response;
@@ -37212,7 +29225,7 @@ class ImageManager extends performance$1.Evented {
             const w = image.data.width + padding * 2;
             const h = image.data.height + padding * 2;
             const bin = { w, h, x: 0, y: 0 };
-            const position = new performance$1.ImagePosition(bin, image);
+            const position = new performance$1.I(bin, image);
             this.patterns[id] = { bin, position };
         }
         else {
@@ -37237,7 +29250,7 @@ class ImageManager extends performance$1.Evented {
         for (const id in this.patterns) {
             bins.push(this.patterns[id].bin);
         }
-        const { w, h } = performance$1.potpack(bins);
+        const { w, h } = performance$1.p(bins);
         const dst = this.atlasImage;
         dst.resize({ width: w || 1, height: h || 1 });
         for (const id in this.patterns) {
@@ -37247,12 +29260,12 @@ class ImageManager extends performance$1.Evented {
             const src = this.getImage(id).data;
             const w = src.width;
             const h = src.height;
-            performance$1.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x, y }, { width: w, height: h });
+            performance$1.R.copy(src, dst, { x: 0, y: 0 }, { x, y }, { width: w, height: h });
             // Add 1 pixel wrapped padding on each side of the image.
-            performance$1.RGBAImage.copy(src, dst, { x: 0, y: h - 1 }, { x, y: y - 1 }, { width: w, height: 1 }); // T
-            performance$1.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x, y: y + h }, { width: w, height: 1 }); // B
-            performance$1.RGBAImage.copy(src, dst, { x: w - 1, y: 0 }, { x: x - 1, y }, { width: 1, height: h }); // L
-            performance$1.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x: x + w, y }, { width: 1, height: h }); // R
+            performance$1.R.copy(src, dst, { x: 0, y: h - 1 }, { x, y: y - 1 }, { width: w, height: 1 }); // T
+            performance$1.R.copy(src, dst, { x: 0, y: 0 }, { x, y: y + h }, { width: w, height: 1 }); // B
+            performance$1.R.copy(src, dst, { x: w - 1, y: 0 }, { x: x - 1, y }, { width: 1, height: h }); // L
+            performance$1.R.copy(src, dst, { x: 0, y: 0 }, { x: x + w, y }, { width: 1, height: h }); // R
         }
         this.dirty = true;
     }
@@ -37267,7 +29280,7 @@ class ImageManager extends performance$1.Evented {
             this.callbackDispatchedThisFrame[id] = true;
             const image = this.getImage(id);
             if (!image)
-                performance$1.warnOnce(`Image with ID: "${id}" was not found`);
+                performance$1.w(`Image with ID: "${id}" was not found`);
             const updated = renderStyleImage(image);
             if (updated) {
                 this.updateImage(id, image);
@@ -37277,16 +29290,16 @@ class ImageManager extends performance$1.Evented {
 }
 
 function loadGlyphRange(fontstack, range, urlTemplate, requestManager) {
-    return performance$1.__awaiter(this, void 0, void 0, function* () {
+    return performance$1._(this, void 0, void 0, function* () {
         const begin = range * 256;
         const end = begin + 255;
         const request = requestManager.transformRequest(urlTemplate.replace('{fontstack}', fontstack).replace('{range}', `${begin}-${end}`), "Glyphs" /* ResourceType.Glyphs */);
-        const response = yield performance$1.getArrayBuffer(request, new AbortController());
+        const response = yield performance$1.l(request, new AbortController());
         if (!response || !response.data) {
             throw new Error(`Could not load glyph range. range: ${range}, ${begin}-${end}`);
         }
         const glyphs = {};
-        for (const glyph of performance$1.parseGlyphPbf(response.data)) {
+        for (const glyph of performance$1.n(response.data)) {
             glyphs[glyph.id] = glyph;
         }
         return glyphs;
@@ -37446,7 +29459,7 @@ class GlyphManager {
         this.url = url;
     }
     getGlyphs(glyphs) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             const glyphsPromises = [];
             for (const stack in glyphs) {
                 for (const id of glyphs[stack]) {
@@ -37470,7 +29483,7 @@ class GlyphManager {
         });
     }
     _getAndCacheGlyphsPromise(stack, id) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             let entry = this.entries[stack];
             if (!entry) {
                 entry = this.entries[stack] = {
@@ -37572,7 +29585,7 @@ class GlyphManager {
         const leftAdjustment = 0.5;
         return {
             id,
-            bitmap: new performance$1.AlphaImage({ width: char.width || 30 * textureScale, height: char.height || 30 * textureScale }, char.data),
+            bitmap: new performance$1.o({ width: char.width || 30 * textureScale, height: char.height || 30 * textureScale }, char.data),
             metrics: {
                 width: char.glyphWidth / textureScale || 24,
                 height: char.glyphHeight / textureScale || 24,
@@ -37590,16 +29603,16 @@ GlyphManager.TinySDF = TinySDF;
 
 class LightPositionProperty {
     constructor() {
-        this.specification = performance$1.v8Spec.light.position;
+        this.specification = performance$1.v.light.position;
     }
     possiblyEvaluate(value, parameters) {
-        return performance$1.sphericalToCartesian(value.expression.evaluate(parameters));
+        return performance$1.x(value.expression.evaluate(parameters));
     }
     interpolate(a, b, t) {
         return {
-            x: performance$1.interpolate.number(a.x, b.x, t),
-            y: performance$1.interpolate.number(a.y, b.y, t),
-            z: performance$1.interpolate.number(a.z, b.z, t),
+            x: performance$1.y.number(a.x, b.x, t),
+            y: performance$1.y.number(a.y, b.y, t),
+            z: performance$1.y.number(a.z, b.z, t),
         };
     }
 }
@@ -37608,16 +29621,16 @@ let lightProperties;
 /*
  * Represents the light used to light extruded features.
  */
-class Light extends performance$1.Evented {
+class Light extends performance$1.E {
     constructor(lightOptions) {
         super();
-        lightProperties = lightProperties || new performance$1.Properties({
-            'anchor': new performance$1.DataConstantProperty(performance$1.v8Spec.light.anchor),
+        lightProperties = lightProperties || new performance$1.q({
+            'anchor': new performance$1.D(performance$1.v.light.anchor),
             'position': new LightPositionProperty(),
-            'color': new performance$1.DataConstantProperty(performance$1.v8Spec.light.color),
-            'intensity': new performance$1.DataConstantProperty(performance$1.v8Spec.light.intensity),
+            'color': new performance$1.D(performance$1.v.light.color),
+            'intensity': new performance$1.D(performance$1.v.light.intensity),
         });
-        this._transitionable = new performance$1.Transitionable(lightProperties);
+        this._transitionable = new performance$1.T(lightProperties);
         this.setLight(lightOptions);
         this._transitioning = this._transitionable.untransitioned();
     }
@@ -37625,7 +29638,7 @@ class Light extends performance$1.Evented {
         return this._transitionable.serialize();
     }
     setLight(light, options = {}) {
-        if (this._validate(performance$1.validateLight, light, options)) {
+        if (this._validate(performance$1.r, light, options)) {
             return;
         }
         for (const name in light) {
@@ -37651,35 +29664,35 @@ class Light extends performance$1.Evented {
         if (options && options.validate === false) {
             return false;
         }
-        return performance$1.emitValidationErrors(this, validate.call(performance$1.validateStyle, {
+        return performance$1.t(this, validate.call(performance$1.u, {
             value,
             // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407
             style: { glyphs: true, sprite: true },
-            styleSpec: performance$1.v8Spec
+            styleSpec: performance$1.v
         }));
     }
 }
 
-const properties = new performance$1.Properties({
-    'sky-color': new performance$1.DataConstantProperty(performance$1.v8Spec.sky['sky-color']),
-    'horizon-color': new performance$1.DataConstantProperty(performance$1.v8Spec.sky['horizon-color']),
-    'fog-color': new performance$1.DataConstantProperty(performance$1.v8Spec.sky['fog-color']),
-    'fog-ground-blend': new performance$1.DataConstantProperty(performance$1.v8Spec.sky['fog-ground-blend']),
-    'horizon-fog-blend': new performance$1.DataConstantProperty(performance$1.v8Spec.sky['horizon-fog-blend']),
-    'sky-horizon-blend': new performance$1.DataConstantProperty(performance$1.v8Spec.sky['sky-horizon-blend']),
-    'atmosphere-blend': new performance$1.DataConstantProperty(performance$1.v8Spec.sky['atmosphere-blend'])
+const properties = new performance$1.q({
+    'sky-color': new performance$1.D(performance$1.v.sky['sky-color']),
+    'horizon-color': new performance$1.D(performance$1.v.sky['horizon-color']),
+    'fog-color': new performance$1.D(performance$1.v.sky['fog-color']),
+    'fog-ground-blend': new performance$1.D(performance$1.v.sky['fog-ground-blend']),
+    'horizon-fog-blend': new performance$1.D(performance$1.v.sky['horizon-fog-blend']),
+    'sky-horizon-blend': new performance$1.D(performance$1.v.sky['sky-horizon-blend']),
+    'atmosphere-blend': new performance$1.D(performance$1.v.sky['atmosphere-blend'])
 });
 const TRANSITION_SUFFIX = '-transition';
-class Sky extends performance$1.Evented {
+class Sky extends performance$1.E {
     constructor(sky) {
         super();
-        this._transitionable = new performance$1.Transitionable(properties);
+        this._transitionable = new performance$1.T(properties);
         this.setSky(sky);
         this._transitioning = this._transitionable.untransitioned();
-        this.recalculate(new performance$1.EvaluationParameters(0));
+        this.recalculate(new performance$1.z(0));
     }
     setSky(sky, options = {}) {
-        if (this._validate(performance$1.validateSky, sky, options))
+        if (this._validate(performance$1.B, sky, options))
             return;
         if (!sky) {
             sky = {
@@ -37716,11 +29729,11 @@ class Sky extends performance$1.Evented {
         if ((options === null || options === void 0 ? void 0 : options.validate) === false) {
             return false;
         }
-        return performance$1.emitValidationErrors(this, validate.call(performance$1.validateStyle, performance$1.extend({
+        return performance$1.t(this, validate.call(performance$1.u, performance$1.e({
             value,
             // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407
             style: { glyphs: true, sprite: true },
-            styleSpec: performance$1.v8Spec
+            styleSpec: performance$1.v
         })));
     }
     /**
@@ -37859,7 +29872,7 @@ class LineAtlas {
         const n = round ? 7 : 0;
         const height = 2 * n + 1;
         if (this.nextRow + height > this.height) {
-            performance$1.warnOnce('LineAtlas out of space');
+            performance$1.w('LineAtlas out of space');
             return null;
         }
         let length = 0;
@@ -37907,7 +29920,7 @@ class LineAtlas {
 }
 
 function workerFactory() {
-    return new Worker(performance$1.config.WORKER_URL);
+    return new Worker(performance$1.a.WORKER_URL);
 }
 
 const PRELOAD_POOL_ID = 'maplibre_preloaded_worker_pool';
@@ -37948,7 +29961,7 @@ class WorkerPool {
 }
 // Based on results from A/B testing: https://github.com/maplibre/maplibre-gl-js/pull/2354
 const availableLogicalProcessors = Math.floor(browser.hardwareConcurrency / 2);
-WorkerPool.workerCount = performance$1.isSafari(globalThis) ? Math.max(Math.min(availableLogicalProcessors, 3), 1) : 1;
+WorkerPool.workerCount = performance$1.C(globalThis) ? Math.max(Math.min(availableLogicalProcessors, 3), 1) : 1;
 
 let globalWorkerPool;
 /**
@@ -38025,7 +30038,7 @@ class Dispatcher {
         const workers = this.workerPool.acquire(mapId);
         for (let i = 0; i < workers.length; i++) {
             const worker = workers[i];
-            const actor = new performance$1.Actor(worker, mapId);
+            const actor = new performance$1.F(worker, mapId);
             actor.name = `Worker ${i}`;
             this.actors.push(actor);
         }
@@ -38065,9 +30078,9 @@ class Dispatcher {
 let globalDispatcher;
 function getGlobalDispatcher() {
     if (!globalDispatcher) {
-        globalDispatcher = new Dispatcher(getGlobalWorkerPool(), performance$1.GLOBAL_DISPATCHER_ID);
+        globalDispatcher = new Dispatcher(getGlobalWorkerPool(), performance$1.G);
         globalDispatcher.registerMessageHandler("GR" /* MessageType.getResource */, (_mapId, params, abortController) => {
-            return performance$1.makeRequest(params, abortController);
+            return performance$1.m(params, abortController);
         });
     }
     return globalDispatcher;
@@ -38077,10 +30090,10 @@ function getGlobalDispatcher() {
  * Returns a matrix that can be used to convert from tile coordinates to viewport pixel coordinates.
  */
 function getPixelPosMatrix(transform, tileID) {
-    const t = performance$1.create();
-    performance$1.translate(t, t, [1, 1, 0]);
-    performance$1.scale(t, t, [transform.width * 0.5, transform.height * 0.5, 1]);
-    return performance$1.multiply(t, t, transform.calculatePosMatrix(tileID.toUnwrapped()));
+    const t = performance$1.H();
+    performance$1.J(t, t, [1, 1, 0]);
+    performance$1.K(t, t, [transform.width * 0.5, transform.height * 0.5, 1]);
+    return performance$1.L(t, t, transform.calculatePosMatrix(tileID.toUnwrapped()));
 }
 function queryIncludes3DLayer(layers, styleLayers, sourceID) {
     if (layers) {
@@ -38227,10 +30240,10 @@ function mergeRenderedFeatureLayers(tiles) {
 }
 
 function loadTileJson(options, requestManager, abortController) {
-    return performance$1.__awaiter(this, void 0, void 0, function* () {
+    return performance$1._(this, void 0, void 0, function* () {
         let tileJSON = options;
         if (options.url) {
-            const response = yield performance$1.getJSON(requestManager.transformRequest(options.url, "Source" /* ResourceType.Source */), abortController);
+            const response = yield performance$1.h(requestManager.transformRequest(options.url, "Source" /* ResourceType.Source */), abortController);
             tileJSON = response.data;
         }
         else {
@@ -38239,9 +30252,9 @@ function loadTileJson(options, requestManager, abortController) {
         if (!tileJSON) {
             return null;
         }
-        const result = performance$1.pick(
+        const result = performance$1.M(
         // explicit source options take precedence over TileJSON
-        performance$1.extend(tileJSON, options), ['tiles', 'minzoom', 'maxzoom', 'attribution', 'bounds', 'scheme', 'tileSize', 'encoding']);
+        performance$1.e(tileJSON, options), ['tiles', 'minzoom', 'maxzoom', 'attribution', 'bounds', 'scheme', 'tileSize', 'encoding']);
         if ('vector_layers' in tileJSON && tileJSON.vector_layers) {
             result.vectorLayerIds = tileJSON.vector_layers.map((layer) => { return layer.id; });
         }
@@ -38290,9 +30303,7 @@ class LngLatBounds {
      * ```
      */
     constructor(sw, ne) {
-        if (!sw) {
-            // noop
-        }
+        if (!sw) ;
         else if (ne) {
             this.setSouthWest(sw).setNorthEast(ne);
         }
@@ -38312,7 +30323,7 @@ class LngLatBounds {
      * @param ne - a {@link LngLatLike} object describing the northeast corner of the bounding box.
      */
     setNorthEast(ne) {
-        this._ne = ne instanceof performance$1.LngLat ? new performance$1.LngLat(ne.lng, ne.lat) : performance$1.LngLat.convert(ne);
+        this._ne = ne instanceof performance$1.N ? new performance$1.N(ne.lng, ne.lat) : performance$1.N.convert(ne);
         return this;
     }
     /**
@@ -38321,7 +30332,7 @@ class LngLatBounds {
      * @param sw - a {@link LngLatLike} object describing the southwest corner of the bounding box.
      */
     setSouthWest(sw) {
-        this._sw = sw instanceof performance$1.LngLat ? new performance$1.LngLat(sw.lng, sw.lat) : performance$1.LngLat.convert(sw);
+        this._sw = sw instanceof performance$1.N ? new performance$1.N(sw.lng, sw.lat) : performance$1.N.convert(sw);
         return this;
     }
     /**
@@ -38332,7 +30343,7 @@ class LngLatBounds {
     extend(obj) {
         const sw = this._sw, ne = this._ne;
         let sw2, ne2;
-        if (obj instanceof performance$1.LngLat) {
+        if (obj instanceof performance$1.N) {
             sw2 = obj;
             ne2 = obj;
         }
@@ -38350,17 +30361,17 @@ class LngLatBounds {
                 }
                 else {
                     const lngLatObj = obj;
-                    return this.extend(performance$1.LngLat.convert(lngLatObj));
+                    return this.extend(performance$1.N.convert(lngLatObj));
                 }
             }
             else if (obj && ('lng' in obj || 'lon' in obj) && 'lat' in obj) {
-                return this.extend(performance$1.LngLat.convert(obj));
+                return this.extend(performance$1.N.convert(obj));
             }
             return this;
         }
         if (!sw && !ne) {
-            this._sw = new performance$1.LngLat(sw2.lng, sw2.lat);
-            this._ne = new performance$1.LngLat(ne2.lng, ne2.lat);
+            this._sw = new performance$1.N(sw2.lng, sw2.lat);
+            this._ne = new performance$1.N(ne2.lng, ne2.lat);
         }
         else {
             sw.lng = Math.min(sw2.lng, sw.lng);
@@ -38381,7 +30392,7 @@ class LngLatBounds {
      * ```
      */
     getCenter() {
-        return new performance$1.LngLat((this._sw.lng + this._ne.lng) / 2, (this._sw.lat + this._ne.lat) / 2);
+        return new performance$1.N((this._sw.lng + this._ne.lng) / 2, (this._sw.lat + this._ne.lat) / 2);
     }
     /**
      * Returns the southwest corner of the bounding box.
@@ -38400,13 +30411,13 @@ class LngLatBounds {
      *
      * @returns The northwest corner of the bounding box.
      */
-    getNorthWest() { return new performance$1.LngLat(this.getWest(), this.getNorth()); }
+    getNorthWest() { return new performance$1.N(this.getWest(), this.getNorth()); }
     /**
      * Returns the southeast corner of the bounding box.
      *
      * @returns The southeast corner of the bounding box.
      */
-    getSouthEast() { return new performance$1.LngLat(this.getEast(), this.getSouth()); }
+    getSouthEast() { return new performance$1.N(this.getEast(), this.getSouth()); }
     /**
      * Returns the west edge of the bounding box.
      *
@@ -38485,7 +30496,7 @@ class LngLatBounds {
      * ```
      */
     contains(lnglat) {
-        const { lng, lat } = performance$1.LngLat.convert(lnglat);
+        const { lng, lat } = performance$1.N.convert(lnglat);
         const containsLatitude = this._sw.lat <= lat && lat <= this._ne.lat;
         let containsLongitude = this._sw.lng <= lng && lng <= this._ne.lng;
         if (this._sw.lng > this._ne.lng) { // wrapped coordinates
@@ -38530,7 +30541,7 @@ class LngLatBounds {
     static fromLngLat(center, radius = 0) {
         const earthCircumferenceInMetersAtEquator = 40075017;
         const latAccuracy = 360 * radius / earthCircumferenceInMetersAtEquator, lngAccuracy = latAccuracy / Math.cos((Math.PI / 180) * center.lat);
-        return new LngLatBounds(new performance$1.LngLat(center.lng - lngAccuracy, center.lat - latAccuracy), new performance$1.LngLat(center.lng + lngAccuracy, center.lat + latAccuracy));
+        return new LngLatBounds(new performance$1.N(center.lng - lngAccuracy, center.lat - latAccuracy), new performance$1.N(center.lng + lngAccuracy, center.lat + latAccuracy));
     }
     /**
      * Adjusts the given bounds to handle the case where the bounds cross the 180th meridian (antimeridian).
@@ -38544,10 +30555,10 @@ class LngLatBounds {
      * ```
      */
     adjustAntiMeridian() {
-        const sw = new performance$1.LngLat(this._sw.lng, this._sw.lat);
-        const ne = new performance$1.LngLat(this._ne.lng, this._ne.lat);
+        const sw = new performance$1.N(this._sw.lng, this._sw.lat);
+        const ne = new performance$1.N(this._ne.lng, this._ne.lat);
         if (sw.lng > ne.lng) {
-            return new LngLatBounds(sw, new performance$1.LngLat(ne.lng + 360, ne.lat));
+            return new LngLatBounds(sw, new performance$1.N(ne.lng + 360, ne.lat));
         }
         return new LngLatBounds(sw, ne);
     }
@@ -38568,10 +30579,10 @@ class TileBounds {
     contains(tileID) {
         const worldSize = Math.pow(2, tileID.z);
         const level = {
-            minX: Math.floor(performance$1.mercatorXfromLng(this.bounds.getWest()) * worldSize),
-            minY: Math.floor(performance$1.mercatorYfromLat(this.bounds.getNorth()) * worldSize),
-            maxX: Math.ceil(performance$1.mercatorXfromLng(this.bounds.getEast()) * worldSize),
-            maxY: Math.ceil(performance$1.mercatorYfromLat(this.bounds.getSouth()) * worldSize)
+            minX: Math.floor(performance$1.O(this.bounds.getWest()) * worldSize),
+            minY: Math.floor(performance$1.Q(this.bounds.getNorth()) * worldSize),
+            maxX: Math.ceil(performance$1.O(this.bounds.getEast()) * worldSize),
+            maxY: Math.ceil(performance$1.Q(this.bounds.getSouth()) * worldSize)
         };
         const hit = tileID.x >= level.minX && tileID.x < level.maxX && tileID.y >= level.minY && tileID.y < level.maxY;
         return hit;
@@ -38613,7 +30624,7 @@ class TileBounds {
  * ```
  * @see [Add a vector tile source](https://maplibre.org/maplibre-gl-js/docs/examples/vector-source/)
  */
-class VectorTileSource extends performance$1.Evented {
+class VectorTileSource extends performance$1.E {
     constructor(id, options, dispatcher, eventedParent) {
         super();
         this.id = id;
@@ -38626,8 +30637,8 @@ class VectorTileSource extends performance$1.Evented {
         this.reparseOverscaled = true;
         this.isTileClipped = true;
         this._loaded = false;
-        performance$1.extend(this, performance$1.pick(options, ['url', 'scheme', 'tileSize', 'promoteId']));
-        this._options = performance$1.extend({ type: 'vector' }, options);
+        performance$1.e(this, performance$1.M(options, ['url', 'scheme', 'tileSize', 'promoteId']));
+        this._options = performance$1.e({ type: 'vector' }, options);
         this._collectResourceTiming = options.collectResourceTiming;
         if (this.tileSize !== 512) {
             throw new Error('vector tile sources must have a tileSize of 512');
@@ -38635,9 +30646,9 @@ class VectorTileSource extends performance$1.Evented {
         this.setEventedParent(eventedParent);
     }
     load() {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             this._loaded = false;
-            this.fire(new performance$1.Event('dataloading', { dataType: 'source' }));
+            this.fire(new performance$1.k('dataloading', { dataType: 'source' }));
             this._tileJSONRequest = new AbortController();
             try {
                 const tileJSON = yield loadTileJson(this._options, this.map._requestManager, this._tileJSONRequest);
@@ -38645,19 +30656,19 @@ class VectorTileSource extends performance$1.Evented {
                 this._loaded = true;
                 this.map.style.sourceCaches[this.id].clearTiles();
                 if (tileJSON) {
-                    performance$1.extend(this, tileJSON);
+                    performance$1.e(this, tileJSON);
                     if (tileJSON.bounds)
                         this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
                     // `content` is included here to prevent a race condition where `Style#_updateSources` is called
                     // before the TileJSON arrives. this makes sure the tiles needed are loaded once TileJSON arrives
                     // ref: https://github.com/mapbox/mapbox-gl-js/pull/4347#discussion_r104418088
-                    this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
-                    this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'content' }));
+                    this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'metadata' }));
+                    this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'content' }));
                 }
             }
             catch (err) {
                 this._tileJSONRequest = null;
-                this.fire(new performance$1.ErrorEvent(err));
+                this.fire(new performance$1.j(err));
             }
         });
     }
@@ -38708,10 +30719,10 @@ class VectorTileSource extends performance$1.Evented {
         }
     }
     serialize() {
-        return performance$1.extend({}, this._options);
+        return performance$1.e({}, this._options);
     }
     loadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
             const params = {
                 request: this.map._requestManager.transformRequest(url, "Tile" /* ResourceType.Tile */),
@@ -38772,7 +30783,7 @@ class VectorTileSource extends performance$1.Evented {
         }
     }
     abortTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             if (tile.abortController) {
                 tile.abortController.abort();
                 delete tile.abortController;
@@ -38786,7 +30797,7 @@ class VectorTileSource extends performance$1.Evented {
         });
     }
     unloadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             tile.unloadVectorData();
             if (tile.actor) {
                 yield tile.actor.sendAsync({
@@ -38834,7 +30845,7 @@ class VectorTileSource extends performance$1.Evented {
  * @see [Add a WMS source](https://maplibre.org/maplibre-gl-js/docs/examples/wms/)
  * @see [Display a satellite map](https://maplibre.org/maplibre-gl-js/docs/examples/satellite-map/)
  */
-class RasterTileSource extends performance$1.Evented {
+class RasterTileSource extends performance$1.E {
     constructor(id, options, dispatcher, eventedParent) {
         super();
         this.id = id;
@@ -38847,32 +30858,32 @@ class RasterTileSource extends performance$1.Evented {
         this.scheme = 'xyz';
         this.tileSize = 512;
         this._loaded = false;
-        this._options = performance$1.extend({ type: 'raster' }, options);
-        performance$1.extend(this, performance$1.pick(options, ['url', 'scheme', 'tileSize']));
+        this._options = performance$1.e({ type: 'raster' }, options);
+        performance$1.e(this, performance$1.M(options, ['url', 'scheme', 'tileSize']));
     }
     load() {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             this._loaded = false;
-            this.fire(new performance$1.Event('dataloading', { dataType: 'source' }));
+            this.fire(new performance$1.k('dataloading', { dataType: 'source' }));
             this._tileJSONRequest = new AbortController();
             try {
                 const tileJSON = yield loadTileJson(this._options, this.map._requestManager, this._tileJSONRequest);
                 this._tileJSONRequest = null;
                 this._loaded = true;
                 if (tileJSON) {
-                    performance$1.extend(this, tileJSON);
+                    performance$1.e(this, tileJSON);
                     if (tileJSON.bounds)
                         this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
                     // `content` is included here to prevent a race condition where `Style#_updateSources` is called
                     // before the TileJSON arrives. this makes sure the tiles needed are loaded once TileJSON arrives
                     // ref: https://github.com/mapbox/mapbox-gl-js/pull/4347#discussion_r104418088
-                    this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
-                    this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'content' }));
+                    this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'metadata' }));
+                    this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'content' }));
                 }
             }
             catch (err) {
                 this._tileJSONRequest = null;
-                this.fire(new performance$1.ErrorEvent(err));
+                this.fire(new performance$1.j(err));
             }
         });
     }
@@ -38921,13 +30932,13 @@ class RasterTileSource extends performance$1.Evented {
         return this;
     }
     serialize() {
-        return performance$1.extend({}, this._options);
+        return performance$1.e({}, this._options);
     }
     hasTile(tileID) {
         return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
     }
     loadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
             tile.abortController = new AbortController();
             try {
@@ -38968,7 +30979,7 @@ class RasterTileSource extends performance$1.Evented {
         });
     }
     abortTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             if (tile.abortController) {
                 tile.abortController.abort();
                 delete tile.abortController;
@@ -38976,7 +30987,7 @@ class RasterTileSource extends performance$1.Evented {
         });
     }
     unloadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             if (tile.texture) {
                 this.map.painter.saveTileTexture(tile.texture);
             }
@@ -39008,7 +31019,7 @@ class RasterDEMTileSource extends RasterTileSource {
         super(id, options, dispatcher, eventedParent);
         this.type = 'raster-dem';
         this.maxzoom = 22;
-        this._options = performance$1.extend({ type: 'raster-dem' }, options);
+        this._options = performance$1.e({ type: 'raster-dem' }, options);
         this.encoding = options.encoding || 'mapbox';
         this.redFactor = options.redFactor;
         this.greenFactor = options.greenFactor;
@@ -39016,7 +31027,7 @@ class RasterDEMTileSource extends RasterTileSource {
         this.baseShift = options.baseShift;
     }
     loadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
             const request = this.map._requestManager.transformRequest(url, "Tile" /* ResourceType.Tile */);
             tile.neighboringTiles = this._getNeighboringTiles(tile.tileID);
@@ -39033,7 +31044,7 @@ class RasterDEMTileSource extends RasterTileSource {
                     if (this.map._refreshExpiredTiles && response.cacheControl && response.expires) {
                         tile.setExpiryData({ cacheControl: response.cacheControl, expires: response.expires });
                     }
-                    const transfer = performance$1.isImageBitmap(img) && performance$1.offscreenCanvasSupported();
+                    const transfer = performance$1.b(img) && performance$1.U();
                     const rawImageData = transfer ? img : yield this.readImageNow(img);
                     const params = {
                         type: this.type,
@@ -39071,12 +31082,12 @@ class RasterDEMTileSource extends RasterTileSource {
         });
     }
     readImageNow(img) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
-            if (typeof VideoFrame !== 'undefined' && performance$1.isOffscreenCanvasDistorted()) {
+        return performance$1._(this, void 0, void 0, function* () {
+            if (typeof VideoFrame !== 'undefined' && performance$1.V()) {
                 const width = img.width + 2;
                 const height = img.height + 2;
                 try {
-                    return new performance$1.RGBAImage({ width, height }, yield performance$1.readImageUsingVideoFrame(img, -1, -1, width, height));
+                    return new performance$1.R({ width, height }, yield performance$1.W(img, -1, -1, width, height));
                 }
                 catch (e) {
                     // fall-back to browser canvas decoding
@@ -39094,24 +31105,24 @@ class RasterDEMTileSource extends RasterTileSource {
         const nxw = canonical.x + 1 === dim ? tileID.wrap + 1 : tileID.wrap;
         const neighboringTiles = {};
         // add adjacent tiles
-        neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y).key] = { backfilled: false };
-        neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y).key] = { backfilled: false };
+        neighboringTiles[new performance$1.S(tileID.overscaledZ, pxw, canonical.z, px, canonical.y).key] = { backfilled: false };
+        neighboringTiles[new performance$1.S(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y).key] = { backfilled: false };
         // Add upper neighboringTiles
         if (canonical.y > 0) {
-            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y - 1).key] = { backfilled: false };
-            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, tileID.wrap, canonical.z, canonical.x, canonical.y - 1).key] = { backfilled: false };
-            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y - 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.S(tileID.overscaledZ, pxw, canonical.z, px, canonical.y - 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.S(tileID.overscaledZ, tileID.wrap, canonical.z, canonical.x, canonical.y - 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.S(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y - 1).key] = { backfilled: false };
         }
         // Add lower neighboringTiles
         if (canonical.y + 1 < dim) {
-            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y + 1).key] = { backfilled: false };
-            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, tileID.wrap, canonical.z, canonical.x, canonical.y + 1).key] = { backfilled: false };
-            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y + 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.S(tileID.overscaledZ, pxw, canonical.z, px, canonical.y + 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.S(tileID.overscaledZ, tileID.wrap, canonical.z, canonical.x, canonical.y + 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.S(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y + 1).key] = { backfilled: false };
         }
         return neighboringTiles;
     }
     unloadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             if (tile.demTexture)
                 this.map.painter.saveTileTexture(tile.demTexture);
             if (tile.fbo) {
@@ -39183,7 +31194,7 @@ class RasterDEMTileSource extends RasterTileSource {
  * @see [Create a heatmap from points](https://maplibre.org/maplibre-gl-js/docs/examples/heatmap-layer/)
  * @see [Create and style clusters](https://maplibre.org/maplibre-gl-js/docs/examples/cluster/)
  */
-class GeoJSONSource extends performance$1.Evented {
+class GeoJSONSource extends performance$1.E {
     /** @internal */
     constructor(id, options, dispatcher, eventedParent) {
         super();
@@ -39201,7 +31212,7 @@ class GeoJSONSource extends performance$1.Evented {
         this.actor = dispatcher.getActor();
         this.setEventedParent(eventedParent);
         this._data = options.data;
-        this._options = performance$1.extend({}, options);
+        this._options = performance$1.e({}, options);
         this._collectResourceTiming = options.collectResourceTiming;
         if (options.maxzoom !== undefined)
             this.maxzoom = options.maxzoom;
@@ -39210,21 +31221,21 @@ class GeoJSONSource extends performance$1.Evented {
         if (options.attribution)
             this.attribution = options.attribution;
         this.promoteId = options.promoteId;
-        const scale = performance$1.EXTENT / this.tileSize;
+        const scale = performance$1.X / this.tileSize;
         if (options.clusterMaxZoom !== undefined && this.maxzoom <= options.clusterMaxZoom) {
-            performance$1.warnOnce(`The maxzoom value "${this.maxzoom}" is expected to be greater than the clusterMaxZoom value "${options.clusterMaxZoom}".`);
+            performance$1.w(`The maxzoom value "${this.maxzoom}" is expected to be greater than the clusterMaxZoom value "${options.clusterMaxZoom}".`);
         }
         // sent to the worker, along with `url: ...` or `data: literal geojson`,
         // so that it can load/parse/index the geojson data
         // extending with `options.workerOptions` helps to make it easy for
         // third-party sources to hack/reuse GeoJSONSource.
-        this.workerOptions = performance$1.extend({
+        this.workerOptions = performance$1.e({
             source: this.id,
             cluster: options.cluster || false,
             geojsonVtOptions: {
                 buffer: (options.buffer !== undefined ? options.buffer : 128) * scale,
                 tolerance: (options.tolerance !== undefined ? options.tolerance : 0.375) * scale,
-                extent: performance$1.EXTENT,
+                extent: performance$1.X,
                 maxZoom: this.maxzoom,
                 lineMetrics: options.lineMetrics || false,
                 generateId: options.generateId || false
@@ -39232,7 +31243,7 @@ class GeoJSONSource extends performance$1.Evented {
             superclusterOptions: {
                 maxZoom: options.clusterMaxZoom !== undefined ? options.clusterMaxZoom : this.maxzoom - 1,
                 minPoints: Math.max(2, options.clusterMinPoints || 2),
-                extent: performance$1.EXTENT,
+                extent: performance$1.X,
                 radius: (options.clusterRadius || 50) * scale,
                 log: false,
                 generateId: options.generateId || false
@@ -39246,7 +31257,7 @@ class GeoJSONSource extends performance$1.Evented {
         }
     }
     load() {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             yield this._updateWorkerData();
         });
     }
@@ -39288,8 +31299,8 @@ class GeoJSONSource extends performance$1.Evented {
      * @returns a promise which resolves to the source's actual GeoJSON data
      */
     getData() {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
-            const options = performance$1.extend({ type: this.type }, this.workerOptions);
+        return performance$1._(this, void 0, void 0, function* () {
+            const options = performance$1.e({ type: this.type }, this.workerOptions);
             return this.actor.sendAsync({ type: "GD" /* MessageType.getData */, data: options });
         });
     }
@@ -39372,8 +31383,8 @@ class GeoJSONSource extends performance$1.Evented {
      * @param diff - the diff object
      */
     _updateWorkerData(diff) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
-            const options = performance$1.extend({ type: this.type }, this.workerOptions);
+        return performance$1._(this, void 0, void 0, function* () {
+            const options = performance$1.e({ type: this.type }, this.workerOptions);
             if (diff) {
                 options.dataDiff = diff;
             }
@@ -39385,12 +31396,12 @@ class GeoJSONSource extends performance$1.Evented {
                 options.data = JSON.stringify(this._data);
             }
             this._pendingLoads++;
-            this.fire(new performance$1.Event('dataloading', { dataType: 'source' }));
+            this.fire(new performance$1.k('dataloading', { dataType: 'source' }));
             try {
                 const result = yield this.actor.sendAsync({ type: "LD" /* MessageType.loadData */, data: options });
                 this._pendingLoads--;
                 if (this._removed || result.abandoned) {
-                    this.fire(new performance$1.Event('dataabort', { dataType: 'source' }));
+                    this.fire(new performance$1.k('dataabort', { dataType: 'source' }));
                     return;
                 }
                 let resourceTiming = null;
@@ -39399,20 +31410,20 @@ class GeoJSONSource extends performance$1.Evented {
                 }
                 const data = { dataType: 'source' };
                 if (this._collectResourceTiming && resourceTiming && resourceTiming.length > 0) {
-                    performance$1.extend(data, { resourceTiming });
+                    performance$1.e(data, { resourceTiming });
                 }
                 // although GeoJSON sources contain no metadata, we fire this event to let the SourceCache
                 // know its ok to start requesting tiles.
-                this.fire(new performance$1.Event('data', Object.assign(Object.assign({}, data), { sourceDataType: 'metadata' })));
-                this.fire(new performance$1.Event('data', Object.assign(Object.assign({}, data), { sourceDataType: 'content' })));
+                this.fire(new performance$1.k('data', Object.assign(Object.assign({}, data), { sourceDataType: 'metadata' })));
+                this.fire(new performance$1.k('data', Object.assign(Object.assign({}, data), { sourceDataType: 'content' })));
             }
             catch (err) {
                 this._pendingLoads--;
                 if (this._removed) {
-                    this.fire(new performance$1.Event('dataabort', { dataType: 'source' }));
+                    this.fire(new performance$1.k('dataabort', { dataType: 'source' }));
                     return;
                 }
-                this.fire(new performance$1.ErrorEvent(err));
+                this.fire(new performance$1.j(err));
             }
         });
     }
@@ -39420,7 +31431,7 @@ class GeoJSONSource extends performance$1.Evented {
         return this._pendingLoads === 0;
     }
     loadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             const message = !tile.actor ? "LT" /* MessageType.loadTile */ : "RT" /* MessageType.reloadTile */;
             tile.actor = this.actor;
             const params = {
@@ -39445,7 +31456,7 @@ class GeoJSONSource extends performance$1.Evented {
         });
     }
     abortTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             if (tile.abortController) {
                 tile.abortController.abort();
                 delete tile.abortController;
@@ -39454,7 +31465,7 @@ class GeoJSONSource extends performance$1.Evented {
         });
     }
     unloadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             tile.unloadVectorData();
             yield this.actor.sendAsync({ type: "RMT" /* MessageType.removeTile */, data: { uid: tile.uid, type: this.type, source: this.id } });
         });
@@ -39464,7 +31475,7 @@ class GeoJSONSource extends performance$1.Evented {
         this.actor.sendAsync({ type: "RS" /* MessageType.removeSource */, data: { type: this.type, source: this.id } });
     }
     serialize() {
-        return performance$1.extend({}, this._options, {
+        return performance$1.e({}, this._options, {
             type: this.type,
             data: this._data
         });
@@ -39474,7 +31485,7 @@ class GeoJSONSource extends performance$1.Evented {
     }
 }
 
-var rasterBoundsAttributes = performance$1.createLayout([
+var rasterBoundsAttributes = performance$1.Y([
     { name: 'a_pos', type: 'Int16', components: 2 },
     { name: 'a_texture_pos', type: 'Int16', components: 2 }
 ]);
@@ -39522,7 +31533,7 @@ var rasterBoundsAttributes = performance$1.createLayout([
  * map.removeSource('some id');  // remove
  * ```
  */
-class ImageSource extends performance$1.Evented {
+class ImageSource extends performance$1.E {
     /** @internal */
     constructor(id, options, dispatcher, eventedParent) {
         super();
@@ -39539,9 +31550,9 @@ class ImageSource extends performance$1.Evented {
         this.options = options;
     }
     load(newCoordinates) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             this._loaded = false;
-            this.fire(new performance$1.Event('dataloading', { dataType: 'source' }));
+            this.fire(new performance$1.k('dataloading', { dataType: 'source' }));
             this.url = this.options.url;
             this._request = new AbortController();
             try {
@@ -39559,7 +31570,7 @@ class ImageSource extends performance$1.Evented {
             catch (err) {
                 this._request = null;
                 this._loaded = true;
-                this.fire(new performance$1.ErrorEvent(err));
+                this.fire(new performance$1.j(err));
             }
         });
     }
@@ -39587,7 +31598,7 @@ class ImageSource extends performance$1.Evented {
     _finishLoading() {
         if (this.map) {
             this.setCoordinates(this.coordinates);
-            this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
+            this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'metadata' }));
         }
     }
     onAdd(map) {
@@ -39614,7 +31625,7 @@ class ImageSource extends performance$1.Evented {
         // and create a buffer with the corner coordinates. These coordinates
         // may be outside the tile, because raster tiles aren't clipped when rendering.
         // transform the geo coordinates into (zoom 0) tile space coordinates
-        const cornerCoords = coordinates.map(performance$1.MercatorCoordinate.fromLngLat);
+        const cornerCoords = coordinates.map(performance$1.Z.fromLngLat);
         // Compute the coordinates of the tile we'll use to hold this image's
         // render data
         this.tileID = getCoordinatesCenterTileID(cornerCoords);
@@ -39625,16 +31636,16 @@ class ImageSource extends performance$1.Evented {
         // Transform the corner coordinates into the coordinate space of our
         // tile.
         const tileCoords = cornerCoords.map((coord) => this.tileID.getTilePoint(coord)._round());
-        this._boundsArray = new performance$1.RasterBoundsArray();
+        this._boundsArray = new performance$1.$();
         this._boundsArray.emplaceBack(tileCoords[0].x, tileCoords[0].y, 0, 0);
-        this._boundsArray.emplaceBack(tileCoords[1].x, tileCoords[1].y, performance$1.EXTENT, 0);
-        this._boundsArray.emplaceBack(tileCoords[3].x, tileCoords[3].y, 0, performance$1.EXTENT);
-        this._boundsArray.emplaceBack(tileCoords[2].x, tileCoords[2].y, performance$1.EXTENT, performance$1.EXTENT);
+        this._boundsArray.emplaceBack(tileCoords[1].x, tileCoords[1].y, performance$1.X, 0);
+        this._boundsArray.emplaceBack(tileCoords[3].x, tileCoords[3].y, 0, performance$1.X);
+        this._boundsArray.emplaceBack(tileCoords[2].x, tileCoords[2].y, performance$1.X, performance$1.X);
         if (this.boundsBuffer) {
             this.boundsBuffer.destroy();
             delete this.boundsBuffer;
         }
-        this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'content' }));
+        this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'content' }));
         return this;
     }
     prepare() {
@@ -39647,7 +31658,7 @@ class ImageSource extends performance$1.Evented {
             this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
         }
         if (!this.boundsSegments) {
-            this.boundsSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+            this.boundsSegments = performance$1.a0.simpleSegment(0, 0, 4, 2);
         }
         if (!this.texture) {
             this.texture = new Texture(context, this.image, gl.RGBA);
@@ -39663,11 +31674,11 @@ class ImageSource extends performance$1.Evented {
             }
         }
         if (newTilesLoaded) {
-            this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
+            this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
         }
     }
     loadTile(tile) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             // We have a single tile -- whose coordinates are this.tileID -- that
             // covers the image we want to render.  If that's the one being
             // requested, set it up with the image; otherwise, mark the tile as
@@ -39716,7 +31727,7 @@ function getCoordinatesCenterTileID(coords) {
     const dMax = Math.max(dx, dy);
     const zoom = Math.max(0, Math.floor(-Math.log(dMax) / Math.LN2));
     const tilesAtZoom = Math.pow(2, zoom);
-    return new performance$1.CanonicalTileID(zoom, Math.floor((minX + maxX) / 2 * tilesAtZoom), Math.floor((minY + maxY) / 2 * tilesAtZoom));
+    return new performance$1.a1(zoom, Math.floor((minX + maxX) / 2 * tilesAtZoom), Math.floor((minY + maxY) / 2 * tilesAtZoom));
 }
 
 /**
@@ -39767,7 +31778,7 @@ class VideoSource extends ImageSource {
         this.options = options;
     }
     load() {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             this._loaded = false;
             const options = this.options;
             this.urls = [];
@@ -39775,7 +31786,7 @@ class VideoSource extends ImageSource {
                 this.urls.push(this.map._requestManager.transformRequest(url, "Source" /* ResourceType.Source */).url);
             }
             try {
-                const video = yield performance$1.getVideo(this.urls);
+                const video = yield performance$1.a3(this.urls);
                 this._loaded = true;
                 if (!video) {
                     return;
@@ -39793,7 +31804,7 @@ class VideoSource extends ImageSource {
                 this._finishLoading();
             }
             catch (err) {
-                this.fire(new performance$1.ErrorEvent(err));
+                this.fire(new performance$1.j(err));
             }
         });
     }
@@ -39820,7 +31831,7 @@ class VideoSource extends ImageSource {
         if (this.video) {
             const seekableRange = this.video.seekable;
             if (seconds < seekableRange.start(0) || seconds > seekableRange.end(0)) {
-                this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${this.id}`, null, `Playback for this video can be set only between the ${seekableRange.start(0)} and ${seekableRange.end(0)}-second mark.`)));
+                this.fire(new performance$1.j(new performance$1.a2(`sources.${this.id}`, null, `Playback for this video can be set only between the ${seekableRange.start(0)} and ${seekableRange.end(0)}-second mark.`)));
             }
             else
                 this.video.currentTime = seconds;
@@ -39857,7 +31868,7 @@ class VideoSource extends ImageSource {
             this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
         }
         if (!this.boundsSegments) {
-            this.boundsSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+            this.boundsSegments = performance$1.a0.simpleSegment(0, 0, 4, 2);
         }
         if (!this.texture) {
             this.texture = new Texture(context, this.video, gl.RGBA);
@@ -39877,7 +31888,7 @@ class VideoSource extends ImageSource {
             }
         }
         if (newTilesLoaded) {
-            this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
+            this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
         }
     }
     serialize() {
@@ -39930,26 +31941,26 @@ class CanvasSource extends ImageSource {
         super(id, options, dispatcher, eventedParent);
         // We build in some validation here, since canvas sources aren't included in the style spec:
         if (!options.coordinates) {
-            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, 'missing required property "coordinates"')));
+            this.fire(new performance$1.j(new performance$1.a2(`sources.${id}`, null, 'missing required property "coordinates"')));
         }
         else if (!Array.isArray(options.coordinates) || options.coordinates.length !== 4 ||
             options.coordinates.some(c => !Array.isArray(c) || c.length !== 2 || c.some(l => typeof l !== 'number'))) {
-            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, '"coordinates" property must be an array of 4 longitude/latitude array pairs')));
+            this.fire(new performance$1.j(new performance$1.a2(`sources.${id}`, null, '"coordinates" property must be an array of 4 longitude/latitude array pairs')));
         }
         if (options.animate && typeof options.animate !== 'boolean') {
-            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, 'optional "animate" property must be a boolean value')));
+            this.fire(new performance$1.j(new performance$1.a2(`sources.${id}`, null, 'optional "animate" property must be a boolean value')));
         }
         if (!options.canvas) {
-            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, 'missing required property "canvas"')));
+            this.fire(new performance$1.j(new performance$1.a2(`sources.${id}`, null, 'missing required property "canvas"')));
         }
         else if (typeof options.canvas !== 'string' && !(options.canvas instanceof HTMLCanvasElement)) {
-            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, '"canvas" must be either a string representing the ID of the canvas element from which to read, or an HTMLCanvasElement instance')));
+            this.fire(new performance$1.j(new performance$1.a2(`sources.${id}`, null, '"canvas" must be either a string representing the ID of the canvas element from which to read, or an HTMLCanvasElement instance')));
         }
         this.options = options;
         this.animate = options.animate !== undefined ? options.animate : true;
     }
     load() {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             this._loaded = true;
             if (!this.canvas) {
                 this.canvas = (this.options.canvas instanceof HTMLCanvasElement) ?
@@ -39961,7 +31972,7 @@ class CanvasSource extends ImageSource {
             this.width = this.canvas.width;
             this.height = this.canvas.height;
             if (this._hasInvalidDimensions()) {
-                this.fire(new performance$1.ErrorEvent(new Error('Canvas dimensions cannot be less than or equal to zero.')));
+                this.fire(new performance$1.j(new Error('Canvas dimensions cannot be less than or equal to zero.')));
                 return;
             }
             this.play = function () {
@@ -40016,7 +32027,7 @@ class CanvasSource extends ImageSource {
             this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
         }
         if (!this.boundsSegments) {
-            this.boundsSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+            this.boundsSegments = performance$1.a0.simpleSegment(0, 0, 4, 2);
         }
         if (!this.texture) {
             this.texture = new Texture(context, this.canvas, gl.RGBA, { premultiply: true });
@@ -40034,7 +32045,7 @@ class CanvasSource extends ImageSource {
             }
         }
         if (newTilesLoaded) {
-            this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
+            this.fire(new performance$1.k('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
         }
     }
     serialize() {
@@ -40103,7 +32114,7 @@ const setSourceType = (name, type) => {
  * @param SourceType - A {@link SourceClass} - which is a constructor for the `Source` interface.
  * @returns a promise that is resolved when the source type is ready or rejected with an error.
  */
-const addSourceType = (name, SourceType) => performance$1.__awaiter(void 0, void 0, void 0, function* () {
+const addSourceType = (name, SourceType) => performance$1._(void 0, void 0, void 0, function* () {
     if (getSourceType(name)) {
         throw new Error(`A source type called "${name}" already exists.`);
     }
@@ -40138,7 +32149,7 @@ function deserialize(input, style) {
 
 const RTLPluginLoadedEventName = 'RTLPluginLoaded';
 
-class RTLMainThreadPlugin extends performance$1.Evented {
+class RTLMainThreadPlugin extends performance$1.E {
     constructor() {
         super(...arguments);
         this.status = 'unavailable';
@@ -40163,7 +32174,7 @@ class RTLMainThreadPlugin extends performance$1.Evented {
         this.url = null;
     }
     setRTLTextPlugin(url_1) {
-        return performance$1.__awaiter(this, arguments, void 0, function* (url, deferred = false) {
+        return performance$1._(this, arguments, void 0, function* (url, deferred = false) {
             if (this.url) {
                 // error
                 throw new Error('setRTLTextPlugin cannot be called multiple times.');
@@ -40192,11 +32203,11 @@ class RTLMainThreadPlugin extends performance$1.Evented {
     }
     /** Send a message to worker which will import the RTL plugin script */
     _requestImport() {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             // all errors/exceptions will be handled by _syncState
             yield this._syncState('loading');
             this.status = 'loaded';
-            this.fire(new performance$1.Event(RTLPluginLoadedEventName));
+            this.fire(new performance$1.k(RTLPluginLoadedEventName));
         });
     }
     /** Start a lazy loading process of RTL plugin */
@@ -40231,7 +32242,7 @@ class Tile {
         this.timeAdded = 0;
         this.fadeEndTime = 0;
         this.tileID = tileID;
-        this.uid = performance$1.uniqueId();
+        this.uid = performance$1.a4();
         this.uses = 0;
         this.tileSize = size;
         this.buckets = {};
@@ -40280,7 +32291,7 @@ class Tile {
         this.state = 'loaded';
         // empty GeoJSON tile
         if (!data) {
-            this.collisionBoxArray = new performance$1.CollisionBoxArray();
+            this.collisionBoxArray = new performance$1.a5();
             return;
         }
         if (data.featureIndex) {
@@ -40302,7 +32313,7 @@ class Tile {
         this.hasSymbolBuckets = false;
         for (const id in this.buckets) {
             const bucket = this.buckets[id];
-            if (bucket instanceof performance$1.SymbolBucket) {
+            if (bucket instanceof performance$1.a6) {
                 this.hasSymbolBuckets = true;
                 if (justReloaded) {
                     bucket.justReloaded = true;
@@ -40316,7 +32327,7 @@ class Tile {
         if (this.hasSymbolBuckets) {
             for (const id in this.buckets) {
                 const bucket = this.buckets[id];
-                if (bucket instanceof performance$1.SymbolBucket) {
+                if (bucket instanceof performance$1.a6) {
                     if (bucket.hasRTLText) {
                         this.hasRTLText = true;
                         rtlMainThreadPluginFactory().lazyLoad();
@@ -40407,21 +32418,21 @@ class Tile {
         const layer = vtLayers._geojsonTileLayer || vtLayers[sourceLayer];
         if (!layer)
             return;
-        const filter = performance$1.createFilter(params && params.filter);
+        const filter = performance$1.a7(params && params.filter);
         const { z, x, y } = this.tileID.canonical;
         const coord = { z, x, y };
         for (let i = 0; i < layer.length; i++) {
             const feature = layer.feature(i);
             if (filter.needGeometry) {
-                const evaluationFeature = performance$1.toEvaluationFeature(feature, true);
-                if (!filter.filter(new performance$1.EvaluationParameters(this.tileID.overscaledZ), evaluationFeature, this.tileID.canonical))
+                const evaluationFeature = performance$1.a8(feature, true);
+                if (!filter.filter(new performance$1.z(this.tileID.overscaledZ), evaluationFeature, this.tileID.canonical))
                     continue;
             }
-            else if (!filter.filter(new performance$1.EvaluationParameters(this.tileID.overscaledZ), feature)) {
+            else if (!filter.filter(new performance$1.z(this.tileID.overscaledZ), feature)) {
                 continue;
             }
             const id = featureIndex.getId(feature, sourceLayer);
-            const geojsonFeature = new performance$1.GeoJSONFeature(feature, z, x, y, id);
+            const geojsonFeature = new performance$1.a9(feature, z, x, y, id);
             geojsonFeature.tile = coord;
             result.push(geojsonFeature);
         }
@@ -40435,7 +32446,7 @@ class Tile {
     setExpiryData(data) {
         const prior = this.expirationTime;
         if (data.cacheControl) {
-            const parsedCC = performance$1.parseCacheControl(data.cacheControl);
+            const parsedCC = performance$1.aa(data.cacheControl);
             if (parsedCC['max-age'])
                 this.expirationTime = Date.now() + parsedCC['max-age'] * 1000;
         }
@@ -40748,7 +32759,7 @@ class SourceFeatureState {
         const feature = String(featureId);
         this.stateChanges[sourceLayer] = this.stateChanges[sourceLayer] || {};
         this.stateChanges[sourceLayer][feature] = this.stateChanges[sourceLayer][feature] || {};
-        performance$1.extend(this.stateChanges[sourceLayer][feature], newState);
+        performance$1.e(this.stateChanges[sourceLayer][feature], newState);
         if (this.deletedStates[sourceLayer] === null) {
             this.deletedStates[sourceLayer] = {};
             for (const ft in this.state[sourceLayer]) {
@@ -40805,7 +32816,7 @@ class SourceFeatureState {
         const feature = String(featureId);
         const base = this.state[sourceLayer] || {};
         const changes = this.stateChanges[sourceLayer] || {};
-        const reconciledState = performance$1.extend({}, base[feature], changes[feature]);
+        const reconciledState = performance$1.e({}, base[feature], changes[feature]);
         //return empty object if the whole source layer is awaiting deletion
         if (this.deletedStates[sourceLayer] === null)
             return {};
@@ -40830,7 +32841,7 @@ class SourceFeatureState {
             for (const feature in this.stateChanges[sourceLayer]) {
                 if (!this.state[sourceLayer][feature])
                     this.state[sourceLayer][feature] = {};
-                performance$1.extend(this.state[sourceLayer][feature], this.stateChanges[sourceLayer][feature]);
+                performance$1.e(this.state[sourceLayer][feature], this.stateChanges[sourceLayer][feature]);
                 layerStates[feature] = this.state[sourceLayer][feature];
             }
             featuresChanged[sourceLayer] = layerStates;
@@ -40858,7 +32869,7 @@ class SourceFeatureState {
                 }
             }
             featuresChanged[sourceLayer] = featuresChanged[sourceLayer] || {};
-            performance$1.extend(featuresChanged[sourceLayer], layerStates);
+            performance$1.e(featuresChanged[sourceLayer], layerStates);
         }
         this.stateChanges = {};
         this.deletedStates = {};
@@ -40881,7 +32892,7 @@ class SourceFeatureState {
  *  - loading the tiles needed to render a given viewport
  *  - unloading the cached tiles not needed to render a given viewport
  */
-class SourceCache extends performance$1.Evented {
+class SourceCache extends performance$1.E {
     constructor(id, options, dispatcher) {
         super();
         this.id = id;
@@ -40967,7 +32978,7 @@ class SourceCache extends performance$1.Evented {
             this.update(this.transform, this.terrain);
     }
     _loadTile(tile, id, state) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             try {
                 yield this._source.loadTile(tile);
                 this._tileLoaded(tile, id, state);
@@ -40975,7 +32986,7 @@ class SourceCache extends performance$1.Evented {
             catch (err) {
                 tile.state = 'errored';
                 if (err.status !== 404) {
-                    this._source.fire(new performance$1.ErrorEvent(err, { tile }));
+                    this._source.fire(new performance$1.j(err, { tile }));
                 }
                 else {
                     // continue to try loading parent/children tiles if a tile doesn't exist (404)
@@ -40991,7 +33002,7 @@ class SourceCache extends performance$1.Evented {
     _abortTile(tile) {
         if (this._source.abortTile)
             this._source.abortTile(tile);
-        this._source.fire(new performance$1.Event('dataabort', { tile, coord: tile.tileID, dataType: 'source' }));
+        this._source.fire(new performance$1.k('dataabort', { tile, coord: tile.tileID, dataType: 'source' }));
     }
     serialize() {
         return this._source.serialize();
@@ -41023,8 +33034,8 @@ class SourceCache extends performance$1.Evented {
             return renderables.sort((a_, b_) => {
                 const a = a_.tileID;
                 const b = b_.tileID;
-                const rotatedA = (new performance$1.Point(a.canonical.x, a.canonical.y))._rotate(this.transform.angle);
-                const rotatedB = (new performance$1.Point(b.canonical.x, b.canonical.y))._rotate(this.transform.angle);
+                const rotatedA = (new performance$1.P(a.canonical.x, a.canonical.y))._rotate(this.transform.angle);
+                const rotatedB = (new performance$1.P(b.canonical.x, b.canonical.y))._rotate(this.transform.angle);
                 return a.overscaledZ - b.overscaledZ || rotatedB.y - rotatedA.y || rotatedB.x - rotatedA.x;
             }).map(tile => tile.tileID.key);
         }
@@ -41053,7 +33064,7 @@ class SourceCache extends performance$1.Evented {
         }
     }
     _reloadTile(id, state) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             const tile = this._tiles[id];
             // this potentially does not address all underlying
             // issues https://github.com/mapbox/mapbox-gl-js/issues/4252
@@ -41079,7 +33090,7 @@ class SourceCache extends performance$1.Evented {
             this._backfillDEM(tile);
         this._state.initializeTileState(tile, this.map ? this.map.painter : null);
         if (!tile.aborted) {
-            this._source.fire(new performance$1.Event('data', { dataType: 'source', tile, coord: tile.tileID }));
+            this._source.fire(new performance$1.k('data', { dataType: 'source', tile, coord: tile.tileID }));
         }
     }
     /**
@@ -41219,7 +33230,7 @@ class SourceCache extends performance$1.Evented {
         const heightInTiles = Math.ceil(transform.height / this._source.tileSize) + 1;
         const approxTilesInView = widthInTiles * heightInTiles;
         const commonZoomRange = this._maxTileCacheZoomLevels === null ?
-            performance$1.config.MAX_TILE_CACHE_ZOOM_LEVELS : this._maxTileCacheZoomLevels;
+            performance$1.a.MAX_TILE_CACHE_ZOOM_LEVELS : this._maxTileCacheZoomLevels;
         const viewDependentMaxSize = Math.floor(approxTilesInView * commonZoomRange);
         const maxSize = typeof this._maxTileCacheSize === 'number' ?
             Math.min(this._maxTileCacheSize, viewDependentMaxSize) : viewDependentMaxSize;
@@ -41362,7 +33373,7 @@ class SourceCache extends performance$1.Evented {
         }
         else if (this._source.tileID) {
             idealTileIDs = transform.getVisibleUnwrappedCoordinates(this._source.tileID)
-                .map((unwrapped) => new performance$1.OverscaledTileID(unwrapped.canonical.z, unwrapped.wrap, unwrapped.canonical.z, unwrapped.canonical.x, unwrapped.canonical.y));
+                .map((unwrapped) => new performance$1.S(unwrapped.canonical.z, unwrapped.wrap, unwrapped.canonical.z, unwrapped.canonical.x, unwrapped.canonical.y));
         }
         else {
             idealTileIDs = transform.coveringTiles({
@@ -41400,7 +33411,7 @@ class SourceCache extends performance$1.Evented {
         // if we won't have any tiles to fetch and content is already emitted
         // there will be no more data emissions, so we need to emit the event with isSourceLoaded = true
         if (noPendingDataEmissions) {
-            this.fire(new performance$1.Event('data', { sourceDataType: 'idle', dataType: 'source', sourceId: this.id }));
+            this.fire(new performance$1.k('data', { sourceDataType: 'idle', dataType: 'source', sourceId: this.id }));
         }
         // Retain is a list of tiles that we shouldn't delete, even if they are not
         // the most ideal tile for the current viewport. This may include tiles like
@@ -41415,7 +33426,7 @@ class SourceCache extends performance$1.Evented {
             this._tiles[retainedId].clearFadeHold();
         }
         // Remove the tiles we don't need anymore.
-        const remove = performance$1.keysDifference(this._tiles, retain);
+        const remove = performance$1.ab(this._tiles, retain);
         for (const tileID of remove) {
             const tile = this._tiles[tileID];
             if (tile.hasSymbolBuckets && !tile.holdingForFade()) {
@@ -41582,7 +33593,7 @@ class SourceCache extends performance$1.Evented {
         tile.uses++;
         this._tiles[tileID.key] = tile;
         if (!cached) {
-            this._source.fire(new performance$1.Event('dataloading', { tile, coord: tile.tileID, dataType: 'source' }));
+            this._source.fire(new performance$1.k('dataloading', { tile, coord: tile.tileID, dataType: 'source' }));
         }
         return tile;
     }
@@ -41684,12 +33695,12 @@ class SourceCache extends performance$1.Evented {
             }
             const tileID = tile.tileID;
             const scale = Math.pow(2, transform.zoom - tile.tileID.overscaledZ);
-            const queryPadding = maxPitchScaleFactor * tile.queryPadding * performance$1.EXTENT / tile.tileSize / scale;
+            const queryPadding = maxPitchScaleFactor * tile.queryPadding * performance$1.X / tile.tileSize / scale;
             const tileSpaceBounds = [
-                tileID.getTilePoint(new performance$1.MercatorCoordinate(minX, minY)),
-                tileID.getTilePoint(new performance$1.MercatorCoordinate(maxX, maxY))
+                tileID.getTilePoint(new performance$1.Z(minX, minY)),
+                tileID.getTilePoint(new performance$1.Z(maxX, maxY))
             ];
-            if (tileSpaceBounds[0].x - queryPadding < performance$1.EXTENT && tileSpaceBounds[0].y - queryPadding < performance$1.EXTENT &&
+            if (tileSpaceBounds[0].x - queryPadding < performance$1.X && tileSpaceBounds[0].y - queryPadding < performance$1.X &&
                 tileSpaceBounds[1].x + queryPadding >= 0 && tileSpaceBounds[1].y + queryPadding >= 0) {
                 const tileSpaceQueryGeometry = queryGeometry.map((c) => tileID.getTilePoint(c));
                 const tileSpaceCameraQueryGeometry = cameraQueryGeometry.map((c) => tileID.getTilePoint(c));
@@ -41804,7 +33815,7 @@ class PathInterpolator {
         if (this.points.length === 1) {
             return this.points[0];
         }
-        t = performance$1.clamp(t, 0, 1);
+        t = performance$1.ac(t, 0, 1);
         // Find the correct segment [p0, p1] where p0 <= x < p1
         let currentIndex = 1;
         let distOfCurrentIdx = this._distances[currentIndex];
@@ -41823,9 +33834,7 @@ class PathInterpolator {
 
 function overlapAllowed(overlapA, overlapB) {
     let allowed = true;
-    if (overlapA === 'always') {
-        // symbol A using 'always' overlap - allowed to overlap anything.
-    }
+    if (overlapA === 'always') ;
     else if (overlapA === 'never' || overlapB === 'never') {
         // symbol A using 'never' overlap - can't overlap anything
         // symbol A using 'cooperative' overlap - can overlap 'always' or 'cooperative' symbol; can't overlap 'never'
@@ -42213,15 +34222,15 @@ function interpolateSpline(xs, spline) {
  * Returns a matrix for converting from tile units to the correct label coordinate space.
  */
 function getLabelPlaneMatrix(posMatrix, pitchWithMap, rotateWithMap, transform, pixelsToTileUnits) {
-    const m = performance$1.create();
+    const m = performance$1.H();
     if (pitchWithMap) {
-        performance$1.scale(m, m, [1 / pixelsToTileUnits, 1 / pixelsToTileUnits, 1]);
+        performance$1.K(m, m, [1 / pixelsToTileUnits, 1 / pixelsToTileUnits, 1]);
         if (!rotateWithMap) {
-            performance$1.rotateZ(m, m, transform.angle);
+            performance$1.ad(m, m, transform.angle);
         }
     }
     else {
-        performance$1.multiply(m, transform.labelPlaneMatrix, posMatrix);
+        performance$1.L(m, transform.labelPlaneMatrix, posMatrix);
     }
     return m;
 }
@@ -42230,10 +34239,10 @@ function getLabelPlaneMatrix(posMatrix, pitchWithMap, rotateWithMap, transform, 
  */
 function getGlCoordMatrix(posMatrix, pitchWithMap, rotateWithMap, transform, pixelsToTileUnits) {
     if (pitchWithMap) {
-        const m = performance$1.clone(posMatrix);
-        performance$1.scale(m, m, [pixelsToTileUnits, pixelsToTileUnits, 1]);
+        const m = performance$1.ae(posMatrix);
+        performance$1.K(m, m, [pixelsToTileUnits, pixelsToTileUnits, 1]);
         if (!rotateWithMap) {
-            performance$1.rotateZ(m, m, -transform.angle);
+            performance$1.ad(m, m, -transform.angle);
         }
         return m;
     }
@@ -42245,7 +34254,7 @@ function project(x, y, matrix, getElevation) {
     let pos;
     if (getElevation) { // slow because of handle z-index
         pos = [x, y, getElevation(x, y), 1];
-        performance$1.transformMat4(pos, pos, matrix);
+        performance$1.af(pos, pos, matrix);
     }
     else { // fast because of ignore z-index
         pos = [x, y, 0, 1];
@@ -42253,7 +34262,7 @@ function project(x, y, matrix, getElevation) {
     }
     const w = pos[3];
     return {
-        point: new performance$1.Point(pos[0] / w, pos[1] / w),
+        point: new performance$1.P(pos[0] / w, pos[1] / w),
         signedDistanceFromCamera: w,
         isOccluded: false
     };
@@ -42274,7 +34283,7 @@ function isVisible(p, clippingBuffer) {
  */
 function updateLineLabels(bucket, posMatrix, painter, isText, labelPlaneMatrix, glCoordMatrix, pitchWithMap, keepUpright, rotateToLine, projection, unwrappedTileID, viewportWidth, viewportHeight, translation, getElevation) {
     const sizeData = isText ? bucket.textSizeData : bucket.iconSizeData;
-    const partiallyEvaluatedSize = performance$1.evaluateSizeForZoom(sizeData, painter.transform.zoom);
+    const partiallyEvaluatedSize = performance$1.ag(sizeData, painter.transform.zoom);
     const clippingBuffer = [256 / painter.width * 2 + 1, 256 / painter.height * 2 + 1];
     const dynamicLayoutVertexArray = isText ?
         bucket.text.dynamicLayoutVertexArray :
@@ -42289,7 +34298,7 @@ function updateLineLabels(bucket, posMatrix, painter, isText, labelPlaneMatrix, 
         // Don't do calculations for vertical glyphs unless the previous symbol was horizontal
         // and we determined that vertical glyphs were necessary.
         // Also don't do calculations for symbols that are collided and fully faded out
-        if (symbol.hidden || symbol.writingMode === performance$1.WritingMode.vertical && !useVertical) {
+        if (symbol.hidden || symbol.writingMode === performance$1.ah.vertical && !useVertical) {
             hideGlyphs(symbol.numGlyphs, dynamicLayoutVertexArray);
             continue;
         }
@@ -42303,9 +34312,9 @@ function updateLineLabels(bucket, posMatrix, painter, isText, labelPlaneMatrix, 
         }
         const cameraToAnchorDistance = anchorPos.signedDistanceFromCamera;
         const perspectiveRatio = getPerspectiveRatio(painter.transform.cameraToCenterDistance, cameraToAnchorDistance);
-        const fontSize = performance$1.evaluateSizeForFeature(sizeData, partiallyEvaluatedSize, symbol);
+        const fontSize = performance$1.ai(sizeData, partiallyEvaluatedSize, symbol);
         const pitchScaledFontSize = pitchWithMap ? fontSize / perspectiveRatio : fontSize * perspectiveRatio;
-        const tileAnchorPoint = new performance$1.Point(symbol.anchorX, symbol.anchorY);
+        const tileAnchorPoint = new performance$1.P(symbol.anchorX, symbol.anchorY);
         const projectionCache = { projections: {}, offsets: {}, cachedAnchorPoint: undefined, anyProjectionOccluded: false };
         const projectionContext = {
             getElevation,
@@ -42365,7 +34374,7 @@ function placeFirstAndLastGlyph(fontScale, glyphOffsetArray, lineOffsetX, lineOf
     return { first: firstPlacedGlyph, last: lastPlacedGlyph };
 }
 function requiresOrientationChange(writingMode, firstPoint, lastPoint, aspectRatio) {
-    if (writingMode === performance$1.WritingMode.horizontal) {
+    if (writingMode === performance$1.ah.horizontal) {
         // On top of choosing whether to flip, choose whether to render this version of the glyphs or the alternate
         // vertical glyphs. We can't just filter out vertical glyphs in the horizontal range because the horizontal
         // and vertical versions can have slightly different projections which could lead to angles where both or
@@ -42376,7 +34385,7 @@ function requiresOrientationChange(writingMode, firstPoint, lastPoint, aspectRat
             return { useVertical: true };
         }
     }
-    if (writingMode === performance$1.WritingMode.vertical ? firstPoint.y < lastPoint.y : firstPoint.x > lastPoint.x) {
+    if (writingMode === performance$1.ah.vertical ? firstPoint.y < lastPoint.y : firstPoint.x > lastPoint.x) {
         // Includes "horizontalOnly" case for labels without vertical glyphs
         return { needsFlipping: true };
     }
@@ -42455,7 +34464,7 @@ function placeGlyphsAlongLine(projectionContext, symbol, fontSize, flip, keepUpr
             const ipx = interpolateSpline(c, splinex);
             const ipy = interpolateSpline(c, spliney);
             for (let glyphIndex = 0; glyphIndex < placedGlyphs.length; glyphIndex++) {
-                placedGlyphs[glyphIndex].point = new performance$1.Point(ipx.y[glyphIndex], ipy.y[glyphIndex]);
+                placedGlyphs[glyphIndex].point = new performance$1.P(ipx.y[glyphIndex], ipy.y[glyphIndex]);
                 const angle = Math.atan2(ipy.dy[glyphIndex], ipx.dy[glyphIndex]);
                 placedGlyphs[glyphIndex].angle = angle;
             }
@@ -42474,7 +34483,7 @@ function placeGlyphsAlongLine(projectionContext, symbol, fontSize, flip, keepUpr
         if (keepUpright && !flip) {
             const a = project(projectionContext.tileAnchorPoint.x, projectionContext.tileAnchorPoint.y, posMatrix, projectionContext.getElevation).point;
             const tileVertexIndex = (symbol.lineStartIndex + symbol.segment + 1);
-            const tileSegmentEnd = new performance$1.Point(projectionContext.lineVertexArray.getx(tileVertexIndex), projectionContext.lineVertexArray.gety(tileVertexIndex));
+            const tileSegmentEnd = new performance$1.P(projectionContext.lineVertexArray.getx(tileVertexIndex), projectionContext.lineVertexArray.gety(tileVertexIndex));
             const projectedVertex = project(tileSegmentEnd.x, tileSegmentEnd.y, posMatrix, projectionContext.getElevation);
             // We know the anchor will be in the viewport, but the end of the line segment may be
             // behind the plane of the camera, in which case we can use a point at any arbitrary (closer)
@@ -42493,7 +34502,7 @@ function placeGlyphsAlongLine(projectionContext, symbol, fontSize, flip, keepUpr
         placedGlyphs = [singleGlyph];
     }
     for (const glyph of placedGlyphs) {
-        performance$1.addDynamicAttributes(dynamicLayoutVertexArray, glyph.point, glyph.angle);
+        performance$1.aj(dynamicLayoutVertexArray, glyph.point, glyph.angle);
     }
     return {};
 }
@@ -42556,7 +34565,7 @@ function projectLineVertexToViewport(index, projectionContext, syntheticVertexAr
     if (cache.projections[index]) {
         return cache.projections[index];
     }
-    const currentVertex = new performance$1.Point(projectionContext.lineVertexArray.getx(index), projectionContext.lineVertexArray.gety(index));
+    const currentVertex = new performance$1.P(projectionContext.lineVertexArray.getx(index), projectionContext.lineVertexArray.gety(index));
     const projection = projectTileCoordinatesToViewport(currentVertex.x, currentVertex.y, projectionContext);
     if (projection.signedDistanceFromCamera > 0) {
         cache.projections[index] = projection.point;
@@ -42568,7 +34577,7 @@ function projectLineVertexToViewport(index, projectionContext, syntheticVertexAr
     const previousLineVertexIndex = index - syntheticVertexArgs.direction;
     const previousTilePoint = syntheticVertexArgs.distanceFromAnchor === 0 ?
         projectionContext.tileAnchorPoint :
-        new performance$1.Point(projectionContext.lineVertexArray.getx(previousLineVertexIndex), projectionContext.lineVertexArray.gety(previousLineVertexIndex));
+        new performance$1.P(projectionContext.lineVertexArray.getx(previousLineVertexIndex), projectionContext.lineVertexArray.gety(previousLineVertexIndex));
     // Don't cache because the new vertex might not be far enough out for future glyphs on the same segment
     const minimumLength = syntheticVertexArgs.absOffsetX - syntheticVertexArgs.distanceFromAnchor + 1;
     return projectTruncatedLineSegmentToViewport(previousTilePoint, currentVertex, syntheticVertexArgs.previousVertex, minimumLength, projectionContext);
@@ -42629,7 +34638,7 @@ function findOffsetIntersectionPoint(index, prevToCurrentOffsetNormal, currentVe
     const offsetNextSegmentEnd = nextVertex.add(currentToNextOffsetNormal);
     // find the intersection of these two lines
     // if the lines are parallel, offsetCurrent/offsetNextBegin will touch
-    projectionContext.projectionCache.offsets[index] = performance$1.findLineIntersection(offsetPreviousVertex, offsetCurrentVertex, offsetNextSegmentBegin, offsetNextSegmentEnd) || offsetCurrentVertex;
+    projectionContext.projectionCache.offsets[index] = performance$1.ak(offsetPreviousVertex, offsetCurrentVertex, offsetNextSegmentBegin, offsetNextSegmentEnd) || offsetCurrentVertex;
     return projectionContext.projectionCache.offsets[index];
 }
 /*
@@ -42823,10 +34832,10 @@ class CollisionIndex {
     }
     placeCollisionCircles(overlapMode, symbol, lineVertexArray, glyphOffsetArray, fontSize, posMatrix, unwrappedTileID, labelPlaneMatrix, labelToScreenMatrix, showCollisionCircles, pitchWithMap, collisionGroupPredicate, circlePixelDiameter, textPixelPadding, translation, getElevation) {
         const placedCollisionCircles = [];
-        const tileUnitAnchorPoint = new performance$1.Point(symbol.anchorX, symbol.anchorY);
+        const tileUnitAnchorPoint = new performance$1.P(symbol.anchorX, symbol.anchorY);
         const perspectiveRatio = this.getPerspectiveRatio(posMatrix, tileUnitAnchorPoint.x, tileUnitAnchorPoint.y, unwrappedTileID, getElevation);
         const labelPlaneFontSize = pitchWithMap ? fontSize / perspectiveRatio : fontSize * perspectiveRatio;
-        const labelPlaneFontScale = labelPlaneFontSize / performance$1.ONE_EM;
+        const labelPlaneFontScale = labelPlaneFontSize / performance$1.ap;
         const projectionCache = { projections: {}, offsets: {}, cachedAnchorPoint: undefined, anyProjectionOccluded: false };
         const lineOffsetX = symbol.lineOffsetX * labelPlaneFontScale;
         const lineOffsetY = symbol.lineOffsetY * labelPlaneFontScale;
@@ -42850,8 +34859,8 @@ class CollisionIndex {
         let entirelyOffscreen = true;
         if (firstAndLastGlyph) {
             const radius = circlePixelDiameter * 0.5 * perspectiveRatio + textPixelPadding;
-            const screenPlaneMin = new performance$1.Point(-viewportPadding, -viewportPadding);
-            const screenPlaneMax = new performance$1.Point(this.screenRightBoundary, this.screenBottomBoundary);
+            const screenPlaneMin = new performance$1.P(-viewportPadding, -viewportPadding);
+            const screenPlaneMax = new performance$1.P(this.screenRightBoundary, this.screenBottomBoundary);
             const interpolator = new PathInterpolator();
             // Construct a projected path from projected line vertices. Anchor points are ignored and removed
             const first = firstAndLastGlyph.first;
@@ -42900,7 +34909,7 @@ class CollisionIndex {
                     segments = [];
                 }
                 else {
-                    segments = performance$1.clipLine([projectedPath], screenPlaneMin.x, screenPlaneMin.y, screenPlaneMax.x, screenPlaneMax.y);
+                    segments = performance$1.al([projectedPath], screenPlaneMin.x, screenPlaneMin.y, screenPlaneMax.x, screenPlaneMax.y);
                 }
             }
             for (const seg of segments) {
@@ -42965,7 +34974,7 @@ class CollisionIndex {
         let maxX = -Infinity;
         let maxY = -Infinity;
         for (const point of viewportQueryGeometry) {
-            const gridPoint = new performance$1.Point(point.x + viewportPadding, point.y + viewportPadding);
+            const gridPoint = new performance$1.P(point.x + viewportPadding, point.y + viewportPadding);
             minX = Math.min(minX, gridPoint.x);
             minY = Math.min(minY, gridPoint.y);
             maxX = Math.max(maxX, gridPoint.x);
@@ -42991,12 +35000,12 @@ class CollisionIndex {
             // distinction doesn't matter as much, and box geometry is easier
             // to work with.
             const bbox = [
-                new performance$1.Point(feature.x1, feature.y1),
-                new performance$1.Point(feature.x2, feature.y1),
-                new performance$1.Point(feature.x2, feature.y2),
-                new performance$1.Point(feature.x1, feature.y2)
+                new performance$1.P(feature.x1, feature.y1),
+                new performance$1.P(feature.x2, feature.y1),
+                new performance$1.P(feature.x2, feature.y2),
+                new performance$1.P(feature.x1, feature.y2)
             ];
-            if (!performance$1.polygonIntersectsPolygon(query, bbox)) {
+            if (!performance$1.am(query, bbox)) {
                 continue;
             }
             seenFeatures[featureKey.bucketInstanceId][featureKey.featureIndex] = true;
@@ -43025,7 +35034,7 @@ class CollisionIndex {
         let pos;
         if (getElevation) { // slow because of handle z-index
             pos = [x, y, getElevation(x, y), 1];
-            performance$1.transformMat4(pos, pos, posMatrix);
+            performance$1.af(pos, pos, posMatrix);
         }
         else { // fast because of ignore z-index
             pos = [x, y, 0, 1];
@@ -43033,7 +35042,7 @@ class CollisionIndex {
         }
         const w = pos[3];
         return {
-            point: new performance$1.Point((((pos[0] / w + 1) / 2) * this.transform.width) + viewportPadding, (((-pos[1] / w + 1) / 2) * this.transform.height) + viewportPadding),
+            point: new performance$1.P((((pos[0] / w + 1) / 2) * this.transform.width) + viewportPadding, (((-pos[1] / w + 1) / 2) * this.transform.height) + viewportPadding),
             // See perspective ratio comment in symbol_sdf.vertex
             // We're doing collision detection in viewport space so we need
             // to scale down boxes in the distance
@@ -43061,8 +35070,8 @@ class CollisionIndex {
     *   example transformation: clipPos = glCoordMatrix * viewportMatrix * circle_pos
     */
     getViewportMatrix() {
-        const m = performance$1.identity([]);
-        performance$1.translate(m, m, [-viewportPadding, -viewportPadding, 0.0]);
+        const m = performance$1.an([]);
+        performance$1.J(m, m, [-viewportPadding, -viewportPadding, 0.0]);
         return m;
     }
     /**
@@ -43070,9 +35079,9 @@ class CollisionIndex {
      */
     _projectCollisionBox(collisionBox, tileToViewport, posMatrix, unwrappedTileID, pitchWithMap, rotateWithMap, translation, projectedPoint, getElevation, shift) {
         // These vectors are valid both for screen space viewport-rotation-aligned texts and for pitch-align: map texts that are map-rotation-aligned.
-        let vecEast = new performance$1.Point(1, 0);
-        let vecSouth = new performance$1.Point(0, 1);
-        const translatedAnchor = new performance$1.Point(collisionBox.anchorPointX + translation[0], collisionBox.anchorPointY + translation[1]);
+        let vecEast = new performance$1.P(1, 0);
+        let vecSouth = new performance$1.P(0, 1);
+        const translatedAnchor = new performance$1.P(collisionBox.anchorPointX + translation[0], collisionBox.anchorPointY + translation[1]);
         if (rotateWithMap && !pitchWithMap) {
             // Handles screen space texts that are always aligned east-west.
             const projectedEast = this.projectAndGetPerspectiveRatio(posMatrix, translatedAnchor.x + 1, translatedAnchor.y, unwrappedTileID, getElevation).point;
@@ -43080,16 +35089,16 @@ class CollisionIndex {
             const angle = Math.atan(toEast.y / toEast.x) + (toEast.x < 0 ? Math.PI : 0);
             const sin = Math.sin(angle);
             const cos = Math.cos(angle);
-            vecEast = new performance$1.Point(cos, sin);
-            vecSouth = new performance$1.Point(-sin, cos);
+            vecEast = new performance$1.P(cos, sin);
+            vecSouth = new performance$1.P(-sin, cos);
         }
         else if (!rotateWithMap && pitchWithMap) {
             // Handles pitch-align: map texts that are always aligned with the viewport's X axis.
             const angle = -this.transform.angle;
             const sin = Math.sin(angle);
             const cos = Math.cos(angle);
-            vecEast = new performance$1.Point(cos, sin);
-            vecSouth = new performance$1.Point(-sin, cos);
+            vecEast = new performance$1.P(cos, sin);
+            vecSouth = new performance$1.P(-sin, cos);
         }
         // Configuration for screen space offsets
         let basePoint = projectedPoint.point;
@@ -43108,7 +35117,7 @@ class CollisionIndex {
                 // Here, we compute and apply the pitchWithMap branch.
                 // See the computation of `perspective_ratio` in the symbol vertex shaders for the GLSL code.
                 const distanceRatio = projectedPoint.signedDistanceFromCamera / this.transform.cameraToCenterDistance;
-                const perspectiveRatio = performance$1.clamp(0.5 + 0.5 * distanceRatio, 0.0, 4.0); // Same clamp as what is used in the shader.
+                const perspectiveRatio = performance$1.ac(0.5 + 0.5 * distanceRatio, 0.0, 4.0); // Same clamp as what is used in the shader.
                 distanceMultiplier *= perspectiveRatio;
             }
         }
@@ -43139,7 +35148,7 @@ class CollisionIndex {
         ];
         let points = [];
         for (const { offsetX, offsetY } of offsetsArray) {
-            points.push(new performance$1.Point(basePoint.x + vecEast.x * offsetX + vecSouth.x * offsetY, basePoint.y + vecEast.y * offsetX + vecSouth.y * offsetY));
+            points.push(new performance$1.P(basePoint.x + vecEast.x * offsetX + vecSouth.x * offsetY, basePoint.y + vecEast.y * offsetX + vecSouth.y * offsetY));
         }
         // Is any point of the collision shape visible on the globe (on beyond horizon)?
         let anyPointVisible = false;
@@ -43154,7 +35163,7 @@ class CollisionIndex {
             anyPointVisible = true;
         }
         return {
-            box: performance$1.getAABB(points),
+            box: performance$1.ao(points),
             allPointsOccluded: !anyPointVisible
         };
     }
@@ -43172,7 +35181,7 @@ class CollisionIndex {
  * @returns value in tile units
  */
 function pixelsToTileUnits(tile, pixelValue, z) {
-    return pixelValue * (performance$1.EXTENT / (tile.tileSize * Math.pow(2, z - tile.tileID.overscaledZ)));
+    return pixelValue * (performance$1.X / (tile.tileSize * Math.pow(2, z - tile.tileID.overscaledZ)));
 }
 
 class OpacityState {
@@ -43207,8 +35216,8 @@ class JointPlacement {
 }
 class CollisionCircleArray {
     constructor() {
-        this.invProjMatrix = performance$1.create();
-        this.viewportMatrix = performance$1.create();
+        this.invProjMatrix = performance$1.H();
+        this.viewportMatrix = performance$1.H();
         this.circles = [];
     }
 }
@@ -43249,10 +35258,10 @@ class CollisionGroups {
     }
 }
 function calculateVariableLayoutShift(anchor, width, height, textOffset, textBoxScale) {
-    const { horizontalAlign, verticalAlign } = performance$1.getAnchorAlignment(anchor);
+    const { horizontalAlign, verticalAlign } = performance$1.au(anchor);
     const shiftX = -(horizontalAlign - 0.5) * width;
     const shiftY = -(verticalAlign - 0.5) * height;
-    return new performance$1.Point(shiftX + textOffset[0] * textBoxScale, shiftY + textOffset[1] * textBoxScale);
+    return new performance$1.P(shiftX + textOffset[0] * textBoxScale, shiftY + textOffset[1] * textBoxScale);
 }
 class Placement {
     constructor(transform, projection, terrain, fadeDuration, crossSourceCollisions, prevPlacement) {
@@ -43288,7 +35297,7 @@ class Placement {
         const layout = symbolBucket.layers[0].layout;
         const paint = symbolBucket.layers[0].paint;
         const scale = Math.pow(2, this.transform.zoom - tile.tileID.overscaledZ);
-        const textPixelRatio = tile.tileSize / performance$1.EXTENT;
+        const textPixelRatio = tile.tileSize / performance$1.X;
         const unwrappedTileID = tile.tileID.toUnwrapped();
         const posMatrix = this.transform.calculatePosMatrix(unwrappedTileID);
         const pitchWithMap = layout.get('text-pitch-alignment') === 'map';
@@ -43300,7 +35309,7 @@ class Placement {
         let labelToScreenMatrix = null;
         if (pitchWithMap) {
             const glMatrix = getGlCoordMatrix(posMatrix, pitchWithMap, rotateWithMap, this.transform, pixelsToTiles);
-            labelToScreenMatrix = performance$1.multiply([], this.transform.labelPlaneMatrix, glMatrix);
+            labelToScreenMatrix = performance$1.L([], this.transform.labelPlaneMatrix, glMatrix);
         }
         // As long as this placement lives, we have to hold onto this bucket's
         // matching FeatureIndex/data for querying purposes
@@ -43318,7 +35327,7 @@ class Placement {
             textPixelRatio,
             holdingForFade: tile.holdingForFade(),
             collisionBoxArray,
-            partiallyEvaluatedTextSize: performance$1.evaluateSizeForZoom(symbolBucket.textSizeData, this.transform.zoom),
+            partiallyEvaluatedTextSize: performance$1.ag(symbolBucket.textSizeData, this.transform.zoom),
             collisionGroup: this.collisionGroups.get(symbolBucket.sourceID)
         };
         if (sortAcrossTiles) {
@@ -43336,7 +35345,7 @@ class Placement {
         }
     }
     attemptAnchorPlacement(textAnchorOffset, textBox, width, height, textBoxScale, rotateWithMap, pitchWithMap, textPixelRatio, posMatrix, unwrappedTileID, collisionGroup, textOverlapMode, symbolInstance, bucket, orientation, translationText, translationIcon, iconBox, getElevation) {
-        const anchor = performance$1.TextAnchorEnum[textAnchorOffset.textAnchor];
+        const anchor = performance$1.aq[textAnchorOffset.textAnchor];
         const textOffset = [textAnchorOffset.textOffset0, textAnchorOffset.textOffset1];
         const shift = calculateVariableLayoutShift(anchor, width, height, textOffset, textBoxScale);
         const placedGlyphBoxes = this.collisionIndex.placeCollisionBox(textBox, textOverlapMode, textPixelRatio, posMatrix, unwrappedTileID, pitchWithMap, rotateWithMap, translationText, collisionGroup.predicate, getElevation, shift);
@@ -43377,9 +35386,9 @@ class Placement {
         const { bucket, layout, translationText, translationIcon, posMatrix, unwrappedTileID, textLabelPlaneMatrix, labelToScreenMatrix, textPixelRatio, holdingForFade, collisionBoxArray, partiallyEvaluatedTextSize, collisionGroup } = bucketPart.parameters;
         const textOptional = layout.get('text-optional');
         const iconOptional = layout.get('icon-optional');
-        const textOverlapMode = performance$1.getOverlapMode(layout, 'text-overlap', 'text-allow-overlap');
+        const textOverlapMode = performance$1.ar(layout, 'text-overlap', 'text-allow-overlap');
         const textAlwaysOverlap = textOverlapMode === 'always';
-        const iconOverlapMode = performance$1.getOverlapMode(layout, 'icon-overlap', 'icon-allow-overlap');
+        const iconOverlapMode = performance$1.ar(layout, 'icon-overlap', 'icon-allow-overlap');
         const iconAlwaysOverlap = iconOverlapMode === 'always';
         const rotateWithMap = layout.get('text-rotation-alignment') === 'map';
         const pitchWithMap = layout.get('text-pitch-alignment') === 'map';
@@ -43440,7 +35449,7 @@ class Placement {
             const textBox = collisionArrays.textBox;
             if (textBox) {
                 const updatePreviousOrientationIfNotPlaced = (isPlaced) => {
-                    let previousOrientation = performance$1.WritingMode.horizontal;
+                    let previousOrientation = performance$1.ah.horizontal;
                     if (bucket.allowVerticalPlacement && !isPlaced && this.prevPlacement) {
                         const prevPlacedOrientation = this.prevPlacement.placedOrientations[symbolInstance.crossTileID];
                         if (prevPlacedOrientation) {
@@ -43454,7 +35463,7 @@ class Placement {
                 const placeTextForPlacementModes = (placeHorizontalFn, placeVerticalFn) => {
                     if (bucket.allowVerticalPlacement && symbolInstance.numVerticalGlyphVertices > 0 && collisionArrays.verticalTextBox) {
                         for (const placementMode of bucket.writingModes) {
-                            if (placementMode === performance$1.WritingMode.vertical) {
+                            if (placementMode === performance$1.ah.vertical) {
                                 placed = placeVerticalFn();
                                 placedVerticalText = placed;
                             }
@@ -43482,12 +35491,12 @@ class Placement {
                         return placedFeature;
                     };
                     const placeHorizontal = () => {
-                        return placeBox(textBox, performance$1.WritingMode.horizontal);
+                        return placeBox(textBox, performance$1.ah.horizontal);
                     };
                     const placeVertical = () => {
                         const verticalTextBox = collisionArrays.verticalTextBox;
                         if (bucket.allowVerticalPlacement && symbolInstance.numVerticalGlyphVertices > 0 && verticalTextBox) {
-                            return placeBox(verticalTextBox, performance$1.WritingMode.vertical);
+                            return placeBox(verticalTextBox, performance$1.ah.vertical);
                         }
                         return { box: null, offscreen: null };
                     };
@@ -43496,7 +35505,7 @@ class Placement {
                 }
                 else {
                     // If this symbol was in the last placement, prefer placement using same anchor, if it's still available
-                    let prevAnchor = performance$1.TextAnchorEnum[(_b = (_a = this.prevPlacement) === null || _a === void 0 ? void 0 : _a.variableOffsets[symbolInstance.crossTileID]) === null || _b === void 0 ? void 0 : _b.anchor];
+                    let prevAnchor = performance$1.aq[(_b = (_a = this.prevPlacement) === null || _a === void 0 ? void 0 : _a.variableOffsets[symbolInstance.crossTileID]) === null || _b === void 0 ? void 0 : _b.anchor];
                     const placeBoxForVariableAnchors = (collisionTextBox, collisionIconBox, orientation) => {
                         const width = collisionTextBox.x2 - collisionTextBox.x1;
                         const height = collisionTextBox.y2 - collisionTextBox.y1;
@@ -43535,7 +35544,7 @@ class Placement {
                             // No box was successfully placed
                             // Generate bounds for a fake centered box, so that we can at least display something for collision debug.
                             const placedFakeGlyphBox = this.collisionIndex.placeCollisionBox(textBox, 'always', // Skips expensive collision check with already placed boxes
-                            textPixelRatio, posMatrix, unwrappedTileID, pitchWithMap, rotateWithMap, translationText, collisionGroup.predicate, getElevation, new performance$1.Point(0, 0));
+                            textPixelRatio, posMatrix, unwrappedTileID, pitchWithMap, rotateWithMap, translationText, collisionGroup.predicate, getElevation, new performance$1.P(0, 0));
                             placedBox = {
                                 box: placedFakeGlyphBox.box,
                                 offscreen: false,
@@ -43545,13 +35554,13 @@ class Placement {
                         return placedBox;
                     };
                     const placeHorizontal = () => {
-                        return placeBoxForVariableAnchors(textBox, collisionArrays.iconBox, performance$1.WritingMode.horizontal);
+                        return placeBoxForVariableAnchors(textBox, collisionArrays.iconBox, performance$1.ah.horizontal);
                     };
                     const placeVertical = () => {
                         const verticalTextBox = collisionArrays.verticalTextBox;
                         const wasPlaced = placed && placed.placeable;
                         if (bucket.allowVerticalPlacement && !wasPlaced && symbolInstance.numVerticalGlyphVertices > 0 && verticalTextBox) {
-                            return placeBoxForVariableAnchors(verticalTextBox, collisionArrays.verticalIconBox, performance$1.WritingMode.vertical);
+                            return placeBoxForVariableAnchors(verticalTextBox, collisionArrays.verticalIconBox, performance$1.ah.vertical);
                         }
                         return { box: null, occluded: true, offscreen: null };
                     };
@@ -43577,12 +35586,12 @@ class Placement {
             offscreen = placedGlyphBoxes && placedGlyphBoxes.offscreen;
             if (symbolInstance.useRuntimeCollisionCircles) {
                 const placedSymbol = bucket.text.placedSymbolArray.get(symbolInstance.centerJustifiedTextSymbolIndex);
-                const fontSize = performance$1.evaluateSizeForFeature(bucket.textSizeData, partiallyEvaluatedTextSize, placedSymbol);
+                const fontSize = performance$1.ai(bucket.textSizeData, partiallyEvaluatedTextSize, placedSymbol);
                 const textPixelPadding = layout.get('text-padding');
                 const circlePixelDiameter = symbolInstance.collisionCircleDiameter;
                 placedGlyphCircles = this.collisionIndex.placeCollisionCircles(textOverlapMode, placedSymbol, bucket.lineVertexArray, bucket.glyphOffsetArray, fontSize, posMatrix, unwrappedTileID, textLabelPlaneMatrix, labelToScreenMatrix, showCollisionBoxes, pitchWithMap, collisionGroup.predicate, circlePixelDiameter, textPixelPadding, translationText, getElevation);
                 if (placedGlyphCircles.circles.length && placedGlyphCircles.collisionDetected && !showCollisionBoxes) {
-                    performance$1.warnOnce('Collisions detected, but collision boxes are not shown');
+                    performance$1.w('Collisions detected, but collision boxes are not shown');
                 }
                 // If text-overlap is set to 'always', force "placedCircles" to true
                 // In theory there should always be at least one circle placed
@@ -43666,7 +35675,7 @@ class Placement {
         if (showCollisionBoxes && bucket.bucketInstanceId in this.collisionCircleArrays) {
             const circleArray = this.collisionCircleArrays[bucket.bucketInstanceId];
             // Store viewport and inverse projection matrices per bucket
-            performance$1.invert(circleArray.invProjMatrix, posMatrix);
+            performance$1.as(circleArray.invProjMatrix, posMatrix);
             circleArray.viewportMatrix = this.collisionIndex.getViewportMatrix();
         }
         bucket.justReloaded = false;
@@ -43721,11 +35730,11 @@ class Placement {
             'right': symbolInstance.rightJustifiedTextSymbolIndex
         };
         let autoIndex;
-        if (orientation === performance$1.WritingMode.vertical) {
+        if (orientation === performance$1.ah.vertical) {
             autoIndex = symbolInstance.verticalPlacedTextSymbolIndex;
         }
         else {
-            autoIndex = justifications[performance$1.getAnchorJustification(placedAnchor)];
+            autoIndex = justifications[performance$1.at(placedAnchor)];
         }
         const indexes = [
             symbolInstance.leftJustifiedTextSymbolIndex,
@@ -43747,8 +35756,8 @@ class Placement {
         }
     }
     markUsedOrientation(bucket, orientation, symbolInstance) {
-        const horizontal = (orientation === performance$1.WritingMode.horizontal || orientation === performance$1.WritingMode.horizontalOnly) ? orientation : 0;
-        const vertical = orientation === performance$1.WritingMode.vertical ? orientation : 0;
+        const horizontal = (orientation === performance$1.ah.horizontal || orientation === performance$1.ah.horizontalOnly) ? orientation : 0;
+        const vertical = orientation === performance$1.ah.vertical ? orientation : 0;
         const horizontalIndexes = [
             symbolInstance.leftJustifiedTextSymbolIndex,
             symbolInstance.centerJustifiedTextSymbolIndex,
@@ -43883,8 +35892,8 @@ class Placement {
             const hasText = numHorizontalGlyphVertices > 0 || numVerticalGlyphVertices > 0;
             const hasIcon = symbolInstance.numIconVertices > 0;
             const placedOrientation = this.placedOrientations[symbolInstance.crossTileID];
-            const horizontalHidden = placedOrientation === performance$1.WritingMode.vertical;
-            const verticalHidden = placedOrientation === performance$1.WritingMode.horizontal || placedOrientation === performance$1.WritingMode.horizontalOnly;
+            const horizontalHidden = placedOrientation === performance$1.ah.vertical;
+            const verticalHidden = placedOrientation === performance$1.ah.horizontal || placedOrientation === performance$1.ah.horizontalOnly;
             if (hasText) {
                 const packedOpacity = packOpacity(opacityState.text);
                 // Vertical text fades in/out on collision the same way as corresponding
@@ -43943,7 +35952,7 @@ class Placement {
             if (bucket.hasIconCollisionBoxData() || bucket.hasTextCollisionBoxData()) {
                 const collisionArrays = bucket.collisionArrays[s];
                 if (collisionArrays) {
-                    let shift = new performance$1.Point(0, 0);
+                    let shift = new performance$1.P(0, 0);
                     if (collisionArrays.textBox || collisionArrays.verticalTextBox) {
                         let used = true;
                         if (hasVariablePlacement) {
@@ -44229,7 +36238,7 @@ class PauseablePlacement {
     matching it with an existing id or assigning a new one.
 */
 // Round anchor positions to roughly 4 pixel grid
-const roundingFactor = 512 / performance$1.EXTENT / 2;
+const roundingFactor = 512 / performance$1.X / 2;
 const KDBUSH_THRESHHOLD = 128;
 class TileLayerIndex {
     constructor(tileID, symbolInstances, bucketInstanceId) {
@@ -44258,7 +36267,7 @@ class TileLayerIndex {
             const entry = { positions, crossTileIDs };
             // once we get too many symbols for a given key, it becomes much faster to index it before queries
             if (entry.positions.length > KDBUSH_THRESHHOLD) {
-                const index = new performance$1.KDBush(entry.positions.length, 16, Uint16Array);
+                const index = new performance$1.av(entry.positions.length, 16, Uint16Array);
                 for (const { x, y } of entry.positions)
                     index.add(x, y);
                 index.finish();
@@ -44280,10 +36289,10 @@ class TileLayerIndex {
         const { x, y, z } = childTileID.canonical;
         const zDifference = z - localZ;
         const scale = roundingFactor / Math.pow(2, zDifference);
-        const xWorld = (x * performance$1.EXTENT + symbolInstance.anchorX) * scale;
-        const yWorld = (y * performance$1.EXTENT + symbolInstance.anchorY) * scale;
-        const xOffset = localX * performance$1.EXTENT * roundingFactor;
-        const yOffset = localY * performance$1.EXTENT * roundingFactor;
+        const xWorld = (x * performance$1.X + symbolInstance.anchorX) * scale;
+        const yWorld = (y * performance$1.X + symbolInstance.anchorY) * scale;
+        const xOffset = localX * performance$1.X * roundingFactor;
+        const yOffset = localY * performance$1.X * roundingFactor;
         const result = {
             x: Math.floor(xWorld - xOffset),
             y: Math.floor(yWorld - yOffset)
@@ -44506,12 +36515,12 @@ class CrossTileSymbolIndex {
 // We're skipping validation errors with the `source.canvas` identifier in order
 // to continue to allow canvas sources to be added at runtime/updated in
 // smart setStyle (see https://github.com/mapbox/mapbox-gl-js/pull/6424):
-const emitValidationErrors = (evented, errors) => performance$1.emitValidationErrors(evented, errors && errors.filter(error => error.identifier !== 'source.canvas'));
-const empty = performance$1.emptyStyle();
+const emitValidationErrors = (evented, errors) => performance$1.t(evented, errors && errors.filter(error => error.identifier !== 'source.canvas'));
+const empty = performance$1.aw();
 /**
  * The Style base class
  */
-class Style extends performance$1.Evented {
+class Style extends performance$1.E {
     constructor(map, options = {}) {
         super();
         this._rtlPluginLoaded = () => {
@@ -44542,11 +36551,11 @@ class Style extends performance$1.Evented {
         this._layers = {};
         this._order = [];
         this.sourceCaches = {};
-        this.zoomHistory = new performance$1.ZoomHistory();
+        this.zoomHistory = new performance$1.ax();
         this._loaded = false;
         this._availableImages = [];
         this._resetUpdates();
-        this.dispatcher.broadcast("SR" /* MessageType.setReferrer */, performance$1.getReferrer());
+        this.dispatcher.broadcast("SR" /* MessageType.setReferrer */, performance$1.ay());
         rtlMainThreadPluginFactory().on(RTLPluginLoadedEventName, this._rtlPluginLoaded);
         this.on('data', (event) => {
             if (event.dataType !== 'source' || event.sourceDataType !== 'metadata') {
@@ -44569,24 +36578,24 @@ class Style extends performance$1.Evented {
         });
     }
     loadURL(url, options = {}, previousStyle) {
-        this.fire(new performance$1.Event('dataloading', { dataType: 'style' }));
+        this.fire(new performance$1.k('dataloading', { dataType: 'style' }));
         options.validate = typeof options.validate === 'boolean' ?
             options.validate : true;
         const request = this.map._requestManager.transformRequest(url, "Style" /* ResourceType.Style */);
         this._loadStyleRequest = new AbortController();
         const abortController = this._loadStyleRequest;
-        performance$1.getJSON(request, this._loadStyleRequest).then((response) => {
+        performance$1.h(request, this._loadStyleRequest).then((response) => {
             this._loadStyleRequest = null;
             this._load(response.data, options, previousStyle);
         }).catch((error) => {
             this._loadStyleRequest = null;
             if (error && !abortController.signal.aborted) { // ignore abort
-                this.fire(new performance$1.ErrorEvent(error));
+                this.fire(new performance$1.j(error));
             }
         });
     }
     loadJSON(json, options = {}, previousStyle) {
-        this.fire(new performance$1.Event('dataloading', { dataType: 'style' }));
+        this.fire(new performance$1.k('dataloading', { dataType: 'style' }));
         this._frameRequest = new AbortController();
         browser.frameAsync(this._frameRequest).then(() => {
             this._frameRequest = null;
@@ -44595,13 +36604,13 @@ class Style extends performance$1.Evented {
         }).catch(() => { }); // ignore abort
     }
     loadEmpty() {
-        this.fire(new performance$1.Event('dataloading', { dataType: 'style' }));
+        this.fire(new performance$1.k('dataloading', { dataType: 'style' }));
         this._load(empty, { validate: false });
     }
     _load(json, options, previousStyle) {
         var _a;
         const nextState = options.transformStyle ? options.transformStyle(previousStyle, json) : json;
-        if (options.validate && emitValidationErrors(this, performance$1.validateStyle(nextState))) {
+        if (options.validate && emitValidationErrors(this, performance$1.u(nextState))) {
             return;
         }
         this._loaded = true;
@@ -44620,11 +36629,11 @@ class Style extends performance$1.Evented {
         this.light = new Light(this.stylesheet.light);
         this.sky = new Sky(this.stylesheet.sky);
         this.map.setTerrain((_a = this.stylesheet.terrain) !== null && _a !== void 0 ? _a : null);
-        this.fire(new performance$1.Event('data', { dataType: 'style' }));
-        this.fire(new performance$1.Event('style.load'));
+        this.fire(new performance$1.k('data', { dataType: 'style' }));
+        this.fire(new performance$1.k('style.load'));
     }
     _createLayers() {
-        const dereferencedLayers = performance$1.derefLayers(this.stylesheet.layers);
+        const dereferencedLayers = performance$1.az(this.stylesheet.layers);
         // Broadcast layers to workers first, so that expensive style processing (createStyleLayer)
         // can happen in parallel on both main and worker threads.
         this.dispatcher.broadcast("SL" /* MessageType.setLayers */, dereferencedLayers);
@@ -44633,7 +36642,7 @@ class Style extends performance$1.Evented {
         // reset serialization field, to be populated only when needed
         this._serializedLayers = null;
         for (const layer of dereferencedLayers) {
-            const styledLayer = performance$1.createStyleLayer(layer);
+            const styledLayer = performance$1.aA(layer);
             styledLayer.setEventedParent(this, { layer: { id: layer.id } });
             this._layers[layer.id] = styledLayer;
         }
@@ -44673,7 +36682,7 @@ class Style extends performance$1.Evented {
         }).catch((error) => {
             this._spriteRequest = null;
             err = error;
-            this.fire(new performance$1.ErrorEvent(err));
+            this.fire(new performance$1.j(err));
         }).finally(() => {
             this.imageManager.setLoaded(true);
             this._availableImages = this.imageManager.listImages();
@@ -44681,7 +36690,7 @@ class Style extends performance$1.Evented {
                 this._changed = true;
             }
             this.dispatcher.broadcast("SI" /* MessageType.setImages */, this._availableImages);
-            this.fire(new performance$1.Event('data', { dataType: 'style' }));
+            this.fire(new performance$1.k('data', { dataType: 'style' }));
             if (completion) {
                 completion(err);
             }
@@ -44696,7 +36705,7 @@ class Style extends performance$1.Evented {
         this._availableImages = this.imageManager.listImages();
         this._changed = true;
         this.dispatcher.broadcast("SI" /* MessageType.setImages */, this._availableImages);
-        this.fire(new performance$1.Event('data', { dataType: 'style' }));
+        this.fire(new performance$1.k('data', { dataType: 'style' }));
     }
     _validateLayer(layer) {
         const sourceCache = this.sourceCaches[layer.source];
@@ -44709,7 +36718,7 @@ class Style extends performance$1.Evented {
         }
         const source = sourceCache.getSource();
         if (source.type === 'geojson' || (source.vectorLayerIds && source.vectorLayerIds.indexOf(sourceLayer) === -1)) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Source layer "${sourceLayer}" ` +
+            this.fire(new performance$1.j(new Error(`Source layer "${sourceLayer}" ` +
                 `does not exist on source "${source.id}" ` +
                 `as specified by style layer "${layer.id}".`)));
         }
@@ -44736,13 +36745,13 @@ class Style extends performance$1.Evented {
     _serializeByIds(ids, returnClone = false) {
         const serializedLayersDictionary = this._serializedAllLayers();
         if (!ids || ids.length === 0) {
-            return returnClone ? Object.values(performance$1.clone$1(serializedLayersDictionary)) : Object.values(serializedLayersDictionary);
+            return returnClone ? Object.values(performance$1.aB(serializedLayersDictionary)) : Object.values(serializedLayersDictionary);
         }
         const serializedLayers = [];
         for (const id of ids) {
             // this check will skip all custom layers
             if (serializedLayersDictionary[id]) {
-                const toPush = returnClone ? performance$1.clone$1(serializedLayersDictionary[id]) : serializedLayersDictionary[id];
+                const toPush = returnClone ? performance$1.aB(serializedLayersDictionary[id]) : serializedLayersDictionary[id];
                 serializedLayers.push(toPush);
             }
         }
@@ -44852,7 +36861,7 @@ class Style extends performance$1.Evented {
             // (undefine !== false) will evaluate to true and fire an useless visibility event
             // need force "falsy" values to boolean to avoid the case above
             if (!!sourcesUsedBefore[sourcesUsedBeforeId] !== !!sourceCache.used) {
-                sourceCache.fire(new performance$1.Event('data', {
+                sourceCache.fire(new performance$1.k('data', {
                     sourceDataType: 'visibility',
                     dataType: 'source',
                     sourceId: sourcesUsedBeforeId
@@ -44863,7 +36872,7 @@ class Style extends performance$1.Evented {
         this.sky.recalculate(parameters);
         this.z = parameters.zoom;
         if (changed) {
-            this.fire(new performance$1.Event('data', { dataType: 'style' }));
+            this.fire(new performance$1.k('data', { dataType: 'style' }));
         }
     }
     /*
@@ -44916,11 +36925,11 @@ class Style extends performance$1.Evented {
         const serializedStyle = this.serialize();
         nextState = options.transformStyle ? options.transformStyle(serializedStyle, nextState) : nextState;
         const validate = (_a = options.validate) !== null && _a !== void 0 ? _a : true;
-        if (validate && emitValidationErrors(this, performance$1.validateStyle(nextState)))
+        if (validate && emitValidationErrors(this, performance$1.u(nextState)))
             return false;
-        nextState = performance$1.clone$1(nextState);
-        nextState.layers = performance$1.derefLayers(nextState.layers);
-        const changes = performance$1.diffStyles(serializedStyle, nextState);
+        nextState = performance$1.aB(nextState);
+        nextState.layers = performance$1.az(nextState.layers);
+        const changes = performance$1.aC(serializedStyle, nextState);
         const operations = this._getOperationsToPerform(changes);
         if (operations.unimplemented.length > 0) {
             throw new Error(`Unimplemented: ${operations.unimplemented.join(', ')}.`);
@@ -45003,7 +37012,7 @@ class Style extends performance$1.Evented {
     }
     addImage(id, image) {
         if (this.getImage(id)) {
-            return this.fire(new performance$1.ErrorEvent(new Error(`An image named "${id}" already exists.`)));
+            return this.fire(new performance$1.j(new Error(`An image named "${id}" already exists.`)));
         }
         this.imageManager.addImage(id, image);
         this._afterImageUpdated(id);
@@ -45016,7 +37025,7 @@ class Style extends performance$1.Evented {
     }
     removeImage(id) {
         if (!this.getImage(id)) {
-            return this.fire(new performance$1.ErrorEvent(new Error(`An image named "${id}" does not exist.`)));
+            return this.fire(new performance$1.j(new Error(`An image named "${id}" does not exist.`)));
         }
         this.imageManager.removeImage(id);
         this._afterImageUpdated(id);
@@ -45026,7 +37035,7 @@ class Style extends performance$1.Evented {
         this._changedImages[id] = true;
         this._changed = true;
         this.dispatcher.broadcast("SI" /* MessageType.setImages */, this._availableImages);
-        this.fire(new performance$1.Event('data', { dataType: 'style' }));
+        this.fire(new performance$1.k('data', { dataType: 'style' }));
     }
     listImages() {
         this._checkLoaded();
@@ -45042,7 +37051,7 @@ class Style extends performance$1.Evented {
         }
         const builtIns = ['vector', 'raster', 'geojson', 'video', 'image'];
         const shouldValidate = builtIns.indexOf(source.type) >= 0;
-        if (shouldValidate && this._validate(performance$1.validateStyle.source, `sources.${id}`, source, null, options))
+        if (shouldValidate && this._validate(performance$1.u.source, `sources.${id}`, source, null, options))
             return;
         if (this.map && this.map._collectResourceTiming)
             source.collectResourceTiming = true;
@@ -45068,13 +37077,13 @@ class Style extends performance$1.Evented {
         }
         for (const layerId in this._layers) {
             if (this._layers[layerId].source === id) {
-                return this.fire(new performance$1.ErrorEvent(new Error(`Source "${id}" cannot be removed while layer "${layerId}" is using it.`)));
+                return this.fire(new performance$1.j(new Error(`Source "${id}" cannot be removed while layer "${layerId}" is using it.`)));
             }
         }
         const sourceCache = this.sourceCaches[id];
         delete this.sourceCaches[id];
         delete this._updatedSources[id];
-        sourceCache.fire(new performance$1.Event('data', { sourceDataType: 'metadata', dataType: 'source', sourceId: id }));
+        sourceCache.fire(new performance$1.k('data', { sourceDataType: 'metadata', dataType: 'source', sourceId: id }));
         sourceCache.setEventedParent(null);
         sourceCache.onRemove(this.map);
         this._changed = true;
@@ -45113,31 +37122,31 @@ class Style extends performance$1.Evented {
         this._checkLoaded();
         const id = layerObject.id;
         if (this.getLayer(id)) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Layer "${id}" already exists on this map.`)));
+            this.fire(new performance$1.j(new Error(`Layer "${id}" already exists on this map.`)));
             return;
         }
         let layer;
         if (layerObject.type === 'custom') {
-            if (emitValidationErrors(this, performance$1.validateCustomStyleLayer(layerObject)))
+            if (emitValidationErrors(this, performance$1.aD(layerObject)))
                 return;
-            layer = performance$1.createStyleLayer(layerObject);
+            layer = performance$1.aA(layerObject);
         }
         else {
             if ('source' in layerObject && typeof layerObject.source === 'object') {
                 this.addSource(id, layerObject.source);
-                layerObject = performance$1.clone$1(layerObject);
-                layerObject = performance$1.extend(layerObject, { source: id });
+                layerObject = performance$1.aB(layerObject);
+                layerObject = performance$1.e(layerObject, { source: id });
             }
             // this layer is not in the style.layers array, so we pass an impossible array index
-            if (this._validate(performance$1.validateStyle.layer, `layers.${id}`, layerObject, { arrayIndex: -1 }, options))
+            if (this._validate(performance$1.u.layer, `layers.${id}`, layerObject, { arrayIndex: -1 }, options))
                 return;
-            layer = performance$1.createStyleLayer(layerObject);
+            layer = performance$1.aA(layerObject);
             this._validateLayer(layer);
             layer.setEventedParent(this, { layer: { id } });
         }
         const index = before ? this._order.indexOf(before) : this._order.length;
         if (before && index === -1) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Cannot add layer "${id}" before non-existing layer "${before}".`)));
+            this.fire(new performance$1.j(new Error(`Cannot add layer "${id}" before non-existing layer "${before}".`)));
             return;
         }
         this._order.splice(index, 0, id);
@@ -45177,7 +37186,7 @@ class Style extends performance$1.Evented {
         this._changed = true;
         const layer = this._layers[id];
         if (!layer) {
-            this.fire(new performance$1.ErrorEvent(new Error(`The layer '${id}' does not exist in the map's style and cannot be moved.`)));
+            this.fire(new performance$1.j(new Error(`The layer '${id}' does not exist in the map's style and cannot be moved.`)));
             return;
         }
         if (id === before) {
@@ -45187,7 +37196,7 @@ class Style extends performance$1.Evented {
         this._order.splice(index, 1);
         const newIndex = before ? this._order.indexOf(before) : this._order.length;
         if (before && newIndex === -1) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Cannot move layer "${id}" before non-existing layer "${before}".`)));
+            this.fire(new performance$1.j(new Error(`Cannot move layer "${id}" before non-existing layer "${before}".`)));
             return;
         }
         this._order.splice(newIndex, 0, id);
@@ -45203,7 +37212,7 @@ class Style extends performance$1.Evented {
         this._checkLoaded();
         const layer = this._layers[id];
         if (!layer) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Cannot remove non-existing layer "${id}".`)));
+            this.fire(new performance$1.j(new Error(`Cannot remove non-existing layer "${id}".`)));
             return;
         }
         layer.setEventedParent(null);
@@ -45252,7 +37261,7 @@ class Style extends performance$1.Evented {
         this._checkLoaded();
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Cannot set the zoom range of non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.j(new Error(`Cannot set the zoom range of non-existing layer "${layerId}".`)));
             return;
         }
         if (layer.minzoom === minzoom && layer.maxzoom === maxzoom)
@@ -45269,10 +37278,10 @@ class Style extends performance$1.Evented {
         this._checkLoaded();
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Cannot filter non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.j(new Error(`Cannot filter non-existing layer "${layerId}".`)));
             return;
         }
-        if (performance$1.deepEqual(layer.filter, filter)) {
+        if (performance$1.aE(layer.filter, filter)) {
             return;
         }
         if (filter === null || filter === undefined) {
@@ -45280,10 +37289,10 @@ class Style extends performance$1.Evented {
             this._updateLayer(layer);
             return;
         }
-        if (this._validate(performance$1.validateStyle.filter, `layers.${layer.id}.filter`, filter, null, options)) {
+        if (this._validate(performance$1.u.filter, `layers.${layer.id}.filter`, filter, null, options)) {
             return;
         }
-        layer.filter = performance$1.clone$1(filter);
+        layer.filter = performance$1.aB(filter);
         this._updateLayer(layer);
     }
     /**
@@ -45292,16 +37301,16 @@ class Style extends performance$1.Evented {
      * @returns the layer's filter, if any
      */
     getFilter(layer) {
-        return performance$1.clone$1(this.getLayer(layer).filter);
+        return performance$1.aB(this.getLayer(layer).filter);
     }
     setLayoutProperty(layerId, name, value, options = {}) {
         this._checkLoaded();
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Cannot style non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.j(new Error(`Cannot style non-existing layer "${layerId}".`)));
             return;
         }
-        if (performance$1.deepEqual(layer.getLayoutProperty(name), value))
+        if (performance$1.aE(layer.getLayoutProperty(name), value))
             return;
         layer.setLayoutProperty(name, value, options);
         this._updateLayer(layer);
@@ -45315,7 +37324,7 @@ class Style extends performance$1.Evented {
     getLayoutProperty(layerId, name) {
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Cannot get style of non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.j(new Error(`Cannot get style of non-existing layer "${layerId}".`)));
             return;
         }
         return layer.getLayoutProperty(name);
@@ -45324,10 +37333,10 @@ class Style extends performance$1.Evented {
         this._checkLoaded();
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Cannot style non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.j(new Error(`Cannot style non-existing layer "${layerId}".`)));
             return;
         }
-        if (performance$1.deepEqual(layer.getPaintProperty(name), value))
+        if (performance$1.aE(layer.getPaintProperty(name), value))
             return;
         const requiresRelayout = layer.setPaintProperty(name, value, options);
         if (requiresRelayout) {
@@ -45347,20 +37356,20 @@ class Style extends performance$1.Evented {
         const sourceLayer = target.sourceLayer;
         const sourceCache = this.sourceCaches[sourceId];
         if (sourceCache === undefined) {
-            this.fire(new performance$1.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
+            this.fire(new performance$1.j(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
             return;
         }
         const sourceType = sourceCache.getSource().type;
         if (sourceType === 'geojson' && sourceLayer) {
-            this.fire(new performance$1.ErrorEvent(new Error('GeoJSON sources cannot have a sourceLayer parameter.')));
+            this.fire(new performance$1.j(new Error('GeoJSON sources cannot have a sourceLayer parameter.')));
             return;
         }
         if (sourceType === 'vector' && !sourceLayer) {
-            this.fire(new performance$1.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
+            this.fire(new performance$1.j(new Error('The sourceLayer parameter must be provided for vector source types.')));
             return;
         }
         if (target.id === undefined) {
-            this.fire(new performance$1.ErrorEvent(new Error('The feature id parameter must be provided.')));
+            this.fire(new performance$1.j(new Error('The feature id parameter must be provided.')));
         }
         sourceCache.setFeatureState(sourceLayer, target.id, state);
     }
@@ -45369,17 +37378,17 @@ class Style extends performance$1.Evented {
         const sourceId = target.source;
         const sourceCache = this.sourceCaches[sourceId];
         if (sourceCache === undefined) {
-            this.fire(new performance$1.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
+            this.fire(new performance$1.j(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
             return;
         }
         const sourceType = sourceCache.getSource().type;
         const sourceLayer = sourceType === 'vector' ? target.sourceLayer : undefined;
         if (sourceType === 'vector' && !sourceLayer) {
-            this.fire(new performance$1.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
+            this.fire(new performance$1.j(new Error('The sourceLayer parameter must be provided for vector source types.')));
             return;
         }
         if (key && (typeof target.id !== 'string' && typeof target.id !== 'number')) {
-            this.fire(new performance$1.ErrorEvent(new Error('A feature id is required to remove its specific state property.')));
+            this.fire(new performance$1.j(new Error('A feature id is required to remove its specific state property.')));
             return;
         }
         sourceCache.removeFeatureState(sourceLayer, target.id, key);
@@ -45390,21 +37399,21 @@ class Style extends performance$1.Evented {
         const sourceLayer = target.sourceLayer;
         const sourceCache = this.sourceCaches[sourceId];
         if (sourceCache === undefined) {
-            this.fire(new performance$1.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
+            this.fire(new performance$1.j(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
             return;
         }
         const sourceType = sourceCache.getSource().type;
         if (sourceType === 'vector' && !sourceLayer) {
-            this.fire(new performance$1.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
+            this.fire(new performance$1.j(new Error('The sourceLayer parameter must be provided for vector source types.')));
             return;
         }
         if (target.id === undefined) {
-            this.fire(new performance$1.ErrorEvent(new Error('The feature id parameter must be provided.')));
+            this.fire(new performance$1.j(new Error('The feature id parameter must be provided.')));
         }
         return sourceCache.getFeatureState(sourceLayer, target.id);
     }
     getTransition() {
-        return performance$1.extend({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
+        return performance$1.e({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
     }
     serialize() {
         // We return undefined before we're loaded, following the pattern of Map.getStyle() before
@@ -45413,11 +37422,11 @@ class Style extends performance$1.Evented {
         // calling Style._checkLoaded() first if their validation requires the style to be loaded.
         if (!this._loaded)
             return;
-        const sources = performance$1.mapObject(this.sourceCaches, (source) => source.serialize());
+        const sources = performance$1.aF(this.sourceCaches, (source) => source.serialize());
         const layers = this._serializeByIds(this._order, true);
         const terrain = this.map.getTerrain() || undefined;
         const myStyleSheet = this.stylesheet;
-        return performance$1.filterObject({
+        return performance$1.aG({
             version: myStyleSheet.version,
             name: myStyleSheet.name,
             metadata: myStyleSheet.metadata,
@@ -45513,19 +37522,19 @@ class Style extends performance$1.Evented {
     }
     queryRenderedFeatures(queryGeometry, params, transform) {
         if (params && params.filter) {
-            this._validate(performance$1.validateStyle.filter, 'queryRenderedFeatures.filter', params.filter, null, params);
+            this._validate(performance$1.u.filter, 'queryRenderedFeatures.filter', params.filter, null, params);
         }
         const includedSources = {};
         if (params && params.layers) {
             if (!Array.isArray(params.layers)) {
-                this.fire(new performance$1.ErrorEvent(new Error('parameters.layers must be an Array.')));
+                this.fire(new performance$1.j(new Error('parameters.layers must be an Array.')));
                 return [];
             }
             for (const layerId of params.layers) {
                 const layer = this._layers[layerId];
                 if (!layer) {
                     // this layer is not in the style.layers array
-                    this.fire(new performance$1.ErrorEvent(new Error(`The layer '${layerId}' does not exist in the map's style and cannot be queried for features.`)));
+                    this.fire(new performance$1.j(new Error(`The layer '${layerId}' does not exist in the map's style and cannot be queried for features.`)));
                     return [];
                 }
                 includedSources[layer.source] = true;
@@ -45549,7 +37558,7 @@ class Style extends performance$1.Evented {
     }
     querySourceFeatures(sourceID, params) {
         if (params && params.filter) {
-            this._validate(performance$1.validateStyle.filter, 'querySourceFeatures.filter', params.filter, null, params);
+            this._validate(performance$1.u.filter, 'querySourceFeatures.filter', params.filter, null, params);
         }
         const sourceCache = this.sourceCaches[sourceID];
         return sourceCache ? querySourceFeatures(sourceCache, params) : [];
@@ -45562,7 +37571,7 @@ class Style extends performance$1.Evented {
         const light = this.light.getLight();
         let _update = false;
         for (const key in lightOptions) {
-            if (!performance$1.deepEqual(lightOptions[key], light[key])) {
+            if (!performance$1.aE(lightOptions[key], light[key])) {
                 _update = true;
                 break;
             }
@@ -45571,7 +37580,7 @@ class Style extends performance$1.Evented {
             return;
         const parameters = {
             now: browser.now(),
-            transition: performance$1.extend({
+            transition: performance$1.e({
                 duration: 300,
                 delay: 0
             }, this.stylesheet.transition)
@@ -45596,7 +37605,7 @@ class Style extends performance$1.Evented {
         }
         else {
             for (const key in skyOptions) {
-                if (!performance$1.deepEqual(skyOptions[key], sky[key])) {
+                if (!performance$1.aE(skyOptions[key], sky[key])) {
                     update = true;
                     break;
                 }
@@ -45606,7 +37615,7 @@ class Style extends performance$1.Evented {
             return;
         const parameters = {
             now: browser.now(),
-            transition: performance$1.extend({
+            transition: performance$1.e({
                 duration: 300,
                 delay: 0
             }, this.stylesheet.transition)
@@ -45619,11 +37628,11 @@ class Style extends performance$1.Evented {
         if (options && options.validate === false) {
             return false;
         }
-        return emitValidationErrors(this, validate.call(performance$1.validateStyle, performance$1.extend({
+        return emitValidationErrors(this, validate.call(performance$1.u, performance$1.e({
             key,
             style: this.serialize(),
             value,
-            styleSpec: performance$1.v8Spec
+            styleSpec: performance$1.v
         }, props)));
     }
     _remove(mapRemoved = true) {
@@ -45741,7 +37750,7 @@ class Style extends performance$1.Evented {
     }
     // Callbacks from web workers
     getImages(mapId, params) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             const images = yield this.imageManager.getImages(params.icons);
             // Apply queued image changes before setting the tile's dependencies so that the tile
             // is not reloaded unnecessarily. Without this forced update the reload could happen in cases
@@ -45760,7 +37769,7 @@ class Style extends performance$1.Evented {
         });
     }
     getGlyphs(mapId, params) {
-        return performance$1.__awaiter(this, void 0, void 0, function* () {
+        return performance$1._(this, void 0, void 0, function* () {
             const glypgs = yield this.glyphManager.getGlyphs(params.stacks);
             const sourceCache = this.sourceCaches[params.source];
             if (sourceCache) {
@@ -45776,7 +37785,7 @@ class Style extends performance$1.Evented {
     }
     setGlyphs(glyphsUrl, options = {}) {
         this._checkLoaded();
-        if (glyphsUrl && this._validate(performance$1.validateStyle.glyphs, 'glyphs', glyphsUrl, null, options)) {
+        if (glyphsUrl && this._validate(performance$1.u.glyphs, 'glyphs', glyphsUrl, null, options)) {
             return;
         }
         this._glyphsDidChange = true;
@@ -45799,7 +37808,7 @@ class Style extends performance$1.Evented {
             ...coerceSpriteToArray(this.stylesheet.sprite),
             ...spriteToAdd
         ];
-        if (this._validate(performance$1.validateStyle.sprite, 'sprite', updatedSprite, null, options))
+        if (this._validate(performance$1.u.sprite, 'sprite', updatedSprite, null, options))
             return;
         this.stylesheet.sprite = updatedSprite;
         this._loadSprite(spriteToAdd, true, completion);
@@ -45814,7 +37823,7 @@ class Style extends performance$1.Evented {
         this._checkLoaded();
         const internalSpriteRepresentation = coerceSpriteToArray(this.stylesheet.sprite);
         if (!internalSpriteRepresentation.find(sprite => sprite.id === id)) {
-            this.fire(new performance$1.ErrorEvent(new Error(`Sprite "${id}" doesn't exists on this map.`)));
+            this.fire(new performance$1.j(new Error(`Sprite "${id}" doesn't exists on this map.`)));
             return;
         }
         if (this._spritesImagesIds[id]) {
@@ -45829,7 +37838,7 @@ class Style extends performance$1.Evented {
         this._availableImages = this.imageManager.listImages();
         this._changed = true;
         this.dispatcher.broadcast("SI" /* MessageType.setImages */, this._availableImages);
-        this.fire(new performance$1.Event('data', { dataType: 'style' }));
+        this.fire(new performance$1.k('data', { dataType: 'style' }));
     }
     /**
      * Get the current sprite value.
@@ -45848,7 +37857,7 @@ class Style extends performance$1.Evented {
      */
     setSprite(sprite, options = {}, completion) {
         this._checkLoaded();
-        if (sprite && this._validate(performance$1.validateStyle.sprite, 'sprite', sprite, null, options)) {
+        if (sprite && this._validate(performance$1.u.sprite, 'sprite', sprite, null, options)) {
             return;
         }
         this.stylesheet.sprite = sprite;
@@ -45864,7 +37873,7 @@ class Style extends performance$1.Evented {
     }
 }
 
-var posAttributes = performance$1.createLayout([
+var posAttributes = performance$1.Y([
     { name: 'a_pos', type: 'Int16', components: 2 }
 ]);
 
@@ -46295,43 +38304,43 @@ class VertexArrayObject {
 }
 
 const terrainPreludeUniforms = (context, locations) => ({
-    'u_depth': new performance$1.Uniform1i(context, locations.u_depth),
-    'u_terrain': new performance$1.Uniform1i(context, locations.u_terrain),
-    'u_terrain_dim': new performance$1.Uniform1f(context, locations.u_terrain_dim),
-    'u_terrain_matrix': new performance$1.UniformMatrix4f(context, locations.u_terrain_matrix),
-    'u_terrain_unpack': new performance$1.Uniform4f(context, locations.u_terrain_unpack),
-    'u_terrain_exaggeration': new performance$1.Uniform1f(context, locations.u_terrain_exaggeration)
+    'u_depth': new performance$1.aH(context, locations.u_depth),
+    'u_terrain': new performance$1.aH(context, locations.u_terrain),
+    'u_terrain_dim': new performance$1.aI(context, locations.u_terrain_dim),
+    'u_terrain_matrix': new performance$1.aJ(context, locations.u_terrain_matrix),
+    'u_terrain_unpack': new performance$1.aK(context, locations.u_terrain_unpack),
+    'u_terrain_exaggeration': new performance$1.aI(context, locations.u_terrain_exaggeration)
 });
 const terrainUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
-    'u_ele_delta': new performance$1.Uniform1f(context, locations.u_ele_delta),
-    'u_fog_matrix': new performance$1.UniformMatrix4f(context, locations.u_fog_matrix),
-    'u_fog_color': new performance$1.UniformColor(context, locations.u_fog_color),
-    'u_fog_ground_blend': new performance$1.Uniform1f(context, locations.u_fog_ground_blend),
-    'u_fog_ground_blend_opacity': new performance$1.Uniform1f(context, locations.u_fog_ground_blend_opacity),
-    'u_horizon_color': new performance$1.UniformColor(context, locations.u_horizon_color),
-    'u_horizon_fog_blend': new performance$1.Uniform1f(context, locations.u_horizon_fog_blend)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_texture': new performance$1.aH(context, locations.u_texture),
+    'u_ele_delta': new performance$1.aI(context, locations.u_ele_delta),
+    'u_fog_matrix': new performance$1.aJ(context, locations.u_fog_matrix),
+    'u_fog_color': new performance$1.aL(context, locations.u_fog_color),
+    'u_fog_ground_blend': new performance$1.aI(context, locations.u_fog_ground_blend),
+    'u_fog_ground_blend_opacity': new performance$1.aI(context, locations.u_fog_ground_blend_opacity),
+    'u_horizon_color': new performance$1.aL(context, locations.u_horizon_color),
+    'u_horizon_fog_blend': new performance$1.aI(context, locations.u_horizon_fog_blend)
 });
 const terrainDepthUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_ele_delta': new performance$1.Uniform1f(context, locations.u_ele_delta)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_ele_delta': new performance$1.aI(context, locations.u_ele_delta)
 });
 const terrainCoordsUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
-    'u_terrain_coords_id': new performance$1.Uniform1f(context, locations.u_terrain_coords_id),
-    'u_ele_delta': new performance$1.Uniform1f(context, locations.u_ele_delta)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_texture': new performance$1.aH(context, locations.u_texture),
+    'u_terrain_coords_id': new performance$1.aI(context, locations.u_terrain_coords_id),
+    'u_ele_delta': new performance$1.aI(context, locations.u_ele_delta)
 });
 const terrainUniformValues = (matrix, eleDelta, fogMatrix, sky, pitch) => ({
     'u_matrix': matrix,
     'u_texture': 0,
     'u_ele_delta': eleDelta,
     'u_fog_matrix': fogMatrix,
-    'u_fog_color': sky ? sky.properties.get('fog-color') : performance$1.Color.white,
+    'u_fog_color': sky ? sky.properties.get('fog-color') : performance$1.aM.white,
     'u_fog_ground_blend': sky ? sky.properties.get('fog-ground-blend') : 1,
     'u_fog_ground_blend_opacity': sky ? sky.calculateFogBlendOpacity(pitch) : 0,
-    'u_horizon_color': sky ? sky.properties.get('horizon-color') : performance$1.Color.white,
+    'u_horizon_color': sky ? sky.properties.get('horizon-color') : performance$1.aM.white,
     'u_horizon_fog_blend': sky ? sky.properties.get('horizon-fog-blend') : 1
 });
 const terrainDepthUniformValues = (matrix, eleDelta) => ({
@@ -46525,38 +38534,38 @@ function bgPatternUniformValues(image, crossfade, painter, tile) {
 }
 
 const fillExtrusionUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_lightpos': new performance$1.Uniform3f(context, locations.u_lightpos),
-    'u_lightintensity': new performance$1.Uniform1f(context, locations.u_lightintensity),
-    'u_lightcolor': new performance$1.Uniform3f(context, locations.u_lightcolor),
-    'u_vertical_gradient': new performance$1.Uniform1f(context, locations.u_vertical_gradient),
-    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_lightpos': new performance$1.aN(context, locations.u_lightpos),
+    'u_lightintensity': new performance$1.aI(context, locations.u_lightintensity),
+    'u_lightcolor': new performance$1.aN(context, locations.u_lightcolor),
+    'u_vertical_gradient': new performance$1.aI(context, locations.u_vertical_gradient),
+    'u_opacity': new performance$1.aI(context, locations.u_opacity)
 });
 const fillExtrusionPatternUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_lightpos': new performance$1.Uniform3f(context, locations.u_lightpos),
-    'u_lightintensity': new performance$1.Uniform1f(context, locations.u_lightintensity),
-    'u_lightcolor': new performance$1.Uniform3f(context, locations.u_lightcolor),
-    'u_vertical_gradient': new performance$1.Uniform1f(context, locations.u_vertical_gradient),
-    'u_height_factor': new performance$1.Uniform1f(context, locations.u_height_factor),
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_lightpos': new performance$1.aN(context, locations.u_lightpos),
+    'u_lightintensity': new performance$1.aI(context, locations.u_lightintensity),
+    'u_lightcolor': new performance$1.aN(context, locations.u_lightcolor),
+    'u_vertical_gradient': new performance$1.aI(context, locations.u_vertical_gradient),
+    'u_height_factor': new performance$1.aI(context, locations.u_height_factor),
     // pattern uniforms
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
-    'u_pixel_coord_upper': new performance$1.Uniform2f(context, locations.u_pixel_coord_upper),
-    'u_pixel_coord_lower': new performance$1.Uniform2f(context, locations.u_pixel_coord_lower),
-    'u_scale': new performance$1.Uniform3f(context, locations.u_scale),
-    'u_fade': new performance$1.Uniform1f(context, locations.u_fade),
-    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity)
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_texsize': new performance$1.aO(context, locations.u_texsize),
+    'u_pixel_coord_upper': new performance$1.aO(context, locations.u_pixel_coord_upper),
+    'u_pixel_coord_lower': new performance$1.aO(context, locations.u_pixel_coord_lower),
+    'u_scale': new performance$1.aN(context, locations.u_scale),
+    'u_fade': new performance$1.aI(context, locations.u_fade),
+    'u_opacity': new performance$1.aI(context, locations.u_opacity)
 });
 const fillExtrusionUniformValues = (matrix, painter, shouldUseVerticalGradient, opacity) => {
     const light = painter.style.light;
     const _lp = light.properties.get('position');
     const lightPos = [_lp.x, _lp.y, _lp.z];
-    const lightMat = performance$1.create$1();
+    const lightMat = create$3();
     if (light.properties.get('anchor') === 'viewport') {
-        performance$1.fromRotation(lightMat, -painter.transform.angle);
+        fromRotation(lightMat, -painter.transform.angle);
     }
-    performance$1.transformMat3(lightPos, lightPos, lightMat);
+    transformMat3(lightPos, lightPos, lightMat);
     const lightColor = light.properties.get('color');
     return {
         'u_matrix': matrix,
@@ -46568,56 +38577,56 @@ const fillExtrusionUniformValues = (matrix, painter, shouldUseVerticalGradient, 
     };
 };
 const fillExtrusionPatternUniformValues = (matrix, painter, shouldUseVerticalGradient, opacity, coord, crossfade, tile) => {
-    return performance$1.extend(fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity), patternUniformValues(crossfade, painter, tile), {
+    return performance$1.e(fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity), patternUniformValues(crossfade, painter, tile), {
         'u_height_factor': -Math.pow(2, coord.overscaledZ) / tile.tileSize / 8
     });
 };
 
 const fillUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix)
 });
 const fillPatternUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
-    'u_pixel_coord_upper': new performance$1.Uniform2f(context, locations.u_pixel_coord_upper),
-    'u_pixel_coord_lower': new performance$1.Uniform2f(context, locations.u_pixel_coord_lower),
-    'u_scale': new performance$1.Uniform3f(context, locations.u_scale),
-    'u_fade': new performance$1.Uniform1f(context, locations.u_fade)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_texsize': new performance$1.aO(context, locations.u_texsize),
+    'u_pixel_coord_upper': new performance$1.aO(context, locations.u_pixel_coord_upper),
+    'u_pixel_coord_lower': new performance$1.aO(context, locations.u_pixel_coord_lower),
+    'u_scale': new performance$1.aN(context, locations.u_scale),
+    'u_fade': new performance$1.aI(context, locations.u_fade)
 });
 const fillOutlineUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_world': new performance$1.Uniform2f(context, locations.u_world)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_world': new performance$1.aO(context, locations.u_world)
 });
 const fillOutlinePatternUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_world': new performance$1.Uniform2f(context, locations.u_world),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
-    'u_pixel_coord_upper': new performance$1.Uniform2f(context, locations.u_pixel_coord_upper),
-    'u_pixel_coord_lower': new performance$1.Uniform2f(context, locations.u_pixel_coord_lower),
-    'u_scale': new performance$1.Uniform3f(context, locations.u_scale),
-    'u_fade': new performance$1.Uniform1f(context, locations.u_fade)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_world': new performance$1.aO(context, locations.u_world),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_texsize': new performance$1.aO(context, locations.u_texsize),
+    'u_pixel_coord_upper': new performance$1.aO(context, locations.u_pixel_coord_upper),
+    'u_pixel_coord_lower': new performance$1.aO(context, locations.u_pixel_coord_lower),
+    'u_scale': new performance$1.aN(context, locations.u_scale),
+    'u_fade': new performance$1.aI(context, locations.u_fade)
 });
 const fillUniformValues = (matrix) => ({
     'u_matrix': matrix
 });
-const fillPatternUniformValues = (matrix, painter, crossfade, tile) => performance$1.extend(fillUniformValues(matrix), patternUniformValues(crossfade, painter, tile));
+const fillPatternUniformValues = (matrix, painter, crossfade, tile) => performance$1.e(fillUniformValues(matrix), patternUniformValues(crossfade, painter, tile));
 const fillOutlineUniformValues = (matrix, drawingBufferSize) => ({
     'u_matrix': matrix,
     'u_world': drawingBufferSize
 });
-const fillOutlinePatternUniformValues = (matrix, painter, crossfade, tile, drawingBufferSize) => performance$1.extend(fillPatternUniformValues(matrix, painter, crossfade, tile), {
+const fillOutlinePatternUniformValues = (matrix, painter, crossfade, tile, drawingBufferSize) => performance$1.e(fillPatternUniformValues(matrix, painter, crossfade, tile), {
     'u_world': drawingBufferSize
 });
 
 const circleUniforms = (context, locations) => ({
-    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_scale_with_map': new performance$1.Uniform1i(context, locations.u_scale_with_map),
-    'u_pitch_with_map': new performance$1.Uniform1i(context, locations.u_pitch_with_map),
-    'u_extrude_scale': new performance$1.Uniform2f(context, locations.u_extrude_scale),
-    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix)
+    'u_camera_to_center_distance': new performance$1.aI(context, locations.u_camera_to_center_distance),
+    'u_scale_with_map': new performance$1.aH(context, locations.u_scale_with_map),
+    'u_pitch_with_map': new performance$1.aH(context, locations.u_pitch_with_map),
+    'u_extrude_scale': new performance$1.aO(context, locations.u_extrude_scale),
+    'u_device_pixel_ratio': new performance$1.aI(context, locations.u_device_pixel_ratio),
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix)
 });
 const circleUniformValues = (painter, coord, tile, layer) => {
     const transform = painter.transform;
@@ -46642,14 +38651,14 @@ const circleUniformValues = (painter, coord, tile, layer) => {
 };
 
 const collisionUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_pixel_extrude_scale': new performance$1.Uniform2f(context, locations.u_pixel_extrude_scale)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_pixel_extrude_scale': new performance$1.aO(context, locations.u_pixel_extrude_scale)
 });
 const collisionCircleUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_inv_matrix': new performance$1.UniformMatrix4f(context, locations.u_inv_matrix),
-    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_viewport_size': new performance$1.Uniform2f(context, locations.u_viewport_size)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_inv_matrix': new performance$1.aJ(context, locations.u_inv_matrix),
+    'u_camera_to_center_distance': new performance$1.aI(context, locations.u_camera_to_center_distance),
+    'u_viewport_size': new performance$1.aO(context, locations.u_viewport_size)
 });
 const collisionUniformValues = (transform, matrix) => {
     return {
@@ -46667,10 +38676,10 @@ const collisionCircleUniformValues = (matrix, invMatrix, transform) => {
 };
 
 const debugUniforms = (context, locations) => ({
-    'u_color': new performance$1.UniformColor(context, locations.u_color),
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_overlay': new performance$1.Uniform1i(context, locations.u_overlay),
-    'u_overlay_scale': new performance$1.Uniform1f(context, locations.u_overlay_scale)
+    'u_color': new performance$1.aL(context, locations.u_color),
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_overlay': new performance$1.aH(context, locations.u_overlay),
+    'u_overlay_scale': new performance$1.aI(context, locations.u_overlay_scale)
 });
 const debugUniformValues = (matrix, color, scaleRatio = 1) => ({
     'u_matrix': matrix,
@@ -46680,23 +38689,23 @@ const debugUniformValues = (matrix, color, scaleRatio = 1) => ({
 });
 
 const clippingMaskUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix)
 });
 const clippingMaskUniformValues = (matrix) => ({
     'u_matrix': matrix
 });
 
 const heatmapUniforms = (context, locations) => ({
-    'u_extrude_scale': new performance$1.Uniform1f(context, locations.u_extrude_scale),
-    'u_intensity': new performance$1.Uniform1f(context, locations.u_intensity),
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix)
+    'u_extrude_scale': new performance$1.aI(context, locations.u_extrude_scale),
+    'u_intensity': new performance$1.aI(context, locations.u_intensity),
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix)
 });
 const heatmapTextureUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_world': new performance$1.Uniform2f(context, locations.u_world),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_color_ramp': new performance$1.Uniform1i(context, locations.u_color_ramp),
-    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_world': new performance$1.aO(context, locations.u_world),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_color_ramp': new performance$1.aH(context, locations.u_color_ramp),
+    'u_opacity': new performance$1.aI(context, locations.u_opacity)
 });
 const heatmapUniformValues = (matrix, tile, zoom, intensity) => ({
     'u_matrix': matrix,
@@ -46704,8 +38713,8 @@ const heatmapUniformValues = (matrix, tile, zoom, intensity) => ({
     'u_intensity': intensity
 });
 const heatmapTextureUniformValues = (painter, layer, textureUnit, colorRampUnit) => {
-    const matrix = performance$1.create();
-    performance$1.ortho(matrix, 0, painter.width, painter.height, 0, 0, 1);
+    const matrix = performance$1.H();
+    performance$1.aP(matrix, 0, painter.width, painter.height, 0, 0, 1);
     const gl = painter.context.gl;
     return {
         'u_matrix': matrix,
@@ -46717,20 +38726,20 @@ const heatmapTextureUniformValues = (painter, layer, textureUnit, colorRampUnit)
 };
 
 const hillshadeUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_latrange': new performance$1.Uniform2f(context, locations.u_latrange),
-    'u_light': new performance$1.Uniform2f(context, locations.u_light),
-    'u_shadow': new performance$1.UniformColor(context, locations.u_shadow),
-    'u_highlight': new performance$1.UniformColor(context, locations.u_highlight),
-    'u_accent': new performance$1.UniformColor(context, locations.u_accent)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_latrange': new performance$1.aO(context, locations.u_latrange),
+    'u_light': new performance$1.aO(context, locations.u_light),
+    'u_shadow': new performance$1.aL(context, locations.u_shadow),
+    'u_highlight': new performance$1.aL(context, locations.u_highlight),
+    'u_accent': new performance$1.aL(context, locations.u_accent)
 });
 const hillshadePrepareUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_dimension': new performance$1.Uniform2f(context, locations.u_dimension),
-    'u_zoom': new performance$1.Uniform1f(context, locations.u_zoom),
-    'u_unpack': new performance$1.Uniform4f(context, locations.u_unpack)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_dimension': new performance$1.aO(context, locations.u_dimension),
+    'u_zoom': new performance$1.aI(context, locations.u_zoom),
+    'u_unpack': new performance$1.aK(context, locations.u_unpack)
 });
 const hillshadeUniformValues = (painter, tile, layer, coord) => {
     const shadow = layer.paint.get('hillshade-shadow-color');
@@ -46754,10 +38763,10 @@ const hillshadeUniformValues = (painter, tile, layer, coord) => {
 };
 const hillshadeUniformPrepareValues = (tileID, dem) => {
     const stride = dem.stride;
-    const matrix = performance$1.create();
+    const matrix = performance$1.H();
     // Flip rendering at y axis.
-    performance$1.ortho(matrix, 0, performance$1.EXTENT, -performance$1.EXTENT, 0, 0, 1);
-    performance$1.translate(matrix, matrix, [0, -performance$1.EXTENT, 0]);
+    performance$1.aP(matrix, 0, performance$1.X, -performance$1.X, 0, 0, 1);
+    performance$1.J(matrix, matrix, [0, -performance$1.X, 0]);
     return {
         'u_matrix': matrix,
         'u_image': 1,
@@ -46771,47 +38780,47 @@ function getTileLatRange(painter, tileID) {
     const tilesAtZoom = Math.pow(2, tileID.canonical.z);
     const y = tileID.canonical.y;
     return [
-        new performance$1.MercatorCoordinate(0, y / tilesAtZoom).toLngLat().lat,
-        new performance$1.MercatorCoordinate(0, (y + 1) / tilesAtZoom).toLngLat().lat
+        new performance$1.Z(0, y / tilesAtZoom).toLngLat().lat,
+        new performance$1.Z(0, (y + 1) / tilesAtZoom).toLngLat().lat
     ];
 }
 
 const lineUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_ratio': new performance$1.Uniform1f(context, locations.u_ratio),
-    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_units_to_pixels': new performance$1.Uniform2f(context, locations.u_units_to_pixels)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_ratio': new performance$1.aI(context, locations.u_ratio),
+    'u_device_pixel_ratio': new performance$1.aI(context, locations.u_device_pixel_ratio),
+    'u_units_to_pixels': new performance$1.aO(context, locations.u_units_to_pixels)
 });
 const lineGradientUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_ratio': new performance$1.Uniform1f(context, locations.u_ratio),
-    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_units_to_pixels': new performance$1.Uniform2f(context, locations.u_units_to_pixels),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_image_height': new performance$1.Uniform1f(context, locations.u_image_height)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_ratio': new performance$1.aI(context, locations.u_ratio),
+    'u_device_pixel_ratio': new performance$1.aI(context, locations.u_device_pixel_ratio),
+    'u_units_to_pixels': new performance$1.aO(context, locations.u_units_to_pixels),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_image_height': new performance$1.aI(context, locations.u_image_height)
 });
 const linePatternUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
-    'u_ratio': new performance$1.Uniform1f(context, locations.u_ratio),
-    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_units_to_pixels': new performance$1.Uniform2f(context, locations.u_units_to_pixels),
-    'u_scale': new performance$1.Uniform3f(context, locations.u_scale),
-    'u_fade': new performance$1.Uniform1f(context, locations.u_fade)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_texsize': new performance$1.aO(context, locations.u_texsize),
+    'u_ratio': new performance$1.aI(context, locations.u_ratio),
+    'u_device_pixel_ratio': new performance$1.aI(context, locations.u_device_pixel_ratio),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_units_to_pixels': new performance$1.aO(context, locations.u_units_to_pixels),
+    'u_scale': new performance$1.aN(context, locations.u_scale),
+    'u_fade': new performance$1.aI(context, locations.u_fade)
 });
 const lineSDFUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_ratio': new performance$1.Uniform1f(context, locations.u_ratio),
-    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_units_to_pixels': new performance$1.Uniform2f(context, locations.u_units_to_pixels),
-    'u_patternscale_a': new performance$1.Uniform2f(context, locations.u_patternscale_a),
-    'u_patternscale_b': new performance$1.Uniform2f(context, locations.u_patternscale_b),
-    'u_sdfgamma': new performance$1.Uniform1f(context, locations.u_sdfgamma),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_tex_y_a': new performance$1.Uniform1f(context, locations.u_tex_y_a),
-    'u_tex_y_b': new performance$1.Uniform1f(context, locations.u_tex_y_b),
-    'u_mix': new performance$1.Uniform1f(context, locations.u_mix)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_ratio': new performance$1.aI(context, locations.u_ratio),
+    'u_device_pixel_ratio': new performance$1.aI(context, locations.u_device_pixel_ratio),
+    'u_units_to_pixels': new performance$1.aO(context, locations.u_units_to_pixels),
+    'u_patternscale_a': new performance$1.aO(context, locations.u_patternscale_a),
+    'u_patternscale_b': new performance$1.aO(context, locations.u_patternscale_b),
+    'u_sdfgamma': new performance$1.aI(context, locations.u_sdfgamma),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_tex_y_a': new performance$1.aI(context, locations.u_tex_y_a),
+    'u_tex_y_b': new performance$1.aI(context, locations.u_tex_y_b),
+    'u_mix': new performance$1.aI(context, locations.u_mix)
 });
 const lineUniformValues = (painter, tile, layer, coord) => {
     const transform = painter.transform;
@@ -46826,7 +38835,7 @@ const lineUniformValues = (painter, tile, layer, coord) => {
     };
 };
 const lineGradientUniformValues = (painter, tile, layer, imageHeight, coord) => {
-    return performance$1.extend(lineUniformValues(painter, tile, layer, coord), {
+    return performance$1.e(lineUniformValues(painter, tile, layer, coord), {
         'u_image': 0,
         'u_image_height': imageHeight,
     });
@@ -46858,7 +38867,7 @@ const lineSDFUniformValues = (painter, tile, layer, dasharray, crossfade, coord)
     const posB = lineAtlas.getDash(dasharray.to, round);
     const widthA = posA.width * crossfade.fromScale;
     const widthB = posB.width * crossfade.toScale;
-    return performance$1.extend(lineUniformValues(painter, tile, layer, coord), {
+    return performance$1.e(lineUniformValues(painter, tile, layer, coord), {
         'u_patternscale_a': [tileRatio / widthA, -posA.height / 2],
         'u_patternscale_b': [tileRatio / widthB, -posB.height / 2],
         'u_sdfgamma': lineAtlas.width / (Math.min(widthA, widthB) * 256 * painter.pixelRatio) / 2,
@@ -46876,19 +38885,19 @@ function calculateMatrix(painter, tile, layer, coord) {
 }
 
 const rasterUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_tl_parent': new performance$1.Uniform2f(context, locations.u_tl_parent),
-    'u_scale_parent': new performance$1.Uniform1f(context, locations.u_scale_parent),
-    'u_buffer_scale': new performance$1.Uniform1f(context, locations.u_buffer_scale),
-    'u_fade_t': new performance$1.Uniform1f(context, locations.u_fade_t),
-    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity),
-    'u_image0': new performance$1.Uniform1i(context, locations.u_image0),
-    'u_image1': new performance$1.Uniform1i(context, locations.u_image1),
-    'u_brightness_low': new performance$1.Uniform1f(context, locations.u_brightness_low),
-    'u_brightness_high': new performance$1.Uniform1f(context, locations.u_brightness_high),
-    'u_saturation_factor': new performance$1.Uniform1f(context, locations.u_saturation_factor),
-    'u_contrast_factor': new performance$1.Uniform1f(context, locations.u_contrast_factor),
-    'u_spin_weights': new performance$1.Uniform3f(context, locations.u_spin_weights)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_tl_parent': new performance$1.aO(context, locations.u_tl_parent),
+    'u_scale_parent': new performance$1.aI(context, locations.u_scale_parent),
+    'u_buffer_scale': new performance$1.aI(context, locations.u_buffer_scale),
+    'u_fade_t': new performance$1.aI(context, locations.u_fade_t),
+    'u_opacity': new performance$1.aI(context, locations.u_opacity),
+    'u_image0': new performance$1.aH(context, locations.u_image0),
+    'u_image1': new performance$1.aH(context, locations.u_image1),
+    'u_brightness_low': new performance$1.aI(context, locations.u_brightness_low),
+    'u_brightness_high': new performance$1.aI(context, locations.u_brightness_high),
+    'u_saturation_factor': new performance$1.aI(context, locations.u_saturation_factor),
+    'u_contrast_factor': new performance$1.aI(context, locations.u_contrast_factor),
+    'u_spin_weights': new performance$1.aN(context, locations.u_spin_weights)
 });
 const rasterUniformValues = (matrix, parentTL, parentScaleBy, fade, layer) => ({
     'u_matrix': matrix,
@@ -46927,78 +38936,78 @@ function saturationFactor(saturation) {
 }
 
 const symbolIconUniforms = (context, locations) => ({
-    'u_is_size_zoom_constant': new performance$1.Uniform1i(context, locations.u_is_size_zoom_constant),
-    'u_is_size_feature_constant': new performance$1.Uniform1i(context, locations.u_is_size_feature_constant),
-    'u_size_t': new performance$1.Uniform1f(context, locations.u_size_t),
-    'u_size': new performance$1.Uniform1f(context, locations.u_size),
-    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_pitch': new performance$1.Uniform1f(context, locations.u_pitch),
-    'u_rotate_symbol': new performance$1.Uniform1i(context, locations.u_rotate_symbol),
-    'u_aspect_ratio': new performance$1.Uniform1f(context, locations.u_aspect_ratio),
-    'u_fade_change': new performance$1.Uniform1f(context, locations.u_fade_change),
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_label_plane_matrix': new performance$1.UniformMatrix4f(context, locations.u_label_plane_matrix),
-    'u_coord_matrix': new performance$1.UniformMatrix4f(context, locations.u_coord_matrix),
-    'u_is_text': new performance$1.Uniform1i(context, locations.u_is_text),
-    'u_pitch_with_map': new performance$1.Uniform1i(context, locations.u_pitch_with_map),
-    'u_is_along_line': new performance$1.Uniform1i(context, locations.u_is_along_line),
-    'u_is_variable_anchor': new performance$1.Uniform1i(context, locations.u_is_variable_anchor),
-    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
-    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
-    'u_translation': new performance$1.Uniform2f(context, locations.u_translation),
-    'u_pitched_scale': new performance$1.Uniform1f(context, locations.u_pitched_scale),
+    'u_is_size_zoom_constant': new performance$1.aH(context, locations.u_is_size_zoom_constant),
+    'u_is_size_feature_constant': new performance$1.aH(context, locations.u_is_size_feature_constant),
+    'u_size_t': new performance$1.aI(context, locations.u_size_t),
+    'u_size': new performance$1.aI(context, locations.u_size),
+    'u_camera_to_center_distance': new performance$1.aI(context, locations.u_camera_to_center_distance),
+    'u_pitch': new performance$1.aI(context, locations.u_pitch),
+    'u_rotate_symbol': new performance$1.aH(context, locations.u_rotate_symbol),
+    'u_aspect_ratio': new performance$1.aI(context, locations.u_aspect_ratio),
+    'u_fade_change': new performance$1.aI(context, locations.u_fade_change),
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_label_plane_matrix': new performance$1.aJ(context, locations.u_label_plane_matrix),
+    'u_coord_matrix': new performance$1.aJ(context, locations.u_coord_matrix),
+    'u_is_text': new performance$1.aH(context, locations.u_is_text),
+    'u_pitch_with_map': new performance$1.aH(context, locations.u_pitch_with_map),
+    'u_is_along_line': new performance$1.aH(context, locations.u_is_along_line),
+    'u_is_variable_anchor': new performance$1.aH(context, locations.u_is_variable_anchor),
+    'u_texsize': new performance$1.aO(context, locations.u_texsize),
+    'u_texture': new performance$1.aH(context, locations.u_texture),
+    'u_translation': new performance$1.aO(context, locations.u_translation),
+    'u_pitched_scale': new performance$1.aI(context, locations.u_pitched_scale),
 });
 const symbolSDFUniforms = (context, locations) => ({
-    'u_is_size_zoom_constant': new performance$1.Uniform1i(context, locations.u_is_size_zoom_constant),
-    'u_is_size_feature_constant': new performance$1.Uniform1i(context, locations.u_is_size_feature_constant),
-    'u_size_t': new performance$1.Uniform1f(context, locations.u_size_t),
-    'u_size': new performance$1.Uniform1f(context, locations.u_size),
-    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_pitch': new performance$1.Uniform1f(context, locations.u_pitch),
-    'u_rotate_symbol': new performance$1.Uniform1i(context, locations.u_rotate_symbol),
-    'u_aspect_ratio': new performance$1.Uniform1f(context, locations.u_aspect_ratio),
-    'u_fade_change': new performance$1.Uniform1f(context, locations.u_fade_change),
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_label_plane_matrix': new performance$1.UniformMatrix4f(context, locations.u_label_plane_matrix),
-    'u_coord_matrix': new performance$1.UniformMatrix4f(context, locations.u_coord_matrix),
-    'u_is_text': new performance$1.Uniform1i(context, locations.u_is_text),
-    'u_pitch_with_map': new performance$1.Uniform1i(context, locations.u_pitch_with_map),
-    'u_is_along_line': new performance$1.Uniform1i(context, locations.u_is_along_line),
-    'u_is_variable_anchor': new performance$1.Uniform1i(context, locations.u_is_variable_anchor),
-    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
-    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
-    'u_gamma_scale': new performance$1.Uniform1f(context, locations.u_gamma_scale),
-    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_is_halo': new performance$1.Uniform1i(context, locations.u_is_halo),
-    'u_translation': new performance$1.Uniform2f(context, locations.u_translation),
-    'u_pitched_scale': new performance$1.Uniform1f(context, locations.u_pitched_scale),
+    'u_is_size_zoom_constant': new performance$1.aH(context, locations.u_is_size_zoom_constant),
+    'u_is_size_feature_constant': new performance$1.aH(context, locations.u_is_size_feature_constant),
+    'u_size_t': new performance$1.aI(context, locations.u_size_t),
+    'u_size': new performance$1.aI(context, locations.u_size),
+    'u_camera_to_center_distance': new performance$1.aI(context, locations.u_camera_to_center_distance),
+    'u_pitch': new performance$1.aI(context, locations.u_pitch),
+    'u_rotate_symbol': new performance$1.aH(context, locations.u_rotate_symbol),
+    'u_aspect_ratio': new performance$1.aI(context, locations.u_aspect_ratio),
+    'u_fade_change': new performance$1.aI(context, locations.u_fade_change),
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_label_plane_matrix': new performance$1.aJ(context, locations.u_label_plane_matrix),
+    'u_coord_matrix': new performance$1.aJ(context, locations.u_coord_matrix),
+    'u_is_text': new performance$1.aH(context, locations.u_is_text),
+    'u_pitch_with_map': new performance$1.aH(context, locations.u_pitch_with_map),
+    'u_is_along_line': new performance$1.aH(context, locations.u_is_along_line),
+    'u_is_variable_anchor': new performance$1.aH(context, locations.u_is_variable_anchor),
+    'u_texsize': new performance$1.aO(context, locations.u_texsize),
+    'u_texture': new performance$1.aH(context, locations.u_texture),
+    'u_gamma_scale': new performance$1.aI(context, locations.u_gamma_scale),
+    'u_device_pixel_ratio': new performance$1.aI(context, locations.u_device_pixel_ratio),
+    'u_is_halo': new performance$1.aH(context, locations.u_is_halo),
+    'u_translation': new performance$1.aO(context, locations.u_translation),
+    'u_pitched_scale': new performance$1.aI(context, locations.u_pitched_scale),
 });
 const symbolTextAndIconUniforms = (context, locations) => ({
-    'u_is_size_zoom_constant': new performance$1.Uniform1i(context, locations.u_is_size_zoom_constant),
-    'u_is_size_feature_constant': new performance$1.Uniform1i(context, locations.u_is_size_feature_constant),
-    'u_size_t': new performance$1.Uniform1f(context, locations.u_size_t),
-    'u_size': new performance$1.Uniform1f(context, locations.u_size),
-    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_pitch': new performance$1.Uniform1f(context, locations.u_pitch),
-    'u_rotate_symbol': new performance$1.Uniform1i(context, locations.u_rotate_symbol),
-    'u_aspect_ratio': new performance$1.Uniform1f(context, locations.u_aspect_ratio),
-    'u_fade_change': new performance$1.Uniform1f(context, locations.u_fade_change),
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_label_plane_matrix': new performance$1.UniformMatrix4f(context, locations.u_label_plane_matrix),
-    'u_coord_matrix': new performance$1.UniformMatrix4f(context, locations.u_coord_matrix),
-    'u_is_text': new performance$1.Uniform1i(context, locations.u_is_text),
-    'u_pitch_with_map': new performance$1.Uniform1i(context, locations.u_pitch_with_map),
-    'u_is_along_line': new performance$1.Uniform1i(context, locations.u_is_along_line),
-    'u_is_variable_anchor': new performance$1.Uniform1i(context, locations.u_is_variable_anchor),
-    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
-    'u_texsize_icon': new performance$1.Uniform2f(context, locations.u_texsize_icon),
-    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
-    'u_texture_icon': new performance$1.Uniform1i(context, locations.u_texture_icon),
-    'u_gamma_scale': new performance$1.Uniform1f(context, locations.u_gamma_scale),
-    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_is_halo': new performance$1.Uniform1i(context, locations.u_is_halo),
-    'u_translation': new performance$1.Uniform2f(context, locations.u_translation),
-    'u_pitched_scale': new performance$1.Uniform1f(context, locations.u_pitched_scale),
+    'u_is_size_zoom_constant': new performance$1.aH(context, locations.u_is_size_zoom_constant),
+    'u_is_size_feature_constant': new performance$1.aH(context, locations.u_is_size_feature_constant),
+    'u_size_t': new performance$1.aI(context, locations.u_size_t),
+    'u_size': new performance$1.aI(context, locations.u_size),
+    'u_camera_to_center_distance': new performance$1.aI(context, locations.u_camera_to_center_distance),
+    'u_pitch': new performance$1.aI(context, locations.u_pitch),
+    'u_rotate_symbol': new performance$1.aH(context, locations.u_rotate_symbol),
+    'u_aspect_ratio': new performance$1.aI(context, locations.u_aspect_ratio),
+    'u_fade_change': new performance$1.aI(context, locations.u_fade_change),
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_label_plane_matrix': new performance$1.aJ(context, locations.u_label_plane_matrix),
+    'u_coord_matrix': new performance$1.aJ(context, locations.u_coord_matrix),
+    'u_is_text': new performance$1.aH(context, locations.u_is_text),
+    'u_pitch_with_map': new performance$1.aH(context, locations.u_pitch_with_map),
+    'u_is_along_line': new performance$1.aH(context, locations.u_is_along_line),
+    'u_is_variable_anchor': new performance$1.aH(context, locations.u_is_variable_anchor),
+    'u_texsize': new performance$1.aO(context, locations.u_texsize),
+    'u_texsize_icon': new performance$1.aO(context, locations.u_texsize_icon),
+    'u_texture': new performance$1.aH(context, locations.u_texture),
+    'u_texture_icon': new performance$1.aH(context, locations.u_texture_icon),
+    'u_gamma_scale': new performance$1.aI(context, locations.u_gamma_scale),
+    'u_device_pixel_ratio': new performance$1.aI(context, locations.u_device_pixel_ratio),
+    'u_is_halo': new performance$1.aH(context, locations.u_is_halo),
+    'u_translation': new performance$1.aO(context, locations.u_translation),
+    'u_pitched_scale': new performance$1.aI(context, locations.u_pitched_scale),
 });
 const symbolIconUniformValues = (functionType, size, rotateInShader, pitchWithMap, isAlongLine, isVariableAnchor, painter, matrix, labelPlaneMatrix, glCoordMatrix, translation, isText, texSize, pitchedScale) => {
     const transform = painter.transform;
@@ -47027,57 +39036,57 @@ const symbolIconUniformValues = (functionType, size, rotateInShader, pitchWithMa
 };
 const symbolSDFUniformValues = (functionType, size, rotateInShader, pitchWithMap, isAlongLine, isVariableAnchor, painter, matrix, labelPlaneMatrix, glCoordMatrix, translation, isText, texSize, isHalo, pitchedScale) => {
     const transform = painter.transform;
-    return performance$1.extend(symbolIconUniformValues(functionType, size, rotateInShader, pitchWithMap, isAlongLine, isVariableAnchor, painter, matrix, labelPlaneMatrix, glCoordMatrix, translation, isText, texSize, pitchedScale), {
+    return performance$1.e(symbolIconUniformValues(functionType, size, rotateInShader, pitchWithMap, isAlongLine, isVariableAnchor, painter, matrix, labelPlaneMatrix, glCoordMatrix, translation, isText, texSize, pitchedScale), {
         'u_gamma_scale': (pitchWithMap ? Math.cos(transform._pitch) * transform.cameraToCenterDistance : 1),
         'u_device_pixel_ratio': painter.pixelRatio,
         'u_is_halo': +isHalo
     });
 };
 const symbolTextAndIconUniformValues = (functionType, size, rotateInShader, pitchWithMap, isAlongLine, isVariableAnchor, painter, matrix, labelPlaneMatrix, glCoordMatrix, translation, texSizeSDF, texSizeIcon, pitchedScale) => {
-    return performance$1.extend(symbolSDFUniformValues(functionType, size, rotateInShader, pitchWithMap, isAlongLine, isVariableAnchor, painter, matrix, labelPlaneMatrix, glCoordMatrix, translation, true, texSizeSDF, true, pitchedScale), {
+    return performance$1.e(symbolSDFUniformValues(functionType, size, rotateInShader, pitchWithMap, isAlongLine, isVariableAnchor, painter, matrix, labelPlaneMatrix, glCoordMatrix, translation, true, texSizeSDF, true, pitchedScale), {
         'u_texsize_icon': texSizeIcon,
         'u_texture_icon': 1
     });
 };
 
 const backgroundUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity),
-    'u_color': new performance$1.UniformColor(context, locations.u_color)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_opacity': new performance$1.aI(context, locations.u_opacity),
+    'u_color': new performance$1.aL(context, locations.u_color)
 });
 const backgroundPatternUniforms = (context, locations) => ({
-    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
-    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity),
-    'u_image': new performance$1.Uniform1i(context, locations.u_image),
-    'u_pattern_tl_a': new performance$1.Uniform2f(context, locations.u_pattern_tl_a),
-    'u_pattern_br_a': new performance$1.Uniform2f(context, locations.u_pattern_br_a),
-    'u_pattern_tl_b': new performance$1.Uniform2f(context, locations.u_pattern_tl_b),
-    'u_pattern_br_b': new performance$1.Uniform2f(context, locations.u_pattern_br_b),
-    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
-    'u_mix': new performance$1.Uniform1f(context, locations.u_mix),
-    'u_pattern_size_a': new performance$1.Uniform2f(context, locations.u_pattern_size_a),
-    'u_pattern_size_b': new performance$1.Uniform2f(context, locations.u_pattern_size_b),
-    'u_scale_a': new performance$1.Uniform1f(context, locations.u_scale_a),
-    'u_scale_b': new performance$1.Uniform1f(context, locations.u_scale_b),
-    'u_pixel_coord_upper': new performance$1.Uniform2f(context, locations.u_pixel_coord_upper),
-    'u_pixel_coord_lower': new performance$1.Uniform2f(context, locations.u_pixel_coord_lower),
-    'u_tile_units_to_pixels': new performance$1.Uniform1f(context, locations.u_tile_units_to_pixels)
+    'u_matrix': new performance$1.aJ(context, locations.u_matrix),
+    'u_opacity': new performance$1.aI(context, locations.u_opacity),
+    'u_image': new performance$1.aH(context, locations.u_image),
+    'u_pattern_tl_a': new performance$1.aO(context, locations.u_pattern_tl_a),
+    'u_pattern_br_a': new performance$1.aO(context, locations.u_pattern_br_a),
+    'u_pattern_tl_b': new performance$1.aO(context, locations.u_pattern_tl_b),
+    'u_pattern_br_b': new performance$1.aO(context, locations.u_pattern_br_b),
+    'u_texsize': new performance$1.aO(context, locations.u_texsize),
+    'u_mix': new performance$1.aI(context, locations.u_mix),
+    'u_pattern_size_a': new performance$1.aO(context, locations.u_pattern_size_a),
+    'u_pattern_size_b': new performance$1.aO(context, locations.u_pattern_size_b),
+    'u_scale_a': new performance$1.aI(context, locations.u_scale_a),
+    'u_scale_b': new performance$1.aI(context, locations.u_scale_b),
+    'u_pixel_coord_upper': new performance$1.aO(context, locations.u_pixel_coord_upper),
+    'u_pixel_coord_lower': new performance$1.aO(context, locations.u_pixel_coord_lower),
+    'u_tile_units_to_pixels': new performance$1.aI(context, locations.u_tile_units_to_pixels)
 });
 const backgroundUniformValues = (matrix, opacity, color) => ({
     'u_matrix': matrix,
     'u_opacity': opacity,
     'u_color': color
 });
-const backgroundPatternUniformValues = (matrix, opacity, painter, image, tile, crossfade) => performance$1.extend(bgPatternUniformValues(image, crossfade, painter, tile), {
+const backgroundPatternUniformValues = (matrix, opacity, painter, image, tile, crossfade) => performance$1.e(bgPatternUniformValues(image, crossfade, painter, tile), {
     'u_matrix': matrix,
     'u_opacity': opacity
 });
 
 const skyUniforms = (context, locations) => ({
-    'u_sky_color': new performance$1.UniformColor(context, locations.u_sky_color),
-    'u_horizon_color': new performance$1.UniformColor(context, locations.u_horizon_color),
-    'u_horizon': new performance$1.Uniform1f(context, locations.u_horizon),
-    'u_sky_horizon_blend': new performance$1.Uniform1f(context, locations.u_sky_horizon_blend),
+    'u_sky_color': new performance$1.aL(context, locations.u_sky_color),
+    'u_horizon_color': new performance$1.aL(context, locations.u_horizon_color),
+    'u_horizon': new performance$1.aI(context, locations.u_horizon),
+    'u_sky_horizon_blend': new performance$1.aI(context, locations.u_sky_horizon_blend),
 });
 const skyUniformValues = (sky, transform, pixelRatio) => ({
     'u_sky_color': sky.properties.get('sky-color'),
@@ -47276,7 +39285,7 @@ class BaseValue {
 }
 class ClearColor extends BaseValue {
     getDefault() {
-        return performance$1.Color.transparent;
+        return performance$1.aM.transparent;
     }
     set(v) {
         const c = this.current;
@@ -47474,7 +39483,7 @@ class BlendFunc extends BaseValue {
 }
 class BlendColor extends BaseValue {
     getDefault() {
-        return performance$1.Color.transparent;
+        return performance$1.aM.transparent;
     }
     set(v) {
         const c = this.current;
@@ -47799,9 +39808,9 @@ class ColorMode {
     }
 }
 ColorMode.Replace = [ONE, ZERO];
-ColorMode.disabled = new ColorMode(ColorMode.Replace, performance$1.Color.transparent, [false, false, false, false]);
-ColorMode.unblended = new ColorMode(ColorMode.Replace, performance$1.Color.transparent, [true, true, true, true]);
-ColorMode.alphaBlended = new ColorMode([ONE, ONE_MINUS_SRC_ALPHA], performance$1.Color.transparent, [true, true, true, true]);
+ColorMode.disabled = new ColorMode(ColorMode.Replace, performance$1.aM.transparent, [false, false, false, false]);
+ColorMode.unblended = new ColorMode(ColorMode.Replace, performance$1.aM.transparent, [true, true, true, true]);
+ColorMode.alphaBlended = new ColorMode([ONE, ONE_MINUS_SRC_ALPHA], performance$1.aM.transparent, [true, true, true, true]);
 
 /**
  * @internal
@@ -48001,7 +40010,7 @@ class Context {
         }
     }
     setColorMode(colorMode) {
-        if (performance$1.deepEqual(colorMode.blendFunction, ColorMode.Replace)) {
+        if (performance$1.aE(colorMode.blendFunction, ColorMode.Replace)) {
             this.blend.set(false);
         }
         else {
@@ -48089,9 +40098,9 @@ function drawCollisionDebug(painter, sourceCache, layer, coords, isText) {
             // We need to know the projection matrix that was used for projecting collision circles to the screen.
             // This might vary between buckets as the symbol placement is a continuous process. This matrix is
             // required for transforming points from previous screen space to the current one
-            const invTransform = performance$1.create();
-            performance$1.mul(invTransform, bucket.placementInvProjMatrix, painter.transform.glCoordMatrix);
-            performance$1.mul(invTransform, invTransform, bucket.placementViewportMatrix);
+            const invTransform = performance$1.H();
+            performance$1.aQ(invTransform, bucket.placementInvProjMatrix, painter.transform.glCoordMatrix);
+            performance$1.aQ(invTransform, invTransform, bucket.placementViewportMatrix);
             tileBatches.push({
                 circleArray,
                 circleOffset,
@@ -48114,7 +40123,7 @@ function drawCollisionDebug(painter, sourceCache, layer, coords, isText) {
     // Render collision circles
     const circleProgram = painter.useProgram('collisionCircle');
     // Construct vertex data
-    const vertexData = new performance$1.CollisionCircleLayoutArray();
+    const vertexData = new performance$1.aR();
     vertexData.resize(circleCount * 4);
     vertexData._trim();
     let vertexOffset = 0;
@@ -48136,18 +40145,18 @@ function drawCollisionDebug(painter, sourceCache, layer, coords, isText) {
         quadTriangles = createQuadTriangles(circleCount);
     }
     const indexBuffer = context.createIndexBuffer(quadTriangles, true);
-    const vertexBuffer = context.createVertexBuffer(vertexData, performance$1.collisionCircleLayout.members, true);
+    const vertexBuffer = context.createVertexBuffer(vertexData, performance$1.aS.members, true);
     // Render batches
     for (const batch of tileBatches) {
         const uniforms = collisionCircleUniformValues(batch.transform, batch.invTransform, painter.transform);
-        circleProgram.draw(context, gl.TRIANGLES, DepthMode.disabled, StencilMode.disabled, painter.colorModeForRenderPass(), CullFaceMode.disabled, uniforms, painter.style.map.terrain && painter.style.map.terrain.getTerrainData(batch.coord), layer.id, vertexBuffer, indexBuffer, performance$1.SegmentVector.simpleSegment(0, batch.circleOffset * 2, batch.circleArray.length, batch.circleArray.length / 2), null, painter.transform.zoom, null, null, null);
+        circleProgram.draw(context, gl.TRIANGLES, DepthMode.disabled, StencilMode.disabled, painter.colorModeForRenderPass(), CullFaceMode.disabled, uniforms, painter.style.map.terrain && painter.style.map.terrain.getTerrainData(batch.coord), layer.id, vertexBuffer, indexBuffer, performance$1.a0.simpleSegment(0, batch.circleOffset * 2, batch.circleArray.length, batch.circleArray.length / 2), null, painter.transform.zoom, null, null, null);
     }
     vertexBuffer.destroy();
     indexBuffer.destroy();
 }
 function createQuadTriangles(quadCount) {
     const triCount = quadCount * 2;
-    const array = new performance$1.QuadTriangleArray();
+    const array = new performance$1.aT();
     array.resize(triCount);
     array._trim();
     // Two triangles and 4 vertices per quad.
@@ -48163,7 +40172,7 @@ function createQuadTriangles(quadCount) {
     return array;
 }
 
-const identityMat4 = performance$1.identity(new Float32Array(16));
+const identityMat4 = performance$1.an(new Float32Array(16));
 function drawSymbols(painter, sourceCache, layer, coords, variableOffsets) {
     if (painter.renderPass !== 'translucent')
         return;
@@ -48188,10 +40197,10 @@ function drawSymbols(painter, sourceCache, layer, coords, variableOffsets) {
     }
 }
 function calculateVariableRenderShift(anchor, width, height, textOffset, textBoxScale, renderTextSize) {
-    const { horizontalAlign, verticalAlign } = performance$1.getAnchorAlignment(anchor);
+    const { horizontalAlign, verticalAlign } = performance$1.au(anchor);
     const shiftX = -(horizontalAlign - 0.5) * width;
     const shiftY = -(verticalAlign - 0.5) * height;
-    return new performance$1.Point((shiftX / textBoxScale + textOffset[0]) * renderTextSize, (shiftY / textBoxScale + textOffset[1]) * renderTextSize);
+    return new performance$1.P((shiftX / textBoxScale + textOffset[0]) * renderTextSize, (shiftY / textBoxScale + textOffset[1]) * renderTextSize);
 }
 function updateVariableAnchors(coords, painter, layer, sourceCache, rotationAlignment, pitchAlignment, translate, translateAnchor, variableOffsets) {
     const transform = painter.transform;
@@ -48204,7 +40213,7 @@ function updateVariableAnchors(coords, painter, layer, sourceCache, rotationAlig
         if (!bucket || !bucket.text || !bucket.text.segments.get().length)
             continue;
         const sizeData = bucket.textSizeData;
-        const size = performance$1.evaluateSizeForZoom(sizeData, transform.zoom);
+        const size = performance$1.ag(sizeData, transform.zoom);
         const pixelToTileScale = pixelsToTileUnits(tile, 1, painter.transform.zoom);
         const labelPlaneMatrix = getLabelPlaneMatrix(coord.posMatrix, pitchWithMap, rotateWithMap, painter.transform, pixelToTileScale);
         const updateTextFitIcon = layer.layout.get('icon-text-fit') !== 'none' && bucket.hasIconData();
@@ -48220,7 +40229,7 @@ function getShiftedAnchor(projectedAnchorPoint, projectionContext, rotateWithMap
     // Usual case is that we take the projected anchor and add the pixel-based shift
     // calculated earlier. In the (somewhat weird) case of pitch-aligned text, we add an equivalent
     // tile-unit based shift to the anchor before projecting to the label plane.
-    const translatedAnchor = projectionContext.tileAnchorPoint.add(new performance$1.Point(projectionContext.translation[0], projectionContext.translation[1]));
+    const translatedAnchor = projectionContext.tileAnchorPoint.add(new performance$1.P(projectionContext.translation[0], projectionContext.translation[1]));
     if (projectionContext.pitchWithMap) {
         let adjustedShift = shift.mult(pitchedTextShiftCorrection);
         if (!rotateWithMap) {
@@ -48259,7 +40268,7 @@ function updateVariableAnchorsForBucket(bucket, rotateWithMap, pitchWithMap, var
             hideGlyphs(symbol.numGlyphs, dynamicTextLayoutVertexArray);
         }
         else {
-            const tileAnchor = new performance$1.Point(symbol.anchorX, symbol.anchorY);
+            const tileAnchor = new performance$1.P(symbol.anchorX, symbol.anchorY);
             const projectionContext = {
                 getElevation,
                 width: transform.width,
@@ -48277,18 +40286,18 @@ function updateVariableAnchorsForBucket(bucket, rotateWithMap, pitchWithMap, var
                 project(tileAnchor.x, tileAnchor.y, posMatrix, getElevation) :
                 projectTileCoordinatesToViewport(tileAnchor.x, tileAnchor.y, projectionContext);
             const perspectiveRatio = getPerspectiveRatio(transform.cameraToCenterDistance, projectedAnchor.signedDistanceFromCamera);
-            let renderTextSize = performance$1.evaluateSizeForFeature(bucket.textSizeData, size, symbol) * perspectiveRatio / performance$1.ONE_EM;
+            let renderTextSize = performance$1.ai(bucket.textSizeData, size, symbol) * perspectiveRatio / performance$1.ap;
             if (pitchWithMap) {
                 // Go from size in pixels to equivalent size in tile units
                 renderTextSize *= bucket.tilePixelRatio / tileScale;
             }
             const { width, height, anchor, textOffset, textBoxScale } = variableOffset;
             const shift = calculateVariableRenderShift(anchor, width, height, textOffset, textBoxScale, renderTextSize);
-            const pitchedTextCorrection = projection.getPitchedTextCorrection(transform, tileAnchor.add(new performance$1.Point(translation[0], translation[1])), unwrappedTileID);
+            const pitchedTextCorrection = projection.getPitchedTextCorrection(transform, tileAnchor.add(new performance$1.P(translation[0], translation[1])), unwrappedTileID);
             const shiftedAnchor = getShiftedAnchor(projectedAnchor.point, projectionContext, rotateWithMap, shift, transform.angle, pitchedTextCorrection);
-            const angle = (bucket.allowVerticalPlacement && symbol.placedOrientation === performance$1.WritingMode.vertical) ? Math.PI / 2 : 0;
+            const angle = (bucket.allowVerticalPlacement && symbol.placedOrientation === performance$1.ah.vertical) ? Math.PI / 2 : 0;
             for (let g = 0; g < symbol.numGlyphs; g++) {
-                performance$1.addDynamicAttributes(dynamicTextLayoutVertexArray, shiftedAnchor, angle);
+                performance$1.aj(dynamicTextLayoutVertexArray, shiftedAnchor, angle);
             }
             //Only offset horizontal text icons
             if (updateTextFitIcon && symbol.associatedIconIndex >= 0) {
@@ -48311,7 +40320,7 @@ function updateVariableAnchorsForBucket(bucket, rotateWithMap, pitchWithMap, var
                 }
                 else {
                     for (let g = 0; g < placedIcon.numGlyphs; g++) {
-                        performance$1.addDynamicAttributes(dynamicIconLayoutVertexArray, shift.shiftedAnchor, shift.angle);
+                        performance$1.aj(dynamicIconLayoutVertexArray, shift.shiftedAnchor, shift.angle);
                     }
                 }
             }
@@ -48363,7 +40372,7 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
         const sizeData = isText ? bucket.textSizeData : bucket.iconSizeData;
         const transformed = pitchWithMap || tr.pitch !== 0;
         const program = painter.useProgram(getSymbolProgramName(isSDF, isText, bucket), programConfiguration);
-        const size = performance$1.evaluateSizeForZoom(sizeData, tr.zoom);
+        const size = performance$1.ag(sizeData, tr.zoom);
         const terrainData = painter.style.map.terrain && painter.style.map.terrain.getTerrainData(coord);
         let texSize;
         let texSizeIcon = [0, 0];
@@ -48439,7 +40448,7 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
             const oldSegments = buffers.segments.get();
             for (const segment of oldSegments) {
                 tileRenderState.push({
-                    segments: new performance$1.SegmentVector([segment]),
+                    segments: new performance$1.a0([segment]),
                     sortKey: segment.sortKey,
                     state,
                     terrainData
@@ -48527,7 +40536,7 @@ function drawCircles(painter, sourceCache, layer, coords) {
             const oldSegments = bucket.segments.get();
             for (const segment of oldSegments) {
                 segmentsRenderStates.push({
-                    segments: new performance$1.SegmentVector([segment]),
+                    segments: new performance$1.a0([segment]),
                     sortKey: segment.sortKey,
                     state
                 });
@@ -48589,9 +40598,9 @@ function prepareHeatmapFlat(painter, sourceCache, layer, coords) {
     // large kernels are not clipped to tiles
     const stencilMode = StencilMode.disabled;
     // Turn on additive blending for kernels, which is a key aspect of kernel density estimation formula
-    const colorMode = new ColorMode([gl.ONE, gl.ONE], performance$1.Color.transparent, [true, true, true, true]);
+    const colorMode = new ColorMode([gl.ONE, gl.ONE], performance$1.aM.transparent, [true, true, true, true]);
     bindFramebuffer(context, painter, layer);
-    context.clear({ color: performance$1.Color.transparent });
+    context.clear({ color: performance$1.aM.transparent });
     for (let i = 0; i < coords.length; i++) {
         const coord = coords[i];
         // Skip tiles that have uncovered parents to avoid flickering; we don't need
@@ -48617,7 +40626,7 @@ function renderHeatmapFlat(painter, layer) {
     // Here we bind two different textures from which we'll sample in drawing
     // heatmaps: the kernel texture, prepared in the offscreen pass, and a
     // color ramp texture.
-    const fbo = layer.heatmapFbos.get(performance$1.HEATMAP_FULL_RENDER_FBO_KEY);
+    const fbo = layer.heatmapFbos.get(performance$1.aU);
     if (!fbo)
         return;
     context.activeTexture.set(gl.TEXTURE0);
@@ -48632,7 +40641,7 @@ function prepareHeatmapTerrain(painter, tile, layer, coord) {
     const gl = context.gl;
     const stencilMode = StencilMode.disabled;
     // Turn on additive blending for kernels, which is a key aspect of kernel density estimation formula
-    const colorMode = new ColorMode([gl.ONE, gl.ONE], performance$1.Color.transparent, [true, true, true, true]);
+    const colorMode = new ColorMode([gl.ONE, gl.ONE], performance$1.aM.transparent, [true, true, true, true]);
     const bucket = tile.getBucket(layer);
     if (!bucket)
         return;
@@ -48644,7 +40653,7 @@ function prepareHeatmapTerrain(painter, tile, layer, coord) {
     }
     context.bindFramebuffer.set(fbo.framebuffer);
     context.viewport.set([0, 0, tile.tileSize, tile.tileSize]);
-    context.clear({ color: performance$1.Color.transparent });
+    context.clear({ color: performance$1.aM.transparent });
     const programConfiguration = bucket.programConfigurations.get(layer.id);
     const program = painter.useProgram('heatmap', programConfiguration);
     const terrainData = painter.style.map.terrain.getTerrainData(coord);
@@ -48676,10 +40685,10 @@ function bindFramebuffer(context, painter, layer) {
     context.activeTexture.set(gl.TEXTURE1);
     // Use a 4x downscaled screen texture for better performance
     context.viewport.set([0, 0, painter.width / 4, painter.height / 4]);
-    let fbo = layer.heatmapFbos.get(performance$1.HEATMAP_FULL_RENDER_FBO_KEY);
+    let fbo = layer.heatmapFbos.get(performance$1.aU);
     if (!fbo) {
         fbo = createHeatmapFbo(context, painter.width / 4, painter.height / 4);
-        layer.heatmapFbos.set(performance$1.HEATMAP_FULL_RENDER_FBO_KEY, fbo);
+        layer.heatmapFbos.set(performance$1.aU, fbo);
     }
     else {
         gl.bindTexture(gl.TEXTURE_2D, fbo.colorAttachment.get());
@@ -48774,14 +40783,14 @@ function drawLine(painter, sourceCache, layer, coords) {
                     const sourceMaxZoom = sourceCache.getSource().maxzoom;
                     const potentialOverzoom = coord.canonical.z === sourceMaxZoom ?
                         Math.ceil(1 << (painter.transform.maxZoom - coord.canonical.z)) : 1;
-                    const lineLength = bucket.maxLineLength / performance$1.EXTENT;
+                    const lineLength = bucket.maxLineLength / performance$1.X;
                     // Logical pixel tile size is 512px, and 1024px right before current zoom + 1
                     const maxTilePixelSize = 1024;
                     // Maximum possible texture coverage heuristic, bound by hardware max texture size
                     const maxTextureCoverage = lineLength * maxTilePixelSize * potentialOverzoom;
-                    textureResolution = performance$1.clamp(performance$1.nextPowerOfTwo(maxTextureCoverage), 256, context.maxTextureSize);
+                    textureResolution = performance$1.ac(performance$1.aV(maxTextureCoverage), 256, context.maxTextureSize);
                 }
-                layerGradient.gradient = performance$1.renderColorRamp({
+                layerGradient.gradient = performance$1.aW({
                     expression: layer.gradientExpression(),
                     evaluationKey: 'lineProgress',
                     resolution: textureResolution,
@@ -48852,7 +40861,7 @@ function drawFill(painter, sourceCache, layer, coords) {
     const pattern = layer.paint.get('fill-pattern');
     const pass = painter.opaquePassEnabledForLayer() &&
         (!pattern.constantOr(1) &&
-            color.constantOr(performance$1.Color.transparent).a === 1 &&
+            color.constantOr(performance$1.aM.transparent).a === 1 &&
             opacity.constantOr(0) === 1) ? 'opaque' : 'translucent';
     // Draw fill
     if (painter.renderPass === pass) {
@@ -49120,7 +41129,7 @@ function getFadeValues(tile, parentTile, sourceCache, layer, transform, terrain)
         });
         // if no parent or parent is older, fade in; if parent is younger, fade out
         const fadeIn = !parentTile || Math.abs(parentTile.tileID.overscaledZ - idealZ) > Math.abs(tile.tileID.overscaledZ - idealZ);
-        const childOpacity = (fadeIn && tile.refreshedUponExpiration) ? 1 : performance$1.clamp(fadeIn ? sinceTile : 1 - sinceParent, 0, 1);
+        const childOpacity = (fadeIn && tile.refreshedUponExpiration) ? 1 : performance$1.ac(fadeIn ? sinceTile : 1 - sinceParent, 0, 1);
         // we don't crossfade tiles that were just refreshed upon expiring:
         // once they're old enough to pass the crossfading threshold
         // (fadeDuration), unset the `refreshedUponExpiration` flag so we don't
@@ -49183,11 +41192,11 @@ function drawBackground(painter, sourceCache, layer, coords) {
     }
 }
 
-const topColor = new performance$1.Color(1, 0, 0, 1);
-const btmColor = new performance$1.Color(0, 1, 0, 1);
-const leftColor = new performance$1.Color(0, 0, 1, 1);
-const rightColor = new performance$1.Color(1, 0, 1, 1);
-const centerColor = new performance$1.Color(0, 1, 1, 1);
+const topColor = new performance$1.aM(1, 0, 0, 1);
+const btmColor = new performance$1.aM(0, 1, 0, 1);
+const leftColor = new performance$1.aM(0, 0, 1, 1);
+const rightColor = new performance$1.aM(1, 0, 1, 1);
+const centerColor = new performance$1.aM(0, 1, 1, 1);
 function drawDebugPadding(painter) {
     const padding = painter.transform.padding;
     const lineWidth = 3;
@@ -49252,8 +41261,8 @@ function drawDebugTile(painter, sourceCache, coord) {
     }
     const tileLabel = `${tileIdText} ${tileSizeKb}kB`;
     drawTextToOverlay(painter, tileLabel);
-    program.draw(context, gl.TRIANGLES, depthMode, stencilMode, ColorMode.alphaBlended, CullFaceMode.disabled, debugUniformValues(posMatrix, performance$1.Color.transparent, scaleRatio), null, id, painter.debugBuffer, painter.quadTriangleIndexBuffer, painter.debugSegments);
-    program.draw(context, gl.LINE_STRIP, depthMode, stencilMode, colorMode, CullFaceMode.disabled, debugUniformValues(posMatrix, performance$1.Color.red), terrainData, id, painter.debugBuffer, painter.tileBorderIndexBuffer, painter.debugSegments);
+    program.draw(context, gl.TRIANGLES, depthMode, stencilMode, ColorMode.alphaBlended, CullFaceMode.disabled, debugUniformValues(posMatrix, performance$1.aM.transparent, scaleRatio), null, id, painter.debugBuffer, painter.quadTriangleIndexBuffer, painter.debugSegments);
+    program.draw(context, gl.LINE_STRIP, depthMode, stencilMode, colorMode, CullFaceMode.disabled, debugUniformValues(posMatrix, performance$1.aM.red), terrainData, id, painter.debugBuffer, painter.tileBorderIndexBuffer, painter.debugSegments);
 }
 function drawTextToOverlay(painter, text) {
     painter.initDebugOverlayCanvas();
@@ -49343,7 +41352,7 @@ function drawDepth(painter, terrain) {
     const program = painter.useProgram('terrainDepth');
     context.bindFramebuffer.set(terrain.getFramebuffer('depth').framebuffer);
     context.viewport.set([0, 0, painter.width / devicePixelRatio, painter.height / devicePixelRatio]);
-    context.clear({ color: performance$1.Color.transparent, depth: 1 });
+    context.clear({ color: performance$1.aM.transparent, depth: 1 });
     for (const tile of tiles) {
         const terrainData = terrain.getTerrainData(tile.tileID);
         const posMatrix = painter.transform.calculatePosMatrix(tile.tileID.toUnwrapped());
@@ -49370,7 +41379,7 @@ function drawCoords(painter, terrain) {
     const program = painter.useProgram('terrainCoords');
     context.bindFramebuffer.set(terrain.getFramebuffer('coords').framebuffer);
     context.viewport.set([0, 0, painter.width / devicePixelRatio, painter.height / devicePixelRatio]);
-    context.clear({ color: performance$1.Color.transparent, depth: 1 });
+    context.clear({ color: performance$1.aM.transparent, depth: 1 });
     terrain.coordsIndex = [];
     for (const tile of tiles) {
         const terrainData = terrain.getTerrainData(tile.tileID);
@@ -49431,15 +41440,15 @@ function drawSky(painter, sky) {
     const colorMode = painter.colorModeForRenderPass();
     const program = painter.useProgram('sky');
     if (!sky.mesh) {
-        const vertexArray = new performance$1.PosArray();
+        const vertexArray = new performance$1.aX();
         vertexArray.emplaceBack(-1, -1);
         vertexArray.emplaceBack(1, -1);
         vertexArray.emplaceBack(1, 1);
         vertexArray.emplaceBack(-1, 1);
-        const indexArray = new performance$1.TriangleIndexArray();
+        const indexArray = new performance$1.aY();
         indexArray.emplaceBack(0, 1, 2);
         indexArray.emplaceBack(0, 2, 3);
-        sky.mesh = new Mesh(context.createVertexBuffer(vertexArray, posAttributes.members), context.createIndexBuffer(indexArray), performance$1.SegmentVector.simpleSegment(0, 0, vertexArray.length, indexArray.length));
+        sky.mesh = new Mesh(context.createVertexBuffer(vertexArray, posAttributes.members), context.createIndexBuffer(indexArray), performance$1.a0.simpleSegment(0, 0, vertexArray.length, indexArray.length));
     }
     program.draw(context, gl.TRIANGLES, depthMode, stencilMode, colorMode, CullFaceMode.disabled, skyUniforms, undefined, 'sky', sky.mesh.vertexBuffer, sky.mesh.indexBuffer, sky.mesh.segments);
 }
@@ -49453,7 +41462,7 @@ class Painter {
         this.context = new Context(gl);
         this.transform = transform;
         this._tileTextures = {};
-        this.terrainFacilitator = { dirty: true, matrix: performance$1.identity(new Float64Array(16)), renderTime: 0 };
+        this.terrainFacilitator = { dirty: true, matrix: performance$1.an(new Float64Array(16)), renderTime: 0 };
         this.setup();
         // Within each layer there are multiple distinct z-planes that can be drawn to.
         // This is implemented using the WebGL depth buffer.
@@ -49478,42 +41487,42 @@ class Painter {
     }
     setup() {
         const context = this.context;
-        const tileExtentArray = new performance$1.PosArray();
+        const tileExtentArray = new performance$1.aX();
         tileExtentArray.emplaceBack(0, 0);
-        tileExtentArray.emplaceBack(performance$1.EXTENT, 0);
-        tileExtentArray.emplaceBack(0, performance$1.EXTENT);
-        tileExtentArray.emplaceBack(performance$1.EXTENT, performance$1.EXTENT);
+        tileExtentArray.emplaceBack(performance$1.X, 0);
+        tileExtentArray.emplaceBack(0, performance$1.X);
+        tileExtentArray.emplaceBack(performance$1.X, performance$1.X);
         this.tileExtentBuffer = context.createVertexBuffer(tileExtentArray, posAttributes.members);
-        this.tileExtentSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
-        const debugArray = new performance$1.PosArray();
+        this.tileExtentSegments = performance$1.a0.simpleSegment(0, 0, 4, 2);
+        const debugArray = new performance$1.aX();
         debugArray.emplaceBack(0, 0);
-        debugArray.emplaceBack(performance$1.EXTENT, 0);
-        debugArray.emplaceBack(0, performance$1.EXTENT);
-        debugArray.emplaceBack(performance$1.EXTENT, performance$1.EXTENT);
+        debugArray.emplaceBack(performance$1.X, 0);
+        debugArray.emplaceBack(0, performance$1.X);
+        debugArray.emplaceBack(performance$1.X, performance$1.X);
         this.debugBuffer = context.createVertexBuffer(debugArray, posAttributes.members);
-        this.debugSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 5);
-        const rasterBoundsArray = new performance$1.RasterBoundsArray();
+        this.debugSegments = performance$1.a0.simpleSegment(0, 0, 4, 5);
+        const rasterBoundsArray = new performance$1.$();
         rasterBoundsArray.emplaceBack(0, 0, 0, 0);
-        rasterBoundsArray.emplaceBack(performance$1.EXTENT, 0, performance$1.EXTENT, 0);
-        rasterBoundsArray.emplaceBack(0, performance$1.EXTENT, 0, performance$1.EXTENT);
-        rasterBoundsArray.emplaceBack(performance$1.EXTENT, performance$1.EXTENT, performance$1.EXTENT, performance$1.EXTENT);
+        rasterBoundsArray.emplaceBack(performance$1.X, 0, performance$1.X, 0);
+        rasterBoundsArray.emplaceBack(0, performance$1.X, 0, performance$1.X);
+        rasterBoundsArray.emplaceBack(performance$1.X, performance$1.X, performance$1.X, performance$1.X);
         this.rasterBoundsBuffer = context.createVertexBuffer(rasterBoundsArray, rasterBoundsAttributes.members);
-        this.rasterBoundsSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
-        const viewportArray = new performance$1.PosArray();
+        this.rasterBoundsSegments = performance$1.a0.simpleSegment(0, 0, 4, 2);
+        const viewportArray = new performance$1.aX();
         viewportArray.emplaceBack(0, 0);
         viewportArray.emplaceBack(1, 0);
         viewportArray.emplaceBack(0, 1);
         viewportArray.emplaceBack(1, 1);
         this.viewportBuffer = context.createVertexBuffer(viewportArray, posAttributes.members);
-        this.viewportSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
-        const tileLineStripIndices = new performance$1.LineStripIndexArray();
+        this.viewportSegments = performance$1.a0.simpleSegment(0, 0, 4, 2);
+        const tileLineStripIndices = new performance$1.aZ();
         tileLineStripIndices.emplaceBack(0);
         tileLineStripIndices.emplaceBack(1);
         tileLineStripIndices.emplaceBack(3);
         tileLineStripIndices.emplaceBack(2);
         tileLineStripIndices.emplaceBack(0);
         this.tileBorderIndexBuffer = context.createIndexBuffer(tileLineStripIndices);
-        const quadTriangleIndices = new performance$1.TriangleIndexArray();
+        const quadTriangleIndices = new performance$1.aY();
         quadTriangleIndices.emplaceBack(0, 1, 2);
         quadTriangleIndices.emplaceBack(2, 1, 3);
         this.quadTriangleIndexBuffer = context.createIndexBuffer(quadTriangleIndices);
@@ -49533,9 +41542,9 @@ class Painter {
         // pending an upstream fix, we draw a fullscreen stencil=0 clipping mask here,
         // effectively clearing the stencil buffer: once an upstream patch lands, remove
         // this function in favor of context.clear({ stencil: 0x0 })
-        const matrix = performance$1.create();
-        performance$1.ortho(matrix, 0, this.width, this.height, 0, 0, 1);
-        performance$1.scale(matrix, matrix, [gl.drawingBufferWidth, gl.drawingBufferHeight, 0]);
+        const matrix = performance$1.H();
+        performance$1.aP(matrix, 0, this.width, this.height, 0, 0, 1);
+        performance$1.K(matrix, matrix, [gl.drawingBufferWidth, gl.drawingBufferHeight, 0]);
         this.useProgram('clippingMask').draw(context, gl.TRIANGLES, DepthMode.disabled, this.stencilClearMode, ColorMode.disabled, CullFaceMode.disabled, clippingMaskUniformValues(matrix), null, '$clipping', this.viewportBuffer, this.quadTriangleIndexBuffer, this.viewportSegments);
     }
     _renderTileClippingMasks(layer, tileIDs) {
@@ -49607,7 +41616,7 @@ class Painter {
         if (this._showOverdrawInspector) {
             const numOverdrawSteps = 8;
             const a = 1 / numOverdrawSteps;
-            return new ColorMode([gl.CONSTANT_COLOR, gl.ONE], new performance$1.Color(a, a, a, 0), [true, true, true, true]);
+            return new ColorMode([gl.CONSTANT_COLOR, gl.ONE], new performance$1.aM(a, a, a, 0), [true, true, true, true]);
         }
         else if (this.renderPass === 'opaque') {
             return ColorMode.unblended;
@@ -49706,7 +41715,7 @@ class Painter {
         // Rebind the main framebuffer now that all offscreen layers have been rendered:
         this.context.bindFramebuffer.set(null);
         // Clear buffers in preparation for drawing to the main framebuffer
-        this.context.clear({ color: options.showOverdrawInspector ? performance$1.Color.black : performance$1.Color.transparent, depth: 1 });
+        this.context.clear({ color: options.showOverdrawInspector ? performance$1.aM.black : performance$1.aM.transparent, depth: 1 });
         this.clearStencil();
         // draw sky first to not overwrite symbols
         if (this.style.sky)
@@ -49766,12 +41775,12 @@ class Painter {
         const currMatrix = this.transform.modelViewProjectionMatrix;
         // Update coords/depth-framebuffer on camera movement, or tile reloading
         let doUpdate = this.terrainFacilitator.dirty;
-        doUpdate || (doUpdate = requireExact ? !performance$1.exactEquals(prevMatrix, currMatrix) : !performance$1.equals(prevMatrix, currMatrix));
+        doUpdate || (doUpdate = requireExact ? !performance$1.a_(prevMatrix, currMatrix) : !performance$1.a$(prevMatrix, currMatrix));
         doUpdate || (doUpdate = this.style.map.terrain.sourceCache.tilesAfterTime(this.terrainFacilitator.renderTime).length > 0);
         if (!doUpdate) {
             return;
         }
-        performance$1.copy(prevMatrix, currMatrix);
+        performance$1.b0(prevMatrix, currMatrix);
         this.terrainFacilitator.renderTime = Date.now();
         this.terrainFacilitator.dirty = false;
         drawDepth(this, this.style.map.terrain);
@@ -49841,7 +41850,7 @@ class Painter {
             0
         ];
         const translatedMatrix = new Float32Array(16);
-        performance$1.translate(translatedMatrix, matrix, translation);
+        performance$1.J(translatedMatrix, matrix, translation);
         return translatedMatrix;
     }
     saveTileTexture(texture) {
@@ -49952,9 +41961,9 @@ class Frustum {
         const scale = Math.pow(2, zoom);
         // Transform frustum corner points from clip space to tile space, Z to meters
         const frustumCoords = clipSpaceCorners.map(v => {
-            v = performance$1.transformMat4([], v, invProj);
+            v = performance$1.af([], v, invProj);
             const s = 1.0 / v[3] / worldSize * scale;
-            return performance$1.mul$1(v, v, [s, s, 1.0 / v[3], s]);
+            return performance$1.b1(v, v, [s, s, 1.0 / v[3], s]);
         });
         const frustumPlanePointIndices = [
             [0, 1, 2], // near
@@ -49965,10 +41974,10 @@ class Frustum {
             [0, 4, 5] // top
         ];
         const frustumPlanes = frustumPlanePointIndices.map((p) => {
-            const a = performance$1.sub([], frustumCoords[p[0]], frustumCoords[p[1]]);
-            const b = performance$1.sub([], frustumCoords[p[2]], frustumCoords[p[1]]);
-            const n = performance$1.normalize([], performance$1.cross([], a, b));
-            const d = -performance$1.dot(n, frustumCoords[p[1]]);
+            const a = sub([], frustumCoords[p[0]], frustumCoords[p[1]]);
+            const b = sub([], frustumCoords[p[2]], frustumCoords[p[1]]);
+            const n = normalize([], cross([], a, b));
+            const d = -dot(n, frustumCoords[p[1]]);
             return n.concat(d);
         });
         return new Frustum(frustumCoords, frustumPlanes);
@@ -49978,12 +41987,12 @@ class Aabb {
     constructor(min_, max_) {
         this.min = min_;
         this.max = max_;
-        this.center = performance$1.scale$1([], performance$1.add([], this.min, this.max), 0.5);
+        this.center = scale([], add([], this.min, this.max), 0.5);
     }
     quadrant(index) {
         const split = [(index % 2) === 0, index < 2];
-        const qMin = performance$1.clone$2(this.min);
-        const qMax = performance$1.clone$2(this.max);
+        const qMin = clone(this.min);
+        const qMax = clone(this.max);
         for (let axis = 0; axis < split.length; axis++) {
             qMin[axis] = split[axis] ? this.min[axis] : this.center[axis];
             qMax[axis] = split[axis] ? this.center[axis] : this.max[axis];
@@ -50020,7 +42029,7 @@ class Aabb {
             const plane = frustum.planes[p];
             let pointsInside = 0;
             for (let i = 0; i < aabbPoints.length; i++) {
-                if (performance$1.dot$1(plane, aabbPoints[i]) >= 0) {
+                if (performance$1.b2(plane, aabbPoints[i]) >= 0) {
                     pointsInside++;
                 }
             }
@@ -50076,13 +42085,13 @@ class EdgeInsets {
      */
     interpolate(start, target, t) {
         if (target.top != null && start.top != null)
-            this.top = performance$1.interpolate.number(start.top, target.top, t);
+            this.top = performance$1.y.number(start.top, target.top, t);
         if (target.bottom != null && start.bottom != null)
-            this.bottom = performance$1.interpolate.number(start.bottom, target.bottom, t);
+            this.bottom = performance$1.y.number(start.bottom, target.bottom, t);
         if (target.left != null && start.left != null)
-            this.left = performance$1.interpolate.number(start.left, target.left, t);
+            this.left = performance$1.y.number(start.left, target.left, t);
         if (target.right != null && start.right != null)
-            this.right = performance$1.interpolate.number(start.right, target.right, t);
+            this.right = performance$1.y.number(start.right, target.right, t);
         return this;
     }
     /**
@@ -50095,9 +42104,9 @@ class EdgeInsets {
      */
     getCenter(width, height) {
         // Clamp insets so they never overflow width/height and always calculate a valid center
-        const x = performance$1.clamp((this.left + width - this.right) / 2, 0, width);
-        const y = performance$1.clamp((this.top + height - this.bottom) / 2, 0, height);
-        return new performance$1.Point(x, y);
+        const x = performance$1.ac((this.left + width - this.right) / 2, 0, width);
+        const y = performance$1.ac((this.top + height - this.bottom) / 2, 0, height);
+        return new performance$1.P(x, y);
     }
     equals(other) {
         return this.top === other.top &&
@@ -50141,7 +42150,7 @@ class Transform {
         this.setMaxBounds();
         this.width = 0;
         this.height = 0;
-        this._center = new performance$1.LngLat(0, 0);
+        this._center = new performance$1.N(0, 0);
         this._elevation = 0;
         this.zoom = 0;
         this.angle = 0;
@@ -50221,27 +42230,27 @@ class Transform {
         return this.centerPoint._sub(this.size._div(2));
     }
     get size() {
-        return new performance$1.Point(this.width, this.height);
+        return new performance$1.P(this.width, this.height);
     }
     get bearing() {
         return -this.angle / Math.PI * 180;
     }
     set bearing(bearing) {
-        const b = -performance$1.wrap(bearing, -180, 180) * Math.PI / 180;
+        const b = -performance$1.b3(bearing, -180, 180) * Math.PI / 180;
         if (this.angle === b)
             return;
         this._unmodified = false;
         this.angle = b;
         this._calcMatrices();
         // 2x2 matrix for rotating points
-        this.rotationMatrix = performance$1.create$2();
-        performance$1.rotate(this.rotationMatrix, this.rotationMatrix, this.angle);
+        this.rotationMatrix = create$4();
+        rotate(this.rotationMatrix, this.rotationMatrix, this.angle);
     }
     get pitch() {
         return this._pitch / Math.PI * 180;
     }
     set pitch(pitch) {
-        const p = performance$1.clamp(pitch, this.minPitch, this.maxPitch) / 180 * Math.PI;
+        const p = performance$1.ac(pitch, this.minPitch, this.maxPitch) / 180 * Math.PI;
         if (this._pitch === p)
             return;
         this._unmodified = false;
@@ -50344,12 +42353,12 @@ class Transform {
      * in the current view.
      */
     getVisibleUnwrappedCoordinates(tileID) {
-        const result = [new performance$1.UnwrappedTileID(0, tileID)];
+        const result = [new performance$1.b4(0, tileID)];
         if (this._renderWorldCopies) {
-            const utl = this.pointCoordinate(new performance$1.Point(0, 0));
-            const utr = this.pointCoordinate(new performance$1.Point(this.width, 0));
-            const ubl = this.pointCoordinate(new performance$1.Point(this.width, this.height));
-            const ubr = this.pointCoordinate(new performance$1.Point(0, this.height));
+            const utl = this.pointCoordinate(new performance$1.P(0, 0));
+            const utr = this.pointCoordinate(new performance$1.P(this.width, 0));
+            const ubl = this.pointCoordinate(new performance$1.P(this.width, this.height));
+            const ubr = this.pointCoordinate(new performance$1.P(0, this.height));
             const w0 = Math.floor(Math.min(utl.x, utr.x, ubl.x, ubr.x));
             const w1 = Math.floor(Math.max(utl.x, utr.x, ubl.x, ubr.x));
             // Add an extra copy of the world on each side to properly render ImageSources and CanvasSources.
@@ -50359,7 +42368,7 @@ class Transform {
             for (let w = w0 - extraWorldCopy; w <= w1 + extraWorldCopy; w++) {
                 if (w === 0)
                     continue;
-                result.push(new performance$1.UnwrappedTileID(w, tileID));
+                result.push(new performance$1.b4(w, tileID));
             }
         }
         return result;
@@ -50379,7 +42388,7 @@ class Transform {
         if (options.maxzoom !== undefined && z > options.maxzoom)
             z = options.maxzoom;
         const cameraCoord = this.pointCoordinate(this.getCameraPoint());
-        const centerCoord = performance$1.MercatorCoordinate.fromLngLat(this.center);
+        const centerCoord = performance$1.Z.fromLngLat(this.center);
         const numTiles = Math.pow(2, z);
         const cameraPoint = [numTiles * cameraCoord.x, numTiles * cameraCoord.y, 0];
         const centerPoint = [numTiles * centerCoord.x, numTiles * centerCoord.y, 0];
@@ -50440,8 +42449,8 @@ class Transform {
             if (it.zoom === maxZoom || (longestDim > distToSplit && it.zoom >= minZoom)) {
                 const dz = maxZoom - it.zoom, dx = cameraPoint[0] - 0.5 - (x << dz), dy = cameraPoint[1] - 0.5 - (y << dz);
                 result.push({
-                    tileID: new performance$1.OverscaledTileID(it.zoom === maxZoom ? overscaledZ : it.zoom, it.wrap, it.zoom, x, y),
-                    distanceSq: performance$1.sqrLen([centerPoint[0] - 0.5 - x, centerPoint[1] - 0.5 - y]),
+                    tileID: new performance$1.S(it.zoom === maxZoom ? overscaledZ : it.zoom, it.wrap, it.zoom, x, y),
+                    distanceSq: sqrLen([centerPoint[0] - 0.5 - x, centerPoint[1] - 0.5 - y]),
                     // this variable is currently not used, but may be important to reduce the amount of loaded tiles
                     tileDistanceToCamera: Math.sqrt(dx * dx + dy * dy)
                 });
@@ -50453,7 +42462,7 @@ class Transform {
                 const childZ = it.zoom + 1;
                 let quadrant = it.aabb.quadrant(i);
                 if (options.terrain) {
-                    const tileID = new performance$1.OverscaledTileID(childZ, it.wrap, childZ, childX, childY);
+                    const tileID = new performance$1.S(childZ, it.wrap, childZ, childX, childY);
                     const minMax = options.terrain.getMinMaxElevation(tileID);
                     const minElevation = (_a = minMax.minElevation) !== null && _a !== void 0 ? _a : this.elevation;
                     const maxElevation = (_b = minMax.maxElevation) !== null && _b !== void 0 ? _b : this.elevation;
@@ -50480,8 +42489,8 @@ class Transform {
      * @returns Point
      */
     project(lnglat) {
-        const lat = performance$1.clamp(lnglat.lat, -MAX_VALID_LATITUDE, MAX_VALID_LATITUDE);
-        return new performance$1.Point(performance$1.mercatorXfromLng(lnglat.lng) * this.worldSize, performance$1.mercatorYfromLat(lat) * this.worldSize);
+        const lat = performance$1.ac(lnglat.lat, -MAX_VALID_LATITUDE, MAX_VALID_LATITUDE);
+        return new performance$1.P(performance$1.O(lnglat.lng) * this.worldSize, performance$1.Q(lat) * this.worldSize);
     }
     /**
      * Convert from world coordinates ([0, 512],[0, 512]) to LngLat ([-180, 180], [-90, 90])
@@ -50489,7 +42498,7 @@ class Transform {
      * @returns LngLat
      */
     unproject(point) {
-        return new performance$1.MercatorCoordinate(point.x / this.worldSize, point.y / this.worldSize).toLngLat();
+        return new performance$1.Z(point.x / this.worldSize, point.y / this.worldSize).toLngLat();
     }
     get point() { return this.project(this.center); }
     /**
@@ -50522,7 +42531,7 @@ class Transform {
         // Since altitude = Math.cos(this._pitch) * this.cameraToCenterDistance / pixelPerMeter:
         const requiredPixelPerMeter = Math.cos(this._pitch) * this.cameraToCenterDistance / requiredAltitude;
         // Since pixelPerMeter = mercatorZfromAltitude(1, center.lat) * worldSize:
-        const requiredWorldSize = requiredPixelPerMeter / performance$1.mercatorZfromAltitude(1, center.lat);
+        const requiredWorldSize = requiredPixelPerMeter / performance$1.b5(1, center.lat);
         // Since worldSize = this.tileSize * scale:
         const requiredScale = requiredWorldSize / this.tileSize;
         const zoom = this.scaleZoom(requiredScale);
@@ -50535,7 +42544,7 @@ class Transform {
         const a = this.pointCoordinate(point);
         const b = this.pointCoordinate(this.centerPoint);
         const loc = this.locationCoordinate(lnglat);
-        const newCenter = new performance$1.MercatorCoordinate(loc.x - (a.x - b.x), loc.y - (a.y - b.y));
+        const newCenter = new performance$1.Z(loc.x - (a.x - b.x), loc.y - (a.y - b.y));
         this.center = this.coordinateLocation(newCenter);
         if (this._renderWorldCopies) {
             this.center = this.center.wrap();
@@ -50568,7 +42577,7 @@ class Transform {
      * @returns The mercator coordinate
      */
     locationCoordinate(lnglat) {
-        return performance$1.MercatorCoordinate.fromLngLat(lnglat);
+        return performance$1.Z.fromLngLat(lnglat);
     }
     /**
      * Given a Coordinate, return its geographical position.
@@ -50599,8 +42608,8 @@ class Transform {
         // line with z=0
         const coord0 = [p.x, p.y, 0, 1];
         const coord1 = [p.x, p.y, 1, 1];
-        performance$1.transformMat4(coord0, coord0, this.pixelMatrixInverse);
-        performance$1.transformMat4(coord1, coord1, this.pixelMatrixInverse);
+        performance$1.af(coord0, coord0, this.pixelMatrixInverse);
+        performance$1.af(coord1, coord1, this.pixelMatrixInverse);
         const w0 = coord0[3];
         const w1 = coord1[3];
         const x0 = coord0[0] / w0;
@@ -50610,7 +42619,7 @@ class Transform {
         const z0 = coord0[2] / w0;
         const z1 = coord1[2] / w1;
         const t = z0 === z1 ? 0 : (targetZ - z0) / (z1 - z0);
-        return new performance$1.MercatorCoordinate(performance$1.interpolate.number(x0, x1, t) / this.worldSize, performance$1.interpolate.number(y0, y1, t) / this.worldSize);
+        return new performance$1.Z(performance$1.y.number(x0, x1, t) / this.worldSize, performance$1.y.number(y0, y1, t) / this.worldSize);
     }
     /**
      * Given a coordinate, return the screen point that corresponds to it
@@ -50621,8 +42630,8 @@ class Transform {
      */
     coordinatePoint(coord, elevation = 0, pixelMatrix = this.pixelMatrix) {
         const p = [coord.x * this.worldSize, coord.y * this.worldSize, elevation, 1];
-        performance$1.transformMat4(p, p, pixelMatrix);
-        return new performance$1.Point(p[0] / p[3], p[1] / p[3]);
+        performance$1.af(p, p, pixelMatrix);
+        return new performance$1.P(p[0] / p[3], p[1] / p[3]);
     }
     /**
      * Returns the map's geographical bounds. When the bearing or pitch is non-zero, the visible region is not
@@ -50632,10 +42641,10 @@ class Transform {
     getBounds() {
         const top = Math.max(0, this.height / 2 - this.getHorizon());
         return new LngLatBounds()
-            .extend(this.pointLocation(new performance$1.Point(0, top)))
-            .extend(this.pointLocation(new performance$1.Point(this.width, top)))
-            .extend(this.pointLocation(new performance$1.Point(this.width, this.height)))
-            .extend(this.pointLocation(new performance$1.Point(0, this.height)));
+            .extend(this.pointLocation(new performance$1.P(0, top)))
+            .extend(this.pointLocation(new performance$1.P(this.width, top)))
+            .extend(this.pointLocation(new performance$1.P(this.width, this.height)))
+            .extend(this.pointLocation(new performance$1.P(0, this.height)));
     }
     /**
      * Returns the maximum geographical bounds the map is constrained to, or `null` if none set.
@@ -50675,9 +42684,9 @@ class Transform {
         const canonical = unwrappedTileID.canonical;
         const scale = this.worldSize / this.zoomScale(canonical.z);
         const unwrappedX = canonical.x + Math.pow(2, canonical.z) * unwrappedTileID.wrap;
-        const worldMatrix = performance$1.identity(new Float64Array(16));
-        performance$1.translate(worldMatrix, worldMatrix, [unwrappedX * scale, canonical.y * scale, 0]);
-        performance$1.scale(worldMatrix, worldMatrix, [scale / performance$1.EXTENT, scale / performance$1.EXTENT, 1]);
+        const worldMatrix = performance$1.an(new Float64Array(16));
+        performance$1.J(worldMatrix, worldMatrix, [unwrappedX * scale, canonical.y * scale, 0]);
+        performance$1.K(worldMatrix, worldMatrix, [scale / performance$1.X, scale / performance$1.X, 1]);
         return worldMatrix;
     }
     /**
@@ -50691,7 +42700,7 @@ class Transform {
             return cache[posMatrixKey];
         }
         const posMatrix = this.calculateTileMatrix(unwrappedTileID);
-        performance$1.multiply(posMatrix, aligned ? this.alignedModelViewProjectionMatrix : this.modelViewProjectionMatrix, posMatrix);
+        performance$1.L(posMatrix, aligned ? this.alignedModelViewProjectionMatrix : this.modelViewProjectionMatrix, posMatrix);
         cache[posMatrixKey] = new Float32Array(posMatrix);
         return cache[posMatrixKey];
     }
@@ -50707,7 +42716,7 @@ class Transform {
             return cache[posMatrixKey];
         }
         const fogMatrix = this.calculateTileMatrix(unwrappedTileID);
-        performance$1.multiply(fogMatrix, this.fogMatrix, fogMatrix);
+        performance$1.L(fogMatrix, this.fogMatrix, fogMatrix);
         cache[posMatrixKey] = new Float32Array(fogMatrix);
         return cache[posMatrixKey];
     }
@@ -50721,9 +42730,9 @@ class Transform {
      * Bounds are those set by maxBounds or North & South "Poles" and, if only 1 globe is displayed, antimeridian.
      */
     getConstrained(lngLat, zoom) {
-        zoom = performance$1.clamp(+zoom, this.minZoom, this.maxZoom);
+        zoom = performance$1.ac(+zoom, this.minZoom, this.maxZoom);
         const result = {
-            center: new performance$1.LngLat(lngLat.lng, lngLat.lat),
+            center: new performance$1.N(lngLat.lng, lngLat.lat),
             zoom
         };
         let lngRange = this.lngRange;
@@ -50741,15 +42750,15 @@ class Transform {
         const { x: screenWidth, y: screenHeight } = this.size;
         if (this.latRange) {
             const latRange = this.latRange;
-            minY = performance$1.mercatorYfromLat(latRange[1]) * worldSize;
-            maxY = performance$1.mercatorYfromLat(latRange[0]) * worldSize;
+            minY = performance$1.Q(latRange[1]) * worldSize;
+            maxY = performance$1.Q(latRange[0]) * worldSize;
             const shouldZoomIn = maxY - minY < screenHeight;
             if (shouldZoomIn)
                 scaleY = screenHeight / (maxY - minY);
         }
         if (lngRange) {
-            minX = performance$1.wrap(performance$1.mercatorXfromLng(lngRange[0]) * worldSize, 0, worldSize);
-            maxX = performance$1.wrap(performance$1.mercatorXfromLng(lngRange[1]) * worldSize, 0, worldSize);
+            minX = performance$1.b3(performance$1.O(lngRange[0]) * worldSize, 0, worldSize);
+            maxX = performance$1.b3(performance$1.O(lngRange[1]) * worldSize, 0, worldSize);
             if (maxX < minX)
                 maxX += worldSize;
             const shouldZoomIn = maxX - minX < screenWidth;
@@ -50761,7 +42770,7 @@ class Transform {
         const scale = Math.max(scaleX || 0, scaleY || 0);
         if (scale) {
             // zoom in to exclude all beyond the given lng/lat ranges
-            const newPoint = new performance$1.Point(scaleX ? (maxX + minX) / 2 : originalX, scaleY ? (maxY + minY) / 2 : originalY);
+            const newPoint = new performance$1.P(scaleX ? (maxX + minX) / 2 : originalX, scaleY ? (maxY + minY) / 2 : originalY);
             result.center = this.unproject.call({ worldSize }, newPoint).wrap();
             result.zoom += this.scaleZoom(scale);
             return result;
@@ -50777,7 +42786,7 @@ class Transform {
             const centerX = (minX + maxX) / 2;
             let wrappedX = originalX;
             if (this._renderWorldCopies) {
-                wrappedX = performance$1.wrap(originalX, centerX - worldSize / 2, centerX + worldSize / 2);
+                wrappedX = performance$1.b3(originalX, centerX - worldSize / 2, centerX + worldSize / 2);
             }
             const w2 = screenWidth / 2;
             if (wrappedX - w2 < minX)
@@ -50787,7 +42796,7 @@ class Transform {
         }
         // pan the map if the screen goes off the range
         if (modifiedX !== undefined || modifiedY !== undefined) {
-            const newPoint = new performance$1.Point(modifiedX !== null && modifiedX !== void 0 ? modifiedX : originalX, modifiedY !== null && modifiedY !== void 0 ? modifiedY : originalY);
+            const newPoint = new performance$1.P(modifiedX !== null && modifiedX !== void 0 ? modifiedX : originalX, modifiedY !== null && modifiedY !== void 0 ? modifiedY : originalY);
             result.center = this.unproject.call({ worldSize }, newPoint).wrap();
         }
         return result;
@@ -50810,15 +42819,15 @@ class Transform {
         const offset = this.centerOffset;
         const x = this.point.x, y = this.point.y;
         this.cameraToCenterDistance = 0.5 / Math.tan(halfFov) * this.height;
-        this._pixelPerMeter = performance$1.mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
-        let m = performance$1.identity(new Float64Array(16));
-        performance$1.scale(m, m, [this.width / 2, -this.height / 2, 1]);
-        performance$1.translate(m, m, [1, -1, 0]);
+        this._pixelPerMeter = performance$1.b5(1, this.center.lat) * this.worldSize;
+        let m = performance$1.an(new Float64Array(16));
+        performance$1.K(m, m, [this.width / 2, -this.height / 2, 1]);
+        performance$1.J(m, m, [1, -1, 0]);
         this.labelPlaneMatrix = m;
-        m = performance$1.identity(new Float64Array(16));
-        performance$1.scale(m, m, [1, -1, 1]);
-        performance$1.translate(m, m, [-1, -1, 0]);
-        performance$1.scale(m, m, [2 / this.width, 2 / this.height, 1]);
+        m = performance$1.an(new Float64Array(16));
+        performance$1.K(m, m, [1, -1, 1]);
+        performance$1.J(m, m, [-1, -1, 0]);
+        performance$1.K(m, m, [2 / this.width, 2 / this.height, 1]);
         this.glCoordMatrix = m;
         // Calculate the camera to sea-level distance in pixel in respect of terrain
         const cameraToSeaLevelDistance = this.cameraToCenterDistance + this._elevation * this._pixelPerMeter / Math.cos(this._pitch);
@@ -50832,12 +42841,12 @@ class Transform {
         // (the distance between[width/2, height/2] and [width/2 + 1, height/2])
         const groundAngle = Math.PI / 2 + this._pitch;
         const fovAboveCenter = this._fov * (0.5 + offset.y / this.height);
-        const topHalfSurfaceDistance = Math.sin(fovAboveCenter) * lowestPlane / Math.sin(performance$1.clamp(Math.PI - groundAngle - fovAboveCenter, 0.01, Math.PI - 0.01));
+        const topHalfSurfaceDistance = Math.sin(fovAboveCenter) * lowestPlane / Math.sin(performance$1.ac(Math.PI - groundAngle - fovAboveCenter, 0.01, Math.PI - 0.01));
         // Find the distance from the center point to the horizon
         const horizon = this.getHorizon();
         const horizonAngle = Math.atan(horizon / this.cameraToCenterDistance);
         const fovCenterToHorizon = 2 * horizonAngle * (0.5 + offset.y / (horizon * 2));
-        const topHalfSurfaceDistanceHorizon = Math.sin(fovCenterToHorizon) * lowestPlane / Math.sin(performance$1.clamp(Math.PI - groundAngle - fovCenterToHorizon, 0.01, Math.PI - 0.01));
+        const topHalfSurfaceDistanceHorizon = Math.sin(fovCenterToHorizon) * lowestPlane / Math.sin(performance$1.ac(Math.PI - groundAngle - fovCenterToHorizon, 0.01, Math.PI - 0.01));
         // Calculate z distance of the farthest fragment that should be rendered.
         // Add a bit extra to avoid precision problems when a fragment's distance is exactly `furthestDistance`
         const topHalfMinDistance = Math.min(topHalfSurfaceDistance, topHalfSurfaceDistanceHorizon);
@@ -50852,42 +42861,42 @@ class Transform {
         this.nearZ = this.height / 50;
         // matrix for conversion from location to clip space(-1 .. 1)
         m = new Float64Array(16);
-        performance$1.perspective(m, this._fov, this.width / this.height, this.nearZ, this.farZ);
+        performance$1.b6(m, this._fov, this.width / this.height, this.nearZ, this.farZ);
         // Apply center of perspective offset
         m[8] = -offset.x * 2 / this.width;
         m[9] = offset.y * 2 / this.height;
-        this.projectionMatrix = performance$1.clone(m);
-        performance$1.scale(m, m, [1, -1, 1]);
-        performance$1.translate(m, m, [0, 0, -this.cameraToCenterDistance]);
-        performance$1.rotateX(m, m, this._pitch);
-        performance$1.rotateZ(m, m, this.angle);
-        performance$1.translate(m, m, [-x, -y, 0]);
+        this.projectionMatrix = performance$1.ae(m);
+        performance$1.K(m, m, [1, -1, 1]);
+        performance$1.J(m, m, [0, 0, -this.cameraToCenterDistance]);
+        performance$1.b7(m, m, this._pitch);
+        performance$1.ad(m, m, this.angle);
+        performance$1.J(m, m, [-x, -y, 0]);
         // The mercatorMatrix can be used to transform points from mercator coordinates
         // ([0, 0] nw, [1, 1] se) to clip space.
-        this.mercatorMatrix = performance$1.scale([], m, [this.worldSize, this.worldSize, this.worldSize]);
+        this.mercatorMatrix = performance$1.K([], m, [this.worldSize, this.worldSize, this.worldSize]);
         // scale vertically to meters per pixel (inverse of ground resolution):
-        performance$1.scale(m, m, [1, 1, this._pixelPerMeter]);
+        performance$1.K(m, m, [1, 1, this._pixelPerMeter]);
         // matrix for conversion from world space to screen coordinates in 2D
-        this.pixelMatrix = performance$1.multiply(new Float64Array(16), this.labelPlaneMatrix, m);
+        this.pixelMatrix = performance$1.L(new Float64Array(16), this.labelPlaneMatrix, m);
         // matrix for conversion from world space to clip space (-1 .. 1)
-        performance$1.translate(m, m, [0, 0, -this.elevation]); // elevate camera over terrain
+        performance$1.J(m, m, [0, 0, -this.elevation]); // elevate camera over terrain
         this.modelViewProjectionMatrix = m;
-        this.invModelViewProjectionMatrix = performance$1.invert([], m);
+        this.invModelViewProjectionMatrix = performance$1.as([], m);
         // create a fog matrix, same es proj-matrix but with near clipping-plane in mapcenter
         // needed to calculate a correct z-value for fog calculation, because projMatrix z value is not
         this.fogMatrix = new Float64Array(16);
-        performance$1.perspective(this.fogMatrix, this._fov, this.width / this.height, cameraToSeaLevelDistance, this.farZ);
+        performance$1.b6(this.fogMatrix, this._fov, this.width / this.height, cameraToSeaLevelDistance, this.farZ);
         this.fogMatrix[8] = -offset.x * 2 / this.width;
         this.fogMatrix[9] = offset.y * 2 / this.height;
-        performance$1.scale(this.fogMatrix, this.fogMatrix, [1, -1, 1]);
-        performance$1.translate(this.fogMatrix, this.fogMatrix, [0, 0, -this.cameraToCenterDistance]);
-        performance$1.rotateX(this.fogMatrix, this.fogMatrix, this._pitch);
-        performance$1.rotateZ(this.fogMatrix, this.fogMatrix, this.angle);
-        performance$1.translate(this.fogMatrix, this.fogMatrix, [-x, -y, 0]);
-        performance$1.scale(this.fogMatrix, this.fogMatrix, [1, 1, this._pixelPerMeter]);
-        performance$1.translate(this.fogMatrix, this.fogMatrix, [0, 0, -this.elevation]); // elevate camera over terrain
+        performance$1.K(this.fogMatrix, this.fogMatrix, [1, -1, 1]);
+        performance$1.J(this.fogMatrix, this.fogMatrix, [0, 0, -this.cameraToCenterDistance]);
+        performance$1.b7(this.fogMatrix, this.fogMatrix, this._pitch);
+        performance$1.ad(this.fogMatrix, this.fogMatrix, this.angle);
+        performance$1.J(this.fogMatrix, this.fogMatrix, [-x, -y, 0]);
+        performance$1.K(this.fogMatrix, this.fogMatrix, [1, 1, this._pixelPerMeter]);
+        performance$1.J(this.fogMatrix, this.fogMatrix, [0, 0, -this.elevation]); // elevate camera over terrain
         // matrix for conversion from world space to screen coordinates in 3D
-        this.pixelMatrix3D = performance$1.multiply(new Float64Array(16), this.labelPlaneMatrix, m);
+        this.pixelMatrix3D = performance$1.L(new Float64Array(16), this.labelPlaneMatrix, m);
         // Make a second projection matrix that is aligned to a pixel grid for rendering raster tiles.
         // We're rounding the (floating point) x/y values to achieve to avoid rendering raster images to fractional
         // coordinates. Additionally, we adjust by half a pixel in either direction in case that viewport dimension
@@ -50896,10 +42905,10 @@ class Transform {
         // it is always <= 0.5 pixels.
         const xShift = (this.width % 2) / 2, yShift = (this.height % 2) / 2, angleCos = Math.cos(this.angle), angleSin = Math.sin(this.angle), dx = x - Math.round(x) + angleCos * xShift + angleSin * yShift, dy = y - Math.round(y) + angleCos * yShift + angleSin * xShift;
         const alignedM = new Float64Array(m);
-        performance$1.translate(alignedM, alignedM, [dx > 0.5 ? dx - 1 : dx, dy > 0.5 ? dy - 1 : dy, 0]);
+        performance$1.J(alignedM, alignedM, [dx > 0.5 ? dx - 1 : dx, dy > 0.5 ? dy - 1 : dy, 0]);
         this.alignedModelViewProjectionMatrix = alignedM;
         // inverse matrix for conversion from screen coordinates to location
-        m = performance$1.invert(new Float64Array(16), this.pixelMatrix);
+        m = performance$1.as(new Float64Array(16), this.pixelMatrix);
         if (!m)
             throw new Error('failed to invert matrix');
         this.pixelMatrixInverse = m;
@@ -50911,9 +42920,9 @@ class Transform {
         // calcMatrices hasn't run yet
         if (!this.pixelMatrixInverse)
             return 1;
-        const coord = this.pointCoordinate(new performance$1.Point(0, 0));
+        const coord = this.pointCoordinate(new performance$1.P(0, 0));
         const p = [coord.x * this.worldSize, coord.y * this.worldSize, 0, 1];
-        const topPoint = performance$1.transformMat4(p, p, this.pixelMatrix);
+        const topPoint = performance$1.af(p, p, this.pixelMatrix);
         return topPoint[3] / this.cameraToCenterDistance;
     }
     /**
@@ -50930,7 +42939,7 @@ class Transform {
     getCameraPoint() {
         const pitch = this._pitch;
         const yOffset = Math.tan(pitch) * (this.cameraToCenterDistance || 1);
-        return this.centerPoint.add(new performance$1.Point(0, yOffset));
+        return this.centerPoint.add(new performance$1.P(0, yOffset));
     }
     /**
      * When the map is pitched, some of the 3D features that intersect a query will not intersect
@@ -50959,11 +42968,11 @@ class Transform {
                 maxY = Math.max(maxY, p.y);
             }
             return [
-                new performance$1.Point(minX, minY),
-                new performance$1.Point(maxX, minY),
-                new performance$1.Point(maxX, maxY),
-                new performance$1.Point(minX, maxY),
-                new performance$1.Point(minX, minY)
+                new performance$1.P(minX, minY),
+                new performance$1.P(maxX, minY),
+                new performance$1.P(maxX, maxY),
+                new performance$1.P(minX, maxY),
+                new performance$1.P(minX, minY)
             ];
         }
     }
@@ -50978,7 +42987,7 @@ class Transform {
     lngLatToCameraDepth(lngLat, elevation) {
         const coord = this.locationCoordinate(lngLat);
         const p = [coord.x * this.worldSize, coord.y * this.worldSize, elevation, 1];
-        performance$1.transformMat4(p, p, this.modelViewProjectionMatrix);
+        performance$1.af(p, p, this.modelViewProjectionMatrix);
         return (p[2] / p[3]);
     }
 }
@@ -51143,21 +43152,21 @@ class Hash {
 
 const defaultInertiaOptions = {
     linearity: 0.3,
-    easing: performance$1.bezier(0, 0, 0.3, 1),
+    easing: performance$1.b8(0, 0, 0.3, 1),
 };
-const defaultPanInertiaOptions = performance$1.extend({
+const defaultPanInertiaOptions = performance$1.e({
     deceleration: 2500,
     maxSpeed: 1400
 }, defaultInertiaOptions);
-const defaultZoomInertiaOptions = performance$1.extend({
+const defaultZoomInertiaOptions = performance$1.e({
     deceleration: 20,
     maxSpeed: 1400
 }, defaultInertiaOptions);
-const defaultBearingInertiaOptions = performance$1.extend({
+const defaultBearingInertiaOptions = performance$1.e({
     deceleration: 1000,
     maxSpeed: 360
 }, defaultInertiaOptions);
-const defaultPitchInertiaOptions = performance$1.extend({
+const defaultPitchInertiaOptions = performance$1.e({
     deceleration: 1000,
     maxSpeed: 90
 }, defaultInertiaOptions);
@@ -51187,7 +43196,7 @@ class HandlerInertia {
             zoom: 0,
             bearing: 0,
             pitch: 0,
-            pan: new performance$1.Point(0, 0),
+            pan: new performance$1.P(0, 0),
             pinchAround: undefined,
             around: undefined
         };
@@ -51206,7 +43215,7 @@ class HandlerInertia {
         const duration = (lastEntry.time - this._inertiaBuffer[0].time);
         const easeOptions = {};
         if (deltas.pan.mag()) {
-            const result = calculateEasing(deltas.pan.mag(), duration, performance$1.extend({}, defaultPanInertiaOptions, panInertiaOptions || {}));
+            const result = calculateEasing(deltas.pan.mag(), duration, performance$1.e({}, defaultPanInertiaOptions, panInertiaOptions || {}));
             easeOptions.offset = deltas.pan.mult(result.amount / deltas.pan.mag());
             easeOptions.center = this._map.transform.center;
             extendDuration(easeOptions, result);
@@ -51218,7 +43227,7 @@ class HandlerInertia {
         }
         if (deltas.bearing) {
             const result = calculateEasing(deltas.bearing, duration, defaultBearingInertiaOptions);
-            easeOptions.bearing = this._map.transform.bearing + performance$1.clamp(result.amount, -179, 179);
+            easeOptions.bearing = this._map.transform.bearing + performance$1.ac(result.amount, -179, 179);
             extendDuration(easeOptions, result);
         }
         if (deltas.pitch) {
@@ -51231,7 +43240,7 @@ class HandlerInertia {
             easeOptions.around = last ? this._map.unproject(last) : this._map.getCenter();
         }
         this.clear();
-        return performance$1.extend(easeOptions, {
+        return performance$1.e(easeOptions, {
             noMoveStart: true
         });
     }
@@ -51246,7 +43255,7 @@ function extendDuration(easeOptions, result) {
 }
 function calculateEasing(amount, inertiaDuration, inertiaOptions) {
     const { maxSpeed, linearity, deceleration } = inertiaOptions;
-    const speed = performance$1.clamp(amount * linearity / (inertiaDuration / 1000), -maxSpeed, maxSpeed);
+    const speed = performance$1.ac(amount * linearity / (inertiaDuration / 1000), -maxSpeed, maxSpeed);
     const duration = Math.abs(speed) / (deceleration * linearity);
     return {
         easing: inertiaOptions.easing,
@@ -51271,7 +43280,7 @@ function calculateEasing(amount, inertiaDuration, inertiaOptions) {
  * });
  * ```
  */
-class MapMouseEvent extends performance$1.Event {
+class MapMouseEvent extends performance$1.k {
     /**
      * Prevents subsequent default processing of the event by the map.
      *
@@ -51295,7 +43304,7 @@ class MapMouseEvent extends performance$1.Event {
     constructor(type, map, originalEvent, data = {}) {
         const point = DOM.mousePos(map.getCanvas(), originalEvent);
         const lngLat = map.unproject(point);
-        super(type, performance$1.extend({ point, lngLat, originalEvent }, data));
+        super(type, performance$1.e({ point, lngLat, originalEvent }, data));
         this._defaultPrevented = false;
         this.target = map;
     }
@@ -51305,7 +43314,7 @@ class MapMouseEvent extends performance$1.Event {
  *
  * @group Event Related
  */
-class MapTouchEvent extends performance$1.Event {
+class MapTouchEvent extends performance$1.k {
     /**
      * Prevents subsequent default processing of the event by the map.
      *
@@ -51330,7 +43339,7 @@ class MapTouchEvent extends performance$1.Event {
         const lngLats = points.map((t) => map.unproject(t));
         const point = points.reduce((prev, curr, i, arr) => {
             return prev.add(curr.div(arr.length));
-        }, new performance$1.Point(0, 0));
+        }, new performance$1.P(0, 0));
         const lngLat = map.unproject(point);
         super(type, { points, point, lngLats, lngLat, originalEvent });
         this._defaultPrevented = false;
@@ -51341,7 +43350,7 @@ class MapTouchEvent extends performance$1.Event {
  *
  * @group Event Related
  */
-class MapWheelEvent extends performance$1.Event {
+class MapWheelEvent extends performance$1.k {
     /**
      * Prevents subsequent default processing of the event by the map.
      *
@@ -51514,7 +43523,7 @@ class TransformProvider {
         return this.transform.bearing;
     }
     unproject(point) {
-        return this.transform.pointLocation(performance$1.Point.convert(point), this._map.terrain);
+        return this.transform.pointLocation(performance$1.P.convert(point), this._map.terrain);
     }
 }
 
@@ -51615,7 +43624,7 @@ class BoxZoomHandler {
             this._fireEvent('boxzoomcancel', e);
         }
         else {
-            this._map.fire(new performance$1.Event('boxzoomend', { originalEvent: e }));
+            this._map.fire(new performance$1.k('boxzoomend', { originalEvent: e }));
             return {
                 cameraAnimation: map => map.fitScreenCoordinates(p0, p1, this._tr.bearing, { linear: true })
             };
@@ -51641,7 +43650,7 @@ class BoxZoomHandler {
         delete this._lastPos;
     }
     _fireEvent(type, e) {
-        return this._map.fire(new performance$1.Event(type, { originalEvent: e }));
+        return this._map.fire(new performance$1.k(type, { originalEvent: e }));
     }
 }
 
@@ -51656,7 +43665,7 @@ function indexTouches(touches, points) {
 }
 
 function getCentroid(points) {
-    const sum = new performance$1.Point(0, 0);
+    const sum = new performance$1.P(0, 0);
     for (const point of points) {
         sum._add(point);
     }
@@ -52042,7 +44051,7 @@ class TouchPanHandler {
     reset() {
         this._active = false;
         this._touches = {};
-        this._sum = new performance$1.Point(0, 0);
+        this._sum = new performance$1.P(0, 0);
     }
     _shouldBePrevented(touchesCount) {
         const minTouches = this._map.cooperativeGestures.isEnabled() ? 2 : 1;
@@ -52074,8 +44083,8 @@ class TouchPanHandler {
         if (mapTouches.length > 0)
             this._active = true;
         const touches = indexTouches(mapTouches, points);
-        const touchPointSum = new performance$1.Point(0, 0);
-        const touchDeltaSum = new performance$1.Point(0, 0);
+        const touchPointSum = new performance$1.P(0, 0);
+        const touchDeltaSum = new performance$1.P(0, 0);
         let touchDeltaCount = 0;
         for (const identifier in touches) {
             const point = touches[identifier];
@@ -52739,12 +44748,12 @@ class ScrollZoomHandler {
         const pos = DOM.mousePos(this._map.getCanvas(), e);
         const tr = this._tr;
         if (pos.y > tr.transform.height / 2 - tr.transform.getHorizon()) {
-            this._around = performance$1.LngLat.convert(this._aroundCenter ? tr.center : tr.unproject(pos));
+            this._around = performance$1.N.convert(this._aroundCenter ? tr.center : tr.unproject(pos));
         }
         else {
             // Do not use current cursor position if above the horizon to avoid 'unproject' this point
             // as it is not mapped into 'coords' framebuffer or inversible with 'pixelMatrixInverse'.
-            this._around = performance$1.LngLat.convert(tr.center);
+            this._around = performance$1.N.convert(tr.center);
         }
         this._aroundPoint = tr.transform.locationPoint(this._around);
         if (!this._frameId) {
@@ -52790,7 +44799,7 @@ class ScrollZoomHandler {
         if (this._type === 'wheel' && startZoom && easing && lastWheelEventTimeDiff) {
             const t = Math.min(lastWheelEventTimeDiff / 200, 1);
             const k = easing(t);
-            zoom = performance$1.interpolate.number(startZoom, targetZoom, k);
+            zoom = performance$1.y.number(startZoom, targetZoom, k);
             if (t < 1) {
                 if (!this._frameId) {
                     this._frameId = true;
@@ -52823,7 +44832,7 @@ class ScrollZoomHandler {
         };
     }
     _smoothOutEasing(duration) {
-        let easing = performance$1.defaultEasing;
+        let easing = performance$1.b9;
         if (this._prevEase) {
             const currentEase = this._prevEase;
             const t = (browser.now() - currentEase.start) / currentEase.duration;
@@ -52831,7 +44840,7 @@ class ScrollZoomHandler {
             // Quick hack to make new bezier that is continuous with last
             const x = 0.27 / Math.sqrt(speed * speed + 0.0001) * 0.01;
             const y = Math.sqrt(0.27 * 0.27 - x * x);
-            easing = performance$1.bezier(x, y, 0.25, 1);
+            easing = performance$1.b8(x, y, 0.25, 1);
         }
         this._prevEase = {
             start: browser.now(),
@@ -53332,7 +45341,7 @@ class CooperativeGesturesHandler {
         if (!this._enabled)
             return;
         // notify subscribers that a cooperative gesture was prevented
-        this._map.fire(new performance$1.Event('cooperativegestureprevented', { gestureType, originalEvent }));
+        this._map.fire(new performance$1.k('cooperativegestureprevented', { gestureType, originalEvent }));
         // Alert user how to scroll/pan
         this._container.classList.add('maplibregl-show');
         setTimeout(() => {
@@ -53342,7 +45351,7 @@ class CooperativeGesturesHandler {
 }
 
 const isMoving = (p) => p.zoom || p.drag || p.pitch || p.rotate;
-class RenderFrameEvent extends performance$1.Event {
+class RenderFrameEvent extends performance$1.k {
 }
 function hasChange(result) {
     return (result.panDelta && result.panDelta.mag()) || result.zoomDelta || result.bearingDelta || result.pitchDelta;
@@ -53586,7 +45595,7 @@ class HandlerManager {
     mergeHandlerResult(mergedHandlerResult, eventsInProgress, handlerResult, name, e) {
         if (!handlerResult)
             return;
-        performance$1.extend(mergedHandlerResult, handlerResult);
+        performance$1.e(mergedHandlerResult, handlerResult);
         const eventData = { handlerName: name, originalEvent: handlerResult.originalEvent || e };
         // track which handler changed which camera property
         if (handlerResult.zoomDelta !== undefined) {
@@ -53608,7 +45617,7 @@ class HandlerManager {
         const combinedDeactivatedHandlers = {};
         for (const [change, eventsInProgress, deactivatedHandlers] of this._changes) {
             if (change.panDelta)
-                combined.panDelta = (combined.panDelta || new performance$1.Point(0, 0))._add(change.panDelta);
+                combined.panDelta = (combined.panDelta || new performance$1.P(0, 0))._add(change.panDelta);
             if (change.zoomDelta)
                 combined.zoomDelta = (combined.zoomDelta || 0) + change.zoomDelta;
             if (change.bearingDelta)
@@ -53621,8 +45630,8 @@ class HandlerManager {
                 combined.pinchAround = change.pinchAround;
             if (change.noInertia)
                 combined.noInertia = change.noInertia;
-            performance$1.extend(combinedEventsInProgress, eventsInProgress);
-            performance$1.extend(combinedDeactivatedHandlers, deactivatedHandlers);
+            performance$1.e(combinedEventsInProgress, eventsInProgress);
+            performance$1.e(combinedDeactivatedHandlers, deactivatedHandlers);
         }
         this._updateMapTransform(combined, combinedEventsInProgress, combinedDeactivatedHandlers);
         this._changes = [];
@@ -53737,7 +45746,7 @@ class HandlerManager {
                 this._map.easeTo(inertialEase, { originalEvent: originalEndEvent });
             }
             else {
-                this._map.fire(new performance$1.Event('moveend', { originalEvent: originalEndEvent }));
+                this._map.fire(new performance$1.k('moveend', { originalEvent: originalEndEvent }));
                 if (shouldSnapToNorth(this._map.getBearing())) {
                     this._map.resetNorth();
                 }
@@ -53746,7 +45755,7 @@ class HandlerManager {
         }
     }
     _fireEvent(type, e) {
-        this._map.fire(new performance$1.Event(type, e ? { originalEvent: e } : {}));
+        this._map.fire(new performance$1.k(type, e ? { originalEvent: e } : {}));
     }
     _requestFrame() {
         this._map.triggerRepaint();
@@ -53763,7 +45772,7 @@ class HandlerManager {
     }
 }
 
-class Camera extends performance$1.Evented {
+class Camera extends performance$1.E {
     constructor(transform, options) {
         super();
         // Callback for map._requestRenderFrame
@@ -53798,7 +45807,7 @@ class Camera extends performance$1.Evented {
      * let {lng, lat} = map.getCenter();
      * ```
      */
-    getCenter() { return new performance$1.LngLat(this.transform.center.lng, this.transform.center.lat); }
+    getCenter() { return new performance$1.N(this.transform.center.lng, this.transform.center.lat); }
     /**
      * Sets the map's geographical centerpoint. Equivalent to `jumpTo({center: center})`.
      *
@@ -53825,8 +45834,8 @@ class Camera extends performance$1.Evented {
      * @see [Navigate the map with game-like controls](https://maplibre.org/maplibre-gl-js/docs/examples/game-controls/)
      */
     panBy(offset, options, eventData) {
-        offset = performance$1.Point.convert(offset).mult(-1);
-        return this.panTo(this.transform.center, performance$1.extend({ offset }, options), eventData);
+        offset = performance$1.P.convert(offset).mult(-1);
+        return this.panTo(this.transform.center, performance$1.e({ offset }, options), eventData);
     }
     /**
      * Pans the map to the specified location with an animated transition.
@@ -53845,7 +45854,7 @@ class Camera extends performance$1.Evented {
      * @see [Update a feature in realtime](https://maplibre.org/maplibre-gl-js/docs/examples/live-update-feature/)
      */
     panTo(lnglat, options, eventData) {
-        return this.easeTo(performance$1.extend({
+        return this.easeTo(performance$1.e({
             center: lnglat
         }, options), eventData);
     }
@@ -53896,7 +45905,7 @@ class Camera extends performance$1.Evented {
      * ```
      */
     zoomTo(zoom, options, eventData) {
-        return this.easeTo(performance$1.extend({
+        return this.easeTo(performance$1.e({
             zoom
         }, options), eventData);
     }
@@ -53998,7 +46007,7 @@ class Camera extends performance$1.Evented {
      * @param eventData - Additional properties to be added to event objects of events triggered by this method.
      */
     rotateTo(bearing, options, eventData) {
-        return this.easeTo(performance$1.extend({
+        return this.easeTo(performance$1.e({
             bearing
         }, options), eventData);
     }
@@ -54011,7 +46020,7 @@ class Camera extends performance$1.Evented {
      * @param eventData - Additional properties to be added to event objects of events triggered by this method.
      */
     resetNorth(options, eventData) {
-        this.rotateTo(0, performance$1.extend({ duration: 1000 }, options), eventData);
+        this.rotateTo(0, performance$1.e({ duration: 1000 }, options), eventData);
         return this;
     }
     /**
@@ -54023,7 +46032,7 @@ class Camera extends performance$1.Evented {
      * @param eventData - Additional properties to be added to event objects of events triggered by this method.
      */
     resetNorthPitch(options, eventData) {
-        this.easeTo(performance$1.extend({
+        this.easeTo(performance$1.e({
             bearing: 0,
             pitch: 0,
             duration: 1000
@@ -54112,7 +46121,7 @@ class Camera extends performance$1.Evented {
             right: 0,
             left: 0
         };
-        options = performance$1.extend({
+        options = performance$1.e({
             padding: defaultPadding,
             offset: [0, 0],
             maxZoom: this.transform.maxZoom
@@ -54126,7 +46135,7 @@ class Camera extends performance$1.Evented {
                 left: p
             };
         }
-        options.padding = performance$1.extend(defaultPadding, options.padding);
+        options.padding = performance$1.e(defaultPadding, options.padding);
         const tr = this.transform;
         const edgePadding = tr.padding;
         // Consider all corners of the rotated bounding box derived from the given points
@@ -54136,28 +46145,28 @@ class Camera extends performance$1.Evented {
         const neWorld = tr.project(bounds.getNorthEast());
         const seWorld = tr.project(bounds.getSouthEast());
         const swWorld = tr.project(bounds.getSouthWest());
-        const bearingRadians = performance$1.degreesToRadians(-bearing);
+        const bearingRadians = performance$1.ba(-bearing);
         const nwRotatedWorld = nwWorld.rotate(bearingRadians);
         const neRotatedWorld = neWorld.rotate(bearingRadians);
         const seRotatedWorld = seWorld.rotate(bearingRadians);
         const swRotatedWorld = swWorld.rotate(bearingRadians);
-        const upperRight = new performance$1.Point(Math.max(nwRotatedWorld.x, neRotatedWorld.x, swRotatedWorld.x, seRotatedWorld.x), Math.max(nwRotatedWorld.y, neRotatedWorld.y, swRotatedWorld.y, seRotatedWorld.y));
-        const lowerLeft = new performance$1.Point(Math.min(nwRotatedWorld.x, neRotatedWorld.x, swRotatedWorld.x, seRotatedWorld.x), Math.min(nwRotatedWorld.y, neRotatedWorld.y, swRotatedWorld.y, seRotatedWorld.y));
+        const upperRight = new performance$1.P(Math.max(nwRotatedWorld.x, neRotatedWorld.x, swRotatedWorld.x, seRotatedWorld.x), Math.max(nwRotatedWorld.y, neRotatedWorld.y, swRotatedWorld.y, seRotatedWorld.y));
+        const lowerLeft = new performance$1.P(Math.min(nwRotatedWorld.x, neRotatedWorld.x, swRotatedWorld.x, seRotatedWorld.x), Math.min(nwRotatedWorld.y, neRotatedWorld.y, swRotatedWorld.y, seRotatedWorld.y));
         // Calculate zoom: consider the original bbox and padding.
         const size = upperRight.sub(lowerLeft);
         const scaleX = (tr.width - (edgePadding.left + edgePadding.right + options.padding.left + options.padding.right)) / size.x;
         const scaleY = (tr.height - (edgePadding.top + edgePadding.bottom + options.padding.top + options.padding.bottom)) / size.y;
         if (scaleY < 0 || scaleX < 0) {
-            performance$1.warnOnce('Map cannot fit within canvas with the given bounds, padding, and/or offset.');
+            performance$1.w('Map cannot fit within canvas with the given bounds, padding, and/or offset.');
             return undefined;
         }
         const zoom = Math.min(tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY)), options.maxZoom);
         // Calculate center: apply the zoom, the configured offset, as well as offset that exists as a result of padding.
-        const offset = performance$1.Point.convert(options.offset);
+        const offset = performance$1.P.convert(options.offset);
         const paddingOffsetX = (options.padding.left - options.padding.right) / 2;
         const paddingOffsetY = (options.padding.top - options.padding.bottom) / 2;
-        const paddingOffset = new performance$1.Point(paddingOffsetX, paddingOffsetY);
-        const rotatedPaddingOffset = paddingOffset.rotate(performance$1.degreesToRadians(bearing));
+        const paddingOffset = new performance$1.P(paddingOffsetX, paddingOffsetY);
+        const rotatedPaddingOffset = paddingOffset.rotate(performance$1.ba(bearing));
         const offsetAtInitialZoom = offset.add(rotatedPaddingOffset);
         const offsetAtFinalZoom = offsetAtInitialZoom.mult(tr.scale / tr.zoomScale(zoom));
         const center = tr.unproject(
@@ -54215,13 +46224,13 @@ class Camera extends performance$1.Evented {
      * @see Used by {@link BoxZoomHandler}
      */
     fitScreenCoordinates(p0, p1, bearing, options, eventData) {
-        return this._fitInternal(this._cameraForBoxAndBearing(this.transform.pointLocation(performance$1.Point.convert(p0)), this.transform.pointLocation(performance$1.Point.convert(p1)), bearing, options), options, eventData);
+        return this._fitInternal(this._cameraForBoxAndBearing(this.transform.pointLocation(performance$1.P.convert(p0)), this.transform.pointLocation(performance$1.P.convert(p1)), bearing, options), options, eventData);
     }
     _fitInternal(calculatedOptions, options, eventData) {
         // cameraForBounds warns + returns undefined if unable to fit:
         if (!calculatedOptions)
             return this;
-        options = performance$1.extend(calculatedOptions, options);
+        options = performance$1.e(calculatedOptions, options);
         // Explicitly remove the padding field because, calculatedOptions already accounts for padding by setting zoom and center accordingly.
         delete options.padding;
         return options.linear ?
@@ -54262,7 +46271,7 @@ class Camera extends performance$1.Evented {
             tr.zoom = +options.zoom;
         }
         if (options.center !== undefined) {
-            tr.center = performance$1.LngLat.convert(options.center);
+            tr.center = performance$1.N.convert(options.center);
         }
         if ('bearing' in options && tr.bearing !== +options.bearing) {
             bearingChanged = true;
@@ -54276,24 +46285,24 @@ class Camera extends performance$1.Evented {
             tr.padding = options.padding;
         }
         this._applyUpdatedTransform(tr);
-        this.fire(new performance$1.Event('movestart', eventData))
-            .fire(new performance$1.Event('move', eventData));
+        this.fire(new performance$1.k('movestart', eventData))
+            .fire(new performance$1.k('move', eventData));
         if (zoomChanged) {
-            this.fire(new performance$1.Event('zoomstart', eventData))
-                .fire(new performance$1.Event('zoom', eventData))
-                .fire(new performance$1.Event('zoomend', eventData));
+            this.fire(new performance$1.k('zoomstart', eventData))
+                .fire(new performance$1.k('zoom', eventData))
+                .fire(new performance$1.k('zoomend', eventData));
         }
         if (bearingChanged) {
-            this.fire(new performance$1.Event('rotatestart', eventData))
-                .fire(new performance$1.Event('rotate', eventData))
-                .fire(new performance$1.Event('rotateend', eventData));
+            this.fire(new performance$1.k('rotatestart', eventData))
+                .fire(new performance$1.k('rotate', eventData))
+                .fire(new performance$1.k('rotateend', eventData));
         }
         if (pitchChanged) {
-            this.fire(new performance$1.Event('pitchstart', eventData))
-                .fire(new performance$1.Event('pitch', eventData))
-                .fire(new performance$1.Event('pitchend', eventData));
+            this.fire(new performance$1.k('pitchstart', eventData))
+                .fire(new performance$1.k('pitch', eventData))
+                .fire(new performance$1.k('pitchend', eventData));
         }
-        return this.fire(new performance$1.Event('moveend', eventData));
+        return this.fire(new performance$1.k('moveend', eventData));
     }
     /**
      * Calculates pitch, zoom and bearing for looking at `newCenter` with the camera position being `newCenter`
@@ -54305,8 +46314,8 @@ class Camera extends performance$1.Evented {
      * @returns the calculated camera options
      */
     calculateCameraOptionsFromTo(from, altitudeFrom, to, altitudeTo = 0) {
-        const fromMerc = performance$1.MercatorCoordinate.fromLngLat(from, altitudeFrom);
-        const toMerc = performance$1.MercatorCoordinate.fromLngLat(to, altitudeTo);
+        const fromMerc = performance$1.Z.fromLngLat(from, altitudeFrom);
+        const toMerc = performance$1.Z.fromLngLat(to, altitudeTo);
         const dx = toMerc.x - fromMerc.x;
         const dy = toMerc.y - fromMerc.y;
         const dz = toMerc.z - fromMerc.z;
@@ -54345,25 +46354,25 @@ class Camera extends performance$1.Evented {
     easeTo(options, eventData) {
         var _a;
         this._stop(false, options.easeId);
-        options = performance$1.extend({
+        options = performance$1.e({
             offset: [0, 0],
             duration: 500,
-            easing: performance$1.defaultEasing
+            easing: performance$1.b9
         }, options);
         if (options.animate === false || (!options.essential && browser.prefersReducedMotion))
             options.duration = 0;
         const tr = this._getTransformForUpdate(), startZoom = tr.zoom, startBearing = tr.bearing, startPitch = tr.pitch, startPadding = tr.padding, bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing, pitch = 'pitch' in options ? +options.pitch : startPitch, padding = 'padding' in options ? options.padding : tr.padding;
-        const offsetAsPoint = performance$1.Point.convert(options.offset);
+        const offsetAsPoint = performance$1.P.convert(options.offset);
         let pointAtOffset = tr.centerPoint.add(offsetAsPoint);
         const locationAtOffset = tr.pointLocation(pointAtOffset);
-        const { center, zoom } = tr.getConstrained(performance$1.LngLat.convert(options.center || locationAtOffset), (_a = options.zoom) !== null && _a !== void 0 ? _a : startZoom);
+        const { center, zoom } = tr.getConstrained(performance$1.N.convert(options.center || locationAtOffset), (_a = options.zoom) !== null && _a !== void 0 ? _a : startZoom);
         this._normalizeCenter(center, tr);
         const from = tr.project(locationAtOffset);
         const delta = tr.project(center).sub(from);
         const finalScale = tr.zoomScale(zoom - startZoom);
         let around, aroundPoint;
         if (options.around) {
-            around = performance$1.LngLat.convert(options.around);
+            around = performance$1.N.convert(options.around);
             aroundPoint = tr.locationPoint(around);
         }
         const currently = {
@@ -54382,13 +46391,13 @@ class Camera extends performance$1.Evented {
             this._prepareElevation(center);
         this._ease((k) => {
             if (this._zooming) {
-                tr.zoom = performance$1.interpolate.number(startZoom, zoom, k);
+                tr.zoom = performance$1.y.number(startZoom, zoom, k);
             }
             if (this._rotating) {
-                tr.bearing = performance$1.interpolate.number(startBearing, bearing, k);
+                tr.bearing = performance$1.y.number(startBearing, bearing, k);
             }
             if (this._pitching) {
-                tr.pitch = performance$1.interpolate.number(startPitch, pitch, k);
+                tr.pitch = performance$1.y.number(startPitch, pitch, k);
             }
             if (this._padding) {
                 tr.interpolatePadding(startPadding, padding, k);
@@ -54422,16 +46431,16 @@ class Camera extends performance$1.Evented {
     _prepareEase(eventData, noMoveStart, currently = {}) {
         this._moving = true;
         if (!noMoveStart && !currently.moving) {
-            this.fire(new performance$1.Event('movestart', eventData));
+            this.fire(new performance$1.k('movestart', eventData));
         }
         if (this._zooming && !currently.zooming) {
-            this.fire(new performance$1.Event('zoomstart', eventData));
+            this.fire(new performance$1.k('zoomstart', eventData));
         }
         if (this._rotating && !currently.rotating) {
-            this.fire(new performance$1.Event('rotatestart', eventData));
+            this.fire(new performance$1.k('rotatestart', eventData));
         }
         if (this._pitching && !currently.pitching) {
-            this.fire(new performance$1.Event('pitchstart', eventData));
+            this.fire(new performance$1.k('pitchstart', eventData));
         }
     }
     _prepareElevation(center) {
@@ -54450,7 +46459,7 @@ class Camera extends performance$1.Evented {
             this._elevationStart += k * (pitch1 - pitch2);
             this._elevationTarget = elevation;
         }
-        this.transform.elevation = performance$1.interpolate.number(this._elevationStart, this._elevationTarget, k);
+        this.transform.elevation = performance$1.y.number(this._elevationStart, this._elevationTarget, k);
     }
     _finalizeElevation() {
         this._elevationFreeze = false;
@@ -54533,15 +46542,15 @@ class Camera extends performance$1.Evented {
         this.transform.apply(finalTransform);
     }
     _fireMoveEvents(eventData) {
-        this.fire(new performance$1.Event('move', eventData));
+        this.fire(new performance$1.k('move', eventData));
         if (this._zooming) {
-            this.fire(new performance$1.Event('zoom', eventData));
+            this.fire(new performance$1.k('zoom', eventData));
         }
         if (this._rotating) {
-            this.fire(new performance$1.Event('rotate', eventData));
+            this.fire(new performance$1.k('rotate', eventData));
         }
         if (this._pitching) {
-            this.fire(new performance$1.Event('pitch', eventData));
+            this.fire(new performance$1.k('pitch', eventData));
         }
     }
     _afterEase(eventData, easeId) {
@@ -54560,15 +46569,15 @@ class Camera extends performance$1.Evented {
         this._pitching = false;
         this._padding = false;
         if (wasZooming) {
-            this.fire(new performance$1.Event('zoomend', eventData));
+            this.fire(new performance$1.k('zoomend', eventData));
         }
         if (wasRotating) {
-            this.fire(new performance$1.Event('rotateend', eventData));
+            this.fire(new performance$1.k('rotateend', eventData));
         }
         if (wasPitching) {
-            this.fire(new performance$1.Event('pitchend', eventData));
+            this.fire(new performance$1.k('pitchend', eventData));
         }
-        this.fire(new performance$1.Event('moveend', eventData));
+        this.fire(new performance$1.k('moveend', eventData));
     }
     /**
      * Changes any combination of center, zoom, bearing, and pitch, animating the transition along a curve that
@@ -54609,7 +46618,7 @@ class Camera extends performance$1.Evented {
         var _a;
         // Fall through to jumpTo if user has set prefers-reduced-motion
         if (!options.essential && browser.prefersReducedMotion) {
-            const coercedOptions = performance$1.pick(options, ['center', 'zoom', 'bearing', 'pitch', 'around']);
+            const coercedOptions = performance$1.M(options, ['center', 'zoom', 'bearing', 'pitch', 'around']);
             return this.jumpTo(coercedOptions, eventData);
         }
         // This method implements an “optimal path” animation, as detailed in:
@@ -54620,20 +46629,20 @@ class Camera extends performance$1.Evented {
         // Where applicable, local variable documentation begins with the associated variable or
         // function in van Wijk (2003).
         this.stop();
-        options = performance$1.extend({
+        options = performance$1.e({
             offset: [0, 0],
             speed: 1.2,
             curve: 1.42,
-            easing: performance$1.defaultEasing
+            easing: performance$1.b9
         }, options);
         const tr = this._getTransformForUpdate(), startZoom = tr.zoom, startBearing = tr.bearing, startPitch = tr.pitch, startPadding = tr.padding;
         const bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing;
         const pitch = 'pitch' in options ? +options.pitch : startPitch;
         const padding = 'padding' in options ? options.padding : tr.padding;
-        const offsetAsPoint = performance$1.Point.convert(options.offset);
+        const offsetAsPoint = performance$1.P.convert(options.offset);
         let pointAtOffset = tr.centerPoint.add(offsetAsPoint);
         const locationAtOffset = tr.pointLocation(pointAtOffset);
-        const { center, zoom } = tr.getConstrained(performance$1.LngLat.convert(options.center || locationAtOffset), (_a = options.zoom) !== null && _a !== void 0 ? _a : startZoom);
+        const { center, zoom } = tr.getConstrained(performance$1.N.convert(options.center || locationAtOffset), (_a = options.zoom) !== null && _a !== void 0 ? _a : startZoom);
         this._normalizeCenter(center, tr);
         const scale = tr.zoomScale(zoom - startZoom);
         const from = tr.project(locationAtOffset);
@@ -54647,7 +46656,7 @@ class Camera extends performance$1.Evented {
         // the world image origin at the initial scale.
         u1 = delta.mag();
         if ('minZoom' in options) {
-            const minZoom = performance$1.clamp(Math.min(options.minZoom, startZoom, zoom), tr.minZoom, tr.maxZoom);
+            const minZoom = performance$1.ac(Math.min(options.minZoom, startZoom, zoom), tr.minZoom, tr.maxZoom);
             // w<sub>m</sub>: Maximum visible span, measured in pixels with respect to the initial
             // scale.
             const wMax = w0 / tr.zoomScale(minZoom - startZoom);
@@ -54714,10 +46723,10 @@ class Camera extends performance$1.Evented {
             const scale = 1 / w(s);
             tr.zoom = k === 1 ? zoom : startZoom + tr.scaleZoom(scale);
             if (this._rotating) {
-                tr.bearing = performance$1.interpolate.number(startBearing, bearing, k);
+                tr.bearing = performance$1.y.number(startBearing, bearing, k);
             }
             if (this._pitching) {
-                tr.pitch = performance$1.interpolate.number(startPitch, pitch, k);
+                tr.pitch = performance$1.y.number(startPitch, pitch, k);
             }
             if (this._padding) {
                 tr.interpolatePadding(startPadding, padding, k);
@@ -54782,7 +46791,7 @@ class Camera extends performance$1.Evented {
     }
     // convert bearing so that it's numerically close to the current one so that it interpolates properly
     _normalizeBearing(bearing, currentBearing) {
-        bearing = performance$1.wrap(bearing, -180, 180);
+        bearing = performance$1.b3(bearing, -180, 180);
         const diff = Math.abs(bearing - currentBearing);
         if (Math.abs(bearing - 360 - currentBearing) < diff)
             bearing -= 360;
@@ -54813,7 +46822,7 @@ class Camera extends performance$1.Evented {
         if (!this.terrain) {
             return null;
         }
-        const elevation = this.terrain.getElevationForLngLatZoom(performance$1.LngLat.convert(lngLatLike), this.transform.tileZoom);
+        const elevation = this.terrain.getElevationForLngLatZoom(performance$1.N.convert(lngLatLike), this.transform.tileZoom);
         return elevation - this.transform.elevation;
     }
 }
@@ -55089,7 +47098,7 @@ class TaskQueue {
     }
 }
 
-var pos3dAttributes = performance$1.createLayout([
+var pos3dAttributes = performance$1.Y([
     { name: 'a_pos3d', type: 'Int16', components: 3 }
 ]);
 
@@ -55103,7 +47112,7 @@ var pos3dAttributes = performance$1.createLayout([
  * - finds all necessary renderToTexture tiles for a OverscaledTileID area
  * - finds the corresponding raster-dem tile for OverscaledTileID
  */
-class TerrainSourceCache extends performance$1.Evented {
+class TerrainSourceCache extends performance$1.E {
     constructor(sourceCache) {
         super();
         this.sourceCache = sourceCache;
@@ -55143,7 +47152,7 @@ class TerrainSourceCache extends performance$1.Evented {
             this._renderableTilesKeys.push(tileID.key);
             if (!this._tiles[tileID.key]) {
                 tileID.posMatrix = new Float64Array(16);
-                performance$1.ortho(tileID.posMatrix, 0, performance$1.EXTENT, 0, performance$1.EXTENT, 0, 1);
+                performance$1.aP(tileID.posMatrix, 0, performance$1.X, 0, performance$1.X, 0, 1);
                 this._tiles[tileID.key] = new Tile(tileID, this.tileSize);
             }
         }
@@ -55191,7 +47200,7 @@ class TerrainSourceCache extends performance$1.Evented {
             if (_tileID.canonical.equals(tileID.canonical)) {
                 const coord = tileID.clone();
                 coord.posMatrix = new Float64Array(16);
-                performance$1.ortho(coord.posMatrix, 0, performance$1.EXTENT, 0, performance$1.EXTENT, 0, 1);
+                performance$1.aP(coord.posMatrix, 0, performance$1.X, 0, performance$1.X, 0, 1);
                 coords[key] = coord;
             }
             else if (_tileID.canonical.isChildOf(tileID.canonical)) {
@@ -55200,9 +47209,9 @@ class TerrainSourceCache extends performance$1.Evented {
                 const dz = _tileID.canonical.z - tileID.canonical.z;
                 const dx = _tileID.canonical.x - (_tileID.canonical.x >> dz << dz);
                 const dy = _tileID.canonical.y - (_tileID.canonical.y >> dz << dz);
-                const size = performance$1.EXTENT >> dz;
-                performance$1.ortho(coord.posMatrix, 0, size, 0, size, 0, 1);
-                performance$1.translate(coord.posMatrix, coord.posMatrix, [-dx * size, -dy * size, 0]);
+                const size = performance$1.X >> dz;
+                performance$1.aP(coord.posMatrix, 0, size, 0, size, 0, 1);
+                performance$1.J(coord.posMatrix, coord.posMatrix, [-dx * size, -dy * size, 0]);
                 coords[key] = coord;
             }
             else if (tileID.canonical.isChildOf(_tileID.canonical)) {
@@ -55211,10 +47220,10 @@ class TerrainSourceCache extends performance$1.Evented {
                 const dz = tileID.canonical.z - _tileID.canonical.z;
                 const dx = tileID.canonical.x - (tileID.canonical.x >> dz << dz);
                 const dy = tileID.canonical.y - (tileID.canonical.y >> dz << dz);
-                const size = performance$1.EXTENT >> dz;
-                performance$1.ortho(coord.posMatrix, 0, performance$1.EXTENT, 0, performance$1.EXTENT, 0, 1);
-                performance$1.translate(coord.posMatrix, coord.posMatrix, [dx * size, dy * size, 0]);
-                performance$1.scale(coord.posMatrix, coord.posMatrix, [1 / (2 ** dz), 1 / (2 ** dz), 0]);
+                const size = performance$1.X >> dz;
+                performance$1.aP(coord.posMatrix, 0, performance$1.X, 0, performance$1.X, 0, 1);
+                performance$1.J(coord.posMatrix, coord.posMatrix, [dx * size, dy * size, 0]);
+                performance$1.K(coord.posMatrix, coord.posMatrix, [1 / (2 ** dz), 1 / (2 ** dz), 0]);
                 coords[key] = coord;
             }
         }
@@ -55307,7 +47316,7 @@ class Terrain {
      * @param extent - optional, default 8192
      * @returns the elevation
      */
-    getDEMElevation(tileID, x, y, extent = performance$1.EXTENT) {
+    getDEMElevation(tileID, x, y, extent = performance$1.X) {
         var _a;
         if (!(x >= 0 && x < extent && y >= 0 && y < extent))
             return 0;
@@ -55315,7 +47324,7 @@ class Terrain {
         const dem = (_a = terrain.tile) === null || _a === void 0 ? void 0 : _a.dem;
         if (!dem)
             return 0;
-        const pos = performance$1.transformMat4$1([], [x / extent * performance$1.EXTENT, y / extent * performance$1.EXTENT], terrain.u_terrain_matrix);
+        const pos = transformMat4([], [x / extent * performance$1.X, y / extent * performance$1.X], terrain.u_terrain_matrix);
         const coord = [pos[0] * dem.dim, pos[1] * dem.dim];
         // bilinear interpolation
         const cx = Math.floor(coord[0]), cy = Math.floor(coord[1]), tx = coord[0] - cx, ty = coord[1] - cy;
@@ -55331,10 +47340,10 @@ class Terrain {
      * @returns the elevation
      */
     getElevationForLngLatZoom(lnglat, zoom) {
-        if (!performance$1.isInBoundsForZoomLngLat(zoom, lnglat.wrap()))
+        if (!performance$1.bb(zoom, lnglat.wrap()))
             return 0;
         const { tileID, mercatorX, mercatorY } = this._getOverscaledTileIDFromLngLatZoom(lnglat, zoom);
-        return this.getElevation(tileID, mercatorX % performance$1.EXTENT, mercatorY % performance$1.EXTENT, performance$1.EXTENT);
+        return this.getElevation(tileID, mercatorX % performance$1.X, mercatorY % performance$1.X, performance$1.X);
     }
     /**
      * Get the elevation for given coordinate in respect of exaggeration.
@@ -55344,7 +47353,7 @@ class Terrain {
      * @param extent - optional, default 8192
      * @returns the elevation
      */
-    getElevation(tileID, x, y, extent = performance$1.EXTENT) {
+    getElevation(tileID, x, y, extent = performance$1.X) {
         return this.getDEMElevation(tileID, x, y, extent) * this.exaggeration;
     }
     /**
@@ -55357,12 +47366,12 @@ class Terrain {
         // creates an empty depth-buffer texture which is needed, during the initialization process of the 3d mesh..
         if (!this._emptyDemTexture) {
             const context = this.painter.context;
-            const image = new performance$1.RGBAImage({ width: 1, height: 1 }, new Uint8Array(1 * 4));
+            const image = new performance$1.R({ width: 1, height: 1 }, new Uint8Array(1 * 4));
             this._emptyDepthTexture = new Texture(context, image, context.gl.RGBA, { premultiply: false });
             this._emptyDemUnpack = [0, 0, 0, 0];
-            this._emptyDemTexture = new Texture(context, new performance$1.RGBAImage({ width: 1, height: 1 }), context.gl.RGBA, { premultiply: false });
+            this._emptyDemTexture = new Texture(context, new performance$1.R({ width: 1, height: 1 }), context.gl.RGBA, { premultiply: false });
             this._emptyDemTexture.bind(context.gl.NEAREST, context.gl.CLAMP_TO_EDGE);
-            this._emptyDemMatrix = performance$1.identity([]);
+            this._emptyDemMatrix = performance$1.an([]);
         }
         // find covering dem tile and prepare demTexture
         const sourceTile = this.sourceCache.getSourceTile(tileID, true);
@@ -55385,12 +47394,12 @@ class Terrain {
                 if (tileID.canonical.z >= maxzoom)
                     dz = tileID.canonical.z - maxzoom;
                 else
-                    performance$1.warnOnce('cannot calculate elevation if elevation maxzoom > source.maxzoom');
+                    performance$1.w('cannot calculate elevation if elevation maxzoom > source.maxzoom');
             }
             const dx = tileID.canonical.x - (tileID.canonical.x >> dz << dz);
             const dy = tileID.canonical.y - (tileID.canonical.y >> dz << dz);
-            const demMatrix = performance$1.fromScaling(new Float64Array(16), [1 / (performance$1.EXTENT << dz), 1 / (performance$1.EXTENT << dz), 0]);
-            performance$1.translate(demMatrix, demMatrix, [dx * performance$1.EXTENT, dy * performance$1.EXTENT, 0]);
+            const demMatrix = performance$1.bc(new Float64Array(16), [1 / (performance$1.X << dz), 1 / (performance$1.X << dz), 0]);
+            performance$1.J(demMatrix, demMatrix, [dx * performance$1.X, dy * performance$1.X, 0]);
             this._demMatrixCache[tileID.key] = { matrix: demMatrix, coord: tileID };
         }
         // return uniform values & textures
@@ -55460,7 +47469,7 @@ class Terrain {
                 data[i + 2] = ((x >> 8) << 4) | (y >> 8);
                 data[i + 3] = 0;
             }
-        const image = new performance$1.RGBAImage({ width: this._coordsTextureSize, height: this._coordsTextureSize }, new Uint8Array(data.buffer));
+        const image = new performance$1.R({ width: this._coordsTextureSize, height: this._coordsTextureSize }, new Uint8Array(data.buffer));
         const texture = new Texture(context, image, context.gl.RGBA, { premultiply: false });
         texture.bind(context.gl.NEAREST, context.gl.CLAMP_TO_EDGE);
         this._coordsTexture = texture;
@@ -55492,7 +47501,7 @@ class Terrain {
             return null;
         const coordsSize = this._coordsTextureSize;
         const worldSize = (1 << tile.tileID.canonical.z) * coordsSize;
-        return new performance$1.MercatorCoordinate((tile.tileID.canonical.x * coordsSize + x) / worldSize + tile.tileID.wrap, (tile.tileID.canonical.y * coordsSize + y) / worldSize, this.getElevation(tile.tileID, x, y, coordsSize));
+        return new performance$1.Z((tile.tileID.canonical.x * coordsSize + x) / worldSize + tile.tileID.wrap, (tile.tileID.canonical.y * coordsSize + y) / worldSize, this.getElevation(tile.tileID, x, y, coordsSize));
     }
     /**
      * Reads the depth value from the depth-framebuffer at a given screen pixel
@@ -55517,10 +47526,10 @@ class Terrain {
         if (this._mesh)
             return this._mesh;
         const context = this.painter.context;
-        const vertexArray = new performance$1.Pos3dArray();
-        const indexArray = new performance$1.TriangleIndexArray();
+        const vertexArray = new performance$1.bd();
+        const indexArray = new performance$1.aY();
         const meshSize = this.meshSize;
-        const delta = performance$1.EXTENT / meshSize;
+        const delta = performance$1.X / meshSize;
         const meshSize2 = meshSize * meshSize;
         for (let y = 0; y <= meshSize; y++)
             for (let x = 0; x <= meshSize; x++)
@@ -55536,7 +47545,7 @@ class Terrain {
         for (const y of [0, 1])
             for (let x = 0; x <= meshSize; x++)
                 for (const z of [0, 1])
-                    vertexArray.emplaceBack(x * delta, y * performance$1.EXTENT, z);
+                    vertexArray.emplaceBack(x * delta, y * performance$1.X, z);
         for (let x = 0; x < meshSize * 2; x += 2) {
             indexArray.emplaceBack(offsetBottom + x, offsetBottom + x + 1, offsetBottom + x + 3);
             indexArray.emplaceBack(offsetBottom + x, offsetBottom + x + 3, offsetBottom + x + 2);
@@ -55547,14 +47556,14 @@ class Terrain {
         for (const x of [0, 1])
             for (let y = 0; y <= meshSize; y++)
                 for (const z of [0, 1])
-                    vertexArray.emplaceBack(x * performance$1.EXTENT, y * delta, z);
+                    vertexArray.emplaceBack(x * performance$1.X, y * delta, z);
         for (let y = 0; y < meshSize * 2; y += 2) {
             indexArray.emplaceBack(offsetLeft + y, offsetLeft + y + 1, offsetLeft + y + 3);
             indexArray.emplaceBack(offsetLeft + y, offsetLeft + y + 3, offsetLeft + y + 2);
             indexArray.emplaceBack(offsetRight + y, offsetRight + y + 3, offsetRight + y + 1);
             indexArray.emplaceBack(offsetRight + y, offsetRight + y + 2, offsetRight + y + 3);
         }
-        this._mesh = new Mesh(context.createVertexBuffer(vertexArray, pos3dAttributes.members), context.createIndexBuffer(indexArray), performance$1.SegmentVector.simpleSegment(0, 0, vertexArray.length, indexArray.length));
+        this._mesh = new Mesh(context.createVertexBuffer(vertexArray, pos3dAttributes.members), context.createIndexBuffer(indexArray), performance$1.a0.simpleSegment(0, 0, vertexArray.length, indexArray.length));
         return this._mesh;
     }
     /**
@@ -55565,7 +47574,7 @@ class Terrain {
      */
     getMeshFrameDelta(zoom) {
         // divide by 5 is evaluated by trial & error to get a frame in the right height
-        return 2 * Math.PI * performance$1.earthRadius / Math.pow(2, zoom) / 5;
+        return 2 * Math.PI * performance$1.be / Math.pow(2, zoom) / 5;
     }
     getMinTileElevationForLngLatZoom(lnglat, zoom) {
         var _a;
@@ -55590,12 +47599,12 @@ class Terrain {
         return minMax;
     }
     _getOverscaledTileIDFromLngLatZoom(lnglat, zoom) {
-        const mercatorCoordinate = performance$1.MercatorCoordinate.fromLngLat(lnglat.wrap());
-        const worldSize = (1 << zoom) * performance$1.EXTENT;
+        const mercatorCoordinate = performance$1.Z.fromLngLat(lnglat.wrap());
+        const worldSize = (1 << zoom) * performance$1.X;
         const mercatorX = mercatorCoordinate.x * worldSize;
         const mercatorY = mercatorCoordinate.y * worldSize;
-        const tileX = Math.floor(mercatorX / performance$1.EXTENT), tileY = Math.floor(mercatorY / performance$1.EXTENT);
-        const tileID = new performance$1.OverscaledTileID(zoom, 0, zoom, tileX, tileY);
+        const tileX = Math.floor(mercatorX / performance$1.X), tileY = Math.floor(mercatorY / performance$1.X);
+        const tileID = new performance$1.S(zoom, 0, zoom, tileX, tileY);
         return {
             tileID,
             mercatorX,
@@ -55791,7 +47800,7 @@ class RenderToTexture {
                 tile.rtt[stack] = { id: obj.id, stamp: obj.stamp };
                 // prepare PoolObject for rendering
                 painter.context.bindFramebuffer.set(obj.fbo.framebuffer);
-                painter.context.clear({ color: performance$1.Color.transparent, stencil: 0 });
+                painter.context.clear({ color: performance$1.aM.transparent, stencil: 0 });
                 painter.currentStencilSource = undefined;
                 for (let l = 0; l < layers.length; l++) {
                     const layer = painter.style._layers[layers[l]];
@@ -55875,7 +47884,7 @@ const defaultOptions$4 = {
     pitch: 0,
     renderWorldCopies: true,
     maxTileCacheSize: null,
-    maxTileCacheZoomLevels: performance$1.config.MAX_TILE_CACHE_ZOOM_LEVELS,
+    maxTileCacheZoomLevels: performance$1.a.MAX_TILE_CACHE_ZOOM_LEVELS,
     transformRequest: null,
     transformCameraUpdate: null,
     fadeDuration: 300,
@@ -55921,7 +47930,7 @@ const defaultOptions$4 = {
  */
 let Map$1 = class Map extends Camera {
     constructor(options) {
-        performance$1.PerformanceUtils.mark(performance$1.PerformanceMarkers.create);
+        performance$1.bf.mark(performance$1.bg.create);
         const resolvedOptions = Object.assign(Object.assign({}, defaultOptions$4), options);
         if (resolvedOptions.minZoom != null && resolvedOptions.maxZoom != null && resolvedOptions.minZoom > resolvedOptions.maxZoom) {
             throw new Error('maxZoom must be greater than or equal to minZoom');
@@ -55941,20 +47950,20 @@ let Map$1 = class Map extends Camera {
         this._crossFadingFactor = 1;
         this._renderTaskQueue = new TaskQueue();
         this._controls = [];
-        this._mapId = performance$1.uniqueId();
+        this._mapId = performance$1.a4();
         this._contextLost = (event) => {
             event.preventDefault();
             if (this._frameRequest) {
                 this._frameRequest.abort();
                 this._frameRequest = null;
             }
-            this.fire(new performance$1.Event('webglcontextlost', { originalEvent: event }));
+            this.fire(new performance$1.k('webglcontextlost', { originalEvent: event }));
         };
         this._contextRestored = (event) => {
             this._setupPainter();
             this.resize();
             this._update();
-            this.fire(new performance$1.Event('webglcontextrestored', { originalEvent: event }));
+            this.fire(new performance$1.k('webglcontextrestored', { originalEvent: event }));
         };
         this._onMapScroll = (event) => {
             if (event.target !== this._container)
@@ -56043,7 +48052,7 @@ let Map$1 = class Map extends Camera {
             });
             if (resolvedOptions.bounds) {
                 this.resize();
-                this.fitBounds(resolvedOptions.bounds, performance$1.extend({}, resolvedOptions.fitBoundsOptions, { duration: 0 }));
+                this.fitBounds(resolvedOptions.bounds, performance$1.e({}, resolvedOptions.fitBoundsOptions, { duration: 0 }));
             }
         }
         this.resize();
@@ -56062,13 +48071,13 @@ let Map$1 = class Map extends Camera {
         });
         this.on('data', (event) => {
             this._update(event.dataType === 'style');
-            this.fire(new performance$1.Event(`${event.dataType}data`, event));
+            this.fire(new performance$1.k(`${event.dataType}data`, event));
         });
         this.on('dataloading', (event) => {
-            this.fire(new performance$1.Event(`${event.dataType}dataloading`, event));
+            this.fire(new performance$1.k(`${event.dataType}dataloading`, event));
         });
         this.on('dataabort', (event) => {
-            this.fire(new performance$1.Event('sourcedataabort', event));
+            this.fire(new performance$1.k('sourcedataabort', event));
         });
     }
     /**
@@ -56105,7 +48114,7 @@ let Map$1 = class Map extends Camera {
             }
         }
         if (!control || !control.onAdd) {
-            return this.fire(new performance$1.ErrorEvent(new Error('Invalid argument to map.addControl(). Argument must be a control with onAdd and onRemove methods.')));
+            return this.fire(new performance$1.j(new Error('Invalid argument to map.addControl(). Argument must be a control with onAdd and onRemove methods.')));
         }
         const controlElement = control.onAdd(this);
         this._controls.push(control);
@@ -56136,7 +48145,7 @@ let Map$1 = class Map extends Camera {
      */
     removeControl(control) {
         if (!control || !control.onRemove) {
-            return this.fire(new performance$1.ErrorEvent(new Error('Invalid argument to map.removeControl(). Argument must be a control with onAdd and onRemove methods.')));
+            return this.fire(new performance$1.j(new Error('Invalid argument to map.removeControl(). Argument must be a control with onAdd and onRemove methods.')));
         }
         const ci = this._controls.indexOf(control);
         if (ci > -1)
@@ -56210,12 +48219,12 @@ let Map$1 = class Map extends Camera {
         const fireMoving = !this._moving;
         if (fireMoving) {
             this.stop();
-            this.fire(new performance$1.Event('movestart', eventData))
-                .fire(new performance$1.Event('move', eventData));
+            this.fire(new performance$1.k('movestart', eventData))
+                .fire(new performance$1.k('move', eventData));
         }
-        this.fire(new performance$1.Event('resize', eventData));
+        this.fire(new performance$1.k('resize', eventData));
         if (fireMoving)
-            this.fire(new performance$1.Event('moveend', eventData));
+            this.fire(new performance$1.k('moveend', eventData));
         return this;
     }
     /**
@@ -56489,7 +48498,7 @@ let Map$1 = class Map extends Camera {
      * ```
      */
     project(lnglat) {
-        return this.transform.locationPoint(performance$1.LngLat.convert(lnglat), this.style && this.terrain);
+        return this.transform.locationPoint(performance$1.N.convert(lnglat), this.style && this.terrain);
     }
     /**
      * Returns a {@link LngLat} representing geographical coordinates that correspond
@@ -56506,7 +48515,7 @@ let Map$1 = class Map extends Camera {
      * ```
      */
     unproject(point) {
-        return this.transform.pointLocation(performance$1.Point.convert(point), this.terrain);
+        return this.transform.pointLocation(performance$1.P.convert(point), this.terrain);
     }
     /**
      * Returns true if the map is panning, zooming, rotating, or pitching due to a camera animation or user gesture.
@@ -56744,16 +48753,16 @@ let Map$1 = class Map extends Camera {
             return [];
         }
         let queryGeometry;
-        const isGeometry = geometryOrOptions instanceof performance$1.Point || Array.isArray(geometryOrOptions);
+        const isGeometry = geometryOrOptions instanceof performance$1.P || Array.isArray(geometryOrOptions);
         const geometry = isGeometry ? geometryOrOptions : [[0, 0], [this.transform.width, this.transform.height]];
         options = options || (isGeometry ? {} : geometryOrOptions) || {};
-        if (geometry instanceof performance$1.Point || typeof geometry[0] === 'number') {
-            queryGeometry = [performance$1.Point.convert(geometry)];
+        if (geometry instanceof performance$1.P || typeof geometry[0] === 'number') {
+            queryGeometry = [performance$1.P.convert(geometry)];
         }
         else {
-            const tl = performance$1.Point.convert(geometry[0]);
-            const br = performance$1.Point.convert(geometry[1]);
-            queryGeometry = [tl, new performance$1.Point(br.x, tl.y), br, new performance$1.Point(tl.x, br.y), tl];
+            const tl = performance$1.P.convert(geometry[0]);
+            const br = performance$1.P.convert(geometry[1]);
+            queryGeometry = [tl, new performance$1.P(br.x, tl.y), br, new performance$1.P(tl.x, br.y), tl];
         }
         return this.style.queryRenderedFeatures(queryGeometry, options, this.transform);
     }
@@ -56838,7 +48847,7 @@ let Map$1 = class Map extends Camera {
      * ```
      */
     setStyle(style, options) {
-        options = performance$1.extend({}, {
+        options = performance$1.e({}, {
             localIdeographFontFamily: this._localIdeographFontFamily,
             validate: this._validateStyle
         }, options);
@@ -56912,11 +48921,11 @@ let Map$1 = class Map extends Camera {
         if (typeof style === 'string') {
             const url = style;
             const request = this._requestManager.transformRequest(url, "Style" /* ResourceType.Style */);
-            performance$1.getJSON(request, new AbortController()).then((response) => {
+            performance$1.h(request, new AbortController()).then((response) => {
                 this._updateDiff(response.data, options);
             }).catch((error) => {
                 if (error) {
-                    this.fire(new performance$1.ErrorEvent(error));
+                    this.fire(new performance$1.j(error));
                 }
             });
         }
@@ -56931,7 +48940,7 @@ let Map$1 = class Map extends Camera {
             }
         }
         catch (e) {
-            performance$1.warnOnce(`Unable to perform style diff: ${e.message || e.error || e}.  Rebuilding the style from scratch.`);
+            performance$1.w(`Unable to perform style diff: ${e.message || e.error || e}.  Rebuilding the style from scratch.`);
             this._updateStyle(style, options);
         }
     }
@@ -56963,7 +48972,7 @@ let Map$1 = class Map extends Camera {
      */
     isStyleLoaded() {
         if (!this.style)
-            return performance$1.warnOnce('There is no style added to the map.');
+            return performance$1.w('There is no style added to the map.');
         return this.style.loaded();
     }
     /**
@@ -57024,7 +49033,7 @@ let Map$1 = class Map extends Camera {
     isSourceLoaded(id) {
         const source = this.style && this.style.sourceCaches[id];
         if (source === undefined) {
-            this.fire(new performance$1.ErrorEvent(new Error(`There is no source with ID '${id}'`)));
+            this.fire(new performance$1.j(new Error(`There is no source with ID '${id}'`)));
             return;
         }
         return source.loaded();
@@ -57068,7 +49077,7 @@ let Map$1 = class Map extends Camera {
             for (const index in this.style._layers) {
                 const thisLayer = this.style._layers[index];
                 if (thisLayer.type === 'hillshade' && thisLayer.source === options.source) {
-                    performance$1.warnOnce('You are using the same source for a hillshade layer and for 3D terrain. Please consider using two separate sources to improve rendering quality.');
+                    performance$1.w('You are using the same source for a hillshade layer and for 3D terrain. Please consider using two separate sources to improve rendering quality.');
                 }
             }
             this.terrain = new Terrain(this.painter, sourceCache, options);
@@ -57089,7 +49098,7 @@ let Map$1 = class Map extends Camera {
             };
             this.style.on('data', this._terrainDataCallback);
         }
-        this.fire(new performance$1.Event('terrain', { terrain: options }));
+        this.fire(new performance$1.k('terrain', { terrain: options }));
         return this;
     }
     /**
@@ -57203,19 +49212,19 @@ let Map$1 = class Map extends Camera {
         const { pixelRatio = 1, sdf = false, stretchX, stretchY, content, textFitWidth, textFitHeight } = options;
         this._lazyInitEmptyStyle();
         const version = 0;
-        if (image instanceof HTMLImageElement || performance$1.isImageBitmap(image)) {
+        if (image instanceof HTMLImageElement || performance$1.b(image)) {
             const { width, height, data } = browser.getImageData(image);
-            this.style.addImage(id, { data: new performance$1.RGBAImage({ width, height }, data), pixelRatio, stretchX, stretchY, content, textFitWidth, textFitHeight, sdf, version });
+            this.style.addImage(id, { data: new performance$1.R({ width, height }, data), pixelRatio, stretchX, stretchY, content, textFitWidth, textFitHeight, sdf, version });
         }
         else if (image.width === undefined || image.height === undefined) {
-            return this.fire(new performance$1.ErrorEvent(new Error('Invalid arguments to map.addImage(). The second argument must be an `HTMLImageElement`, `ImageData`, `ImageBitmap`, ' +
+            return this.fire(new performance$1.j(new Error('Invalid arguments to map.addImage(). The second argument must be an `HTMLImageElement`, `ImageData`, `ImageBitmap`, ' +
                 'or object with `width`, `height`, and `data` properties with the same format as `ImageData`')));
         }
         else {
             const { width, height, data } = image;
             const userImage = image;
             this.style.addImage(id, {
-                data: new performance$1.RGBAImage({ width, height }, new Uint8Array(data)),
+                data: new performance$1.R({ width, height }, new Uint8Array(data)),
                 pixelRatio,
                 stretchX,
                 stretchY,
@@ -57255,20 +49264,20 @@ let Map$1 = class Map extends Camera {
     updateImage(id, image) {
         const existingImage = this.style.getImage(id);
         if (!existingImage) {
-            return this.fire(new performance$1.ErrorEvent(new Error('The map has no image with that id. If you are adding a new image use `map.addImage(...)` instead.')));
+            return this.fire(new performance$1.j(new Error('The map has no image with that id. If you are adding a new image use `map.addImage(...)` instead.')));
         }
-        const imageData = (image instanceof HTMLImageElement || performance$1.isImageBitmap(image)) ?
+        const imageData = (image instanceof HTMLImageElement || performance$1.b(image)) ?
             browser.getImageData(image) :
             image;
         const { width, height, data } = imageData;
         if (width === undefined || height === undefined) {
-            return this.fire(new performance$1.ErrorEvent(new Error('Invalid arguments to map.updateImage(). The second argument must be an `HTMLImageElement`, `ImageData`, `ImageBitmap`, ' +
+            return this.fire(new performance$1.j(new Error('Invalid arguments to map.updateImage(). The second argument must be an `HTMLImageElement`, `ImageData`, `ImageBitmap`, ' +
                 'or object with `width`, `height`, and `data` properties with the same format as `ImageData`')));
         }
         if (width !== existingImage.data.width || height !== existingImage.data.height) {
-            return this.fire(new performance$1.ErrorEvent(new Error('The width and height of the updated image must be that same as the previous version of the image')));
+            return this.fire(new performance$1.j(new Error('The width and height of the updated image must be that same as the previous version of the image')));
         }
-        const copy = !(image instanceof HTMLImageElement || performance$1.isImageBitmap(image));
+        const copy = !(image instanceof HTMLImageElement || performance$1.b(image));
         existingImage.data.replace(data, copy);
         this.style.updateImage(id, existingImage);
         return this;
@@ -57307,7 +49316,7 @@ let Map$1 = class Map extends Camera {
      */
     hasImage(id) {
         if (!id) {
-            this.fire(new performance$1.ErrorEvent(new Error('Missing required image id')));
+            this.fire(new performance$1.j(new Error('Missing required image id')));
             return false;
         }
         return !!this.style.getImage(id);
@@ -58067,7 +50076,7 @@ let Map$1 = class Map extends Camera {
             const zoom = this.transform.zoom;
             const now = browser.now();
             this.style.zoomHistory.update(zoom, now);
-            const parameters = new performance$1.EvaluationParameters(zoom, {
+            const parameters = new performance$1.z(zoom, {
                 now,
                 fadeDuration,
                 zoomHistory: this.style.zoomHistory,
@@ -58110,11 +50119,11 @@ let Map$1 = class Map extends Camera {
             fadeDuration,
             showPadding: this.showPadding,
         });
-        this.fire(new performance$1.Event('render'));
+        this.fire(new performance$1.k('render'));
         if (this.loaded() && !this._loaded) {
             this._loaded = true;
-            performance$1.PerformanceUtils.mark(performance$1.PerformanceMarkers.load);
-            this.fire(new performance$1.Event('load'));
+            performance$1.bf.mark(performance$1.bg.load);
+            this.fire(new performance$1.k('load'));
         }
         if (this.style && (this.style.hasTransitions() || crossFading)) {
             this._styleDirty = true;
@@ -58135,11 +50144,11 @@ let Map$1 = class Map extends Camera {
             this.triggerRepaint();
         }
         else if (!this.isMoving() && this.loaded()) {
-            this.fire(new performance$1.Event('idle'));
+            this.fire(new performance$1.k('idle'));
         }
         if (this._loaded && !this._fullyLoaded && !somethingDirty) {
             this._fullyLoaded = true;
-            performance$1.PerformanceUtils.mark(performance$1.PerformanceMarkers.fullLoad);
+            performance$1.bf.mark(performance$1.bg.fullLoad);
         }
         return this;
     }
@@ -58199,9 +50208,9 @@ let Map$1 = class Map extends Camera {
         DOM.remove(this._canvasContainer);
         DOM.remove(this._controlContainer);
         this._container.classList.remove('maplibregl-map');
-        performance$1.PerformanceUtils.clearMetrics();
+        performance$1.bf.clearMetrics();
         this._removed = true;
-        this.fire(new performance$1.Event('remove'));
+        this.fire(new performance$1.k('remove'));
     }
     /**
      * Trigger the rendering of a single frame. Use this method with custom layers to
@@ -58218,7 +50227,7 @@ let Map$1 = class Map extends Camera {
         if (this.style && !this._frameRequest) {
             this._frameRequest = new AbortController();
             browser.frameAsync(this._frameRequest).then((paintStartTimeStamp) => {
-                performance$1.PerformanceUtils.frame(paintStartTimeStamp);
+                performance$1.bf.frame(paintStartTimeStamp);
                 this._frameRequest = null;
                 this._render(paintStartTimeStamp);
             }).catch(() => { }); // ignore abort error
@@ -58390,7 +50399,7 @@ class NavigationControl {
             button.title = str;
             button.setAttribute('aria-label', str);
         };
-        this.options = performance$1.extend({}, defaultOptions$3, options);
+        this.options = performance$1.e({}, defaultOptions$3, options);
         this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
         this._container.addEventListener('contextmenu', (e) => e.preventDefault());
         if (this.options.showZoom) {
@@ -58458,7 +50467,7 @@ class NavigationControl {
 class MouseRotateWrapper {
     constructor(map, element, pitch = false) {
         this.mousedown = (e) => {
-            this.startMouse(performance$1.extend({}, e, { ctrlKey: true, preventDefault: () => e.preventDefault() }), DOM.mousePos(this.element, e));
+            this.startMouse(performance$1.e({}, e, { ctrlKey: true, preventDefault: () => e.preventDefault() }), DOM.mousePos(this.element, e));
             DOM.addEventListener(window, 'mousemove', this.mousemove);
             DOM.addEventListener(window, 'mouseup', this.mouseup);
         };
@@ -58582,7 +50591,7 @@ class MouseRotateWrapper {
 
 let supportsGeolocation;
 function checkGeolocationSupport() {
-    return performance$1.__awaiter(this, arguments, void 0, function* (forceRecalculation = false) {
+    return performance$1._(this, arguments, void 0, function* (forceRecalculation = false) {
         if (supportsGeolocation !== undefined && !forceRecalculation) {
             return supportsGeolocation;
         }
@@ -58620,14 +50629,14 @@ function checkGeolocationSupport() {
  * should wrap just enough to avoid doing so.
  */
 function smartWrap(lngLat, priorPos, transform) {
-    const originalLngLat = new performance$1.LngLat(lngLat.lng, lngLat.lat);
-    lngLat = new performance$1.LngLat(lngLat.lng, lngLat.lat);
+    const originalLngLat = new performance$1.N(lngLat.lng, lngLat.lat);
+    lngLat = new performance$1.N(lngLat.lng, lngLat.lat);
     // First, try shifting one world in either direction, and see if either is closer to the
     // prior position. This preserves object constancy when the map center is auto-wrapped
     // during animations.
     if (priorPos) {
-        const left = new performance$1.LngLat(lngLat.lng - 360, lngLat.lat);
-        const right = new performance$1.LngLat(lngLat.lng + 360, lngLat.lat);
+        const left = new performance$1.N(lngLat.lng - 360, lngLat.lat);
+        const right = new performance$1.N(lngLat.lng + 360, lngLat.lat);
         const delta = transform.locationPoint(lngLat).distSqr(priorPos);
         if (transform.locationPoint(left).distSqr(priorPos) < delta) {
             lngLat = left;
@@ -58709,7 +50718,7 @@ function applyAnchorClass(element, anchor, prefix) {
  *
  * **Event** `dragend` of type {@link Event} will be fired when the marker is finished being dragged.
  */
-class Marker extends performance$1.Evented {
+class Marker extends performance$1.E {
     /**
      * @param options - the options
      */
@@ -58786,9 +50795,9 @@ class Marker extends performance$1.Evented {
             // imply that a drag is about to happen.
             if (this._state === 'pending') {
                 this._state = 'active';
-                this.fire(new performance$1.Event('dragstart'));
+                this.fire(new performance$1.k('dragstart'));
             }
-            this.fire(new performance$1.Event('drag'));
+            this.fire(new performance$1.k('drag'));
         };
         this._onUp = () => {
             // revert to normal pointer event handling
@@ -58800,7 +50809,7 @@ class Marker extends performance$1.Evented {
             this._map.off('touchmove', this._onMove);
             // only fire dragend if it was preceded by at least one drag event
             if (this._state === 'active') {
-                this.fire(new performance$1.Event('dragend'));
+                this.fire(new performance$1.k('dragend'));
             }
             this._state = 'inactive';
         };
@@ -58920,11 +50929,11 @@ class Marker extends performance$1.Evented {
             // the y value of the center of the shadow ellipse relative to the svg top left is "shadow transform translate-y (29.0) + ellipse cy (5.80029008)"
             // offset to the svg center "height (41 / 2)" gives (29.0 + 5.80029008) - (41 / 2) and rounded for an integer pixel offset gives 14
             // negative is used to move the marker up from the center so the tip is at the Marker lngLat
-            this._offset = performance$1.Point.convert(options && options.offset || [0, -14]);
+            this._offset = performance$1.P.convert(options && options.offset || [0, -14]);
         }
         else {
             this._element = options.element;
-            this._offset = performance$1.Point.convert(options && options.offset || [0, 0]);
+            this._offset = performance$1.P.convert(options && options.offset || [0, 0]);
         }
         this._element.classList.add('maplibregl-marker');
         this._element.addEventListener('dragstart', (e) => {
@@ -59033,7 +51042,7 @@ class Marker extends performance$1.Evented {
      * @see [Create a draggable Marker](https://maplibre.org/maplibre-gl-js/docs/examples/drag-a-marker/)
      */
     setLngLat(lnglat) {
-        this._lngLat = performance$1.LngLat.convert(lnglat);
+        this._lngLat = performance$1.N.convert(lnglat);
         this._pos = null;
         if (this._popup)
             this._popup.setLngLat(this._lngLat);
@@ -59185,7 +51194,7 @@ class Marker extends performance$1.Evented {
         // If the base is obscured, use the offset to check if the marker's center is obscured.
         const metersToCenter = -this._offset.y / map.transform._pixelPerMeter;
         const elevationToCenter = Math.sin(map.getPitch() * Math.PI / 180) * metersToCenter;
-        const terrainDistanceCenter = map.terrain.depthAtPoint(new performance$1.Point(this._pos.x, this._pos.y - this._offset.y));
+        const terrainDistanceCenter = map.terrain.depthAtPoint(new performance$1.P(this._pos.x, this._pos.y - this._offset.y));
         const markerDistanceCenter = map.transform.lngLatToCameraDepth(this._lngLat, elevation + elevationToCenter);
         // Display at full opacity if center is visible.
         const centerIsInvisible = markerDistanceCenter - terrainDistanceCenter > forgiveness;
@@ -59205,7 +51214,7 @@ class Marker extends performance$1.Evented {
      * @param offset - The offset in pixels as a {@link PointLike} object to apply relative to the element's center. Negatives indicate left and up.
      */
     setOffset(offset) {
-        this._offset = performance$1.Point.convert(offset);
+        this._offset = performance$1.P.convert(offset);
         this._update();
         return this;
     }
@@ -59547,7 +51556,7 @@ let noTimeout = false;
  * });
  * ```
  */
-class GeolocateControl extends performance$1.Evented {
+class GeolocateControl extends performance$1.E {
     /**
      * @param options - the control's options
      */
@@ -59565,7 +51574,7 @@ class GeolocateControl extends performance$1.Evented {
             }
             if (this._isOutOfMapMaxBounds(position)) {
                 this._setErrorState();
-                this.fire(new performance$1.Event('outofmaxbounds', position));
+                this.fire(new performance$1.k('outofmaxbounds', position));
                 this._updateMarker();
                 this._finish();
                 return;
@@ -59607,7 +51616,7 @@ class GeolocateControl extends performance$1.Evented {
             if (this.options.showUserLocation) {
                 this._dotElement.classList.remove('maplibregl-user-location-dot-stale');
             }
-            this.fire(new performance$1.Event('geolocate', position));
+            this.fire(new performance$1.k('geolocate', position));
             this._finish();
         };
         /**
@@ -59616,10 +51625,10 @@ class GeolocateControl extends performance$1.Evented {
          * @param position - the Geolocation API Position
          */
         this._updateCamera = (position) => {
-            const center = new performance$1.LngLat(position.coords.longitude, position.coords.latitude);
+            const center = new performance$1.N(position.coords.longitude, position.coords.latitude);
             const radius = position.coords.accuracy;
             const bearing = this._map.getBearing();
-            const options = performance$1.extend({ bearing }, this.options.fitBoundsOptions);
+            const options = performance$1.e({ bearing }, this.options.fitBoundsOptions);
             const newBounds = LngLatBounds.fromLngLat(center, radius);
             this._map.fitBounds(newBounds, options, {
                 geolocateSource: true // tag this camera change so it won't cause the control to change to background state
@@ -59632,7 +51641,7 @@ class GeolocateControl extends performance$1.Evented {
          */
         this._updateMarker = (position) => {
             if (position) {
-                const center = new performance$1.LngLat(position.coords.longitude, position.coords.latitude);
+                const center = new performance$1.N(position.coords.longitude, position.coords.latitude);
                 this._accuracyCircleMarker.setLngLat(center).addTo(this._map);
                 this._userLocationDotMarker.setLngLat(center).addTo(this._map);
                 this._accuracy = position.coords.accuracy;
@@ -59686,7 +51695,7 @@ class GeolocateControl extends performance$1.Evented {
             if (this._watchState !== 'OFF' && this.options.showUserLocation) {
                 this._dotElement.classList.add('maplibregl-user-location-dot-stale');
             }
-            this.fire(new performance$1.Event('error', error));
+            this.fire(new performance$1.k('error', error));
             this._finish();
         };
         this._finish = () => {
@@ -59713,7 +51722,7 @@ class GeolocateControl extends performance$1.Evented {
                 return;
             }
             if (supported === false) {
-                performance$1.warnOnce('Geolocation support is not available so the GeolocateControl will be disabled.');
+                performance$1.w('Geolocation support is not available so the GeolocateControl will be disabled.');
                 const title = this._map._getUIString('GeolocateControl.LocationNotAvailable');
                 this._geolocateButton.disabled = true;
                 this._geolocateButton.title = title;
@@ -59750,13 +51759,13 @@ class GeolocateControl extends performance$1.Evented {
                         this._watchState = 'BACKGROUND';
                         this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-background');
                         this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active');
-                        this.fire(new performance$1.Event('trackuserlocationend'));
-                        this.fire(new performance$1.Event('userlocationlostfocus'));
+                        this.fire(new performance$1.k('trackuserlocationend'));
+                        this.fire(new performance$1.k('userlocationlostfocus'));
                     }
                 });
             }
         };
-        this.options = performance$1.extend({}, defaultOptions$2, options);
+        this.options = performance$1.e({}, defaultOptions$2, options);
     }
     /** {@inheritDoc IControl.onAdd} */
     onAdd(map) {
@@ -59859,7 +51868,7 @@ class GeolocateControl extends performance$1.Evented {
      */
     trigger() {
         if (!this._setup) {
-            performance$1.warnOnce('Geolocate control triggered before added to a map');
+            performance$1.w('Geolocate control triggered before added to a map');
             return false;
         }
         if (this.options.trackUserLocation) {
@@ -59868,7 +51877,7 @@ class GeolocateControl extends performance$1.Evented {
                 case 'OFF':
                     // turn on the Geolocate Control
                     this._watchState = 'WAITING_ACTIVE';
-                    this.fire(new performance$1.Event('trackuserlocationstart'));
+                    this.fire(new performance$1.k('trackuserlocationstart'));
                     break;
                 case 'WAITING_ACTIVE':
                 case 'ACTIVE_LOCK':
@@ -59883,7 +51892,7 @@ class GeolocateControl extends performance$1.Evented {
                     this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active-error');
                     this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background');
                     this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background-error');
-                    this.fire(new performance$1.Event('trackuserlocationend'));
+                    this.fire(new performance$1.k('trackuserlocationend'));
                     break;
                 case 'BACKGROUND':
                     this._watchState = 'ACTIVE_LOCK';
@@ -59891,8 +51900,8 @@ class GeolocateControl extends performance$1.Evented {
                     // set camera to last known location
                     if (this._lastKnownPosition)
                         this._updateCamera(this._lastKnownPosition);
-                    this.fire(new performance$1.Event('trackuserlocationstart'));
-                    this.fire(new performance$1.Event('userlocationfocus'));
+                    this.fire(new performance$1.k('trackuserlocationstart'));
+                    this.fire(new performance$1.k('userlocationfocus'));
                     break;
                 default:
                     throw new Error(`Unexpected watchState ${this._watchState}`);
@@ -60085,7 +52094,7 @@ function getRoundNum(num) {
  *
  * **Event** `fullscreenend` of type {@link Event} will be fired when fullscreen mode has ended.
  */
-class FullscreenControl extends performance$1.Evented {
+class FullscreenControl extends performance$1.E {
     /**
      * @param options - the control's options
      */
@@ -60118,7 +52127,7 @@ class FullscreenControl extends performance$1.Evented {
                 this._container = options.container;
             }
             else {
-                performance$1.warnOnce('Full screen control \'container\' must be a DOM element.');
+                performance$1.w('Full screen control \'container\' must be a DOM element.');
             }
         }
         if ('onfullscreenchange' in document) {
@@ -60174,12 +52183,12 @@ class FullscreenControl extends performance$1.Evented {
         this._fullscreenButton.classList.toggle('maplibregl-ctrl-fullscreen');
         this._updateTitle();
         if (this._fullscreen) {
-            this.fire(new performance$1.Event('fullscreenstart'));
+            this.fire(new performance$1.k('fullscreenstart'));
             this._prevCooperativeGesturesEnabled = this._map.cooperativeGestures.isEnabled();
             this._map.cooperativeGestures.disable();
         }
         else {
-            this.fire(new performance$1.Event('fullscreenend'));
+            this.fire(new performance$1.k('fullscreenend'));
             if (this._prevCooperativeGesturesEnabled) {
                 this._map.cooperativeGestures.enable();
             }
@@ -60362,7 +52371,7 @@ const focusQuerySelector = [
  *
  * **Event** `close` of type {@link Event} will be fired when the popup is closed manually or programmatically.
  */
-class Popup extends performance$1.Evented {
+class Popup extends performance$1.E {
     /**
      * @param options - the options
      */
@@ -60395,7 +52404,7 @@ class Popup extends performance$1.Evented {
                 this._map.off('drag', this._onDrag);
                 this._map._canvasContainer.classList.remove('maplibregl-track-pointer');
                 delete this._map;
-                this.fire(new performance$1.Event('close'));
+                this.fire(new performance$1.k('close'));
             }
             return this;
         };
@@ -60484,7 +52493,7 @@ class Popup extends performance$1.Evented {
         this._onClose = () => {
             this.remove();
         };
-        this.options = performance$1.extend(Object.create(defaultOptions), options);
+        this.options = performance$1.e(Object.create(defaultOptions), options);
     }
     /**
      * Adds the popup to a map.
@@ -60526,7 +52535,7 @@ class Popup extends performance$1.Evented {
         else {
             this._map.on('move', this._update);
         }
-        this.fire(new performance$1.Event('open'));
+        this.fire(new performance$1.k('open'));
         return this;
     }
     /**
@@ -60553,7 +52562,7 @@ class Popup extends performance$1.Evented {
      * @param lnglat - The geographical location to set as the popup's anchor.
      */
     setLngLat(lnglat) {
-        this._lngLat = performance$1.LngLat.convert(lnglat);
+        this._lngLat = performance$1.N.convert(lnglat);
         this._pos = null;
         this._flatPos = null;
         this._trackPointer = false;
@@ -60812,26 +52821,26 @@ class Popup extends performance$1.Evented {
 }
 function normalizeOffset(offset) {
     if (!offset) {
-        return normalizeOffset(new performance$1.Point(0, 0));
+        return normalizeOffset(new performance$1.P(0, 0));
     }
     else if (typeof offset === 'number') {
         // input specifies a radius from which to calculate offsets at all positions
         const cornerOffset = Math.round(Math.abs(offset) / Math.SQRT2);
         return {
-            'center': new performance$1.Point(0, 0),
-            'top': new performance$1.Point(0, offset),
-            'top-left': new performance$1.Point(cornerOffset, cornerOffset),
-            'top-right': new performance$1.Point(-cornerOffset, cornerOffset),
-            'bottom': new performance$1.Point(0, -offset),
-            'bottom-left': new performance$1.Point(cornerOffset, -cornerOffset),
-            'bottom-right': new performance$1.Point(-cornerOffset, -cornerOffset),
-            'left': new performance$1.Point(offset, 0),
-            'right': new performance$1.Point(-offset, 0)
+            'center': new performance$1.P(0, 0),
+            'top': new performance$1.P(0, offset),
+            'top-left': new performance$1.P(cornerOffset, cornerOffset),
+            'top-right': new performance$1.P(-cornerOffset, cornerOffset),
+            'bottom': new performance$1.P(0, -offset),
+            'bottom-left': new performance$1.P(cornerOffset, -cornerOffset),
+            'bottom-right': new performance$1.P(-cornerOffset, -cornerOffset),
+            'left': new performance$1.P(offset, 0),
+            'right': new performance$1.P(-offset, 0)
         };
     }
-    else if (offset instanceof performance$1.Point || Array.isArray(offset)) {
+    else if (offset instanceof performance$1.P || Array.isArray(offset)) {
         // input specifies a single offset to be applied to all positions
-        const convertedOffset = performance$1.Point.convert(offset);
+        const convertedOffset = performance$1.P.convert(offset);
         return {
             'center': convertedOffset,
             'top': convertedOffset,
@@ -60847,15 +52856,15 @@ function normalizeOffset(offset) {
     else {
         // input specifies an offset per position
         return {
-            'center': performance$1.Point.convert(offset['center'] || [0, 0]),
-            'top': performance$1.Point.convert(offset['top'] || [0, 0]),
-            'top-left': performance$1.Point.convert(offset['top-left'] || [0, 0]),
-            'top-right': performance$1.Point.convert(offset['top-right'] || [0, 0]),
-            'bottom': performance$1.Point.convert(offset['bottom'] || [0, 0]),
-            'bottom-left': performance$1.Point.convert(offset['bottom-left'] || [0, 0]),
-            'bottom-right': performance$1.Point.convert(offset['bottom-right'] || [0, 0]),
-            'left': performance$1.Point.convert(offset['left'] || [0, 0]),
-            'right': performance$1.Point.convert(offset['right'] || [0, 0])
+            'center': performance$1.P.convert(offset['center'] || [0, 0]),
+            'top': performance$1.P.convert(offset['top'] || [0, 0]),
+            'top-left': performance$1.P.convert(offset['top-left'] || [0, 0]),
+            'top-right': performance$1.P.convert(offset['top-right'] || [0, 0]),
+            'bottom': performance$1.P.convert(offset['bottom'] || [0, 0]),
+            'bottom-left': performance$1.P.convert(offset['bottom-left'] || [0, 0]),
+            'bottom-right': performance$1.P.convert(offset['bottom-right'] || [0, 0]),
+            'left': performance$1.P.convert(offset['left'] || [0, 0]),
+            'right': performance$1.P.convert(offset['right'] || [0, 0])
         };
     }
 }
@@ -60928,7 +52937,7 @@ function setWorkerCount(count) { WorkerPool.workerCount = count; }
  * getMaxParallelImageRequests();
  * ```
  */
-function getMaxParallelImageRequests() { return performance$1.config.MAX_PARALLEL_IMAGE_REQUESTS; }
+function getMaxParallelImageRequests() { return performance$1.a.MAX_PARALLEL_IMAGE_REQUESTS; }
 /**
  * Sets the maximum number of images (raster tiles, sprites, icons) to load in parallel,
  * which affects performance in raster-heavy maps. 16 by default.
@@ -60938,16 +52947,16 @@ function getMaxParallelImageRequests() { return performance$1.config.MAX_PARALLE
  * setMaxParallelImageRequests(10);
  * ```
  */
-function setMaxParallelImageRequests(numRequests) { performance$1.config.MAX_PARALLEL_IMAGE_REQUESTS = numRequests; }
+function setMaxParallelImageRequests(numRequests) { performance$1.a.MAX_PARALLEL_IMAGE_REQUESTS = numRequests; }
 /**
  * Gets the worker url
  * @returns The worker url
  */
-function getWorkerUrl() { return performance$1.config.WORKER_URL; }
+function getWorkerUrl() { return performance$1.a.WORKER_URL; }
 /**
  * Sets the worker url
  */
-function setWorkerUrl(value) { performance$1.config.WORKER_URL = value; }
+function setWorkerUrl(value) { performance$1.a.WORKER_URL = value; }
 /**
  * Allows loading javascript code in the worker thread.
  * *Note* that since this is using some very internal classes and flows it is considered experimental and can break at any point.
@@ -60981,15 +52990,15 @@ function setWorkerUrl(value) { performance$1.config.WORKER_URL = value; }
  */
 function importScriptInWorkers(workerUrl) { return getGlobalDispatcher().broadcast("IS" /* MessageType.importScript */, workerUrl); }
 
-exports.AJAXError = performance$1.AJAXError;
-exports.Evented = performance$1.Evented;
-exports.LngLat = performance$1.LngLat;
-exports.MercatorCoordinate = performance$1.MercatorCoordinate;
-exports.OverscaledTileID = performance$1.OverscaledTileID;
-exports.Point = performance$1.Point;
-exports.addProtocol = performance$1.addProtocol;
-exports.config = performance$1.config;
-exports.removeProtocol = performance$1.removeProtocol;
+exports.AJAXError = performance$1.bh;
+exports.Evented = performance$1.E;
+exports.LngLat = performance$1.N;
+exports.MercatorCoordinate = performance$1.Z;
+exports.OverscaledTileID = performance$1.S;
+exports.Point = performance$1.P;
+exports.addProtocol = performance$1.bi;
+exports.config = performance$1.a;
+exports.removeProtocol = performance$1.bj;
 exports.AttributionControl = AttributionControl;
 exports.BoxZoomHandler = BoxZoomHandler;
 exports.CanvasSource = CanvasSource;
@@ -61053,4 +53062,4 @@ var maplibregl$1 = maplibregl;
 return maplibregl$1;
 
 }));
-//# sourceMappingURL=maplibre-gl-dev.js.map
+//# sourceMappingURL=maplibre-gl-unminified.js.map

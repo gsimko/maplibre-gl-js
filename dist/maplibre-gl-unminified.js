@@ -41641,17 +41641,44 @@ class Painter {
     opaquePassEnabledForLayer() {
         return this.currentLayer < this.opaquePassCutoff;
     }
-    /** Returns whether the tile ID (or any of its parent, grandparent or children) is loaded */
+    /** Returns whether the tile ID (or any of its ancestors or all of its children/some descendants) is loaded */
     _isTileIdReady(sourceCache) {
         return (id) => {
-            if (id.canonical.z > sourceCache._source.maxzoom) {
+            var _a;
+            // the loaded tiles can be overscaled,
+            // E.g. the following is a loaded map tile (where source maxzoom is 13): {
+            //     "overscaledZ": 15,
+            //     "wrap": 0,
+            //     "canonical": {
+            //         "z": 13,
+            //         "x": 1622,
+            //         "y": 3129,
+            //         "key": "f9fmedd"
+            //     },
+            //     "key": "f9fmedf",
+            // }
+            // In order to match that, we first need to downscale id to the source maxzoom level
+            // and then overscale manually.
+            if (id.overscaledZ > sourceCache._source.maxzoom) {
+                const original = id.overscaledZ;
                 id = id.scaledTo(sourceCache._source.maxzoom);
+                id = new performance$1.S(original, id.wrap, id.canonical.z, id.canonical.x, id.canonical.y);
             }
+            // if the tile or any of its parent are loaded, return true
             if (sourceCache._getLoadedTile(id) || sourceCache.findLoadedParent(id, 0))
                 return true;
-            const children = id.children(sourceCache._maxTileCacheZoomLevels);
+            const children = id.children(sourceCache._source.maxzoom);
+            // if all of the immediate children are loaded, return true
             if (children.every(x => sourceCache._getLoadedTile(x)))
                 return true;
+            // if probing some of the grand(-grand-etc)children are loaded, return true
+            // this is best effort, as we don't want to check all the exponantial number of descendants
+            let descendant = (_a = children[0]) === null || _a === void 0 ? void 0 : _a.children(sourceCache._source.maxzoom)[0];
+            while (descendant && descendant.overscaledZ <= sourceCache._source.maxzoom) {
+                if (sourceCache._getLoadedTile(descendant))
+                    return true;
+                descendant = descendant.children(sourceCache._source.maxzoom)[0];
+            }
             return false;
         };
     }

@@ -555,9 +555,9 @@ export class HandlerManager {
                 // When starting to drag or move, flag it and register moveend to clear flagging
                 this._terrainMovement = true;
                 this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
-            // } else if (combinedEventsInProgress.drag && this._terrainMovement) {
-            //     // drag map
-            //     tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
+            } else if (combinedEventsInProgress.drag && this._terrainMovement) {
+                // drag map
+                tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
             } else {
                 this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
             }

@@ -7,6 +7,7 @@ import {FillExtrusionStyleLayer} from './style_layer/fill_extrusion_style_layer'
 import {LineStyleLayer} from './style_layer/line_style_layer';
 import {SymbolStyleLayer} from './style_layer/symbol_style_layer';
 import {BackgroundStyleLayer} from './style_layer/background_style_layer';
+import {ContourStyleLayer} from './style_layer/contour_style_layer';
 import {RasterStyleLayer} from './style_layer/raster_style_layer';
 import {CustomStyleLayer, type CustomLayerInterface} from './style_layer/custom_style_layer';
 
@@ -23,6 +24,8 @@ export function createStyleLayer(layer: LayerSpecification | CustomLayerInterfac
             return new CircleStyleLayer(layer);
         case 'color-relief':
             return new ColorReliefStyleLayer(layer);
+        case 'contour':
+            return new ContourStyleLayer(layer);
         case 'fill':
             return new FillStyleLayer(layer);
         case 'fill-extrusion':

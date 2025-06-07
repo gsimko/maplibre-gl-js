@@ -11070,6 +11070,8 @@ var layer = {
 			},
 			raster: {
 			},
+			contour: {
+			},
 			hillshade: {
 			},
 			"color-relief": {
@@ -11118,8 +11120,22 @@ var layout$7 = [
 	"layout_raster",
 	"layout_hillshade",
 	"layout_color-relief",
-	"layout_background"
+	"layout_background",
+	"layout_contour"
 ];
+var layout_contour = {
+	visibility: {
+		type: "enum",
+		values: {
+			visible: {
+			},
+			none: {
+			}
+		},
+		"default": "visible",
+		"property-type": "constant"
+	}
+};
 var layout_background = {
 	visibility: {
 		type: "enum",
@@ -12454,7 +12470,7 @@ var projection = {
 		}
 	}
 };
-var paint$a = [
+var paint$b = [
 	"paint_fill",
 	"paint_line",
 	"paint_circle",
@@ -12464,7 +12480,8 @@ var paint$a = [
 	"paint_raster",
 	"paint_hillshade",
 	"paint_color-relief",
-	"paint_background"
+	"paint_background",
+	"paint_contour"
 ];
 var paint_fill = {
 	"fill-antialias": {
@@ -13557,6 +13574,20 @@ var paint_hillshade = {
 		"property-type": "data-constant"
 	}
 };
+var paint_contour = {
+	"contour-color": {
+		type: "color",
+		"default": "#A0A0A0",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	}
+};
 var paint_background = {
 	"background-color": {
 		type: "color",
@@ -13633,6 +13664,7 @@ var v8Spec = {
 	source_image: source_image,
 	layer: layer,
 	layout: layout$7,
+	layout_contour: layout_contour,
 	layout_background: layout_background,
 	layout_fill: layout_fill,
 	layout_circle: layout_circle,
@@ -13724,7 +13756,7 @@ var v8Spec = {
 	sky: sky,
 	terrain: terrain,
 	projection: projection,
-	paint: paint$a,
+	paint: paint$b,
 	paint_fill: paint_fill,
 	"paint_fill-extrusion": {
 	"fill-extrusion-opacity": {
@@ -13891,6 +13923,7 @@ var v8Spec = {
 		"property-type": "color-ramp"
 	}
 },
+	paint_contour: paint_contour,
 	paint_background: paint_background,
 	transition: transition,
 	"property-type": {
@@ -21065,7 +21098,7 @@ function validateLayer(options) {
             type = unbundle(parent.type);
         }
     }
-    else if (type !== 'background') {
+    else if (type !== 'background' && type !== 'contour') {
         if (!layer.source) {
             errors.push(new ValidationError(key, layer, 'missing required property "source"'));
         }
@@ -26741,8 +26774,8 @@ let layout$5;
 const getLayout$3 = () => layout$5 = layout$5 || new Properties({
     "circle-sort-key": new DataDrivenProperty(v8Spec["layout_circle"]["circle-sort-key"]),
 });
-let paint$9;
-const getPaint$9 = () => paint$9 = paint$9 || new Properties({
+let paint$a;
+const getPaint$a = () => paint$a = paint$a || new Properties({
     "circle-radius": new DataDrivenProperty(v8Spec["paint_circle"]["circle-radius"]),
     "circle-color": new DataDrivenProperty(v8Spec["paint_circle"]["circle-color"]),
     "circle-blur": new DataDrivenProperty(v8Spec["paint_circle"]["circle-blur"]),
@@ -26755,7 +26788,7 @@ const getPaint$9 = () => paint$9 = paint$9 || new Properties({
     "circle-stroke-color": new DataDrivenProperty(v8Spec["paint_circle"]["circle-stroke-color"]),
     "circle-stroke-opacity": new DataDrivenProperty(v8Spec["paint_circle"]["circle-stroke-opacity"]),
 });
-var properties$b = ({ get paint() { return getPaint$9(); }, get layout() { return getLayout$3(); } });
+var properties$c = ({ get paint() { return getPaint$a(); }, get layout() { return getLayout$3(); } });
 
 const isCircleStyleLayer = (layer) => layer.type === 'circle';
 /**
@@ -26763,7 +26796,7 @@ const isCircleStyleLayer = (layer) => layer.type === 'circle';
  */
 class CircleStyleLayer extends StyleLayer {
     constructor(layer) {
-        super(layer, properties$b);
+        super(layer, properties$c);
     }
     createBucket(parameters) {
         return new CircleBucket(parameters);
@@ -26823,15 +26856,15 @@ register('HeatmapBucket', HeatmapBucket, { omit: ['layers'] });
 
 // This file is generated. Edit build/generate-style-code.ts, then run 'npm run codegen'.
 /* eslint-disable */
-let paint$8;
-const getPaint$8 = () => paint$8 = paint$8 || new Properties({
+let paint$9;
+const getPaint$9 = () => paint$9 = paint$9 || new Properties({
     "heatmap-radius": new DataDrivenProperty(v8Spec["paint_heatmap"]["heatmap-radius"]),
     "heatmap-weight": new DataDrivenProperty(v8Spec["paint_heatmap"]["heatmap-weight"]),
     "heatmap-intensity": new DataConstantProperty(v8Spec["paint_heatmap"]["heatmap-intensity"]),
     "heatmap-color": new ColorRampProperty(v8Spec["paint_heatmap"]["heatmap-color"]),
     "heatmap-opacity": new DataConstantProperty(v8Spec["paint_heatmap"]["heatmap-opacity"]),
 });
-var properties$a = ({ get paint() { return getPaint$8(); } });
+var properties$b = ({ get paint() { return getPaint$9(); } });
 
 function createImage(image, { width, height }, channels, data) {
     if (!data) {
@@ -26992,7 +27025,7 @@ class HeatmapStyleLayer extends StyleLayer {
         return new HeatmapBucket(options);
     }
     constructor(layer) {
-        super(layer, properties$a);
+        super(layer, properties$b);
         this.heatmapFbos = new Map();
         // make sure color ramp texture is generated for default heatmap color too
         this._updateColorRamp();
@@ -27029,8 +27062,8 @@ class HeatmapStyleLayer extends StyleLayer {
 
 // This file is generated. Edit build/generate-style-code.ts, then run 'npm run codegen'.
 /* eslint-disable */
-let paint$7;
-const getPaint$7 = () => paint$7 = paint$7 || new Properties({
+let paint$8;
+const getPaint$8 = () => paint$8 = paint$8 || new Properties({
     "hillshade-illumination-direction": new DataConstantProperty(v8Spec["paint_hillshade"]["hillshade-illumination-direction"]),
     "hillshade-illumination-altitude": new DataConstantProperty(v8Spec["paint_hillshade"]["hillshade-illumination-altitude"]),
     "hillshade-illumination-anchor": new DataConstantProperty(v8Spec["paint_hillshade"]["hillshade-illumination-anchor"]),
@@ -27040,12 +27073,12 @@ const getPaint$7 = () => paint$7 = paint$7 || new Properties({
     "hillshade-accent-color": new DataConstantProperty(v8Spec["paint_hillshade"]["hillshade-accent-color"]),
     "hillshade-method": new DataConstantProperty(v8Spec["paint_hillshade"]["hillshade-method"]),
 });
-var properties$9 = ({ get paint() { return getPaint$7(); } });
+var properties$a = ({ get paint() { return getPaint$8(); } });
 
 const isHillshadeStyleLayer = (layer) => layer.type === 'hillshade';
 class HillshadeStyleLayer extends StyleLayer {
     constructor(layer) {
-        super(layer, properties$9);
+        super(layer, properties$a);
         this.recalculate({ zoom: 0, zoomHistory: {} }, undefined);
     }
     getIlluminationProperties() {
@@ -27070,12 +27103,12 @@ class HillshadeStyleLayer extends StyleLayer {
 
 // This file is generated. Edit build/generate-style-code.ts, then run 'npm run codegen'.
 /* eslint-disable */
-let paint$6;
-const getPaint$6 = () => paint$6 = paint$6 || new Properties({
+let paint$7;
+const getPaint$7 = () => paint$7 = paint$7 || new Properties({
     "color-relief-opacity": new DataConstantProperty(v8Spec["paint_color-relief"]["color-relief-opacity"]),
     "color-relief-color": new ColorRampProperty(v8Spec["paint_color-relief"]["color-relief-color"]),
 });
-var properties$8 = ({ get paint() { return getPaint$6(); } });
+var properties$9 = ({ get paint() { return getPaint$7(); } });
 
 /**
  * @internal
@@ -27310,7 +27343,7 @@ register('DEMData', DEMData);
 const isColorReliefStyleLayer = (layer) => layer.type === 'color-relief';
 class ColorReliefStyleLayer extends StyleLayer {
     constructor(layer) {
-        super(layer, properties$8);
+        super(layer, properties$9);
     }
     /**
      * Create the color ramp, enforcing a maximum length for the vectors. This modifies the internal color ramp,
@@ -29283,8 +29316,8 @@ let layout$3;
 const getLayout$2 = () => layout$3 = layout$3 || new Properties({
     "fill-sort-key": new DataDrivenProperty(v8Spec["layout_fill"]["fill-sort-key"]),
 });
-let paint$5;
-const getPaint$5 = () => paint$5 = paint$5 || new Properties({
+let paint$6;
+const getPaint$6 = () => paint$6 = paint$6 || new Properties({
     "fill-antialias": new DataConstantProperty(v8Spec["paint_fill"]["fill-antialias"]),
     "fill-opacity": new DataDrivenProperty(v8Spec["paint_fill"]["fill-opacity"]),
     "fill-color": new DataDrivenProperty(v8Spec["paint_fill"]["fill-color"]),
@@ -29293,12 +29326,12 @@ const getPaint$5 = () => paint$5 = paint$5 || new Properties({
     "fill-translate-anchor": new DataConstantProperty(v8Spec["paint_fill"]["fill-translate-anchor"]),
     "fill-pattern": new CrossFadedDataDrivenProperty(v8Spec["paint_fill"]["fill-pattern"]),
 });
-var properties$7 = ({ get paint() { return getPaint$5(); }, get layout() { return getLayout$2(); } });
+var properties$8 = ({ get paint() { return getPaint$6(); }, get layout() { return getLayout$2(); } });
 
 const isFillStyleLayer = (layer) => layer.type === 'fill';
 class FillStyleLayer extends StyleLayer {
     constructor(layer) {
-        super(layer, properties$7);
+        super(layer, properties$8);
     }
     recalculate(parameters, availableImages) {
         super.recalculate(parameters, availableImages);
@@ -29895,8 +29928,8 @@ function isEntirelyOutside(ring) {
 
 // This file is generated. Edit build/generate-style-code.ts, then run 'npm run codegen'.
 /* eslint-disable */
-let paint$4;
-const getPaint$4 = () => paint$4 = paint$4 || new Properties({
+let paint$5;
+const getPaint$5 = () => paint$5 = paint$5 || new Properties({
     "fill-extrusion-opacity": new DataConstantProperty(v8Spec["paint_fill-extrusion"]["fill-extrusion-opacity"]),
     "fill-extrusion-color": new DataDrivenProperty(v8Spec["paint_fill-extrusion"]["fill-extrusion-color"]),
     "fill-extrusion-translate": new DataConstantProperty(v8Spec["paint_fill-extrusion"]["fill-extrusion-translate"]),
@@ -29906,14 +29939,14 @@ const getPaint$4 = () => paint$4 = paint$4 || new Properties({
     "fill-extrusion-base": new DataDrivenProperty(v8Spec["paint_fill-extrusion"]["fill-extrusion-base"]),
     "fill-extrusion-vertical-gradient": new DataConstantProperty(v8Spec["paint_fill-extrusion"]["fill-extrusion-vertical-gradient"]),
 });
-var properties$6 = ({ get paint() { return getPaint$4(); } });
+var properties$7 = ({ get paint() { return getPaint$5(); } });
 
 class Point3D extends Point {
 }
 const isFillExtrusionStyleLayer = (layer) => layer.type === 'fill-extrusion';
 class FillExtrusionStyleLayer extends StyleLayer {
     constructor(layer) {
-        super(layer, properties$6);
+        super(layer, properties$7);
     }
     createBucket(parameters) {
         return new FillExtrusionBucket(parameters);
@@ -30542,8 +30575,8 @@ const getLayout$1 = () => layout$1 = layout$1 || new Properties({
     "line-round-limit": new DataConstantProperty(v8Spec["layout_line"]["line-round-limit"]),
     "line-sort-key": new DataDrivenProperty(v8Spec["layout_line"]["line-sort-key"]),
 });
-let paint$3;
-const getPaint$3 = () => paint$3 = paint$3 || new Properties({
+let paint$4;
+const getPaint$4 = () => paint$4 = paint$4 || new Properties({
     "line-opacity": new DataDrivenProperty(v8Spec["paint_line"]["line-opacity"]),
     "line-color": new DataDrivenProperty(v8Spec["paint_line"]["line-color"]),
     "line-translate": new DataConstantProperty(v8Spec["paint_line"]["line-translate"]),
@@ -30556,7 +30589,7 @@ const getPaint$3 = () => paint$3 = paint$3 || new Properties({
     "line-pattern": new CrossFadedDataDrivenProperty(v8Spec["paint_line"]["line-pattern"]),
     "line-gradient": new ColorRampProperty(v8Spec["paint_line"]["line-gradient"]),
 });
-var properties$5 = ({ get paint() { return getPaint$3(); }, get layout() { return getLayout$1(); } });
+var properties$6 = ({ get paint() { return getPaint$4(); }, get layout() { return getLayout$1(); } });
 
 class LineFloorwidthProperty extends DataDrivenProperty {
     possiblyEvaluate(value, parameters) {
@@ -30577,11 +30610,11 @@ let lineFloorwidthProperty;
 const isLineStyleLayer = (layer) => layer.type === 'line';
 class LineStyleLayer extends StyleLayer {
     constructor(layer) {
-        super(layer, properties$5);
+        super(layer, properties$6);
         this.gradientVersion = 0;
         if (!lineFloorwidthProperty) {
             lineFloorwidthProperty =
-                new LineFloorwidthProperty(properties$5.paint.properties['line-width'].specification);
+                new LineFloorwidthProperty(properties$6.paint.properties['line-width'].specification);
             lineFloorwidthProperty.useIntegerZoom = true;
         }
     }
@@ -33361,8 +33394,8 @@ const getLayout = () => layout = layout || new Properties({
     "text-ignore-placement": new DataConstantProperty(v8Spec["layout_symbol"]["text-ignore-placement"]),
     "text-optional": new DataConstantProperty(v8Spec["layout_symbol"]["text-optional"]),
 });
-let paint$2;
-const getPaint$2 = () => paint$2 = paint$2 || new Properties({
+let paint$3;
+const getPaint$3 = () => paint$3 = paint$3 || new Properties({
     "icon-opacity": new DataDrivenProperty(v8Spec["paint_symbol"]["icon-opacity"]),
     "icon-color": new DataDrivenProperty(v8Spec["paint_symbol"]["icon-color"]),
     "icon-halo-color": new DataDrivenProperty(v8Spec["paint_symbol"]["icon-halo-color"]),
@@ -33378,7 +33411,7 @@ const getPaint$2 = () => paint$2 = paint$2 || new Properties({
     "text-translate": new DataConstantProperty(v8Spec["paint_symbol"]["text-translate"]),
     "text-translate-anchor": new DataConstantProperty(v8Spec["paint_symbol"]["text-translate-anchor"]),
 });
-var properties$4 = ({ get paint() { return getPaint$2(); }, get layout() { return getLayout(); } });
+var properties$5 = ({ get paint() { return getPaint$3(); }, get layout() { return getLayout(); } });
 
 // This is an internal expression class. It is only used in GL JS and
 // has GL JS dependencies which can break the standalone style-spec module
@@ -33420,7 +33453,7 @@ register('FormatSectionOverride', FormatSectionOverride, { omit: ['defaultValue'
 const isSymbolStyleLayer = (layer) => layer.type === 'symbol';
 class SymbolStyleLayer extends StyleLayer {
     constructor(layer) {
-        super(layer, properties$4);
+        super(layer, properties$5);
     }
     recalculate(parameters, availableImages) {
         super.recalculate(parameters, availableImages);
@@ -33482,7 +33515,7 @@ class SymbolStyleLayer extends StyleLayer {
         throw new Error('Should take a different path in FeatureIndex');
     }
     _setPaintOverrides() {
-        for (const overridable of properties$4.paint.overridableProperties) {
+        for (const overridable of properties$5.paint.overridableProperties) {
             if (!SymbolStyleLayer.hasPaintOverride(this.layout, overridable)) {
                 continue;
             }
@@ -33507,7 +33540,7 @@ class SymbolStyleLayer extends StyleLayer {
     }
     static hasPaintOverride(layout, propertyName) {
         const textField = layout.get('text-field');
-        const property = properties$4.paint.properties[propertyName];
+        const property = properties$5.paint.properties[propertyName];
         let hasOverrides = false;
         const checkSections = (sections) => {
             for (const section of sections) {
@@ -33557,16 +33590,31 @@ function getIconPadding(layout, feature, canonical, pixelRatio = 1) {
 
 // This file is generated. Edit build/generate-style-code.ts, then run 'npm run codegen'.
 /* eslint-disable */
-let paint$1;
-const getPaint$1 = () => paint$1 = paint$1 || new Properties({
+let paint$2;
+const getPaint$2 = () => paint$2 = paint$2 || new Properties({
     "background-color": new DataConstantProperty(v8Spec["paint_background"]["background-color"]),
     "background-pattern": new CrossFadedProperty(v8Spec["paint_background"]["background-pattern"]),
     "background-opacity": new DataConstantProperty(v8Spec["paint_background"]["background-opacity"]),
 });
-var properties$3 = ({ get paint() { return getPaint$1(); } });
+var properties$4 = ({ get paint() { return getPaint$2(); } });
 
 const isBackgroundStyleLayer = (layer) => layer.type === 'background';
 class BackgroundStyleLayer extends StyleLayer {
+    constructor(layer) {
+        super(layer, properties$4);
+    }
+}
+
+// This file is generated. Edit build/generate-style-code.ts, then run 'npm run codegen'.
+/* eslint-disable */
+let paint$1;
+const getPaint$1 = () => paint$1 = paint$1 || new Properties({
+    "contour-color": new DataConstantProperty(v8Spec["paint_contour"]["contour-color"]),
+});
+var properties$3 = ({ get paint() { return getPaint$1(); } });
+
+const isContourStyleLayer = (layer) => layer.type === 'contour';
+class ContourStyleLayer extends StyleLayer {
     constructor(layer) {
         super(layer, properties$3);
     }
@@ -33657,6 +33705,8 @@ function createStyleLayer(layer) {
             return new CircleStyleLayer(layer);
         case 'color-relief':
             return new ColorReliefStyleLayer(layer);
+        case 'contour':
+            return new ContourStyleLayer(layer);
         case 'fill':
             return new FillStyleLayer(layer);
         case 'fill-extrusion':
@@ -44652,10 +44702,10 @@ var terrainDepthFrag = 'in float v_depth;const highp vec4 bitSh=vec4(256.*256.*2
 var terrainCoordsFrag = 'precision mediump float;uniform sampler2D u_texture;uniform float u_terrain_coords_id;in vec2 v_texture_pos;void main() {vec4 rgba=texture(u_texture,v_texture_pos);fragColor=vec4(rgba.r,rgba.g,rgba.b,u_terrain_coords_id);}';
 
 // This file is generated. Edit build/generate-shaders.ts, then run `npm run codegen`.
-var terrainFrag = 'uniform sampler2D u_texture;uniform vec4 u_fog_color;uniform vec4 u_horizon_color;uniform float u_fog_ground_blend;uniform float u_fog_ground_blend_opacity;uniform float u_horizon_fog_blend;uniform bool u_is_globe_mode;in vec2 v_texture_pos;in float v_fog_depth;const float gamma=2.2;vec4 gammaToLinear(vec4 color) {return pow(color,vec4(gamma));}vec4 linearToGamma(vec4 color) {return pow(color,vec4(1.0/gamma));}void main() {vec4 surface_color=texture(u_texture,vec2(v_texture_pos.x,1.0-v_texture_pos.y));if (!u_is_globe_mode && v_fog_depth > u_fog_ground_blend) {vec4 surface_color_linear=gammaToLinear(surface_color);float blend_color=smoothstep(0.0,1.0,max((v_fog_depth-u_horizon_fog_blend)/(1.0-u_horizon_fog_blend),0.0));vec4 fog_horizon_color_linear=mix(gammaToLinear(u_fog_color),gammaToLinear(u_horizon_color),blend_color);float factor_fog=max(v_fog_depth-u_fog_ground_blend,0.0)/(1.0-u_fog_ground_blend);fragColor=linearToGamma(mix(surface_color_linear,fog_horizon_color_linear,pow(factor_fog,2.0)*u_fog_ground_blend_opacity));} else {fragColor=surface_color;}}';
+var terrainFrag = 'uniform sampler2D u_texture;uniform vec4 u_fog_color;uniform vec4 u_horizon_color;uniform float u_fog_ground_blend;uniform float u_fog_ground_blend_opacity;uniform float u_horizon_fog_blend;uniform bool u_is_globe_mode;uniform bool u_show_contour;uniform vec4 u_contour_color;in vec2 v_texture_pos;in float v_fog_depth;in float v_height;const float gamma=2.2;vec4 gammaToLinear(vec4 color) {return pow(color,vec4(gamma));}vec4 linearToGamma(vec4 color) {return pow(color,vec4(1.0/gamma));}void main() {vec4 surface_color=texture(u_texture,vec2(v_texture_pos.x,1.0-v_texture_pos.y));if (u_show_contour) {float d=abs(mod(v_height,10.0));float d2=min(d,10.0-d)/10.0;surface_color=mix(u_contour_color,surface_color,0.75+0.25*smoothstep(0.0,0.2,d2/max(length(fwidth(v_height)),1e-6)));}if (!u_is_globe_mode && v_fog_depth > u_fog_ground_blend) {vec4 surface_color_linear=gammaToLinear(surface_color);float blend_color=smoothstep(0.0,1.0,max((v_fog_depth-u_horizon_fog_blend)/(1.0-u_horizon_fog_blend),0.0));vec4 fog_horizon_color_linear=mix(gammaToLinear(u_fog_color),gammaToLinear(u_horizon_color),blend_color);float factor_fog=max(v_fog_depth-u_fog_ground_blend,0.0)/(1.0-u_fog_ground_blend);fragColor=linearToGamma(mix(surface_color_linear,fog_horizon_color_linear,pow(factor_fog,2.0)*u_fog_ground_blend_opacity));} else {fragColor=surface_color;}}';
 
 // This file is generated. Edit build/generate-shaders.ts, then run `npm run codegen`.
-var terrainVert = 'in vec3 a_pos3d;uniform mat4 u_fog_matrix;uniform float u_ele_delta;out vec2 v_texture_pos;out float v_fog_depth;void main() {float ele=get_elevation(a_pos3d.xy);float ele_delta=a_pos3d.z==1.0 ? u_ele_delta : 0.0;v_texture_pos=a_pos3d.xy/8192.0;gl_Position=projectTileFor3D(a_pos3d.xy,get_elevation(a_pos3d.xy)-ele_delta);vec4 pos=u_fog_matrix*vec4(a_pos3d.xy,ele,1.0);v_fog_depth=pos.z/pos.w*0.5+0.5;}';
+var terrainVert = 'in vec3 a_pos3d;uniform mat4 u_fog_matrix;uniform float u_ele_delta;out vec2 v_texture_pos;out float v_fog_depth;out float v_height;void main() {float ele=get_elevation(a_pos3d.xy);float ele_delta=a_pos3d.z==1.0 ? u_ele_delta : 0.0;v_texture_pos=a_pos3d.xy/8192.0;gl_Position=projectTileFor3D(a_pos3d.xy,get_elevation(a_pos3d.xy)-ele_delta);vec4 pos=u_fog_matrix*vec4(a_pos3d.xy,ele,1.0);v_fog_depth=pos.z/pos.w*0.5+0.5;v_height=ele;}';
 
 // This file is generated. Edit build/generate-shaders.ts, then run `npm run codegen`.
 var terrainVertDepth = 'in vec3 a_pos3d;uniform float u_ele_delta;out float v_depth;void main() {float ele=get_elevation(a_pos3d.xy);float ele_delta=a_pos3d.z==1.0 ? u_ele_delta : 0.0;gl_Position=projectTileFor3D(a_pos3d.xy,ele-ele_delta);v_depth=gl_Position.z/gl_Position.w;}';
@@ -51228,7 +51278,9 @@ const terrainUniforms = (context, locations) => ({
     'u_fog_ground_blend_opacity': new Uniform1f(context, locations.u_fog_ground_blend_opacity),
     'u_horizon_color': new UniformColor(context, locations.u_horizon_color),
     'u_horizon_fog_blend': new Uniform1f(context, locations.u_horizon_fog_blend),
-    'u_is_globe_mode': new Uniform1f(context, locations.u_is_globe_mode)
+    'u_is_globe_mode': new Uniform1f(context, locations.u_is_globe_mode),
+    'u_show_contour': new Uniform1f(context, locations.u_show_contour),
+    'u_contour_color': new UniformColor(context, locations.u_contour_color),
 });
 const terrainDepthUniforms = (context, locations) => ({
     'u_ele_delta': new Uniform1f(context, locations.u_ele_delta)
@@ -51238,7 +51290,7 @@ const terrainCoordsUniforms = (context, locations) => ({
     'u_terrain_coords_id': new Uniform1f(context, locations.u_terrain_coords_id),
     'u_ele_delta': new Uniform1f(context, locations.u_ele_delta)
 });
-const terrainUniformValues = (eleDelta, fogMatrix, sky, pitch, isGlobeMode) => ({
+const terrainUniformValues = (eleDelta, fogMatrix, sky, pitch, isGlobeMode, showContour, contourColor) => ({
     'u_texture': 0,
     'u_ele_delta': eleDelta,
     'u_fog_matrix': fogMatrix,
@@ -51248,7 +51300,9 @@ const terrainUniformValues = (eleDelta, fogMatrix, sky, pitch, isGlobeMode) => (
     'u_fog_ground_blend_opacity': isGlobeMode ? 0 : (sky ? sky.calculateFogBlendOpacity(pitch) : 0),
     'u_horizon_color': sky ? sky.properties.get('horizon-color') : Color.white,
     'u_horizon_fog_blend': sky ? sky.properties.get('horizon-fog-blend') : 1,
-    'u_is_globe_mode': isGlobeMode ? 1 : 0
+    'u_is_globe_mode': isGlobeMode ? 1 : 0,
+    'u_show_contour': showContour ? 1 : 0,
+    'u_contour_color': contourColor !== null && contourColor !== void 0 ? contourColor : new Color(0.5, 0.5, 0.5),
 });
 const terrainDepthUniformValues = (eleDelta) => ({
     'u_ele_delta': eleDelta
@@ -54569,7 +54623,7 @@ function drawCoords(painter, terrain) {
     context.viewport.set([0, 0, painter.width, painter.height]);
 }
 function drawTerrain(painter, terrain, tiles, renderOptions) {
-    const { isRenderingGlobe } = renderOptions;
+    const { isRenderingGlobe, showContour, contourColor } = renderOptions;
     const context = painter.context;
     const gl = context.gl;
     const tr = painter.transform;
@@ -54586,7 +54640,7 @@ function drawTerrain(painter, terrain, tiles, renderOptions) {
         gl.bindTexture(gl.TEXTURE_2D, texture.texture);
         const eleDelta = terrain.getMeshFrameDelta(tr.zoom);
         const fogMatrix = tr.calculateFogMatrix(tile.tileID.toUnwrapped());
-        const uniformValues = terrainUniformValues(eleDelta, fogMatrix, painter.style.sky, tr.pitch, isRenderingGlobe);
+        const uniformValues = terrainUniformValues(eleDelta, fogMatrix, painter.style.sky, tr.pitch, isRenderingGlobe, showContour, contourColor);
         const projectionData = tr.getProjectionData({ overscaledTileID: tile.tileID, applyTerrainMatrix: false, applyGlobeMatrix: true });
         program.draw(context, gl.TRIANGLES, depthMode, StencilMode.disabled, colorMode, CullFaceMode.backCCW, uniformValues, terrainData, projectionData, 'terrain', mesh.vertexBuffer, mesh.indexBuffer, mesh.segments);
     }
@@ -58110,9 +58164,10 @@ class HandlerManager {
                 // When starting to drag or move, flag it and register moveend to clear flagging
                 this._terrainMovement = true;
                 this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
-                // } else if (combinedEventsInProgress.drag && this._terrainMovement) {
-                //     // drag map
-                //     tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
+            }
+            else if (combinedEventsInProgress.drag && this._terrainMovement) {
+                // drag map
+                tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
             }
             else {
                 this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
@@ -60515,7 +60570,8 @@ class RenderToTexture {
     renderLayer(layer, renderOptions) {
         if (layer.isHidden(this.painter.transform.zoom))
             return false;
-        const options = Object.assign(Object.assign({}, renderOptions), { isRenderingToTexture: true });
+        const showContour = isContourStyleLayer(layer);
+        const options = Object.assign(Object.assign({}, renderOptions), { isRenderingToTexture: true, showContour: showContour, contourColor: showContour ? layer.paint.get('contour-color') : undefined });
         const type = layer.type;
         const painter = this.painter;
         const isLastLayer = this._renderableLayerIds[this._renderableLayerIds.length - 1] === layer.id;

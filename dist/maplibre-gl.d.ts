@@ -3559,6 +3559,8 @@ export type PainterOptions = {
 export type RenderOptions = {
 	isRenderingToTexture: boolean;
 	isRenderingGlobe: boolean;
+	showContour?: boolean;
+	contourColor?: Color;
 };
 declare class Painter {
 	context: Context;

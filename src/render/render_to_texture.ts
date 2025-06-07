@@ -9,6 +9,7 @@ import {RenderPool} from '../gl/render_pool';
 import {type Texture} from './texture';
 import type {StyleLayer} from '../style/style_layer';
 import {ImageSource} from '../source/image_source';
+import {isContourStyleLayer} from '../style/style_layer/contour_style_layer.js';
 
 /**
  * lookup table which layers should rendered to texture
@@ -149,7 +150,13 @@ export class RenderToTexture {
     renderLayer(layer: StyleLayer, renderOptions: RenderOptions): boolean {
         if (layer.isHidden(this.painter.transform.zoom)) return false;
 
-        const options: RenderOptions = {...renderOptions, isRenderingToTexture: true};
+        const showContour = isContourStyleLayer(layer);
+        const options: RenderOptions = {
+            ...renderOptions,
+            isRenderingToTexture: true,
+            showContour: showContour,
+            contourColor: showContour ? layer.paint.get('contour-color') : undefined,
+        };
         const type = layer.type;
         const painter = this.painter;
         const isLastLayer = this._renderableLayerIds[this._renderableLayerIds.length - 1] === layer.id;

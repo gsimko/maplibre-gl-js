@@ -77,6 +77,8 @@ type PainterOptions = {
 export type RenderOptions = {
     isRenderingToTexture: boolean;
     isRenderingGlobe: boolean;
+    showContour?: boolean;
+    contourColor?: Color;
 };
 
 /**

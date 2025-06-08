@@ -115,7 +115,8 @@ function prepareHillshade(
             continue;
         }
 
-        const tileSize = dem.dim;
+        // +2 for padding for helping the linear interpolation when drawing the hillshade
+        const tileSize = dem.dim + 2;
         const textureStride = dem.stride;
 
         const pixelData = dem.getPixels();

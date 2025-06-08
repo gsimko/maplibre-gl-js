@@ -34,8 +34,8 @@ export class DEMData {
     /**
      * Constructs a `DEMData` object
      * @param uid - the tile's unique id
-     * @param data - RGBAImage data has uniform 1px padding on all sides: square tile edge size defines stride
-    // and dim is calculated as stride - 2.
+     * @param data - RGBAImage data has uniform 2px padding on all sides: square tile edge size defines stride
+    // and dim is calculated as stride - 4.
      * @param encoding - the encoding type of the data
      * @param redFactor - the red channel factor used to unpack the data, used for `custom` encoding only
      * @param greenFactor - the green channel factor used to unpack the data, used for `custom` encoding only
@@ -50,7 +50,7 @@ export class DEMData {
             return;
         }
         this.stride = data.height;
-        const dim = this.dim = data.height - 2;
+        const dim = this.dim = data.height - 4;
         this.data = new Uint32Array(data.data.buffer);
         switch (encoding) {
             case 'terrarium':
@@ -78,24 +78,37 @@ export class DEMData {
                 break;
         }
 
-        // in order to avoid flashing seams between tiles, here we are initially populating a 1px border of pixels around the image
+        // in order to avoid flashing seams between tiles, here we are initially populating a 2px border of pixels around the image
         // with the data of the nearest pixel from the image. this data is eventually replaced when the tile's neighboring
         // tiles are loaded and the accurate data can be backfilled using DEMData#backfillBorder
+        // we need 2 pixel padding because 1 pixel is necessary for calculating hillshade gradients and a second pixel is needed for seamless gl.LINEAR interpolation
         for (let x = 0; x < dim; x++) {
             // left vertical border
-            this.data[this._idx(-1, x)] = this.data[this._idx(0, x)];
+            this.data[this._idx(-2, x)] = this.data[this._idx(-1, x)] = this.data[this._idx(0, x)];
             // right vertical border
-            this.data[this._idx(dim, x)] = this.data[this._idx(dim - 1, x)];
+            this.data[this._idx(dim + 1, x)] = this.data[this._idx(dim, x)] = this.data[this._idx(dim - 1, x)];
             // left horizontal border
-            this.data[this._idx(x, -1)] = this.data[this._idx(x, 0)];
+            this.data[this._idx(x, -2)] = this.data[this._idx(x, -1)] = this.data[this._idx(x, 0)];
             // right horizontal border
-            this.data[this._idx(x, dim)] = this.data[this._idx(x, dim - 1)];
+            this.data[this._idx(x, dim + 1)] = this.data[this._idx(x, dim)] = this.data[this._idx(x, dim - 1)];
         }
         // corners
-        this.data[this._idx(-1, -1)] = this.data[this._idx(0, 0)];
-        this.data[this._idx(dim, -1)] = this.data[this._idx(dim - 1, 0)];
-        this.data[this._idx(-1, dim)] = this.data[this._idx(0, dim - 1)];
-        this.data[this._idx(dim, dim)] = this.data[this._idx(dim - 1, dim - 1)];
+        this.data[this._idx(-1, -1)] =
+        this.data[this._idx(-1, -2)] = 
+        this.data[this._idx(-2, -2)] =
+        this.data[this._idx(-2, -1)] = this.data[this._idx(0, 0)];
+        this.data[this._idx(dim, -1)] = 
+        this.data[this._idx(dim, -2)] =
+        this.data[this._idx(dim + 1, -1)] =
+        this.data[this._idx(dim + 1, -2)] = this.data[this._idx(dim - 1, 0)];
+        this.data[this._idx(-1, dim)] =
+        this.data[this._idx(-1, dim + 1)] =
+        this.data[this._idx(-2, dim + 1)] = 
+        this.data[this._idx(-2, dim)] = this.data[this._idx(0, dim - 1)];
+        this.data[this._idx(dim, dim)] = 
+        this.data[this._idx(dim, dim + 1)] = 
+        this.data[this._idx(dim + 1, dim)] = 
+        this.data[this._idx(dim + 1, dim + 1)] = this.data[this._idx(dim - 1, dim - 1)];
 
         // calculate min/max values
         this.min = Number.MAX_SAFE_INTEGER;
@@ -120,8 +133,8 @@ export class DEMData {
     }
 
     _idx(x: number, y: number) {
-        if (x < -1 || x >= this.dim + 1 ||  y < -1 || y >= this.dim + 1) throw new RangeError('out of range source coordinates for DEM data');
-        return (y + 1) * this.stride + (x + 1);
+        if (x < -2 || x >= this.dim + 2 || y < -2 || y >= this.dim + 2) throw new RangeError('out of range source coordinates for DEM data');
+        return (y + 2) * this.stride + (x + 2);
     }
 
     unpack(r: number, g: number, b: number) {
@@ -139,31 +152,43 @@ export class DEMData {
     backfillBorder(borderTile: DEMData, dx: number, dy: number) {
         if (this.dim !== borderTile.dim) throw new Error('dem dimension mismatch');
 
-        let xMin = dx * this.dim,
-            xMax = dx * this.dim + this.dim,
-            yMin = dy * this.dim,
-            yMax = dy * this.dim + this.dim;
-
+        let xMin: number, yMin: number, xMax: number, yMax: number, ox: number, oy:number;
         switch (dx) {
             case -1:
-                xMin = xMax - 1;
+                xMin = -2;
+                xMax = 0;
+                ox = this.dim;
+                break;
+            case 0:
+                xMin = 0;
+                xMax = this.dim;
+                ox = 0;
                 break;
             case 1:
-                xMax = xMin + 1;
+                xMin = this.dim;
+                xMax = xMin + 2;
+                ox = -this.dim;
                 break;
         }
 
         switch (dy) {
             case -1:
-                yMin = yMax - 1;
+                yMin = -2;
+                yMax = 0;
+                oy = this.dim;
+                break;
+            case 0:
+                yMin = 0;
+                yMax = this.dim;
+                oy = 0;
                 break;
             case 1:
-                yMax = yMin + 1;
+                yMin = this.dim;
+                yMax = yMin + 2;
+                oy = -this.dim;
                 break;
         }
 
-        const ox = -dx * this.dim;
-        const oy = -dy * this.dim;
         for (let y = yMin; y < yMax; y++) {
             for (let x = xMin; x < xMax; x++) {
                 this.data[this._idx(x, y)] = borderTile.data[this._idx(x + ox, y + oy)];

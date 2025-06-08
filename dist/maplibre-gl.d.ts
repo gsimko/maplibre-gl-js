@@ -4717,8 +4717,8 @@ declare class DEMData {
 	/**
 	 * Constructs a `DEMData` object
 	 * @param uid - the tile's unique id
-	 * @param data - RGBAImage data has uniform 1px padding on all sides: square tile edge size defines stride
-	// and dim is calculated as stride - 2.
+	 * @param data - RGBAImage data has uniform 2px padding on all sides: square tile edge size defines stride
+	// and dim is calculated as stride - 4.
 	 * @param encoding - the encoding type of the data
 	 * @param redFactor - the red channel factor used to unpack the data, used for `custom` encoding only
 	 * @param greenFactor - the green channel factor used to unpack the data, used for `custom` encoding only

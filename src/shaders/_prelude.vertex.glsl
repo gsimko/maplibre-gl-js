@@ -150,10 +150,11 @@ float get_elevation(vec2 pos) {
                 return 0.0;
             }
         #endif
-        vec2 coord = (u_terrain_matrix * vec4(pos, 0.0, 1.0)).xy * u_terrain_dim + 1.0;
+        // we have 2 pixels of padding, so offset=2, dim=u_terrain_dim+4
+        vec2 coord = (u_terrain_matrix * vec4(pos, 0.0, 1.0)).xy * u_terrain_dim + 2.0;
         vec2 f = fract(coord);
-        vec2 c = (floor(coord) + 0.5) / (u_terrain_dim + 2.0); // get the pixel center
-        float d = 1.0 / (u_terrain_dim + 2.0);
+        vec2 c = (floor(coord) + 0.5) / (u_terrain_dim + 4.0); // get the pixel center
+        float d = 1.0 / (u_terrain_dim + 4.0);
         float tl = ele(c);
         float tr = ele(c + vec2(d, 0.0));
         float bl = ele(c + vec2(0.0, d));

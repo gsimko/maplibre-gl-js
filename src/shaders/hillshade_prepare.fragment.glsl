@@ -19,7 +19,8 @@ float getElevation(vec2 coord, float bias) {
 
 void main() {
     vec2 epsilon = 1.0 / u_dimension;
-    float tileSize = u_dimension.x - 2.0;
+    // 4 pixels of padding
+    float tileSize = u_dimension.x - 4.0;
 
     // queried pixels:
     // +-----------+

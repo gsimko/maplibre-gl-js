@@ -48475,8 +48475,10 @@ class TransformHelper {
             performance$1.translate(m, m, [-1, -1, 0]);
             performance$1.scale(m, m, [2 / this._width, 2 / this._height, 1]);
             this._pixelsToClipSpaceMatrix = m;
+            // adjust the fov based on the viewport height
+            this._fovInRadians = Math.atan2(this._height, 1600) * 2;
             const halfFov = this.fovInRadians / 2;
-            this._cameraToCenterDistance = 0.5 / Math.tan(halfFov) * 800;
+            this._cameraToCenterDistance = 0.5 / Math.tan(halfFov) * this._height;
         }
         this._callbacks.calcMatrices();
     }
@@ -61243,9 +61245,6 @@ class HandlerManager {
         if (finishedMoving && this._terrainMovement) {
             this._terrainMovement = false;
             const tr = this._map._getTransformForUpdate();
-            if (this._map.getCenterClampedToGround()) {
-                tr.recalculateZoomAndCenter(this._map.terrain);
-            }
             this._map._applyUpdatedTransform(tr);
         }
         if (allowEndAnimation && finishedMoving) {
@@ -64881,9 +64880,7 @@ let Map$1 = class Map extends Camera {
                 this.painter.renderToTexture.destruct();
             this.painter.renderToTexture = null;
             this.transform.setMinElevationForCurrentTile(0);
-            if (this._centerClampedToGround) {
-                this.transform.setElevation(0);
-            }
+            this.transform.setElevation(0);
         }
         else {
             // add terrain
@@ -64915,8 +64912,9 @@ let Map$1 = class Map extends Camera {
                 else if (e.dataType === 'source' && e.tile) {
                     if (e.sourceId === options.source) {
                         this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
-                        if (this._centerClampedToGround) {
-                            this.transform.setElevation(this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
+                        const ele = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
+                        if (this._centerClampedToGround || this.transform.elevation < ele) {
+                            this.transform.setElevation(ele);
                         }
                     }
                     if (((_a = e.source) === null || _a === void 0 ? void 0 : _a.type) === 'image') {
@@ -66003,15 +66001,14 @@ let Map$1 = class Map extends Camera {
         if (this.terrain) {
             this.terrain.sourceCache.update(this.transform, this.terrain);
             this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
-            if (this._centerClampedToGround) {
-                this.transform.setElevation(this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
+            const ele = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
+            if (this._centerClampedToGround || this.transform.elevation < ele) {
+                this.transform.setElevation(ele);
             }
         }
         else {
             this.transform.setMinElevationForCurrentTile(0);
-            if (this._centerClampedToGround) {
-                this.transform.setElevation(0);
-            }
+            this.transform.setElevation(0);
         }
         this._placementDirty = this.style && this.style._updatePlacement(this.transform, this.showCollisionBoxes, fadeDuration, this._crossSourceCollisions, globeRenderingChanged);
         // Actually draw

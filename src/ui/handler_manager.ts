@@ -625,9 +625,6 @@ export class HandlerManager {
         if (finishedMoving && this._terrainMovement) {
             this._terrainMovement = false;
             const tr = this._map._getTransformForUpdate();
-            if (this._map.getCenterClampedToGround()) {
-                tr.recalculateZoomAndCenter(this._map.terrain);
-            }
             this._map._applyUpdatedTransform(tr);
         }
         if (allowEndAnimation && finishedMoving) {

@@ -8650,10 +8650,7 @@ declare abstract class Camera extends Evented {
 	 *
 	 * @param tr - The transform to check.
 	 */
-	_elevateCameraIfInsideTerrain(tr: ITransform): {
-		pitch?: number;
-		zoom?: number;
-	};
+	_elevateCameraIfInsideTerrain(tr: ITransform): ReturnType<CameraUpdateTransformFunction>;
 	/**
 	 * @internal
 	 * Called after the camera is done being manipulated.

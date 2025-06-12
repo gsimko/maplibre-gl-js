@@ -62109,14 +62109,27 @@ class Camera extends performance$1.Evented {
         const cameraLngLat = tr.getCameraLngLat();
         const cameraAltitude = tr.getCameraAltitude();
         const minAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(cameraLngLat, tr.zoom) : 0;
-        if (cameraAltitude < minAltitude) {
-            const newCamera = this.calculateCameraOptionsFromTo(cameraLngLat, minAltitude, tr.center, tr.elevation);
-            return {
-                pitch: newCamera.pitch,
-                zoom: newCamera.zoom,
-            };
-        }
-        return {};
+        const centerMinAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(tr.center, tr.tileZoom) : -1;
+        let lift = Math.max(minAltitude + 50 - cameraAltitude, centerMinAltitude - tr.elevation);
+        if (lift < 0)
+            lift = centerMinAltitude - tr.elevation;
+        const newCamera = this.calculateCameraOptionsFromTo(cameraLngLat, cameraAltitude + lift, tr.center, tr.elevation + lift);
+        // console.log('elevate camera center', tr.elevation, centerMinAltitude, cameraAltitude, minAltitude, tr.clone(),  newCamera);
+        return {
+            center: performance$1.LngLat.convert(newCamera.center),
+            elevation: newCamera.elevation,
+            pitch: newCamera.pitch,
+            zoom: newCamera.zoom,
+        };
+        // if (cameraAltitude < minAltitude) {
+        //     const newCamera = this.calculateCameraOptionsFromTo(
+        //         cameraLngLat, minAltitude, tr.center, tr.elevation);
+        //     return {
+        //         pitch: newCamera.pitch,
+        //         zoom: newCamera.zoom,
+        //     };
+        // }
+        // return {};
     }
     /**
      * @internal

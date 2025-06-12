@@ -1215,22 +1215,39 @@ export abstract class Camera extends Evented {
      *
      * @param tr - The transform to check.
      */
-    _elevateCameraIfInsideTerrain(tr: ITransform) : { pitch?: number; zoom?: number } {
+    _elevateCameraIfInsideTerrain(tr: ITransform) : ReturnType<CameraUpdateTransformFunction> {
         if (!this.terrain && tr.elevation >= 0 && tr.pitch <= 90) {
             return {};
         }
+
         const cameraLngLat = tr.getCameraLngLat();
         const cameraAltitude = tr.getCameraAltitude();
         const minAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(cameraLngLat, tr.zoom) : 0;
-        if (cameraAltitude < minAltitude) {
-            const newCamera = this.calculateCameraOptionsFromTo(
-                cameraLngLat, minAltitude, tr.center, tr.elevation);
-            return {
-                pitch: newCamera.pitch,
-                zoom: newCamera.zoom,
-            };
-        }
-        return {};
+        const centerMinAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(tr.center, tr.tileZoom) : -1;
+      
+        let lift = Math.max(minAltitude+50-cameraAltitude, centerMinAltitude-tr.elevation);
+        if (lift < 0) lift = centerMinAltitude-tr.elevation;
+
+        const newCamera = this.calculateCameraOptionsFromTo(
+            cameraLngLat, cameraAltitude + lift,
+            tr.center, tr.elevation + lift,
+        );
+        // console.log('elevate camera center', tr.elevation, centerMinAltitude, cameraAltitude, minAltitude, tr.clone(),  newCamera);
+        return {
+            center: LngLat.convert(newCamera.center),
+            elevation: newCamera.elevation,
+            pitch: newCamera.pitch,
+            zoom: newCamera.zoom,
+        };
+        // if (cameraAltitude < minAltitude) {
+        //     const newCamera = this.calculateCameraOptionsFromTo(
+        //         cameraLngLat, minAltitude, tr.center, tr.elevation);
+        //     return {
+        //         pitch: newCamera.pitch,
+        //         zoom: newCamera.zoom,
+        //     };
+        // }
+        // return {};
     }
 
     /**

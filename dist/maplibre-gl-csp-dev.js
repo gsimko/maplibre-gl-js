@@ -13575,9 +13575,107 @@ var paint_hillshade = {
 	}
 };
 var paint_contour = {
-	"contour-color": {
+	"contour-minor-color": {
 		type: "color",
 		"default": "#A0A0A0",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-major-color": {
+		type: "color",
+		"default": "#A0A0A0",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-minor-opacity": {
+		type: "number",
+		"default": 0.25,
+		minimum: 0,
+		maximum: 1,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-major-opacity": {
+		type: "number",
+		"default": 0.25,
+		minimum: 0,
+		maximum: 1,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-minor-line-width": {
+		type: "number",
+		"default": 0.2,
+		minimum: 0,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-major-line-width": {
+		type: "number",
+		"default": 0.2,
+		minimum: 0,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-minor-spacing": {
+		type: "number",
+		"default": 10,
+		minimum: 0,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-major-spacing": {
+		type: "number",
+		"default": 50,
+		minimum: 0,
+		units: "pixels",
 		transition: true,
 		expression: {
 			interpolated: true,
@@ -33638,7 +33736,14 @@ class BackgroundStyleLayer extends StyleLayer {
 /* eslint-disable */
 let paint$1;
 const getPaint$1 = () => paint$1 = paint$1 || new Properties({
-    "contour-color": new DataConstantProperty(v8Spec["paint_contour"]["contour-color"]),
+    "contour-minor-color": new DataConstantProperty(v8Spec["paint_contour"]["contour-minor-color"]),
+    "contour-major-color": new DataConstantProperty(v8Spec["paint_contour"]["contour-major-color"]),
+    "contour-minor-opacity": new DataConstantProperty(v8Spec["paint_contour"]["contour-minor-opacity"]),
+    "contour-major-opacity": new DataConstantProperty(v8Spec["paint_contour"]["contour-major-opacity"]),
+    "contour-minor-line-width": new DataConstantProperty(v8Spec["paint_contour"]["contour-minor-line-width"]),
+    "contour-major-line-width": new DataConstantProperty(v8Spec["paint_contour"]["contour-major-line-width"]),
+    "contour-minor-spacing": new DataConstantProperty(v8Spec["paint_contour"]["contour-minor-spacing"]),
+    "contour-major-spacing": new DataConstantProperty(v8Spec["paint_contour"]["contour-major-spacing"]),
 });
 var properties$3 = ({ get paint() { return getPaint$1(); } });
 
@@ -44731,7 +44836,7 @@ var terrainDepthFrag = 'in float v_depth;const highp vec4 bitSh=vec4(256.*256.*2
 var terrainCoordsFrag = 'precision mediump float;uniform sampler2D u_texture;uniform float u_terrain_coords_id;in vec2 v_texture_pos;void main() {vec4 rgba=texture(u_texture,v_texture_pos);fragColor=vec4(rgba.r,rgba.g,rgba.b,u_terrain_coords_id);}';
 
 // This file is generated. Edit build/generate-shaders.ts, then run `npm run codegen`.
-var terrainFrag = 'uniform sampler2D u_texture;uniform vec4 u_fog_color;uniform vec4 u_horizon_color;uniform float u_fog_ground_blend;uniform float u_fog_ground_blend_opacity;uniform float u_horizon_fog_blend;uniform bool u_is_globe_mode;uniform bool u_show_contour;uniform vec4 u_contour_color;in vec2 v_texture_pos;in float v_fog_depth;in float v_height;const float gamma=2.2;vec4 gammaToLinear(vec4 color) {return pow(color,vec4(gamma));}vec4 linearToGamma(vec4 color) {return pow(color,vec4(1.0/gamma));}void main() {vec4 surface_color=texture(u_texture,vec2(v_texture_pos.x,1.0-v_texture_pos.y));if (u_show_contour) {float d=abs(mod(v_height,10.0));float d2=min(d,10.0-d)/10.0;surface_color=mix(u_contour_color,surface_color,0.75+0.25*smoothstep(0.0,0.2,d2/max(length(fwidth(v_height)),1e-6)));}if (!u_is_globe_mode && v_fog_depth > u_fog_ground_blend) {vec4 surface_color_linear=gammaToLinear(surface_color);float blend_color=smoothstep(0.0,1.0,max((v_fog_depth-u_horizon_fog_blend)/(1.0-u_horizon_fog_blend),0.0));vec4 fog_horizon_color_linear=mix(gammaToLinear(u_fog_color),gammaToLinear(u_horizon_color),blend_color);float factor_fog=max(v_fog_depth-u_fog_ground_blend,0.0)/(1.0-u_fog_ground_blend);fragColor=linearToGamma(mix(surface_color_linear,fog_horizon_color_linear,pow(factor_fog,2.0)*u_fog_ground_blend_opacity));} else {fragColor=surface_color;}}';
+var terrainFrag = 'uniform sampler2D u_texture;uniform vec4 u_fog_color;uniform vec4 u_horizon_color;uniform float u_fog_ground_blend;uniform float u_fog_ground_blend_opacity;uniform float u_horizon_fog_blend;uniform bool u_is_globe_mode;uniform bool u_show_contour;uniform float u_contour_minor_opacity;uniform float u_contour_major_opacity;uniform vec4 u_contour_major_color;uniform vec4 u_contour_minor_color;uniform float u_contour_major_linewidth;uniform float u_contour_minor_linewidth;uniform float u_contour_minor_spacing;uniform float u_contour_major_spacing;in vec2 v_texture_pos;in float v_fog_depth;in float v_height;const float gamma=2.2;vec4 gammaToLinear(vec4 color) {return pow(color,vec4(gamma));}vec4 linearToGamma(vec4 color) {return pow(color,vec4(1.0/gamma));}vec4 applyContour(vec4 surface_color) {float fw=max(length(fwidth(v_height)),1e-6);if (u_contour_major_spacing > 0.) {float d3=abs(mod(v_height,u_contour_major_spacing));float d4=min(d3,u_contour_major_spacing-d3)/fw;if (d4 < u_contour_major_linewidth) {return mix(u_contour_major_color,surface_color,1.0-u_contour_major_opacity+u_contour_major_opacity*smoothstep(0.0,u_contour_major_linewidth,d4));}}if (u_contour_minor_spacing > 0.) {float d1=abs(mod(v_height,u_contour_minor_spacing));float d2=min(d1,u_contour_minor_spacing-d1)/fw;if (d2 < u_contour_minor_linewidth) {return mix(u_contour_minor_color,surface_color,1.0-u_contour_minor_opacity+u_contour_minor_opacity*smoothstep(0.0,u_contour_minor_linewidth,d2));}}return surface_color;}void main() {vec4 surface_color=texture(u_texture,vec2(v_texture_pos.x,1.0-v_texture_pos.y));if (u_show_contour) surface_color=applyContour(surface_color);if (!u_is_globe_mode && v_fog_depth > u_fog_ground_blend) {vec4 surface_color_linear=gammaToLinear(surface_color);float blend_color=smoothstep(0.0,1.0,max((v_fog_depth-u_horizon_fog_blend)/(1.0-u_horizon_fog_blend),0.0));vec4 fog_horizon_color_linear=mix(gammaToLinear(u_fog_color),gammaToLinear(u_horizon_color),blend_color);float factor_fog=max(v_fog_depth-u_fog_ground_blend,0.0)/(1.0-u_fog_ground_blend);fragColor=linearToGamma(mix(surface_color_linear,fog_horizon_color_linear,pow(factor_fog,2.0)*u_fog_ground_blend_opacity));} else {fragColor=surface_color;}}';
 
 // This file is generated. Edit build/generate-shaders.ts, then run `npm run codegen`.
 var terrainVert = 'in vec3 a_pos3d;uniform mat4 u_fog_matrix;uniform float u_ele_delta;out vec2 v_texture_pos;out float v_fog_depth;out float v_height;void main() {float ele=get_elevation(a_pos3d.xy);float ele_delta=a_pos3d.z==1.0 ? u_ele_delta : 0.0;v_texture_pos=a_pos3d.xy/8192.0;gl_Position=projectTileFor3D(a_pos3d.xy,get_elevation(a_pos3d.xy)-ele_delta);vec4 pos=u_fog_matrix*vec4(a_pos3d.xy,ele,1.0);v_fog_depth=pos.z/pos.w*0.5+0.5;v_height=ele;}';
@@ -51311,7 +51416,14 @@ const terrainUniforms = (context, locations) => ({
     'u_horizon_fog_blend': new Uniform1f(context, locations.u_horizon_fog_blend),
     'u_is_globe_mode': new Uniform1f(context, locations.u_is_globe_mode),
     'u_show_contour': new Uniform1f(context, locations.u_show_contour),
-    'u_contour_color': new UniformColor(context, locations.u_contour_color),
+    'u_contour_minor_opacity': new Uniform1f(context, locations.u_contour_minor_opacity),
+    'u_contour_major_opacity': new Uniform1f(context, locations.u_contour_major_opacity),
+    'u_contour_minor_color': new UniformColor(context, locations.u_contour_minor_color),
+    'u_contour_major_color': new UniformColor(context, locations.u_contour_major_color),
+    'u_contour_minor_linewidth': new Uniform1f(context, locations.u_contour_minor_linewidth),
+    'u_contour_major_linewidth': new Uniform1f(context, locations.u_contour_major_linewidth),
+    'u_contour_minor_spacing': new Uniform1f(context, locations.u_contour_minor_spacing),
+    'u_contour_major_spacing': new Uniform1f(context, locations.u_contour_major_spacing),
 });
 const terrainDepthUniforms = (context, locations) => ({
     'u_ele_delta': new Uniform1f(context, locations.u_ele_delta)
@@ -51321,20 +51433,30 @@ const terrainCoordsUniforms = (context, locations) => ({
     'u_terrain_coords_id': new Uniform1f(context, locations.u_terrain_coords_id),
     'u_ele_delta': new Uniform1f(context, locations.u_ele_delta)
 });
-const terrainUniformValues = (eleDelta, fogMatrix, sky, pitch, isGlobeMode, showContour, contourColor) => ({
-    'u_texture': 0,
-    'u_ele_delta': eleDelta,
-    'u_fog_matrix': fogMatrix,
-    'u_fog_color': sky ? sky.properties.get('fog-color') : Color.white,
-    'u_fog_ground_blend': sky ? sky.properties.get('fog-ground-blend') : 1,
-    // Set opacity to 0 when in globe mode to disable fog
-    'u_fog_ground_blend_opacity': isGlobeMode ? 0 : (sky ? sky.calculateFogBlendOpacity(pitch) : 0),
-    'u_horizon_color': sky ? sky.properties.get('horizon-color') : Color.white,
-    'u_horizon_fog_blend': sky ? sky.properties.get('horizon-fog-blend') : 1,
-    'u_is_globe_mode': isGlobeMode ? 1 : 0,
-    'u_show_contour': showContour ? 1 : 0,
-    'u_contour_color': contourColor !== null && contourColor !== void 0 ? contourColor : new Color(0.5, 0.5, 0.5),
-});
+const terrainUniformValues = (eleDelta, fogMatrix, sky, pitch, isGlobeMode, contour) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    return ({
+        'u_texture': 0,
+        'u_ele_delta': eleDelta,
+        'u_fog_matrix': fogMatrix,
+        'u_fog_color': sky ? sky.properties.get('fog-color') : Color.white,
+        'u_fog_ground_blend': sky ? sky.properties.get('fog-ground-blend') : 1,
+        // Set opacity to 0 when in globe mode to disable fog
+        'u_fog_ground_blend_opacity': isGlobeMode ? 0 : (sky ? sky.calculateFogBlendOpacity(pitch) : 0),
+        'u_horizon_color': sky ? sky.properties.get('horizon-color') : Color.white,
+        'u_horizon_fog_blend': sky ? sky.properties.get('horizon-fog-blend') : 1,
+        'u_is_globe_mode': isGlobeMode ? 1 : 0,
+        'u_show_contour': contour !== undefined ? 1 : 0,
+        'u_contour_minor_opacity': (_a = contour === null || contour === void 0 ? void 0 : contour.get('contour-minor-opacity')) !== null && _a !== void 0 ? _a : 0.25,
+        'u_contour_major_opacity': (_b = contour === null || contour === void 0 ? void 0 : contour.get('contour-major-opacity')) !== null && _b !== void 0 ? _b : 0.25,
+        'u_contour_minor_color': (_c = contour === null || contour === void 0 ? void 0 : contour.get('contour-minor-color')) !== null && _c !== void 0 ? _c : '#808080',
+        'u_contour_major_color': (_d = contour === null || contour === void 0 ? void 0 : contour.get('contour-major-color')) !== null && _d !== void 0 ? _d : '#808080',
+        'u_contour_minor_linewidth': (_e = contour === null || contour === void 0 ? void 0 : contour.get('contour-minor-line-width')) !== null && _e !== void 0 ? _e : 1,
+        'u_contour_major_linewidth': (_f = contour === null || contour === void 0 ? void 0 : contour.get('contour-major-line-width')) !== null && _f !== void 0 ? _f : 1,
+        'u_contour_minor_spacing': (_g = contour === null || contour === void 0 ? void 0 : contour.get('contour-minor-spacing')) !== null && _g !== void 0 ? _g : 0,
+        'u_contour_major_spacing': (_h = contour === null || contour === void 0 ? void 0 : contour.get('contour-major-spacing')) !== null && _h !== void 0 ? _h : 0,
+    });
+};
 const terrainDepthUniformValues = (eleDelta) => ({
     'u_ele_delta': eleDelta
 });
@@ -54655,7 +54777,7 @@ function drawCoords(painter, terrain) {
     context.viewport.set([0, 0, painter.width, painter.height]);
 }
 function drawTerrain(painter, terrain, tiles, renderOptions) {
-    const { isRenderingGlobe, showContour, contourColor } = renderOptions;
+    const { isRenderingGlobe, contour } = renderOptions;
     const context = painter.context;
     const gl = context.gl;
     const tr = painter.transform;
@@ -54672,7 +54794,7 @@ function drawTerrain(painter, terrain, tiles, renderOptions) {
         gl.bindTexture(gl.TEXTURE_2D, texture.texture);
         const eleDelta = terrain.getMeshFrameDelta(tr.zoom);
         const fogMatrix = tr.calculateFogMatrix(tile.tileID.toUnwrapped());
-        const uniformValues = terrainUniformValues(eleDelta, fogMatrix, painter.style.sky, tr.pitch, isRenderingGlobe, showContour, contourColor);
+        const uniformValues = terrainUniformValues(eleDelta, fogMatrix, painter.style.sky, tr.pitch, isRenderingGlobe, contour);
         const projectionData = tr.getProjectionData({ overscaledTileID: tile.tileID, applyTerrainMatrix: false, applyGlobeMatrix: true });
         program.draw(context, gl.TRIANGLES, depthMode, StencilMode.disabled, colorMode, CullFaceMode.backCCW, uniformValues, terrainData, projectionData, 'terrain', mesh.vertexBuffer, mesh.indexBuffer, mesh.segments);
     }
@@ -60613,7 +60735,7 @@ class RenderToTexture {
         if (layer.isHidden(this.painter.transform.zoom))
             return false;
         const showContour = isContourStyleLayer(layer);
-        const options = Object.assign(Object.assign({}, renderOptions), { isRenderingToTexture: true, showContour: showContour, contourColor: showContour ? layer.paint.get('contour-color') : undefined });
+        const options = Object.assign(Object.assign({}, renderOptions), { isRenderingToTexture: true, contour: showContour ? layer.paint : undefined });
         const type = layer.type;
         const painter = this.painter;
         const isLastLayer = this._renderableLayerIds[this._renderableLayerIds.length - 1] === layer.id;

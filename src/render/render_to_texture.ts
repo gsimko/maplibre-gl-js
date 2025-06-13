@@ -154,8 +154,7 @@ export class RenderToTexture {
         const options: RenderOptions = {
             ...renderOptions,
             isRenderingToTexture: true,
-            showContour: showContour,
-            contourColor: showContour ? layer.paint.get('contour-color') : undefined,
+            contour: showContour ? layer.paint : undefined,
         };
         const type = layer.type;
         const painter = this.painter;

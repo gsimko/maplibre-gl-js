@@ -57,14 +57,25 @@
                 {
                     id: 'contour',
                     type: 'contour',
-                    paint: {'contour-color': '#808080'}
+                    paint: {
+                        'contour-minor-opacity': 1,
+                        'contour-major-opacity': 1,
+                        'contour-minor-color': '#ffffff',
+                        'contour-major-color': '#ffffff',
+                        'contour-minor-line-width': 1,
+                        'contour-major-line-width': 2,
+                        'contour-minor-spacing': [ "step", ["zoom"], 100, 12, 10 ],
+                        'contour-major-spacing': [ "step", ["zoom"], 500, 12, 50 ],
+                    }
                 },
                 {
                     id: 'hills',
                     type: 'hillshade',
                     source: 'hillshadeSource',
                     layout: {visibility: 'visible'},
-                    paint: {'hillshade-shadow-color': '#473B24'}
+                    paint: {
+                        'hillshade-shadow-color': '#473B24',
+                    }
                 }
             ],
             terrain: {
@@ -74,7 +85,8 @@
             sky: {}
         },
         maxZoom: 18,
-        maxPitch: 85
+        maxPitch: 85,
+        centerClampedToGround: false,
     }));
 
     map.addControl(

@@ -39,7 +39,7 @@ import {MercatorShaderDefine, MercatorShaderVariantKey} from '../geo/projection/
 import type {IReadonlyTransform} from '../geo/transform_interface';
 import type {Style} from '../style/style';
 import type {StyleLayer} from '../style/style_layer';
-import type {CrossFaded} from '../style/properties';
+import type {CrossFaded, PossiblyEvaluated} from '../style/properties';
 import type {LineAtlas} from './line_atlas';
 import type {ImageManager} from './image_manager';
 import type {GlyphManager} from './glyph_manager';
@@ -61,6 +61,7 @@ import {isColorReliefStyleLayer} from '../style/style_layer/color_relief_style_l
 import {isRasterStyleLayer} from '../style/style_layer/raster_style_layer';
 import {isBackgroundStyleLayer} from '../style/style_layer/background_style_layer';
 import {isCustomStyleLayer} from '../style/style_layer/custom_style_layer';
+import {type ContourPaintProps, type ContourPaintPropsPossiblyEvaluated} from '../style/style_layer/contour_style_layer_properties.g.js';
 
 export type RenderPass = 'offscreen' | 'opaque' | 'translucent';
 
@@ -77,8 +78,7 @@ type PainterOptions = {
 export type RenderOptions = {
     isRenderingToTexture: boolean;
     isRenderingGlobe: boolean;
-    showContour?: boolean;
-    contourColor?: Color;
+    contour?: PossiblyEvaluated<ContourPaintProps, ContourPaintPropsPossiblyEvaluated>;
 };
 
 /**

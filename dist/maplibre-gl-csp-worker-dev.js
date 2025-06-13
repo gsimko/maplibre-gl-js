@@ -12633,9 +12633,107 @@ var paint_hillshade = {
 	}
 };
 var paint_contour = {
-	"contour-color": {
+	"contour-minor-color": {
 		type: "color",
 		"default": "#A0A0A0",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-major-color": {
+		type: "color",
+		"default": "#A0A0A0",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-minor-opacity": {
+		type: "number",
+		"default": 0.25,
+		minimum: 0,
+		maximum: 1,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-major-opacity": {
+		type: "number",
+		"default": 0.25,
+		minimum: 0,
+		maximum: 1,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-minor-line-width": {
+		type: "number",
+		"default": 0.2,
+		minimum: 0,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-major-line-width": {
+		type: "number",
+		"default": 0.2,
+		minimum: 0,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-minor-spacing": {
+		type: "number",
+		"default": 10,
+		minimum: 0,
+		units: "pixels",
+		transition: true,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		"property-type": "data-constant"
+	},
+	"contour-major-spacing": {
+		type: "number",
+		"default": 50,
+		minimum: 0,
+		units: "pixels",
 		transition: true,
 		expression: {
 			interpolated: true,
@@ -33153,7 +33251,14 @@ class BackgroundStyleLayer extends StyleLayer {
 /* eslint-disable */
 let paint$1;
 const getPaint$1 = () => paint$1 = paint$1 || new Properties({
-    "contour-color": new DataConstantProperty(v8Spec["paint_contour"]["contour-color"]),
+    "contour-minor-color": new DataConstantProperty(v8Spec["paint_contour"]["contour-minor-color"]),
+    "contour-major-color": new DataConstantProperty(v8Spec["paint_contour"]["contour-major-color"]),
+    "contour-minor-opacity": new DataConstantProperty(v8Spec["paint_contour"]["contour-minor-opacity"]),
+    "contour-major-opacity": new DataConstantProperty(v8Spec["paint_contour"]["contour-major-opacity"]),
+    "contour-minor-line-width": new DataConstantProperty(v8Spec["paint_contour"]["contour-minor-line-width"]),
+    "contour-major-line-width": new DataConstantProperty(v8Spec["paint_contour"]["contour-major-line-width"]),
+    "contour-minor-spacing": new DataConstantProperty(v8Spec["paint_contour"]["contour-minor-spacing"]),
+    "contour-major-spacing": new DataConstantProperty(v8Spec["paint_contour"]["contour-major-spacing"]),
 });
 var properties$1 = ({ get paint() { return getPaint$1(); } });
 

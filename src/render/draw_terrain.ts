@@ -70,7 +70,7 @@ function drawCoords(painter: Painter, terrain: Terrain) {
 }
 
 function drawTerrain(painter: Painter, terrain: Terrain, tiles: Array<Tile>, renderOptions: RenderOptions) {
-    const {isRenderingGlobe, showContour, contourColor} = renderOptions;
+    const {isRenderingGlobe, contour} = renderOptions;
     const context = painter.context;
     const gl = context.gl;
     const tr = painter.transform;
@@ -89,7 +89,7 @@ function drawTerrain(painter: Painter, terrain: Terrain, tiles: Array<Tile>, ren
         gl.bindTexture(gl.TEXTURE_2D, texture.texture);
         const eleDelta = terrain.getMeshFrameDelta(tr.zoom);
         const fogMatrix = tr.calculateFogMatrix(tile.tileID.toUnwrapped());
-        const uniformValues = terrainUniformValues(eleDelta, fogMatrix, painter.style.sky, tr.pitch, isRenderingGlobe, showContour, contourColor);
+        const uniformValues = terrainUniformValues(eleDelta, fogMatrix, painter.style.sky, tr.pitch, isRenderingGlobe, contour);
         const projectionData = tr.getProjectionData({overscaledTileID: tile.tileID, applyTerrainMatrix: false, applyGlobeMatrix: true});
         program.draw(context, gl.TRIANGLES, depthMode, StencilMode.disabled, colorMode, CullFaceMode.backCCW, uniformValues, terrainData, projectionData, 'terrain', mesh.vertexBuffer, mesh.indexBuffer, mesh.segments);
     }

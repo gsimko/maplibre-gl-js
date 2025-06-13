@@ -10,6 +10,8 @@ import type {UniformValues, UniformLocations} from '../../render/uniform_binding
 import {type Sky} from '../../style/sky';
 import {Color} from '@maplibre/maplibre-gl-style-spec';
 import {type mat4} from 'gl-matrix';
+import {type PossiblyEvaluated} from '../../style/properties.js';
+import {type ContourPaintProps, type ContourPaintPropsPossiblyEvaluated} from '../../style/style_layer/contour_style_layer_properties.g.js';
 
 export type TerrainPreludeUniformsType = {
     'u_depth': Uniform1i;
@@ -31,7 +33,14 @@ export type TerrainUniformsType = {
     'u_horizon_fog_blend': Uniform1f;
     'u_is_globe_mode': Uniform1f;
     'u_show_contour': Uniform1f;
-    'u_contour_color': UniformColor;
+    'u_contour_minor_opacity': Uniform1f;
+    'u_contour_major_opacity': Uniform1f;
+    'u_contour_minor_color': UniformColor;
+    'u_contour_major_color': UniformColor;
+    'u_contour_minor_linewidth': Uniform1f;
+    'u_contour_major_linewidth': Uniform1f;
+    'u_contour_minor_spacing': Uniform1f;
+    'u_contour_major_spacing': Uniform1f;
 };
 
 export type TerrainDepthUniformsType = {
@@ -64,7 +73,14 @@ const terrainUniforms = (context: Context, locations: UniformLocations): Terrain
     'u_horizon_fog_blend': new Uniform1f(context, locations.u_horizon_fog_blend),
     'u_is_globe_mode': new Uniform1f(context, locations.u_is_globe_mode),
     'u_show_contour': new Uniform1f(context, locations.u_show_contour),
-    'u_contour_color': new UniformColor(context, locations.u_contour_color),
+    'u_contour_minor_opacity': new Uniform1f(context, locations.u_contour_minor_opacity),
+    'u_contour_major_opacity': new Uniform1f(context, locations.u_contour_major_opacity),
+    'u_contour_minor_color': new UniformColor(context, locations.u_contour_minor_color),
+    'u_contour_major_color': new UniformColor(context, locations.u_contour_major_color),
+    'u_contour_minor_linewidth': new Uniform1f(context, locations.u_contour_minor_linewidth),
+    'u_contour_major_linewidth': new Uniform1f(context, locations.u_contour_major_linewidth),
+    'u_contour_minor_spacing': new Uniform1f(context, locations.u_contour_minor_spacing),
+    'u_contour_major_spacing': new Uniform1f(context, locations.u_contour_major_spacing),
 });
 
 const terrainDepthUniforms = (context: Context, locations: UniformLocations): TerrainDepthUniformsType => ({
@@ -83,8 +99,8 @@ const terrainUniformValues = (
     sky: Sky,
     pitch: number,
     isGlobeMode: boolean,
-    showContour?: boolean,
-    contourColor?: Color): UniformValues<TerrainUniformsType> => ({
+    contour?: PossiblyEvaluated<ContourPaintProps, ContourPaintPropsPossiblyEvaluated>
+): UniformValues<TerrainUniformsType> => ({
     'u_texture': 0,
     'u_ele_delta': eleDelta,
     'u_fog_matrix': fogMatrix,
@@ -95,8 +111,15 @@ const terrainUniformValues = (
     'u_horizon_color': sky ? sky.properties.get('horizon-color') : Color.white,
     'u_horizon_fog_blend': sky ? sky.properties.get('horizon-fog-blend') : 1,
     'u_is_globe_mode': isGlobeMode ? 1 : 0,
-    'u_show_contour': showContour ? 1 : 0,
-    'u_contour_color': contourColor ?? new Color(0.5,0.5,0.5),
+    'u_show_contour': contour !== undefined ? 1 : 0,
+    'u_contour_minor_opacity': contour?.get('contour-minor-opacity') ?? 0.25,
+    'u_contour_major_opacity': contour?.get('contour-major-opacity') ?? 0.25,
+    'u_contour_minor_color': contour?.get('contour-minor-color') ?? '#808080',
+    'u_contour_major_color': contour?.get('contour-major-color') ?? '#808080',
+    'u_contour_minor_linewidth': contour?.get('contour-minor-line-width') ?? 1,
+    'u_contour_major_linewidth': contour?.get('contour-major-line-width') ?? 1,
+    'u_contour_minor_spacing': contour?.get('contour-minor-spacing') ?? 0,
+    'u_contour_major_spacing': contour?.get('contour-major-spacing') ?? 0,
 });
 
 const terrainDepthUniformValues = (

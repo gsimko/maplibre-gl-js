@@ -3546,6 +3546,26 @@ declare class RenderToTexture {
 	 */
 	renderLayer(layer: StyleLayer, renderOptions: RenderOptions): boolean;
 }
+export type ContourPaintProps = {
+	"contour-minor-color": DataConstantProperty<Color>;
+	"contour-major-color": DataConstantProperty<Color>;
+	"contour-minor-opacity": DataConstantProperty<number>;
+	"contour-major-opacity": DataConstantProperty<number>;
+	"contour-minor-line-width": DataConstantProperty<number>;
+	"contour-major-line-width": DataConstantProperty<number>;
+	"contour-minor-spacing": DataConstantProperty<number>;
+	"contour-major-spacing": DataConstantProperty<number>;
+};
+export type ContourPaintPropsPossiblyEvaluated = {
+	"contour-minor-color": Color;
+	"contour-major-color": Color;
+	"contour-minor-opacity": number;
+	"contour-major-opacity": number;
+	"contour-minor-line-width": number;
+	"contour-major-line-width": number;
+	"contour-minor-spacing": number;
+	"contour-major-spacing": number;
+};
 export type RenderPass = "offscreen" | "opaque" | "translucent";
 export type PainterOptions = {
 	showOverdrawInspector: boolean;
@@ -3559,8 +3579,7 @@ export type PainterOptions = {
 export type RenderOptions = {
 	isRenderingToTexture: boolean;
 	isRenderingGlobe: boolean;
-	showContour?: boolean;
-	contourColor?: Color;
+	contour?: PossiblyEvaluated<ContourPaintProps, ContourPaintPropsPossiblyEvaluated>;
 };
 declare class Painter {
 	context: Context;

@@ -2101,7 +2101,8 @@ export class Map extends Camera {
             this.terrain = new Terrain(this.painter, sourceCache, options);
             this.painter.renderToTexture = new RenderToTexture(this.painter, this.terrain);
             this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
-            this.transform.setElevation(this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
+            const a = Math.max(0, this.transform.pitch/90 - 0.5);
+            this.transform.setElevation((1-a)*this.transform.elevation + a*this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
             this._terrainDataCallback = e => {
                 if (e.dataType === 'style') {
                     this.terrain.sourceCache.freeRtt();
@@ -2109,9 +2110,8 @@ export class Map extends Camera {
                     if (e.sourceId === options.source) {
                         this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
                         const ele = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
-                        if (this._centerClampedToGround || this.transform.elevation < ele) {
-                            this.transform.setElevation(ele);
-                        }
+                        const a = Math.max(0, this.transform.pitch/90 - 0.5);
+                        this.transform.setElevation((1-a)*this.transform.elevation + a*ele);
                     }
 
                     if (e.source?.type === 'image') {
@@ -3329,13 +3329,8 @@ export class Map extends Camera {
         if (this.terrain) {
             this.terrain.sourceCache.update(this.transform, this.terrain);
             this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
-            const ele = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
-            if (this._centerClampedToGround || this.transform.elevation < ele) {
-                this.transform.setElevation(ele);
-            }
         } else {
             this.transform.setMinElevationForCurrentTile(0);
-            this.transform.setElevation(0);
         }
 
         this._placementDirty = this.style && this.style._updatePlacement(this.transform, this.showCollisionBoxes, fadeDuration, this._crossSourceCollisions, globeRenderingChanged);

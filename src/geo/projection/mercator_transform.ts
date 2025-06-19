@@ -326,12 +326,13 @@ export class MercatorTransform implements ITransform {
 
     screenPointToMercatorCoordinate(p: Point, terrain?: Terrain): MercatorCoordinate {
         // get point-coordinate from terrain coordinates framebuffer
-        if (terrain) {
-            const coordinate = terrain.pointCoordinate(p);
-            if (coordinate != null) {
-                return coordinate;
-            }
-        }
+        // disable this branch. It's expensive to compute and don't see anything broken without it.
+        // if (terrain) {
+        //     const coordinate = terrain.pointCoordinate(p);
+        //     if (coordinate != null) {
+        //         return coordinate;
+        //     }
+        // }
         return this.screenPointToMercatorCoordinateAtZ(p);
     }
 
@@ -578,7 +579,7 @@ export class MercatorTransform implements ITransform {
         // Other values work for mapbox-gl-js but deck.gl was encountering precision issues
         // when rendering custom layers. This value was experimentally chosen and
         // seems to solve z-fighting issues in deck.gl while not clipping buildings too close to the camera.
-        this._helper._nearZ = this._helper._height / 50;
+        this._helper._nearZ = this._helper._height / 1000;
     }
 
     _calcMatrices(): void {

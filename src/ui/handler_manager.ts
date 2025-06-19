@@ -514,9 +514,10 @@ export class HandlerManager {
 
         around = around || map.transform.centerPoint;
 
-        if (terrain && !tr.isPointOnMapSurface(around)) {
-            around = tr.centerPoint;
-        }
+        // removed because it is expensive and unnecessary
+        // if (terrain && !tr.isPointOnMapSurface(around)) {
+        //     around = tr.centerPoint;
+        // }
 
         const deltasForHelper: MapControlsDeltas = {
             panDelta,
@@ -528,16 +529,17 @@ export class HandlerManager {
         };
 
         // Pre-zoom location under the mouse cursor is required for accurate mercator panning and zooming
-        if (this._map.cameraHelper.useGlobeControls && !tr.isPointOnMapSurface(around)) {
-            around = tr.centerPoint;
-        }
+        // removed because it is expensive and unnecessary
+        // if (this._map.cameraHelper.useGlobeControls && !tr.isPointOnMapSurface(around)) {
+        //     around = tr.centerPoint;
+        // }
         // If we are rotating about the center point, avoid numerical issues near the horizon by using the transform's
         // center directly, instead of computing it from the screen point
-        const preZoomAroundLoc = around.distSqr(tr.centerPoint) < 1.0e-2 ?
-            tr.center :
-            tr.screenPointToLocation(panDelta ? around.sub(panDelta) : around);
 
         if (!terrain) {
+            const preZoomAroundLoc = around.distSqr(tr.centerPoint) < 1.0e-2 ?
+                tr.center :
+                tr.screenPointToLocation(panDelta ? around.sub(panDelta) : around);
             // Apply zoom, bearing, pitch, roll
             this._map.cameraHelper.handleMapControlsRollPitchBearingZoom(deltasForHelper, tr);
             // Apply panning
@@ -554,13 +556,16 @@ export class HandlerManager {
                 (combinedEventsInProgress.drag || combinedEventsInProgress.zoom)) {
                 // When starting to drag or move, flag it and register moveend to clear flagging
                 this._terrainMovement = true;
-                this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
+                // this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
             } else if (combinedEventsInProgress.drag && this._terrainMovement) {
                 // drag map
                 tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
             } else {
-                this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
+                // this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
             }
+            const centerAltitude = terrain.getElevationForLngLatZoom(tr.center, tr.tileZoom);
+            const a = Math.max(0, tr.pitch/90 - 0.5);
+            tr.setElevation((1-a)*tr.elevation + a*centerAltitude);
         }
 
         map._applyUpdatedTransform(tr);

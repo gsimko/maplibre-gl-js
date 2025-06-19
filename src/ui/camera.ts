@@ -1,4 +1,4 @@
-import {extend, wrap, defaultEasing, pick, scaleZoom} from '../util/util';
+import {extend, wrap, defaultEasing, pick, scaleZoom, degreesToRadians} from '../util/util';
 import {interpolates} from '@maplibre/maplibre-gl-style-spec';
 import {browser} from '../util/browser';
 import {LngLat} from '../geo/lng_lat';
@@ -1222,32 +1222,19 @@ export abstract class Camera extends Evented {
 
         const cameraLngLat = tr.getCameraLngLat();
         const cameraAltitude = tr.getCameraAltitude();
-        const minAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(cameraLngLat, tr.zoom) : 0;
-        const centerMinAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(tr.center, tr.tileZoom) : -1;
-      
-        let lift = Math.max(minAltitude+50-cameraAltitude, centerMinAltitude-tr.elevation);
-        if (lift < 0) lift = centerMinAltitude-tr.elevation;
+        const minAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(cameraLngLat, tr.tileZoom) : 0;
 
+        if (minAltitude + 150 <= cameraAltitude) return {};
         const newCamera = this.calculateCameraOptionsFromTo(
-            cameraLngLat, cameraAltitude + lift,
-            tr.center, tr.elevation + lift,
+            cameraLngLat, minAltitude + 150,
+            tr.center, tr.elevation,
         );
-        // console.log('elevate camera center', tr.elevation, centerMinAltitude, cameraAltitude, minAltitude, tr.clone(),  newCamera);
         return {
             center: LngLat.convert(newCamera.center),
             elevation: newCamera.elevation,
             pitch: newCamera.pitch,
             zoom: newCamera.zoom,
         };
-        // if (cameraAltitude < minAltitude) {
-        //     const newCamera = this.calculateCameraOptionsFromTo(
-        //         cameraLngLat, minAltitude, tr.center, tr.elevation);
-        //     return {
-        //         pitch: newCamera.pitch,
-        //         zoom: newCamera.zoom,
-        //     };
-        // }
-        // return {};
     }
 
     /**

@@ -142,7 +142,7 @@ export class Terrain {
         this.options = options;
         this.exaggeration = typeof options.exaggeration === 'number' ? options.exaggeration : 1.0;
         this.qualityFactor = 2;
-        this.meshSize = 128;
+        this.meshSize = 64;
         this._demMatrixCache = {};
         this.coordsIndex = [];
         this._coordsTextureSize = 1024;

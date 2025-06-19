@@ -1,9 +1,8 @@
-import Point from '@mapbox/point-geometry';
+import type Point from '@mapbox/point-geometry';
 
 import {DOM} from '../../util/dom';
 import {type DragMoveHandler, type DragPanResult, type DragRotateResult, type DragPitchResult, DragHandler, type DragRollResult} from './drag_handler';
 import {MouseMoveStateManager} from './drag_move_state_manager';
-import {getAngleDelta} from '../../util/util';
 
 /**
  * `MousePanHandler` allows the user to pan the map by clicking and dragging
@@ -67,15 +66,17 @@ export function generateMouseRotationHandler({enable, clickTolerance, aroundCent
     return new DragHandler<DragRotateResult, MouseEvent>({
         clickTolerance,
         move: (lastPoint: Point, currentPoint: Point) => {
-            const center = getCenter();
-            if (aroundCenter && Math.abs(center.y - lastPoint.y) > minPixelCenterThreshold) {
-                // Avoid rotation related to y axis since it is "saved" for pitch
-                return {bearingDelta: getAngleDelta(new Point(lastPoint.x, currentPoint.y), currentPoint, center)};
-            }
-            let bearingDelta = (currentPoint.x - lastPoint.x) * rotateDegreesPerPixelMoved;
-            if (aroundCenter && currentPoint.y < center.y) {
-                bearingDelta = -bearingDelta;
-            }
+            // const center = getCenter();
+            // Disabled because it seems to make rotation buggy?
+            // if (aroundCenter && Math.abs(center.y - lastPoint.y) > minPixelCenterThreshold) {
+            //     // Avoid rotation related to y axis since it is "saved" for pitch
+            //     return {bearingDelta: getAngleDelta(new Point(lastPoint.x, currentPoint.y), currentPoint, center)};
+            // }
+            const bearingDelta = (currentPoint.x - lastPoint.x) * rotateDegreesPerPixelMoved;
+            // Don't change direction when moving the mouse up or down...
+            // if (aroundCenter && currentPoint.y < center.y) {
+            //     bearingDelta = -bearingDelta;
+            // }
             return {bearingDelta};
         },
         // prevent browser context menu when necessary; we don't allow it with rotation

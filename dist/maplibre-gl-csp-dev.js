@@ -45640,21 +45640,21 @@ class TransformHelper {
         const zoom = scaleZoom(this.cameraToCenterDistance / dMercator / this.tileSize);
         return { center, elevation, zoom };
     }
-    // disabled, this is glitchy
     recalculateZoomAndCenter(elevation) {
-        // if (this.elevation - elevation === 0) return;
-        // // Find the current camera position
-        // const originalPixelPerMeter = mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
-        // const cameraToCenterDistanceMeters = this.cameraToCenterDistance / originalPixelPerMeter;
-        // const origCenterMercator = MercatorCoordinate.fromLngLat(this.center, this.elevation);
-        // const cameraMercator = cameraMercatorCoordinateFromCenterAndRotation(this.center, this.elevation, this.pitch, this.bearing, cameraToCenterDistanceMeters);
-        // // update elevation to the new terrain intercept elevation and recalculate the center point
-        // this._elevation = elevation;
-        // const centerInfo = this.calculateCenterFromCameraLngLatAlt(cameraMercator.toLngLat(), altitudeFromMercatorZ(cameraMercator.z, origCenterMercator.y), this.bearing, this.pitch);
-        // // update matrices
-        // this._elevation = centerInfo.elevation;
-        // this._center = centerInfo.center;
-        // this.setZoom(centerInfo.zoom);
+        if (this.elevation - elevation === 0)
+            return;
+        // Find the current camera position
+        const originalPixelPerMeter = mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
+        const cameraToCenterDistanceMeters = this.cameraToCenterDistance / originalPixelPerMeter;
+        const origCenterMercator = MercatorCoordinate.fromLngLat(this.center, this.elevation);
+        const cameraMercator = cameraMercatorCoordinateFromCenterAndRotation(this.center, this.elevation, this.pitch, this.bearing, cameraToCenterDistanceMeters);
+        // update elevation to the new terrain intercept elevation and recalculate the center point
+        this._elevation = elevation;
+        const centerInfo = this.calculateCenterFromCameraLngLatAlt(cameraMercator.toLngLat(), altitudeFromMercatorZ(cameraMercator.z, origCenterMercator.y), this.bearing, this.pitch);
+        // update matrices
+        this._elevation = centerInfo.elevation;
+        this._center = centerInfo.center;
+        this.setZoom(centerInfo.zoom);
     }
     getCameraPoint() {
         const pitch = this.pitchInRadians;
@@ -46233,12 +46233,13 @@ class MercatorTransform {
     }
     screenPointToMercatorCoordinate(p, terrain) {
         // get point-coordinate from terrain coordinates framebuffer
-        if (terrain) {
-            const coordinate = terrain.pointCoordinate(p);
-            if (coordinate != null) {
-                return coordinate;
-            }
-        }
+        // disable this branch. It's expensive to compute and don't see anything broken without it.
+        // if (terrain) {
+        //     const coordinate = terrain.pointCoordinate(p);
+        //     if (coordinate != null) {
+        //         return coordinate;
+        //     }
+        // }
         return this.screenPointToMercatorCoordinateAtZ(p);
     }
     screenPointToMercatorCoordinateAtZ(p, mercatorZ) {
@@ -46442,7 +46443,7 @@ class MercatorTransform {
         // Other values work for mapbox-gl-js but deck.gl was encountering precision issues
         // when rendering custom layers. This value was experimentally chosen and
         // seems to solve z-fighting issues in deck.gl while not clipping buildings too close to the camera.
-        this._helper._nearZ = this._helper._height / 50;
+        this._helper._nearZ = this._helper._height / 1000;
     }
     _calcMatrices() {
         if (!this._helper._height)
@@ -56577,15 +56578,17 @@ function generateMouseRotationHandler({ enable, clickTolerance, aroundCenter = t
     return new DragHandler({
         clickTolerance,
         move: (lastPoint, currentPoint) => {
-            const center = getCenter();
-            if (aroundCenter && Math.abs(center.y - lastPoint.y) > minPixelCenterThreshold) {
-                // Avoid rotation related to y axis since it is "saved" for pitch
-                return { bearingDelta: getAngleDelta(new Point(lastPoint.x, currentPoint.y), currentPoint, center) };
-            }
-            let bearingDelta = (currentPoint.x - lastPoint.x) * rotateDegreesPerPixelMoved;
-            if (aroundCenter && currentPoint.y < center.y) {
-                bearingDelta = -bearingDelta;
-            }
+            // const center = getCenter();
+            // Disabled because it seems to make rotation buggy?
+            // if (aroundCenter && Math.abs(center.y - lastPoint.y) > minPixelCenterThreshold) {
+            //     // Avoid rotation related to y axis since it is "saved" for pitch
+            //     return {bearingDelta: getAngleDelta(new Point(lastPoint.x, currentPoint.y), currentPoint, center)};
+            // }
+            const bearingDelta = (currentPoint.x - lastPoint.x) * rotateDegreesPerPixelMoved;
+            // Don't change direction when moving the mouse up or down...
+            // if (aroundCenter && currentPoint.y < center.y) {
+            //     bearingDelta = -bearingDelta;
+            // }
             return { bearingDelta };
         },
         // prevent browser context menu when necessary; we don't allow it with rotation
@@ -58279,9 +58282,10 @@ class HandlerManager {
             around = pinchAround;
         }
         around = around || map.transform.centerPoint;
-        if (terrain && !tr.isPointOnMapSurface(around)) {
-            around = tr.centerPoint;
-        }
+        // removed because it is expensive and unnecessary
+        // if (terrain && !tr.isPointOnMapSurface(around)) {
+        //     around = tr.centerPoint;
+        // }
         const deltasForHelper = {
             panDelta,
             zoomDelta,
@@ -58291,15 +58295,16 @@ class HandlerManager {
             around,
         };
         // Pre-zoom location under the mouse cursor is required for accurate mercator panning and zooming
-        if (this._map.cameraHelper.useGlobeControls && !tr.isPointOnMapSurface(around)) {
-            around = tr.centerPoint;
-        }
+        // removed because it is expensive and unnecessary
+        // if (this._map.cameraHelper.useGlobeControls && !tr.isPointOnMapSurface(around)) {
+        //     around = tr.centerPoint;
+        // }
         // If we are rotating about the center point, avoid numerical issues near the horizon by using the transform's
         // center directly, instead of computing it from the screen point
-        const preZoomAroundLoc = around.distSqr(tr.centerPoint) < 1.0e-2 ?
-            tr.center :
-            tr.screenPointToLocation(panDelta ? around.sub(panDelta) : around);
         if (!terrain) {
+            const preZoomAroundLoc = around.distSqr(tr.centerPoint) < 1.0e-2 ?
+                tr.center :
+                tr.screenPointToLocation(panDelta ? around.sub(panDelta) : around);
             // Apply zoom, bearing, pitch, roll
             this._map.cameraHelper.handleMapControlsRollPitchBearingZoom(deltasForHelper, tr);
             // Apply panning
@@ -58317,15 +58322,18 @@ class HandlerManager {
                 (combinedEventsInProgress.drag || combinedEventsInProgress.zoom)) {
                 // When starting to drag or move, flag it and register moveend to clear flagging
                 this._terrainMovement = true;
-                this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
+                // this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
             }
             else if (combinedEventsInProgress.drag && this._terrainMovement) {
                 // drag map
                 tr.setCenter(tr.screenPointToLocation(tr.centerPoint.sub(panDelta)));
             }
             else {
-                this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
+                // this._map.cameraHelper.handleMapControlsPan(deltasForHelper, tr, preZoomAroundLoc);
             }
+            const centerAltitude = terrain.getElevationForLngLatZoom(tr.center, tr.tileZoom);
+            const a = Math.max(0, tr.pitch / 90 - 0.5);
+            tr.setElevation((1 - a) * tr.elevation + a * centerAltitude);
         }
         map._applyUpdatedTransform(tr);
         this._map._update();
@@ -59239,28 +59247,16 @@ class Camera extends Evented {
         }
         const cameraLngLat = tr.getCameraLngLat();
         const cameraAltitude = tr.getCameraAltitude();
-        const minAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(cameraLngLat, tr.zoom) : 0;
-        const centerMinAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(tr.center, tr.tileZoom) : -1;
-        let lift = Math.max(minAltitude + 50 - cameraAltitude, centerMinAltitude - tr.elevation);
-        if (lift < 0)
-            lift = centerMinAltitude - tr.elevation;
-        const newCamera = this.calculateCameraOptionsFromTo(cameraLngLat, cameraAltitude + lift, tr.center, tr.elevation + lift);
-        // console.log('elevate camera center', tr.elevation, centerMinAltitude, cameraAltitude, minAltitude, tr.clone(),  newCamera);
+        const minAltitude = this.terrain ? this.terrain.getElevationForLngLatZoom(cameraLngLat, tr.tileZoom) : 0;
+        if (minAltitude + 150 <= cameraAltitude)
+            return {};
+        const newCamera = this.calculateCameraOptionsFromTo(cameraLngLat, minAltitude + 150, tr.center, tr.elevation);
         return {
             center: LngLat.convert(newCamera.center),
             elevation: newCamera.elevation,
             pitch: newCamera.pitch,
             zoom: newCamera.zoom,
         };
-        // if (cameraAltitude < minAltitude) {
-        //     const newCamera = this.calculateCameraOptionsFromTo(
-        //         cameraLngLat, minAltitude, tr.center, tr.elevation);
-        //     return {
-        //         pitch: newCamera.pitch,
-        //         zoom: newCamera.zoom,
-        //     };
-        // }
-        // return {};
     }
     /**
      * @internal
@@ -60238,7 +60234,7 @@ class Terrain {
         this.options = options;
         this.exaggeration = typeof options.exaggeration === 'number' ? options.exaggeration : 1.0;
         this.qualityFactor = 2;
-        this.meshSize = 128;
+        this.meshSize = 64;
         this._demMatrixCache = {};
         this.coordsIndex = [];
         this._coordsTextureSize = 1024;
@@ -62134,7 +62130,8 @@ let Map$1 = class Map extends Camera {
             this.terrain = new Terrain(this.painter, sourceCache, options);
             this.painter.renderToTexture = new RenderToTexture(this.painter, this.terrain);
             this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
-            this.transform.setElevation(this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
+            const a = Math.max(0, this.transform.pitch / 90 - 0.5);
+            this.transform.setElevation((1 - a) * this.transform.elevation + a * this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
             this._terrainDataCallback = e => {
                 var _a;
                 if (e.dataType === 'style') {
@@ -62144,9 +62141,8 @@ let Map$1 = class Map extends Camera {
                     if (e.sourceId === options.source) {
                         this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
                         const ele = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
-                        if (this._centerClampedToGround || this.transform.elevation < ele) {
-                            this.transform.setElevation(ele);
-                        }
+                        const a = Math.max(0, this.transform.pitch / 90 - 0.5);
+                        this.transform.setElevation((1 - a) * this.transform.elevation + a * ele);
                     }
                     if (((_a = e.source) === null || _a === void 0 ? void 0 : _a.type) === 'image') {
                         this.terrain.sourceCache.freeRtt();
@@ -63232,14 +63228,9 @@ let Map$1 = class Map extends Camera {
         if (this.terrain) {
             this.terrain.sourceCache.update(this.transform, this.terrain);
             this.transform.setMinElevationForCurrentTile(this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom));
-            const ele = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
-            if (this._centerClampedToGround || this.transform.elevation < ele) {
-                this.transform.setElevation(ele);
-            }
         }
         else {
             this.transform.setMinElevationForCurrentTile(0);
-            this.transform.setElevation(0);
         }
         this._placementDirty = this.style && this.style._updatePlacement(this.transform, this.showCollisionBoxes, fadeDuration, this._crossSourceCollisions, globeRenderingChanged);
         // Actually draw
@@ -63584,7 +63575,8 @@ class NavigationControl {
             }
             this._map.on('rotate', this._rotateCompassArrow);
             this._rotateCompassArrow();
-            this._handler = new MouseRotateWrapper(this._map, this._compass, this.options.visualizePitch);
+            // Do not want to enable this, it is buggy
+            // this._handler = new MouseRotateWrapper(this._map, this._compass, this.options.visualizePitch);
         }
         return this._container;
     }

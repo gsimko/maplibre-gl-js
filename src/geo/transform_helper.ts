@@ -580,24 +580,23 @@ export class TransformHelper implements ITransformGetters {
         return {center, elevation, zoom};
     }
 
-    // disabled, this is glitchy
     recalculateZoomAndCenter(elevation: number): void {
-        // if (this.elevation - elevation === 0) return;
+        if (this.elevation - elevation === 0) return;
 
-        // // Find the current camera position
-        // const originalPixelPerMeter = mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
-        // const cameraToCenterDistanceMeters = this.cameraToCenterDistance / originalPixelPerMeter;
-        // const origCenterMercator = MercatorCoordinate.fromLngLat(this.center, this.elevation);
-        // const cameraMercator = cameraMercatorCoordinateFromCenterAndRotation(this.center, this.elevation, this.pitch, this.bearing, cameraToCenterDistanceMeters);
+        // Find the current camera position
+        const originalPixelPerMeter = mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
+        const cameraToCenterDistanceMeters = this.cameraToCenterDistance / originalPixelPerMeter;
+        const origCenterMercator = MercatorCoordinate.fromLngLat(this.center, this.elevation);
+        const cameraMercator = cameraMercatorCoordinateFromCenterAndRotation(this.center, this.elevation, this.pitch, this.bearing, cameraToCenterDistanceMeters);
 
-        // // update elevation to the new terrain intercept elevation and recalculate the center point
-        // this._elevation = elevation;
-        // const centerInfo = this.calculateCenterFromCameraLngLatAlt(cameraMercator.toLngLat(), altitudeFromMercatorZ(cameraMercator.z, origCenterMercator.y), this.bearing, this.pitch);
+        // update elevation to the new terrain intercept elevation and recalculate the center point
+        this._elevation = elevation;
+        const centerInfo = this.calculateCenterFromCameraLngLatAlt(cameraMercator.toLngLat(), altitudeFromMercatorZ(cameraMercator.z, origCenterMercator.y), this.bearing, this.pitch);
 
-        // // update matrices
-        // this._elevation = centerInfo.elevation;
-        // this._center = centerInfo.center;
-        // this.setZoom(centerInfo.zoom);
+        // update matrices
+        this._elevation = centerInfo.elevation;
+        this._center = centerInfo.center;
+        this.setZoom(centerInfo.zoom);
     }
 
     getCameraPoint(): Point {

@@ -133,7 +133,7 @@ export class NavigationControl implements IControl {
             this._map.on('rotate', this._rotateCompassArrow);
             this._rotateCompassArrow();
             // Do not want to enable this, it is buggy
-            // this._handler = new MouseRotateWrapper(this._map, this._compass, this.options.visualizePitch);
+            this._handler = new MouseRotateWrapper(this._map, this._compass, this.options.visualizePitch);
         }
         return this._container;
     }
@@ -152,8 +152,10 @@ export class NavigationControl implements IControl {
                 this._map.off('roll', this._rotateCompassArrow);
             }
             this._map.off('rotate', this._rotateCompassArrow);
-            this._handler.off();
-            delete this._handler;
+            if (this._handler) {
+                this._handler.off();
+                delete this._handler;
+            }
         }
 
         delete this._map;

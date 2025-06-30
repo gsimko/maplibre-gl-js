@@ -326,13 +326,12 @@ export class MercatorTransform implements ITransform {
 
     screenPointToMercatorCoordinate(p: Point, terrain?: Terrain): MercatorCoordinate {
         // get point-coordinate from terrain coordinates framebuffer
-        // disable this branch. It's expensive to compute and don't see anything broken without it.
-        // if (terrain) {
-        //     const coordinate = terrain.pointCoordinate(p);
-        //     if (coordinate != null) {
-        //         return coordinate;
-        //     }
-        // }
+        if (terrain) {
+            const coordinate = terrain.pointCoordinate(p);
+            if (coordinate != null) {
+                return coordinate;
+            }
+        }
         return this.screenPointToMercatorCoordinateAtZ(p);
     }
 

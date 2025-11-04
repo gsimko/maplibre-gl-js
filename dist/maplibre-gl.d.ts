@@ -8908,70 +8908,6 @@ declare class HandlerManager {
 	_triggerRenderFrame(): void;
 }
 /**
- * A position defintion for the control to be placed, can be in one of the corners of the map.
- * When two or more controls are places in the same location they are stacked toward the center of the map.
- */
-export type ControlPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
-/**
- * Interface for interactive controls added to the map. This is a
- * specification for implementers to model: it is not
- * an exported method or class.
- *
- * Controls must implement `onAdd` and `onRemove`, and must own an
- * element, which is often a `div` element. To use MapLibre GL JS's
- * default control styling, add the `maplibregl-ctrl` class to your control's
- * node.
- *
- * @example
- * ```ts
- * class HelloWorldControl: IControl {
- *     onAdd(map) {
- *         this._map = map;
- *         this._container = document.createElement('div');
- *         this._container.className = 'maplibregl-ctrl';
- *         this._container.textContent = 'Hello, world';
- *         return this._container;
- *     }
- *
- *     onRemove() {
- *         this._container.parentNode.removeChild(this._container);
- *         this._map = undefined;
- *     }
- * }
- * ```
- */
-export interface IControl {
-	/**
-	 * Register a control on the map and give it a chance to register event listeners
-	 * and resources. This method is called by {@link Map#addControl}
-	 * internally.
-	 *
-	 * @param map - the Map this control will be added to
-	 * @returns The control's container element. This should
-	 * be created by the control and returned by onAdd without being attached
-	 * to the DOM: the map will insert the control's element into the DOM
-	 * as necessary.
-	 */
-	onAdd(map: Map$1): HTMLElement;
-	/**
-	 * Unregister a control on the map and give it a chance to detach event listeners
-	 * and resources. This method is called by {@link Map#removeControl}
-	 * internally.
-	 *
-	 * @param map - the Map this control will be removed from
-	 */
-	onRemove(map: Map$1): void;
-	/**
-	 * Optionally provide a default position for this control. If this method
-	 * is implemented and {@link Map#addControl} is called without the `position`
-	 * parameter, the value returned by getDefaultPosition will be used as the
-	 * control's position.
-	 *
-	 * @returns a control position, one of the values valid in addControl.
-	 */
-	readonly getDefaultPosition?: () => ControlPosition;
-}
-/**
  * An event from the mouse relevant to a specific layer.
  *
  * @group Event Related
@@ -9676,59 +9612,6 @@ export type MapStyleImageMissingEvent = MapLibreEvent & {
 	type: "styleimagemissing";
 	id: string;
 };
-/**
- * The {@link AttributionControl} options object
- */
-export type AttributionControlOptions = {
-	/**
-	 * If `true`, the attribution control will always collapse when moving the map. If `false`,
-	 * force the expanded attribution control. The default is a responsive attribution that collapses when the user moves the map on maps less than 640 pixels wide.
-	 * **Attribution should not be collapsed if it can comfortably fit on the map. `compact` should only be used to modify default attribution when map size makes it impossible to fit default attribution and when the automatic compact resizing for default settings are not sufficient.**
-	 */
-	compact?: boolean;
-	/**
-	 * Attributions to show in addition to any other attributions.
-	 */
-	customAttribution?: string | Array<string>;
-};
-/**
- * An `AttributionControl` control presents the map's attribution information. By default, the attribution control is expanded (regardless of map width).
- * @group Markers and Controls
- * @example
- * ```ts
- * let map = new Map({attributionControl: false})
- *     .addControl(new AttributionControl({
- *         compact: true
- *     }));
- * ```
- */
-export declare class AttributionControl implements IControl {
-	options: AttributionControlOptions;
-	_map: Map$1;
-	_compact: boolean | undefined;
-	_container: HTMLElement;
-	_innerContainer: HTMLElement;
-	_compactButton: HTMLElement;
-	_editLink: HTMLAnchorElement;
-	_attribHTML: string;
-	styleId: string;
-	styleOwner: string;
-	/**
-	 * @param options - the attribution options
-	 */
-	constructor(options?: AttributionControlOptions);
-	getDefaultPosition(): ControlPosition;
-	/** {@inheritDoc IControl.onAdd} */
-	onAdd(map: Map$1): HTMLElement;
-	/** {@inheritDoc IControl.onRemove} */
-	onRemove(): void;
-	_setElementTitle(element: HTMLElement, title: "ToggleAttribution" | "MapFeedback"): void;
-	_toggleAttribution: () => void;
-	_updateData: (e: MapDataEvent) => void;
-	_updateAttributions(): void;
-	_updateCompact: () => void;
-	_updateCompactMinimize: () => void;
-}
 declare const defaultLocale: {
 	"AttributionControl.ToggleAttribution": string;
 	"AttributionControl.MapFeedback": string;
@@ -10440,6 +10323,70 @@ export declare class TwoFingersTouchZoomRotateHandler {
 	 */
 	enableRotation(): void;
 }
+/**
+ * A position defintion for the control to be placed, can be in one of the corners of the map.
+ * When two or more controls are places in the same location they are stacked toward the center of the map.
+ */
+export type ControlPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+/**
+ * Interface for interactive controls added to the map. This is a
+ * specification for implementers to model: it is not
+ * an exported method or class.
+ *
+ * Controls must implement `onAdd` and `onRemove`, and must own an
+ * element, which is often a `div` element. To use MapLibre GL JS's
+ * default control styling, add the `maplibregl-ctrl` class to your control's
+ * node.
+ *
+ * @example
+ * ```ts
+ * class HelloWorldControl: IControl {
+ *     onAdd(map) {
+ *         this._map = map;
+ *         this._container = document.createElement('div');
+ *         this._container.className = 'maplibregl-ctrl';
+ *         this._container.textContent = 'Hello, world';
+ *         return this._container;
+ *     }
+ *
+ *     onRemove() {
+ *         this._container.parentNode.removeChild(this._container);
+ *         this._map = undefined;
+ *     }
+ * }
+ * ```
+ */
+export interface IControl {
+	/**
+	 * Register a control on the map and give it a chance to register event listeners
+	 * and resources. This method is called by {@link Map#addControl}
+	 * internally.
+	 *
+	 * @param map - the Map this control will be added to
+	 * @returns The control's container element. This should
+	 * be created by the control and returned by onAdd without being attached
+	 * to the DOM: the map will insert the control's element into the DOM
+	 * as necessary.
+	 */
+	onAdd(map: Map$1): HTMLElement;
+	/**
+	 * Unregister a control on the map and give it a chance to detach event listeners
+	 * and resources. This method is called by {@link Map#removeControl}
+	 * internally.
+	 *
+	 * @param map - the Map this control will be removed from
+	 */
+	onRemove(map: Map$1): void;
+	/**
+	 * Optionally provide a default position for this control. If this method
+	 * is implemented and {@link Map#addControl} is called without the `position`
+	 * parameter, the value returned by getDefaultPosition will be used as the
+	 * control's position.
+	 *
+	 * @returns a control position, one of the values valid in addControl.
+	 */
+	readonly getDefaultPosition?: () => ControlPosition;
+}
 export type WebGLSupportedVersions = "webgl2" | "webgl" | undefined;
 export type WebGLContextAttributesWithType = WebGLContextAttributes & {
 	contextType?: WebGLSupportedVersions;
@@ -10479,11 +10426,11 @@ export type MapOptions = {
 	 * Note: showing the logo of MapLibre is not required for using MapLibre.
 	 * @defaultValue compact: true, customAttribution: "MapLibre ...".
 	 */
-	attributionControl?: false | AttributionControlOptions;
+	attributionControl?: false;
 	/**
 	 * If `true`, the MapLibre logo will be shown.
 	 */
-	maplibreLogo?: boolean;
+	maplibreLogo?: false;
 	/**
 	 * A string representing the position of the MapLibre wordmark on the map. Valid options are `top-left`,`top-right`, `bottom-left`, or `bottom-right`.
 	 * @defaultValue 'bottom-left'
@@ -12618,6 +12565,172 @@ declare class MouseRotateWrapper {
 	reset: () => void;
 }
 /**
+ * The unit type for length to use for the {@link ScaleControl}
+ */
+export type Unit = "imperial" | "metric" | "nautical";
+/**
+ * The {@link ScaleControl} options object
+ */
+export type ScaleControlOptions = {
+	/**
+	 * The maximum length of the scale control in pixels.
+	 * @defaultValue 100
+	 */
+	maxWidth?: number;
+	/**
+	 * Unit of the distance (`'imperial'`, `'metric'` or `'nautical'`).
+	 * @defaultValue 'metric'
+	 */
+	unit?: Unit;
+};
+/**
+ * A `ScaleControl` control displays the ratio of a distance on the map to the corresponding distance on the ground.
+ *
+ * @group Markers and Controls
+ *
+ * @example
+ * ```ts
+ * let scale = new ScaleControl({
+ *     maxWidth: 80,
+ *     unit: 'imperial'
+ * });
+ * map.addControl(scale);
+ *
+ * scale.setUnit('metric');
+ * ```
+ */
+export declare class ScaleControl implements IControl {
+	_map: Map$1;
+	_container: HTMLElement;
+	options: ScaleControlOptions;
+	/**
+	 * @param options - the control's options
+	 */
+	constructor(options?: ScaleControlOptions);
+	getDefaultPosition(): ControlPosition;
+	_onMove: () => void;
+	/** {@inheritDoc IControl.onAdd} */
+	onAdd(map: Map$1): HTMLElement;
+	/** {@inheritDoc IControl.onRemove} */
+	onRemove(): void;
+	/**
+	 * Set the scale's unit of the distance
+	 *
+	 * @param unit - Unit of the distance (`'imperial'`, `'metric'` or `'nautical'`).
+	 */
+	setUnit: (unit: Unit) => void;
+}
+/**
+ * The {@link FullscreenControl} options object
+ */
+export type FullscreenControlOptions = {
+	/**
+	 * `container` is the [compatible DOM element](https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen#Compatible_elements) which should be made full screen. By default, the map container element will be made full screen.
+	 */
+	container?: HTMLElement;
+};
+/**
+ * A `FullscreenControl` control contains a button for toggling the map in and out of fullscreen mode.
+ * When [requestFullscreen](https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen) is not supported, fullscreen is handled via CSS properties.
+ * The map's `cooperativeGestures` option is temporarily disabled while the map
+ * is in fullscreen mode, and is restored when the map exist fullscreen mode.
+ *
+ * @group Markers and Controls
+ * @param options - the full screen control options
+ *
+ * @example
+ * ```ts
+ * map.addControl(new FullscreenControl({container: document.querySelector('body')}));
+ * ```
+ * @see [View a fullscreen map](https://maplibre.org/maplibre-gl-js/docs/examples/fullscreen/)
+ *
+ * ## Events
+ *
+ * **Event** `fullscreenstart` of type {@link Event} will be fired when fullscreen mode has started.
+ *
+ * **Event** `fullscreenend` of type {@link Event} will be fired when fullscreen mode has ended.
+ */
+export declare class FullscreenControl extends Evented implements IControl {
+	_map: Map$1;
+	_controlContainer: HTMLElement;
+	_fullscreen: boolean;
+	_fullscreenchange: string;
+	_fullscreenButton: HTMLButtonElement;
+	_container: HTMLElement;
+	_prevCooperativeGesturesEnabled: boolean;
+	/**
+	 * @param options - the control's options
+	 */
+	constructor(options?: FullscreenControlOptions);
+	/** {@inheritDoc IControl.onAdd} */
+	onAdd(map: Map$1): HTMLElement;
+	/** {@inheritDoc IControl.onRemove} */
+	onRemove(): void;
+	_setupUI(): void;
+	_updateTitle(): void;
+	_getTitle(): string;
+	_isFullscreen(): boolean;
+	_onFullscreenChange: () => void;
+	_handleFullscreenChange(): void;
+	_onClickFullscreen: () => void;
+	_exitFullscreen(): void;
+	_requestFullscreen(): void;
+	_togglePseudoFullScreen(): void;
+}
+/**
+ * A `TerrainControl` control contains a button for turning the terrain on and off.
+ *
+ * @group Markers and Controls
+ *
+ * @example
+ * ```ts
+ * let map = new Map({TerrainControl: false})
+ *     .addControl(new TerrainControl({
+ *         source: "terrain"
+ *     }));
+ * ```
+ */
+export declare class TerrainControl implements IControl {
+	options: TerrainSpecification;
+	_map: Map$1;
+	_container: HTMLElement;
+	_terrainButton: HTMLButtonElement;
+	/**
+	 * @param options - the control's options
+	 */
+	constructor(options: TerrainSpecification);
+	/** {@inheritDoc IControl.onAdd} */
+	onAdd(map: Map$1): HTMLElement;
+	/** {@inheritDoc IControl.onRemove} */
+	onRemove(): void;
+	_toggleTerrain: () => void;
+	_updateTerrainIcon: () => void;
+}
+/**
+ * A `GlobeControl` control contains a button for toggling the map projection between "mercator" and "globe".
+ *
+ * @group Markers and Controls
+ *
+ * @example
+ * ```ts
+ * let map = new Map()
+ *     .addControl(new GlobeControl());
+ * ```
+ *
+ * @see [Display a globe with a fill extrusion layer](https://maplibre.org/maplibre-gl-js/docs/examples/globe-fill-extrusion/)
+ */
+export declare class GlobeControl implements IControl {
+	_map: Map$1;
+	_container: HTMLElement;
+	_globeButton: HTMLButtonElement;
+	/** {@inheritDoc IControl.onAdd} */
+	onAdd(map: Map$1): HTMLElement;
+	/** {@inheritDoc IControl.onRemove} */
+	onRemove(): void;
+	_toggleProjection: () => void;
+	_updateGlobeIcon: () => void;
+}
+/**
  * Where to position the anchor.
  * Used by a popup and a marker.
  */
@@ -12695,65 +12808,7 @@ export type PopupOptions = {
 	 */
 	locationOccludedOpacity?: number | string;
 };
-/**
- * A popup component.
- *
- * @group Markers and Controls
- *
- *
- * @example
- * Create a popup
- * ```ts
- * let popup = new Popup();
- * // Set an event listener that will fire
- * // any time the popup is opened
- * popup.on('open', () => {
- *   console.log('popup was opened');
- * });
- * ```
- *
- * @example
- * Create a popup
- * ```ts
- * let popup = new Popup();
- * // Set an event listener that will fire
- * // any time the popup is closed
- * popup.on('close', () => {
- *   console.log('popup was closed');
- * });
- * ```
- *
- * @example
- * ```ts
- * let markerHeight = 50, markerRadius = 10, linearOffset = 25;
- * let popupOffsets = {
- *  'top': [0, 0],
- *  'top-left': [0,0],
- *  'top-right': [0,0],
- *  'bottom': [0, -markerHeight],
- *  'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
- *  'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
- *  'left': [markerRadius, (markerHeight - markerRadius) * -1],
- *  'right': [-markerRadius, (markerHeight - markerRadius) * -1]
- *  };
- * let popup = new Popup({offset: popupOffsets, className: 'my-class'})
- *   .setLngLat(e.lngLat)
- *   .setHTML("<h1>Hello World!</h1>")
- *   .setMaxWidth("300px")
- *   .addTo(map);
- * ```
- * @see [Display a popup](https://maplibre.org/maplibre-gl-js/docs/examples/popup/)
- * @see [Display a popup on hover](https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-hover/)
- * @see [Display a popup on click](https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-click/)
- * @see [Attach a popup to a marker instance](https://maplibre.org/maplibre-gl-js/docs/examples/set-popup/)
- *
- * ## Events
- *
- * **Event** `open` of type {@link Event} will be fired when the popup is opened manually or programmatically.
- *
- * **Event** `close` of type {@link Event} will be fired when the popup is closed manually or programmatically.
- */
-export declare class Popup extends Evented {
+declare class Popup extends Evented {
 	_map: Map$1;
 	options: PopupOptions;
 	_content: HTMLElement;
@@ -13333,495 +13388,6 @@ export declare class Marker extends Evented {
 	setOpacity(opacity?: string, opacityWhenCovered?: string): this;
 }
 /**
- * The {@link GeolocateControl} options object
- */
-export type GeolocateControlOptions = {
-	/**
-	 * A Geolocation API [PositionOptions](https://developer.mozilla.org/en-US/docs/Web/API/PositionOptions) object.
-	 * @defaultValue `{enableHighAccuracy: false, timeout: 6000}`
-	 */
-	positionOptions?: PositionOptions;
-	/**
-	 * A options object to use when the map is panned and zoomed to the user's location. The default is to use a `maxZoom` of 15 to limit how far the map will zoom in for very accurate locations.
-	 */
-	fitBoundsOptions?: FitBoundsOptions;
-	/**
-	 * If `true` the `GeolocateControl` becomes a toggle button and when active the map will receive updates to the user's location as it changes.
-	 * @defaultValue false
-	 */
-	trackUserLocation?: boolean;
-	/**
-	 * By default, if `showUserLocation` is `true`, a transparent circle will be drawn around the user location indicating the accuracy (95% confidence level) of the user's location. Set to `false` to disable. Always disabled when `showUserLocation` is `false`.
-	 * @defaultValue true
-	 */
-	showAccuracyCircle?: boolean;
-	/**
-	 * By default a dot will be shown on the map at the user's location. Set to `false` to disable.
-	 * @defaultValue true
-	 */
-	showUserLocation?: boolean;
-};
-/**
- * A `GeolocateControl` control provides a button that uses the browser's geolocation
- * API to locate the user on the map.
- *
- * Not all browsers support geolocation,
- * and some users may disable the feature. Geolocation support for modern
- * browsers including Chrome requires sites to be served over HTTPS. If
- * geolocation support is not available, the `GeolocateControl` will show
- * as disabled.
- *
- * The zoom level applied will depend on the accuracy of the geolocation provided by the device.
- *
- * The `GeolocateControl` has two modes. If `trackUserLocation` is `false` (default) the control acts as a button, which when pressed will set the map's camera to target the user location. If the user moves, the map won't update. This is most suited for the desktop. If `trackUserLocation` is `true` the control acts as a toggle button that when active the user's location is actively monitored for changes. In this mode the `GeolocateControl` has three interaction states:
- * * active - the map's camera automatically updates as the user's location changes, keeping the location dot in the center. Initial state and upon clicking the `GeolocateControl` button.
- * * passive - the user's location dot automatically updates, but the map's camera does not. Occurs upon the user initiating a map movement.
- * * disabled - occurs if Geolocation is not available, disabled or denied.
- *
- * These interaction states can't be controlled programmatically, rather they are set based on user interactions.
- *
- * ## State Diagram
- * ![GeolocateControl state diagram](https://github.com/maplibre/maplibre-gl-js/assets/3269297/78e720e5-d781-4da8-9803-a7a0e6aaaa9f)
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * map.addControl(new GeolocateControl({
- *     positionOptions: {
- *         enableHighAccuracy: true
- *     },
- *     trackUserLocation: true
- * }));
- * ```
- * @see [Locate the user](https://maplibre.org/maplibre-gl-js/docs/examples/locate-user/)
- *
- * ## Events
- *
- * **Event** `trackuserlocationend` of type {@link Event} will be fired when the `GeolocateControl` changes to the background state, which happens when a user changes the camera during an active position lock. This only applies when `trackUserLocation` is `true`. In the background state, the dot on the map will update with location updates but the camera will not.
- *
- * **Event** `trackuserlocationstart` of type {@link Event} will be fired when the `GeolocateControl` changes to the active lock state, which happens either upon first obtaining a successful Geolocation API position for the user (a `geolocate` event will follow), or the user clicks the geolocate button when in the background state which uses the last known position to recenter the map and enter active lock state (no `geolocate` event will follow unless the users's location changes).
- *
- * **Event** `userlocationlostfocus` of type {@link Event} will be fired when the `GeolocateControl` changes to the background state, which happens when a user changes the camera during an active position lock. This only applies when `trackUserLocation` is `true`. In the background state, the dot on the map will update with location updates but the camera will not.
- *
- * **Event** `userlocationfocus` of type {@link Event} will be fired when the `GeolocateControl` changes to the active lock state, which happens upon the user clicks the geolocate button when in the background state which uses the last known position to recenter the map and enter active lock state.
- *
- * **Event** `geolocate` of type {@link Event} will be fired on each Geolocation API position update which returned as success.
- * `data` - The returned [Position](https://developer.mozilla.org/en-US/docs/Web/API/Position) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
- *
- * **Event** `error` of type {@link Event} will be fired on each Geolocation API position update which returned as an error.
- * `data` - The returned [PositionError](https://developer.mozilla.org/en-US/docs/Web/API/PositionError) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
- *
- * **Event** `outofmaxbounds` of type {@link Event} will be fired on each Geolocation API position update which returned as success but user position is out of map `maxBounds`.
- * `data` - The returned [Position](https://developer.mozilla.org/en-US/docs/Web/API/Position) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when a trackuserlocationend event occurs.
- * geolocate.on('trackuserlocationend', () => {
- *   console.log('A trackuserlocationend event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when a trackuserlocationstart event occurs.
- * geolocate.on('trackuserlocationstart', () => {
- *   console.log('A trackuserlocationstart event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when an userlocationlostfocus event occurs.
- * geolocate.on('userlocationlostfocus', function() {
- *   console.log('An userlocationlostfocus event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when an userlocationfocus event occurs.
- * geolocate.on('userlocationfocus', function() {
- *   console.log('An userlocationfocus event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when a geolocate event occurs.
- * geolocate.on('geolocate', () => {
- *   console.log('A geolocate event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when an error event occurs.
- * geolocate.on('error', () => {
- *   console.log('An error event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when an outofmaxbounds event occurs.
- * geolocate.on('outofmaxbounds', () => {
- *   console.log('An outofmaxbounds event has occurred.')
- * });
- * ```
- */
-export declare class GeolocateControl extends Evented implements IControl {
-	_map: Map$1;
-	options: GeolocateControlOptions;
-	_container: HTMLElement;
-	_dotElement: HTMLElement;
-	_circleElement: HTMLElement;
-	_geolocateButton: HTMLButtonElement;
-	_geolocationWatchID: number;
-	_timeoutId: ReturnType<typeof setTimeout>;
-	_watchState: "OFF" | "ACTIVE_LOCK" | "WAITING_ACTIVE" | "ACTIVE_ERROR" | "BACKGROUND" | "BACKGROUND_ERROR";
-	_lastKnownPosition: any;
-	_userLocationDotMarker: Marker;
-	_accuracyCircleMarker: Marker;
-	_accuracy: number;
-	_setup: boolean;
-	/**
-	 * @param options - the control's options
-	 */
-	constructor(options: GeolocateControlOptions);
-	/** {@inheritDoc IControl.onAdd} */
-	onAdd(map: Map$1): HTMLElement;
-	/** {@inheritDoc IControl.onRemove} */
-	onRemove(): void;
-	/**
-	 * Check if the Geolocation API Position is outside the map's `maxBounds`.
-	 *
-	 * @param position - the Geolocation API Position
-	 * @returns `true` if position is outside the map's `maxBounds`, otherwise returns `false`.
-	 */
-	_isOutOfMapMaxBounds(position: GeolocationPosition): boolean;
-	_setErrorState(): void;
-	/**
-	 * When the Geolocation API returns a new location, update the `GeolocateControl`.
-	 *
-	 * @param position - the Geolocation API Position
-	 */
-	_onSuccess: (position: GeolocationPosition) => void;
-	/**
-	 * Update the camera location to center on the current position
-	 *
-	 * @param position - the Geolocation API Position
-	 */
-	_updateCamera: (position: GeolocationPosition) => void;
-	/**
-	 * Update the user location dot Marker to the current position
-	 *
-	 * @param position - the Geolocation API Position
-	 */
-	_updateMarker: (position?: GeolocationPosition | null) => void;
-	_updateCircleRadius(): void;
-	_onZoom: () => void;
-	_onError: (error: GeolocationPositionError) => void;
-	_finish: () => void;
-	_setupUI: () => void;
-	_finishSetupUI: (supported: boolean) => void;
-	/**
-	 * Programmatically request and move the map to the user's location.
-	 *
-	 * @returns `false` if called before control was added to a map, otherwise returns `true`.
-	 * @example
-	 * ```ts
-	 * // Initialize the geolocate control.
-	 * let geolocate = new GeolocateControl({
-	 *  positionOptions: {
-	 *    enableHighAccuracy: true
-	 *  },
-	 *  trackUserLocation: true
-	 * });
-	 * // Add the control to the map.
-	 * map.addControl(geolocate);
-	 * map.on('load', () => {
-	 *   geolocate.trigger();
-	 * });
-	 * ```
-	 */
-	trigger(): boolean;
-	_clearWatch(): void;
-}
-/**
- * The {@link LogoControl} options object
- */
-export type LogoControlOptions = {
-	/**
-	 * If `true`, force a compact logo.
-	 * If `false`, force the full logo. The default is a responsive logo that collapses when the map is less than 640 pixels wide.
-	 */
-	compact?: boolean;
-};
-/**
- * A `LogoControl` is a control that adds the watermark.
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * map.addControl(new LogoControl({compact: false}));
- * ```
- **/
-export declare class LogoControl implements IControl {
-	options: LogoControlOptions;
-	_map: Map$1;
-	_compact: boolean;
-	_container: HTMLElement;
-	/**
-	 * @param options - the control's options
-	 */
-	constructor(options?: LogoControlOptions);
-	getDefaultPosition(): ControlPosition;
-	/** {@inheritDoc IControl.onAdd} */
-	onAdd(map: Map$1): HTMLElement;
-	/** {@inheritDoc IControl.onRemove} */
-	onRemove(): void;
-	_updateCompact: () => void;
-}
-/**
- * The unit type for length to use for the {@link ScaleControl}
- */
-export type Unit = "imperial" | "metric" | "nautical";
-/**
- * The {@link ScaleControl} options object
- */
-export type ScaleControlOptions = {
-	/**
-	 * The maximum length of the scale control in pixels.
-	 * @defaultValue 100
-	 */
-	maxWidth?: number;
-	/**
-	 * Unit of the distance (`'imperial'`, `'metric'` or `'nautical'`).
-	 * @defaultValue 'metric'
-	 */
-	unit?: Unit;
-};
-/**
- * A `ScaleControl` control displays the ratio of a distance on the map to the corresponding distance on the ground.
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * let scale = new ScaleControl({
- *     maxWidth: 80,
- *     unit: 'imperial'
- * });
- * map.addControl(scale);
- *
- * scale.setUnit('metric');
- * ```
- */
-export declare class ScaleControl implements IControl {
-	_map: Map$1;
-	_container: HTMLElement;
-	options: ScaleControlOptions;
-	/**
-	 * @param options - the control's options
-	 */
-	constructor(options?: ScaleControlOptions);
-	getDefaultPosition(): ControlPosition;
-	_onMove: () => void;
-	/** {@inheritDoc IControl.onAdd} */
-	onAdd(map: Map$1): HTMLElement;
-	/** {@inheritDoc IControl.onRemove} */
-	onRemove(): void;
-	/**
-	 * Set the scale's unit of the distance
-	 *
-	 * @param unit - Unit of the distance (`'imperial'`, `'metric'` or `'nautical'`).
-	 */
-	setUnit: (unit: Unit) => void;
-}
-/**
- * The {@link FullscreenControl} options object
- */
-export type FullscreenControlOptions = {
-	/**
-	 * `container` is the [compatible DOM element](https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen#Compatible_elements) which should be made full screen. By default, the map container element will be made full screen.
-	 */
-	container?: HTMLElement;
-};
-/**
- * A `FullscreenControl` control contains a button for toggling the map in and out of fullscreen mode.
- * When [requestFullscreen](https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen) is not supported, fullscreen is handled via CSS properties.
- * The map's `cooperativeGestures` option is temporarily disabled while the map
- * is in fullscreen mode, and is restored when the map exist fullscreen mode.
- *
- * @group Markers and Controls
- * @param options - the full screen control options
- *
- * @example
- * ```ts
- * map.addControl(new FullscreenControl({container: document.querySelector('body')}));
- * ```
- * @see [View a fullscreen map](https://maplibre.org/maplibre-gl-js/docs/examples/fullscreen/)
- *
- * ## Events
- *
- * **Event** `fullscreenstart` of type {@link Event} will be fired when fullscreen mode has started.
- *
- * **Event** `fullscreenend` of type {@link Event} will be fired when fullscreen mode has ended.
- */
-export declare class FullscreenControl extends Evented implements IControl {
-	_map: Map$1;
-	_controlContainer: HTMLElement;
-	_fullscreen: boolean;
-	_fullscreenchange: string;
-	_fullscreenButton: HTMLButtonElement;
-	_container: HTMLElement;
-	_prevCooperativeGesturesEnabled: boolean;
-	/**
-	 * @param options - the control's options
-	 */
-	constructor(options?: FullscreenControlOptions);
-	/** {@inheritDoc IControl.onAdd} */
-	onAdd(map: Map$1): HTMLElement;
-	/** {@inheritDoc IControl.onRemove} */
-	onRemove(): void;
-	_setupUI(): void;
-	_updateTitle(): void;
-	_getTitle(): string;
-	_isFullscreen(): boolean;
-	_onFullscreenChange: () => void;
-	_handleFullscreenChange(): void;
-	_onClickFullscreen: () => void;
-	_exitFullscreen(): void;
-	_requestFullscreen(): void;
-	_togglePseudoFullScreen(): void;
-}
-/**
- * A `TerrainControl` control contains a button for turning the terrain on and off.
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * let map = new Map({TerrainControl: false})
- *     .addControl(new TerrainControl({
- *         source: "terrain"
- *     }));
- * ```
- */
-export declare class TerrainControl implements IControl {
-	options: TerrainSpecification;
-	_map: Map$1;
-	_container: HTMLElement;
-	_terrainButton: HTMLButtonElement;
-	/**
-	 * @param options - the control's options
-	 */
-	constructor(options: TerrainSpecification);
-	/** {@inheritDoc IControl.onAdd} */
-	onAdd(map: Map$1): HTMLElement;
-	/** {@inheritDoc IControl.onRemove} */
-	onRemove(): void;
-	_toggleTerrain: () => void;
-	_updateTerrainIcon: () => void;
-}
-/**
- * A `GlobeControl` control contains a button for toggling the map projection between "mercator" and "globe".
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * let map = new Map()
- *     .addControl(new GlobeControl());
- * ```
- *
- * @see [Display a globe with a fill extrusion layer](https://maplibre.org/maplibre-gl-js/docs/examples/globe-fill-extrusion/)
- */
-export declare class GlobeControl implements IControl {
-	_map: Map$1;
-	_container: HTMLElement;
-	_globeButton: HTMLButtonElement;
-	/** {@inheritDoc IControl.onAdd} */
-	onAdd(map: Map$1): HTMLElement;
-	/** {@inheritDoc IControl.onRemove} */
-	onRemove(): void;
-	_toggleProjection: () => void;
-	_updateGlobeIcon: () => void;
-}
-/**
  * Initializes resources like WebWorkers that can be shared across maps to lower load
  * times in some situations. `setWorkerUrl()` and `setWorkerCount()`, if being
  * used, must be set before `prewarm()` is called to have an effect.
@@ -14282,79 +13848,6 @@ export declare class VectorTileSource extends Evented implements Source {
 	hasTransition(): boolean;
 }
 /**
- * A data source containing video.
- * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/#sources-video) for detailed documentation of options.)
- *
- * @group Sources
- *
- * @example
- * ```ts
- * // add to map
- * map.addSource('some id', {
- *    type: 'video',
- *    url: [
- *        'https://www.mapbox.com/blog/assets/baltimore-smoke.mp4',
- *        'https://www.mapbox.com/blog/assets/baltimore-smoke.webm'
- *    ],
- *    coordinates: [
- *        [-76.54, 39.18],
- *        [-76.52, 39.18],
- *        [-76.52, 39.17],
- *        [-76.54, 39.17]
- *    ]
- * });
- *
- * // update
- * let mySource = map.getSource('some id');
- * mySource.setCoordinates([
- *     [-76.54335737228394, 39.18579907229748],
- *     [-76.52803659439087, 39.1838364847587],
- *     [-76.5295386314392, 39.17683392507606],
- *     [-76.54520273208618, 39.17876344106642]
- * ]);
- *
- * map.removeSource('some id');  // remove
- * ```
- * @see [Add a video](https://maplibre.org/maplibre-gl-js/docs/examples/video-on-a-map/)
- *
- * Note that when rendered as a raster layer, the layer's `raster-fade-duration` property will cause the video to fade in.
- * This happens when playback is started, paused and resumed, or when the video's coordinates are updated. To avoid this behavior,
- * set the layer's `raster-fade-duration` property to `0`.
- */
-export declare class VideoSource extends ImageSource {
-	options: VideoSourceSpecification;
-	urls: Array<string>;
-	video: HTMLVideoElement;
-	roundZoom: boolean;
-	constructor(id: string, options: VideoSourceSpecification, dispatcher: Dispatcher, eventedParent: Evented);
-	load(): Promise<void>;
-	/**
-	 * Pauses the video.
-	 */
-	pause(): void;
-	/**
-	 * Plays the video.
-	 */
-	play(): void;
-	/**
-	 * Sets playback to a timestamp, in seconds.
-	 */
-	seek(seconds: number): void;
-	/**
-	 * Returns the HTML `video` element.
-	 *
-	 * @returns The HTML `video` element.
-	 */
-	getVideo(): HTMLVideoElement;
-	onAdd(map: Map$1): void;
-	/**
-	 * Sets the video's coordinates and re-renders the map.
-	 */
-	prepare(): this;
-	serialize(): VideoSourceSpecification;
-	hasTransition(): boolean;
-}
-/**
  * Adds a custom load resource function that will be called when using a URL that starts with a custom url schema.
  * This will happen in the main thread, and workers might call it if they don't know how to handle the protocol.
  * The example below will be triggered for custom:// urls defined in the sources list in the style definitions.
@@ -14577,53 +14070,13 @@ export declare function setWorkerUrl(value: string): void;
  * ```
  */
 export declare function importScriptInWorkers(workerUrl: string): Promise<void[]>;
-export type * from "@maplibre/maplibre-gl-style-spec";
 
 export {
-	Color,
-	ColorArray,
-	CompositeExpression,
-	DiffCommand,
-	DiffOperations,
 	ErrorEvent$1 as ErrorEvent,
 	Event$1 as Event,
-	Feature,
-	FeatureFilter,
-	FeatureState,
-	FilterSpecification,
-	Formatted,
-	FormattedSection,
-	GeoJSONSourceSpecification,
-	GlobalProperties,
-	ICanonicalTileID,
-	IMercatorCoordinate,
-	ImageSourceSpecification,
-	InterpolationType,
-	LayerSpecification,
-	LightSpecification,
 	Map$1 as Map,
-	NumberArray,
-	Padding,
 	Point,
-	ProjectionSpecification,
-	PromoteIdSpecification,
-	PropertyValueSpecification,
-	RasterDEMSourceSpecification,
-	RasterSourceSpecification,
-	ResolvedImage,
-	SkySpecification,
-	SourceExpression,
-	SourceSpecification,
-	SpriteSpecification,
-	StateSpecification,
-	StylePropertyExpression,
-	StylePropertySpecification,
 	StyleSpecification,
-	TerrainSpecification,
-	TransitionSpecification,
-	VariableAnchorOffsetCollection,
-	VectorSourceSpecification,
-	VideoSourceSpecification,
 };
 
 export as namespace maplibregl;

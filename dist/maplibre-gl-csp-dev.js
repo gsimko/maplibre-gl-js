@@ -129,6 +129,7 @@ var devDependencies = {
 	"react-dom": "^19.1.0",
 	rollup: "^4.41.1",
 	"rollup-plugin-sourcemaps2": "^0.5.2",
+	"rollup-plugin-visualizer": "^6.0.4",
 	rw: "^1.3.3",
 	semver: "^7.7.2",
 	sharp: "^0.34.2",
@@ -983,11 +984,11 @@ var pointGeometryExports = requirePointGeometry();
 var Point = /*@__PURE__*/getDefaultExportFromCjs$1(pointGeometryExports);
 
 var unitbezier$1;
-var hasRequiredUnitbezier;
+var hasRequiredUnitbezier$1;
 
-function requireUnitbezier () {
-	if (hasRequiredUnitbezier) return unitbezier$1;
-	hasRequiredUnitbezier = 1;
+function requireUnitbezier$1 () {
+	if (hasRequiredUnitbezier$1) return unitbezier$1;
+	hasRequiredUnitbezier$1 = 1;
 	'use strict';
 
 	unitbezier$1 = UnitBezier;
@@ -1069,8 +1070,8 @@ function requireUnitbezier () {
 	return unitbezier$1;
 }
 
-var unitbezierExports = requireUnitbezier();
-var UnitBezier$2 = /*@__PURE__*/getDefaultExportFromCjs$1(unitbezierExports);
+var unitbezierExports$1 = requireUnitbezier$1();
+var UnitBezier$1 = /*@__PURE__*/getDefaultExportFromCjs$1(unitbezierExports$1);
 
 let supportsOffscreenCanvas;
 function offscreenCanvasSupported() {
@@ -9080,7 +9081,7 @@ function easeCubicInOut(t) {
  * @param p2y - control point 2 y coordinate
  */
 function bezier(p1x, p1y, p2x, p2y) {
-    const bezier = new UnitBezier$2(p1x, p1y, p2x, p2y);
+    const bezier = new UnitBezier$1(p1x, p1y, p2x, p2y);
     return (t) => {
         return bezier.solve(t);
     };
@@ -16603,84 +16604,94 @@ function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
-var unitbezier = UnitBezier;
+var unitbezier;
+var hasRequiredUnitbezier;
 
-function UnitBezier(p1x, p1y, p2x, p2y) {
-    // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
-    this.cx = 3.0 * p1x;
-    this.bx = 3.0 * (p2x - p1x) - this.cx;
-    this.ax = 1.0 - this.cx - this.bx;
+function requireUnitbezier () {
+	if (hasRequiredUnitbezier) return unitbezier;
+	hasRequiredUnitbezier = 1;
 
-    this.cy = 3.0 * p1y;
-    this.by = 3.0 * (p2y - p1y) - this.cy;
-    this.ay = 1.0 - this.cy - this.by;
+	unitbezier = UnitBezier;
 
-    this.p1x = p1x;
-    this.p1y = p1y;
-    this.p2x = p2x;
-    this.p2y = p2y;
+	function UnitBezier(p1x, p1y, p2x, p2y) {
+	    // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
+	    this.cx = 3.0 * p1x;
+	    this.bx = 3.0 * (p2x - p1x) - this.cx;
+	    this.ax = 1.0 - this.cx - this.bx;
+
+	    this.cy = 3.0 * p1y;
+	    this.by = 3.0 * (p2y - p1y) - this.cy;
+	    this.ay = 1.0 - this.cy - this.by;
+
+	    this.p1x = p1x;
+	    this.p1y = p1y;
+	    this.p2x = p2x;
+	    this.p2y = p2y;
+	}
+
+	UnitBezier.prototype = {
+	    sampleCurveX: function (t) {
+	        // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
+	        return ((this.ax * t + this.bx) * t + this.cx) * t;
+	    },
+
+	    sampleCurveY: function (t) {
+	        return ((this.ay * t + this.by) * t + this.cy) * t;
+	    },
+
+	    sampleCurveDerivativeX: function (t) {
+	        return (3.0 * this.ax * t + 2.0 * this.bx) * t + this.cx;
+	    },
+
+	    solveCurveX: function (x, epsilon) {
+	        if (epsilon === undefined) epsilon = 1e-6;
+
+	        if (x < 0.0) return 0.0;
+	        if (x > 1.0) return 1.0;
+
+	        var t = x;
+
+	        // First try a few iterations of Newton's method - normally very fast.
+	        for (var i = 0; i < 8; i++) {
+	            var x2 = this.sampleCurveX(t) - x;
+	            if (Math.abs(x2) < epsilon) return t;
+
+	            var d2 = this.sampleCurveDerivativeX(t);
+	            if (Math.abs(d2) < 1e-6) break;
+
+	            t = t - x2 / d2;
+	        }
+
+	        // Fall back to the bisection method for reliability.
+	        var t0 = 0.0;
+	        var t1 = 1.0;
+	        t = x;
+
+	        for (i = 0; i < 20; i++) {
+	            x2 = this.sampleCurveX(t);
+	            if (Math.abs(x2 - x) < epsilon) break;
+
+	            if (x > x2) {
+	                t0 = t;
+	            } else {
+	                t1 = t;
+	            }
+
+	            t = (t1 - t0) * 0.5 + t0;
+	        }
+
+	        return t;
+	    },
+
+	    solve: function (x, epsilon) {
+	        return this.sampleCurveY(this.solveCurveX(x, epsilon));
+	    }
+	};
+	return unitbezier;
 }
 
-UnitBezier.prototype = {
-    sampleCurveX: function (t) {
-        // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
-        return ((this.ax * t + this.bx) * t + this.cx) * t;
-    },
-
-    sampleCurveY: function (t) {
-        return ((this.ay * t + this.by) * t + this.cy) * t;
-    },
-
-    sampleCurveDerivativeX: function (t) {
-        return (3.0 * this.ax * t + 2.0 * this.bx) * t + this.cx;
-    },
-
-    solveCurveX: function (x, epsilon) {
-        if (epsilon === undefined) epsilon = 1e-6;
-
-        if (x < 0.0) return 0.0;
-        if (x > 1.0) return 1.0;
-
-        var t = x;
-
-        // First try a few iterations of Newton's method - normally very fast.
-        for (var i = 0; i < 8; i++) {
-            var x2 = this.sampleCurveX(t) - x;
-            if (Math.abs(x2) < epsilon) return t;
-
-            var d2 = this.sampleCurveDerivativeX(t);
-            if (Math.abs(d2) < 1e-6) break;
-
-            t = t - x2 / d2;
-        }
-
-        // Fall back to the bisection method for reliability.
-        var t0 = 0.0;
-        var t1 = 1.0;
-        t = x;
-
-        for (i = 0; i < 20; i++) {
-            x2 = this.sampleCurveX(t);
-            if (Math.abs(x2 - x) < epsilon) break;
-
-            if (x > x2) {
-                t0 = t;
-            } else {
-                t1 = t;
-            }
-
-            t = (t1 - t0) * 0.5 + t0;
-        }
-
-        return t;
-    },
-
-    solve: function (x, epsilon) {
-        return this.sampleCurveY(this.solveCurveX(x, epsilon));
-    }
-};
-
-var UnitBezier$1 = /*@__PURE__*/getDefaultExportFromCjs(unitbezier);
+var unitbezierExports = requireUnitbezier();
+var UnitBezier = /*@__PURE__*/getDefaultExportFromCjs(unitbezierExports);
 
 class Interpolate {
     constructor(type, operator, interpolation, input, stops) {
@@ -16705,7 +16716,7 @@ class Interpolate {
         }
         else if (interpolation.name === 'cubic-bezier') {
             const c = interpolation.controlPoints;
-            const ub = new UnitBezier$1(c[0], c[1], c[2], c[3]);
+            const ub = new UnitBezier(c[0], c[1], c[2], c[3]);
             t = ub.solve(exponentialInterpolation(input, 1, lower, upper));
         }
         return t;
@@ -17796,27 +17807,35 @@ let TinyQueue$1 = class TinyQueue {
     }
 };
 
-function quickselect(arr, k, left, right, compare) {
-    quickselectStep(arr, k, left, right || (arr.length - 1), compare || defaultCompare);
-}
-
-function quickselectStep(arr, k, left, right, compare) {
+/**
+ * Rearranges items so that all items in the [left, k] are the smallest.
+ * The k-th element will have the (k - left + 1)-th smallest value in [left, right].
+ *
+ * @template T
+ * @param {T[]} arr the array to partially sort (in place)
+ * @param {number} k middle index for partial sorting (as defined above)
+ * @param {number} [left=0] left index of the range to sort
+ * @param {number} [right=arr.length-1] right index
+ * @param {(a: T, b: T) => number} [compare = (a, b) => a - b] compare function
+ */
+function quickselect(arr, k, left = 0, right = arr.length - 1, compare = defaultCompare) {
 
     while (right > left) {
         if (right - left > 600) {
-            var n = right - left + 1;
-            var m = k - left + 1;
-            var z = Math.log(n);
-            var s = 0.5 * Math.exp(2 * z / 3);
-            var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
-            var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
-            var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-            quickselectStep(arr, k, newLeft, newRight, compare);
+            const n = right - left + 1;
+            const m = k - left + 1;
+            const z = Math.log(n);
+            const s = 0.5 * Math.exp(2 * z / 3);
+            const sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
+            const newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
+            const newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
+            quickselect(arr, k, newLeft, newRight, compare);
         }
 
-        var t = arr[k];
-        var i = left;
-        var j = right;
+        const t = arr[k];
+        let i = left;
+        /** @type {number} */
+        let j = right;
 
         swap$2(arr, left, k);
         if (compare(arr[right], t) > 0) swap$2(arr, left, right);
@@ -17840,12 +17859,24 @@ function quickselectStep(arr, k, left, right, compare) {
     }
 }
 
+/**
+ * @template T
+ * @param {T[]} arr
+ * @param {number} i
+ * @param {number} j
+ */
 function swap$2(arr, i, j) {
-    var tmp = arr[i];
+    const tmp = arr[i];
     arr[i] = arr[j];
     arr[j] = tmp;
 }
 
+/**
+ * @template T
+ * @param {T} a
+ * @param {T} b
+ * @returns {number}
+ */
 function defaultCompare(a, b) {
     return a < b ? -1 : a > b ? 1 : 0;
 }
@@ -20861,7 +20892,6 @@ function validateFunction(options) {
             errors = errors.concat(validateStopDomainValue({
                 key: `${key}[0]`,
                 value: value[0],
-                valueSpec: {},
                 validateSpec: options.validateSpec,
                 style: options.style,
                 styleSpec: options.styleSpec
@@ -21395,13 +21425,11 @@ function validateSource$1(options) {
                     errors.push(...validateExpression({
                         key: `${key}.${prop}.map`,
                         value: mapExpr,
-                        validateSpec,
                         expressionContext: 'cluster-map'
                     }));
                     errors.push(...validateExpression({
                         key: `${key}.${prop}.reduce`,
                         value: reduceExpr,
-                        validateSpec,
                         expressionContext: 'cluster-reduce'
                     }));
                 }
@@ -21431,11 +21459,7 @@ function validateSource$1(options) {
             return validateEnum({
                 key: `${key}.type`,
                 value: value.type,
-                valueSpec: { values: ['vector', 'raster', 'raster-dem', 'geojson', 'video', 'image'] },
-                style,
-                validateSpec,
-                styleSpec
-            });
+                valueSpec: { values: ['vector', 'raster', 'raster-dem', 'geojson', 'video', 'image'] }});
     }
 }
 function validatePromoteId({ key, value }) {
@@ -21644,18 +21668,14 @@ function validateColorArray(options) {
         for (let i = 0; i < value.length; i++) {
             errors = errors.concat(validateColor({
                 key: `${key}[${i}]`,
-                value: value[i],
-                valueSpec: {}
-            }));
+                value: value[i]}));
         }
         return errors;
     }
     else {
         return validateColor({
             key,
-            value,
-            valueSpec: {}
-        });
+            value});
     }
 }
 
@@ -21916,11 +21936,7 @@ function validateStyleMin(style, styleSpec = v8Spec) {
     if (style['constants']) {
         errors = errors.concat(validateConstants({
             key: 'constants',
-            value: style['constants'],
-            style,
-            styleSpec,
-            validateSpec: validate,
-        }));
+            value: style['constants']}));
     }
     return sortErrors(errors);
 }
@@ -37619,173 +37635,6 @@ function hasWrongWindingOrder(coords) {
 }
 
 /**
- * A data source containing video.
- * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/#sources-video) for detailed documentation of options.)
- *
- * @group Sources
- *
- * @example
- * ```ts
- * // add to map
- * map.addSource('some id', {
- *    type: 'video',
- *    url: [
- *        'https://www.mapbox.com/blog/assets/baltimore-smoke.mp4',
- *        'https://www.mapbox.com/blog/assets/baltimore-smoke.webm'
- *    ],
- *    coordinates: [
- *        [-76.54, 39.18],
- *        [-76.52, 39.18],
- *        [-76.52, 39.17],
- *        [-76.54, 39.17]
- *    ]
- * });
- *
- * // update
- * let mySource = map.getSource('some id');
- * mySource.setCoordinates([
- *     [-76.54335737228394, 39.18579907229748],
- *     [-76.52803659439087, 39.1838364847587],
- *     [-76.5295386314392, 39.17683392507606],
- *     [-76.54520273208618, 39.17876344106642]
- * ]);
- *
- * map.removeSource('some id');  // remove
- * ```
- * @see [Add a video](https://maplibre.org/maplibre-gl-js/docs/examples/video-on-a-map/)
- *
- * Note that when rendered as a raster layer, the layer's `raster-fade-duration` property will cause the video to fade in.
- * This happens when playback is started, paused and resumed, or when the video's coordinates are updated. To avoid this behavior,
- * set the layer's `raster-fade-duration` property to `0`.
- */
-class VideoSource extends ImageSource {
-    constructor(id, options, dispatcher, eventedParent) {
-        super(id, options, dispatcher, eventedParent);
-        this.roundZoom = true;
-        this.type = 'video';
-        this.options = options;
-    }
-    load() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this._loaded = false;
-            const options = this.options;
-            this.urls = [];
-            for (const url of options.urls) {
-                this.urls.push(this.map._requestManager.transformRequest(url, "Source" /* ResourceType.Source */).url);
-            }
-            try {
-                const video = yield getVideo(this.urls);
-                this._loaded = true;
-                if (!video) {
-                    return;
-                }
-                this.video = video;
-                this.video.loop = true;
-                // Start repainting when video starts playing. hasTransition() will then return
-                // true to trigger additional frames as long as the videos continues playing.
-                this.video.addEventListener('playing', () => {
-                    this.map.triggerRepaint();
-                });
-                if (this.map) {
-                    this.video.play();
-                }
-                this._finishLoading();
-            }
-            catch (err) {
-                this.fire(new ErrorEvent(err));
-            }
-        });
-    }
-    /**
-     * Pauses the video.
-     */
-    pause() {
-        if (this.video) {
-            this.video.pause();
-        }
-    }
-    /**
-     * Plays the video.
-     */
-    play() {
-        if (this.video) {
-            this.video.play();
-        }
-    }
-    /**
-     * Sets playback to a timestamp, in seconds.
-     */
-    seek(seconds) {
-        if (this.video) {
-            const seekableRange = this.video.seekable;
-            if (seconds < seekableRange.start(0) || seconds > seekableRange.end(0)) {
-                this.fire(new ErrorEvent(new ValidationError(`sources.${this.id}`, null, `Playback for this video can be set only between the ${seekableRange.start(0)} and ${seekableRange.end(0)}-second mark.`)));
-            }
-            else
-                this.video.currentTime = seconds;
-        }
-    }
-    /**
-     * Returns the HTML `video` element.
-     *
-     * @returns The HTML `video` element.
-     */
-    getVideo() {
-        return this.video;
-    }
-    onAdd(map) {
-        if (this.map)
-            return;
-        this.map = map;
-        this.load();
-        if (this.video) {
-            this.video.play();
-            this.setCoordinates(this.coordinates);
-        }
-    }
-    /**
-     * Sets the video's coordinates and re-renders the map.
-     */
-    prepare() {
-        if (Object.keys(this.tiles).length === 0 || this.video.readyState < 2) {
-            return; // not enough data for current position
-        }
-        const context = this.map.painter.context;
-        const gl = context.gl;
-        if (!this.texture) {
-            this.texture = new Texture(context, this.video, gl.RGBA);
-            this.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-        }
-        else if (!this.video.paused) {
-            this.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.video);
-        }
-        let newTilesLoaded = false;
-        for (const w in this.tiles) {
-            const tile = this.tiles[w];
-            if (tile.state !== 'loaded') {
-                tile.state = 'loaded';
-                tile.texture = this.texture;
-                newTilesLoaded = true;
-            }
-        }
-        if (newTilesLoaded) {
-            this.fire(new Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
-        }
-    }
-    serialize() {
-        return {
-            type: 'video',
-            urls: this.urls,
-            coordinates: this.coordinates
-        };
-    }
-    hasTransition() {
-        return this.video && !this.video.paused;
-    }
-}
-
-/**
  * A data source containing the contents of an HTML canvas. See {@link CanvasSourceSpecification} for detailed documentation of options.
  *
  * @group Sources
@@ -37974,8 +37823,8 @@ const getSourceType = (name) => {
             return RasterDEMTileSource;
         case 'vector':
             return VectorTileSource;
-        case 'video':
-            return VideoSource;
+        // case 'video':
+        //     return VideoSource;
         case 'canvas':
             return CanvasSource;
     }
@@ -56980,7 +56829,7 @@ class TwoFingersTouchPitchHandler extends TwoFingersTouchHandler {
     }
 }
 
-const defaultOptions$5 = {
+const defaultOptions$3 = {
     panStep: 100,
     bearingStep: 15,
     pitchStep: 10
@@ -57005,7 +56854,7 @@ class KeyboardHandler {
     /** @internal */
     constructor(map) {
         this._tr = new TransformProvider(map);
-        const stepOptions = defaultOptions$5;
+        const stepOptions = defaultOptions$3;
         this._panStep = stepOptions.panStep;
         this._bearingStep = stepOptions.bearingStep;
         this._pitchStep = stepOptions.pitchStep;
@@ -59576,229 +59425,6 @@ class Camera extends Evented {
     }
 }
 
-const defaultAttributionControlOptions = {
-    compact: true,
-    customAttribution: '<a href="https://maplibre.org/" target="_blank">MapLibre</a>'
-};
-/**
- * An `AttributionControl` control presents the map's attribution information. By default, the attribution control is expanded (regardless of map width).
- * @group Markers and Controls
- * @example
- * ```ts
- * let map = new Map({attributionControl: false})
- *     .addControl(new AttributionControl({
- *         compact: true
- *     }));
- * ```
- */
-class AttributionControl {
-    /**
-     * @param options - the attribution options
-     */
-    constructor(options = defaultAttributionControlOptions) {
-        this._toggleAttribution = () => {
-            if (this._container.classList.contains('maplibregl-compact')) {
-                if (this._container.classList.contains('maplibregl-compact-show')) {
-                    this._container.setAttribute('open', '');
-                    this._container.classList.remove('maplibregl-compact-show');
-                }
-                else {
-                    this._container.classList.add('maplibregl-compact-show');
-                    this._container.removeAttribute('open');
-                }
-            }
-        };
-        this._updateData = (e) => {
-            if (e && (e.sourceDataType === 'metadata' || e.sourceDataType === 'visibility' || e.dataType === 'style' || e.type === 'terrain')) {
-                this._updateAttributions();
-            }
-        };
-        this._updateCompact = () => {
-            if (this._map.getCanvasContainer().offsetWidth <= 640 || this._compact) {
-                if (this._compact === false) {
-                    this._container.setAttribute('open', '');
-                }
-                else if (!this._container.classList.contains('maplibregl-compact') && !this._container.classList.contains('maplibregl-attrib-empty')) {
-                    this._container.setAttribute('open', '');
-                    this._container.classList.add('maplibregl-compact', 'maplibregl-compact-show');
-                }
-            }
-            else {
-                this._container.setAttribute('open', '');
-                if (this._container.classList.contains('maplibregl-compact')) {
-                    this._container.classList.remove('maplibregl-compact', 'maplibregl-compact-show');
-                }
-            }
-        };
-        this._updateCompactMinimize = () => {
-            if (this._container.classList.contains('maplibregl-compact')) {
-                if (this._container.classList.contains('maplibregl-compact-show')) {
-                    this._container.classList.remove('maplibregl-compact-show');
-                }
-            }
-        };
-        this.options = options;
-    }
-    getDefaultPosition() {
-        return 'bottom-right';
-    }
-    /** {@inheritDoc IControl.onAdd} */
-    onAdd(map) {
-        this._map = map;
-        this._compact = this.options.compact;
-        this._container = DOM.create('details', 'maplibregl-ctrl maplibregl-ctrl-attrib');
-        this._compactButton = DOM.create('summary', 'maplibregl-ctrl-attrib-button', this._container);
-        this._compactButton.addEventListener('click', this._toggleAttribution);
-        this._setElementTitle(this._compactButton, 'ToggleAttribution');
-        this._innerContainer = DOM.create('div', 'maplibregl-ctrl-attrib-inner', this._container);
-        this._updateAttributions();
-        this._updateCompact();
-        this._map.on('styledata', this._updateData);
-        this._map.on('sourcedata', this._updateData);
-        this._map.on('terrain', this._updateData);
-        this._map.on('resize', this._updateCompact);
-        this._map.on('drag', this._updateCompactMinimize);
-        return this._container;
-    }
-    /** {@inheritDoc IControl.onRemove} */
-    onRemove() {
-        DOM.remove(this._container);
-        this._map.off('styledata', this._updateData);
-        this._map.off('sourcedata', this._updateData);
-        this._map.off('terrain', this._updateData);
-        this._map.off('resize', this._updateCompact);
-        this._map.off('drag', this._updateCompactMinimize);
-        this._map = undefined;
-        this._compact = undefined;
-        this._attribHTML = undefined;
-    }
-    _setElementTitle(element, title) {
-        const str = this._map._getUIString(`AttributionControl.${title}`);
-        element.title = str;
-        element.setAttribute('aria-label', str);
-    }
-    _updateAttributions() {
-        if (!this._map.style)
-            return;
-        let attributions = [];
-        if (this.options.customAttribution) {
-            if (Array.isArray(this.options.customAttribution)) {
-                attributions = attributions.concat(this.options.customAttribution.map(attribution => {
-                    if (typeof attribution !== 'string')
-                        return '';
-                    return attribution;
-                }));
-            }
-            else if (typeof this.options.customAttribution === 'string') {
-                attributions.push(this.options.customAttribution);
-            }
-        }
-        if (this._map.style.stylesheet) {
-            const stylesheet = this._map.style.stylesheet;
-            this.styleOwner = stylesheet.owner;
-            this.styleId = stylesheet.id;
-        }
-        const sourceCaches = this._map.style.sourceCaches;
-        for (const id in sourceCaches) {
-            const sourceCache = sourceCaches[id];
-            if (sourceCache.used || sourceCache.usedForTerrain) {
-                const source = sourceCache.getSource();
-                if (source.attribution && attributions.indexOf(source.attribution) < 0) {
-                    attributions.push(source.attribution);
-                }
-            }
-        }
-        // remove any entries that are whitespace
-        attributions = attributions.filter(e => String(e).trim());
-        // remove any entries that are substrings of another entry.
-        // first sort by length so that substrings come first
-        attributions.sort((a, b) => a.length - b.length);
-        attributions = attributions.filter((attrib, i) => {
-            for (let j = i + 1; j < attributions.length; j++) {
-                if (attributions[j].indexOf(attrib) >= 0) {
-                    return false;
-                }
-            }
-            return true;
-        });
-        // check if attribution string is different to minimize DOM changes
-        const attribHTML = attributions.join(' | ');
-        if (attribHTML === this._attribHTML)
-            return;
-        this._attribHTML = attribHTML;
-        if (attributions.length) {
-            this._innerContainer.innerHTML = DOM.sanitize(attribHTML);
-            this._container.classList.remove('maplibregl-attrib-empty');
-        }
-        else {
-            this._container.classList.add('maplibregl-attrib-empty');
-        }
-        this._updateCompact();
-        // remove old DOM node from _editLink
-        this._editLink = null;
-    }
-}
-
-/**
- * A `LogoControl` is a control that adds the watermark.
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * map.addControl(new LogoControl({compact: false}));
- * ```
- **/
-class LogoControl {
-    /**
-     * @param options - the control's options
-     */
-    constructor(options = {}) {
-        this._updateCompact = () => {
-            const containerChildren = this._container.children;
-            if (containerChildren.length) {
-                const anchor = containerChildren[0];
-                if (this._map.getCanvasContainer().offsetWidth <= 640 || this._compact) {
-                    if (this._compact !== false) {
-                        anchor.classList.add('maplibregl-compact');
-                    }
-                }
-                else {
-                    anchor.classList.remove('maplibregl-compact');
-                }
-            }
-        };
-        this.options = options;
-    }
-    getDefaultPosition() {
-        return 'bottom-left';
-    }
-    /** {@inheritDoc IControl.onAdd} */
-    onAdd(map) {
-        this._map = map;
-        this._compact = this.options && this.options.compact;
-        this._container = DOM.create('div', 'maplibregl-ctrl');
-        const anchor = DOM.create('a', 'maplibregl-ctrl-logo');
-        anchor.target = '_blank';
-        anchor.rel = 'noopener nofollow';
-        anchor.href = 'https://maplibre.org/';
-        anchor.setAttribute('aria-label', this._map._getUIString('LogoControl.Title'));
-        anchor.setAttribute('rel', 'noopener nofollow');
-        this._container.appendChild(anchor);
-        this._container.style.display = 'block';
-        this._map.on('resize', this._updateCompact);
-        this._updateCompact();
-        return this._container;
-    }
-    /** {@inheritDoc IControl.onRemove} */
-    onRemove() {
-        DOM.remove(this._container);
-        this._map.off('resize', this._updateCompact);
-        this._map = undefined;
-        this._compact = undefined;
-    }
-}
-
 class TaskQueue {
     constructor() {
         this._queue = [];
@@ -60825,11 +60451,11 @@ const defaultMinPitch = 0;
 const defaultMaxPitch = 60;
 // use this variable to check maxPitch for validity
 const maxPitchThreshold = 180;
-const defaultOptions$4 = {
+const defaultOptions$2 = {
     hash: false,
     interactive: true,
     bearingSnap: 7,
-    attributionControl: defaultAttributionControlOptions,
+    // attributionControl: defaultAttributionControlOptions,
     maplibreLogo: false,
     refreshExpiredTiles: true,
     canvasContextAttributes: {
@@ -60912,7 +60538,7 @@ let Map$1 = class Map extends Camera {
     constructor(options) {
         var _a, _b;
         PerformanceUtils.mark(PerformanceMarkers.create);
-        const resolvedOptions = Object.assign(Object.assign(Object.assign({}, defaultOptions$4), options), { canvasContextAttributes: Object.assign(Object.assign({}, defaultOptions$4.canvasContextAttributes), options.canvasContextAttributes) });
+        const resolvedOptions = Object.assign(Object.assign(Object.assign({}, defaultOptions$2), options), { canvasContextAttributes: Object.assign(Object.assign({}, defaultOptions$2.canvasContextAttributes), options.canvasContextAttributes) });
         if (resolvedOptions.minZoom != null && resolvedOptions.maxZoom != null && resolvedOptions.minZoom > resolvedOptions.maxZoom) {
             throw new Error('maxZoom must be greater than or equal to minZoom');
         }
@@ -61065,10 +60691,10 @@ let Map$1 = class Map extends Camera {
         this._validateStyle = resolvedOptions.validateStyle;
         if (resolvedOptions.style)
             this.setStyle(resolvedOptions.style, { localIdeographFontFamily: resolvedOptions.localIdeographFontFamily });
-        if (resolvedOptions.attributionControl)
-            this.addControl(new AttributionControl(typeof resolvedOptions.attributionControl === 'boolean' ? undefined : resolvedOptions.attributionControl));
-        if (resolvedOptions.maplibreLogo)
-            this.addControl(new LogoControl(), resolvedOptions.logoPosition);
+        // if (resolvedOptions.attributionControl)
+        //     this.addControl(new AttributionControl(typeof resolvedOptions.attributionControl === 'boolean' ? undefined : resolvedOptions.attributionControl));
+        // if (resolvedOptions.maplibreLogo)
+        //     this.addControl(new LogoControl(), resolvedOptions.logoPosition);
         this.on('style.load', () => {
             // If we didn't constrain the camera before, we do it now
             if (!shouldConstrainUsingMercatorTransform)
@@ -63473,7 +63099,7 @@ let Map$1 = class Map extends Camera {
     }
 };
 
-const defaultOptions$3 = {
+const defaultOptions$1 = {
     showCompass: true,
     showZoom: true,
     visualizePitch: false,
@@ -63525,7 +63151,7 @@ class NavigationControl {
             button.title = str;
             button.setAttribute('aria-label', str);
         };
-        this.options = extend({}, defaultOptions$3, options);
+        this.options = extend({}, defaultOptions$1, options);
         this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
         this._container.addEventListener('contextmenu', (e) => e.preventDefault());
         if (this.options.showZoom) {
@@ -63701,30 +63327,404 @@ class MouseRotateWrapper {
     }
 }
 
-let supportsGeolocation;
-function checkGeolocationSupport() {
-    return __awaiter(this, arguments, void 0, function* (forceRecalculation = false) {
-        if (supportsGeolocation !== undefined && !forceRecalculation) {
-            return supportsGeolocation;
+const defaultOptions = {
+    maxWidth: 100,
+    unit: 'metric'
+};
+/**
+ * A `ScaleControl` control displays the ratio of a distance on the map to the corresponding distance on the ground.
+ *
+ * @group Markers and Controls
+ *
+ * @example
+ * ```ts
+ * let scale = new ScaleControl({
+ *     maxWidth: 80,
+ *     unit: 'imperial'
+ * });
+ * map.addControl(scale);
+ *
+ * scale.setUnit('metric');
+ * ```
+ */
+class ScaleControl {
+    /**
+     * @param options - the control's options
+     */
+    constructor(options) {
+        this._onMove = () => {
+            updateScale(this._map, this._container, this.options);
+        };
+        /**
+         * Set the scale's unit of the distance
+         *
+         * @param unit - Unit of the distance (`'imperial'`, `'metric'` or `'nautical'`).
+         */
+        this.setUnit = (unit) => {
+            this.options.unit = unit;
+            updateScale(this._map, this._container, this.options);
+        };
+        this.options = Object.assign(Object.assign({}, defaultOptions), options);
+    }
+    getDefaultPosition() {
+        return 'bottom-left';
+    }
+    /** {@inheritDoc IControl.onAdd} */
+    onAdd(map) {
+        this._map = map;
+        this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-scale', map.getContainer());
+        this._map.on('move', this._onMove);
+        this._onMove();
+        return this._container;
+    }
+    /** {@inheritDoc IControl.onRemove} */
+    onRemove() {
+        DOM.remove(this._container);
+        this._map.off('move', this._onMove);
+        this._map = undefined;
+    }
+}
+function updateScale(map, container, options) {
+    // A horizontal scale is imagined to be present at center of the map
+    // container with maximum length (Default) as 100px.
+    // Using spherical law of cosines approximation, the real distance is
+    // found between the two coordinates.
+    // Minimum maxWidth is calculated for the scale box.
+    const optWidth = options && options.maxWidth || 100;
+    const y = map._container.clientHeight / 2;
+    const x = map._container.clientWidth / 2;
+    const left = map.unproject([x - optWidth / 2, y]);
+    const right = map.unproject([x + optWidth / 2, y]);
+    const globeWidth = Math.round(map.project(right).x - map.project(left).x);
+    const maxWidth = Math.min(optWidth, globeWidth, map._container.clientWidth);
+    const maxMeters = left.distanceTo(right);
+    // The real distance corresponding to 100px scale length is rounded off to
+    // near pretty number and the scale length for the same is found out.
+    // Default unit of the scale is based on User's locale.
+    if (options && options.unit === 'imperial') {
+        const maxFeet = 3.2808 * maxMeters;
+        if (maxFeet > 5280) {
+            const maxMiles = maxFeet / 5280;
+            setScale(container, maxWidth, maxMiles, map._getUIString('ScaleControl.Miles'));
         }
-        if (window.navigator.permissions === undefined) {
-            supportsGeolocation = !!window.navigator.geolocation;
-            return supportsGeolocation;
+        else {
+            setScale(container, maxWidth, maxFeet, map._getUIString('ScaleControl.Feet'));
         }
-        // navigator.permissions has incomplete browser support
-        // https://caniuse.com/#feat=permissions-api
-        // Test for the case where a browser disables Geolocation because of an
-        // insecure origin
-        try {
-            const permissions = yield window.navigator.permissions.query({ name: 'geolocation' });
-            supportsGeolocation = permissions.state !== 'denied';
+    }
+    else if (options && options.unit === 'nautical') {
+        const maxNauticals = maxMeters / 1852;
+        setScale(container, maxWidth, maxNauticals, map._getUIString('ScaleControl.NauticalMiles'));
+    }
+    else if (maxMeters >= 1000) {
+        setScale(container, maxWidth, maxMeters / 1000, map._getUIString('ScaleControl.Kilometers'));
+    }
+    else {
+        setScale(container, maxWidth, maxMeters, map._getUIString('ScaleControl.Meters'));
+    }
+}
+function setScale(container, maxWidth, maxDistance, unit) {
+    const distance = getRoundNum(maxDistance);
+    const ratio = distance / maxDistance;
+    container.style.width = `${maxWidth * ratio}px`;
+    container.innerHTML = `${distance}&nbsp;${unit}`;
+}
+function getDecimalRoundNum(d) {
+    const multiplier = Math.pow(10, Math.ceil(-Math.log(d) / Math.LN10));
+    return Math.round(d * multiplier) / multiplier;
+}
+function getRoundNum(num) {
+    const pow10 = Math.pow(10, (`${Math.floor(num)}`).length - 1);
+    let d = num / pow10;
+    d = d >= 10 ? 10 :
+        d >= 5 ? 5 :
+            d >= 3 ? 3 :
+                d >= 2 ? 2 :
+                    d >= 1 ? 1 : getDecimalRoundNum(d);
+    return pow10 * d;
+}
+
+/**
+ * A `FullscreenControl` control contains a button for toggling the map in and out of fullscreen mode.
+ * When [requestFullscreen](https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen) is not supported, fullscreen is handled via CSS properties.
+ * The map's `cooperativeGestures` option is temporarily disabled while the map
+ * is in fullscreen mode, and is restored when the map exist fullscreen mode.
+ *
+ * @group Markers and Controls
+ * @param options - the full screen control options
+ *
+ * @example
+ * ```ts
+ * map.addControl(new FullscreenControl({container: document.querySelector('body')}));
+ * ```
+ * @see [View a fullscreen map](https://maplibre.org/maplibre-gl-js/docs/examples/fullscreen/)
+ *
+ * ## Events
+ *
+ * **Event** `fullscreenstart` of type {@link Event} will be fired when fullscreen mode has started.
+ *
+ * **Event** `fullscreenend` of type {@link Event} will be fired when fullscreen mode has ended.
+ */
+class FullscreenControl extends Evented {
+    /**
+     * @param options - the control's options
+     */
+    constructor(options = {}) {
+        super();
+        this._onFullscreenChange = () => {
+            var _a;
+            let fullscreenElement = window.document.fullscreenElement ||
+                window.document.mozFullScreenElement ||
+                window.document.webkitFullscreenElement ||
+                window.document.msFullscreenElement;
+            while ((_a = fullscreenElement === null || fullscreenElement === void 0 ? void 0 : fullscreenElement.shadowRoot) === null || _a === void 0 ? void 0 : _a.fullscreenElement) {
+                fullscreenElement = fullscreenElement.shadowRoot.fullscreenElement;
+            }
+            if ((fullscreenElement === this._container) !== this._fullscreen) {
+                this._handleFullscreenChange();
+            }
+        };
+        this._onClickFullscreen = () => {
+            if (this._isFullscreen()) {
+                this._exitFullscreen();
+            }
+            else {
+                this._requestFullscreen();
+            }
+        };
+        this._fullscreen = false;
+        if (options && options.container) {
+            if (options.container instanceof HTMLElement) {
+                this._container = options.container;
+            }
+            else {
+                warnOnce('Full screen control \'container\' must be a DOM element.');
+            }
         }
-        catch (_a) {
-            // Fix for iOS16 which rejects query but still supports geolocation
-            supportsGeolocation = !!window.navigator.geolocation;
+        if ('onfullscreenchange' in document) {
+            this._fullscreenchange = 'fullscreenchange';
         }
-        return supportsGeolocation;
-    });
+        else if ('onmozfullscreenchange' in document) {
+            this._fullscreenchange = 'mozfullscreenchange';
+        }
+        else if ('onwebkitfullscreenchange' in document) {
+            this._fullscreenchange = 'webkitfullscreenchange';
+        }
+        else if ('onmsfullscreenchange' in document) {
+            this._fullscreenchange = 'MSFullscreenChange';
+        }
+    }
+    /** {@inheritDoc IControl.onAdd} */
+    onAdd(map) {
+        this._map = map;
+        if (!this._container)
+            this._container = this._map.getContainer();
+        this._controlContainer = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
+        this._setupUI();
+        return this._controlContainer;
+    }
+    /** {@inheritDoc IControl.onRemove} */
+    onRemove() {
+        DOM.remove(this._controlContainer);
+        this._map = null;
+        window.document.removeEventListener(this._fullscreenchange, this._onFullscreenChange);
+    }
+    _setupUI() {
+        const button = this._fullscreenButton = DOM.create('button', (('maplibregl-ctrl-fullscreen')), this._controlContainer);
+        DOM.create('span', 'maplibregl-ctrl-icon', button).setAttribute('aria-hidden', 'true');
+        button.type = 'button';
+        this._updateTitle();
+        this._fullscreenButton.addEventListener('click', this._onClickFullscreen);
+        window.document.addEventListener(this._fullscreenchange, this._onFullscreenChange);
+    }
+    _updateTitle() {
+        const title = this._getTitle();
+        this._fullscreenButton.setAttribute('aria-label', title);
+        this._fullscreenButton.title = title;
+    }
+    _getTitle() {
+        return this._map._getUIString(this._isFullscreen() ? 'FullscreenControl.Exit' : 'FullscreenControl.Enter');
+    }
+    _isFullscreen() {
+        return this._fullscreen;
+    }
+    _handleFullscreenChange() {
+        this._fullscreen = !this._fullscreen;
+        this._fullscreenButton.classList.toggle('maplibregl-ctrl-shrink');
+        this._fullscreenButton.classList.toggle('maplibregl-ctrl-fullscreen');
+        this._updateTitle();
+        if (this._fullscreen) {
+            this.fire(new Event('fullscreenstart'));
+            this._prevCooperativeGesturesEnabled = this._map.cooperativeGestures.isEnabled();
+            this._map.cooperativeGestures.disable();
+        }
+        else {
+            this.fire(new Event('fullscreenend'));
+            if (this._prevCooperativeGesturesEnabled) {
+                this._map.cooperativeGestures.enable();
+            }
+        }
+    }
+    _exitFullscreen() {
+        if (window.document.exitFullscreen) {
+            window.document.exitFullscreen();
+        }
+        else if (window.document.mozCancelFullScreen) {
+            window.document.mozCancelFullScreen();
+        }
+        else if (window.document.msExitFullscreen) {
+            window.document.msExitFullscreen();
+        }
+        else if (window.document.webkitCancelFullScreen) {
+            window.document.webkitCancelFullScreen();
+        }
+        else {
+            this._togglePseudoFullScreen();
+        }
+    }
+    _requestFullscreen() {
+        if (this._container.requestFullscreen) {
+            this._container.requestFullscreen();
+        }
+        else if (this._container.mozRequestFullScreen) {
+            this._container.mozRequestFullScreen();
+        }
+        else if (this._container.msRequestFullscreen) {
+            this._container.msRequestFullscreen();
+        }
+        else if (this._container.webkitRequestFullscreen) {
+            this._container.webkitRequestFullscreen();
+        }
+        else {
+            this._togglePseudoFullScreen();
+        }
+    }
+    _togglePseudoFullScreen() {
+        this._container.classList.toggle('maplibregl-pseudo-fullscreen');
+        this._handleFullscreenChange();
+        this._map.resize();
+    }
+}
+
+/**
+ * A `TerrainControl` control contains a button for turning the terrain on and off.
+ *
+ * @group Markers and Controls
+ *
+ * @example
+ * ```ts
+ * let map = new Map({TerrainControl: false})
+ *     .addControl(new TerrainControl({
+ *         source: "terrain"
+ *     }));
+ * ```
+ */
+class TerrainControl {
+    /**
+     * @param options - the control's options
+     */
+    constructor(options) {
+        this._toggleTerrain = () => {
+            if (this._map.getTerrain()) {
+                this._map.setTerrain(null);
+            }
+            else {
+                this._map.setTerrain(this.options);
+            }
+            this._updateTerrainIcon();
+        };
+        this._updateTerrainIcon = () => {
+            this._terrainButton.classList.remove('maplibregl-ctrl-terrain');
+            this._terrainButton.classList.remove('maplibregl-ctrl-terrain-enabled');
+            if (this._map.terrain) {
+                this._terrainButton.classList.add('maplibregl-ctrl-terrain-enabled');
+                this._terrainButton.title = this._map._getUIString('TerrainControl.Disable');
+            }
+            else {
+                this._terrainButton.classList.add('maplibregl-ctrl-terrain');
+                this._terrainButton.title = this._map._getUIString('TerrainControl.Enable');
+            }
+        };
+        this.options = options;
+    }
+    /** {@inheritDoc IControl.onAdd} */
+    onAdd(map) {
+        this._map = map;
+        this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
+        this._terrainButton = DOM.create('button', 'maplibregl-ctrl-terrain', this._container);
+        DOM.create('span', 'maplibregl-ctrl-icon', this._terrainButton).setAttribute('aria-hidden', 'true');
+        this._terrainButton.type = 'button';
+        this._terrainButton.addEventListener('click', this._toggleTerrain);
+        this._updateTerrainIcon();
+        this._map.on('terrain', this._updateTerrainIcon);
+        return this._container;
+    }
+    /** {@inheritDoc IControl.onRemove} */
+    onRemove() {
+        DOM.remove(this._container);
+        this._map.off('terrain', this._updateTerrainIcon);
+        this._map = undefined;
+    }
+}
+
+/**
+ * A `GlobeControl` control contains a button for toggling the map projection between "mercator" and "globe".
+ *
+ * @group Markers and Controls
+ *
+ * @example
+ * ```ts
+ * let map = new Map()
+ *     .addControl(new GlobeControl());
+ * ```
+ *
+ * @see [Display a globe with a fill extrusion layer](https://maplibre.org/maplibre-gl-js/docs/examples/globe-fill-extrusion/)
+ */
+class GlobeControl {
+    constructor() {
+        this._toggleProjection = () => {
+            var _a;
+            const currentProjection = (_a = this._map.getProjection()) === null || _a === void 0 ? void 0 : _a.type;
+            if (currentProjection === 'mercator' || !currentProjection) {
+                this._map.setProjection({ type: 'globe' });
+            }
+            else {
+                this._map.setProjection({ type: 'mercator' });
+            }
+            this._updateGlobeIcon();
+        };
+        this._updateGlobeIcon = () => {
+            var _a;
+            this._globeButton.classList.remove('maplibregl-ctrl-globe');
+            this._globeButton.classList.remove('maplibregl-ctrl-globe-enabled');
+            if (((_a = this._map.getProjection()) === null || _a === void 0 ? void 0 : _a.type) === 'globe') {
+                this._globeButton.classList.add('maplibregl-ctrl-globe-enabled');
+                this._globeButton.title = this._map._getUIString('GlobeControl.Disable');
+            }
+            else {
+                this._globeButton.classList.add('maplibregl-ctrl-globe');
+                this._globeButton.title = this._map._getUIString('GlobeControl.Enable');
+            }
+        };
+    }
+    /** {@inheritDoc IControl.onAdd} */
+    onAdd(map) {
+        this._map = map;
+        this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
+        this._globeButton = DOM.create('button', 'maplibregl-ctrl-globe', this._container);
+        DOM.create('span', 'maplibregl-ctrl-icon', this._globeButton).setAttribute('aria-hidden', 'true');
+        this._globeButton.type = 'button';
+        this._globeButton.addEventListener('click', this._toggleProjection);
+        this._updateGlobeIcon();
+        this._map.on('styledata', this._updateGlobeIcon);
+        return this._container;
+    }
+    /** {@inheritDoc IControl.onRemove} */
+    onRemove() {
+        DOM.remove(this._container);
+        this._map.off('styledata', this._updateGlobeIcon);
+        this._globeButton.removeEventListener('click', this._toggleProjection);
+        this._map = undefined;
+    }
 }
 
 /**
@@ -64475,1587 +64475,6 @@ class Marker extends Evented {
     }
 }
 
-const defaultOptions$2 = {
-    positionOptions: {
-        enableHighAccuracy: false,
-        maximumAge: 0,
-        timeout: 6000 /* 6 sec */
-    },
-    fitBoundsOptions: {
-        maxZoom: 15
-    },
-    trackUserLocation: false,
-    showAccuracyCircle: true,
-    showUserLocation: true
-};
-let numberOfWatches = 0;
-let noTimeout = false;
-/**
- * A `GeolocateControl` control provides a button that uses the browser's geolocation
- * API to locate the user on the map.
- *
- * Not all browsers support geolocation,
- * and some users may disable the feature. Geolocation support for modern
- * browsers including Chrome requires sites to be served over HTTPS. If
- * geolocation support is not available, the `GeolocateControl` will show
- * as disabled.
- *
- * The zoom level applied will depend on the accuracy of the geolocation provided by the device.
- *
- * The `GeolocateControl` has two modes. If `trackUserLocation` is `false` (default) the control acts as a button, which when pressed will set the map's camera to target the user location. If the user moves, the map won't update. This is most suited for the desktop. If `trackUserLocation` is `true` the control acts as a toggle button that when active the user's location is actively monitored for changes. In this mode the `GeolocateControl` has three interaction states:
- * * active - the map's camera automatically updates as the user's location changes, keeping the location dot in the center. Initial state and upon clicking the `GeolocateControl` button.
- * * passive - the user's location dot automatically updates, but the map's camera does not. Occurs upon the user initiating a map movement.
- * * disabled - occurs if Geolocation is not available, disabled or denied.
- *
- * These interaction states can't be controlled programmatically, rather they are set based on user interactions.
- *
- * ## State Diagram
- * ![GeolocateControl state diagram](https://github.com/maplibre/maplibre-gl-js/assets/3269297/78e720e5-d781-4da8-9803-a7a0e6aaaa9f)
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * map.addControl(new GeolocateControl({
- *     positionOptions: {
- *         enableHighAccuracy: true
- *     },
- *     trackUserLocation: true
- * }));
- * ```
- * @see [Locate the user](https://maplibre.org/maplibre-gl-js/docs/examples/locate-user/)
- *
- * ## Events
- *
- * **Event** `trackuserlocationend` of type {@link Event} will be fired when the `GeolocateControl` changes to the background state, which happens when a user changes the camera during an active position lock. This only applies when `trackUserLocation` is `true`. In the background state, the dot on the map will update with location updates but the camera will not.
- *
- * **Event** `trackuserlocationstart` of type {@link Event} will be fired when the `GeolocateControl` changes to the active lock state, which happens either upon first obtaining a successful Geolocation API position for the user (a `geolocate` event will follow), or the user clicks the geolocate button when in the background state which uses the last known position to recenter the map and enter active lock state (no `geolocate` event will follow unless the users's location changes).
- *
- * **Event** `userlocationlostfocus` of type {@link Event} will be fired when the `GeolocateControl` changes to the background state, which happens when a user changes the camera during an active position lock. This only applies when `trackUserLocation` is `true`. In the background state, the dot on the map will update with location updates but the camera will not.
- *
- * **Event** `userlocationfocus` of type {@link Event} will be fired when the `GeolocateControl` changes to the active lock state, which happens upon the user clicks the geolocate button when in the background state which uses the last known position to recenter the map and enter active lock state.
- *
- * **Event** `geolocate` of type {@link Event} will be fired on each Geolocation API position update which returned as success.
- * `data` - The returned [Position](https://developer.mozilla.org/en-US/docs/Web/API/Position) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
- *
- * **Event** `error` of type {@link Event} will be fired on each Geolocation API position update which returned as an error.
- * `data` - The returned [PositionError](https://developer.mozilla.org/en-US/docs/Web/API/PositionError) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
- *
- * **Event** `outofmaxbounds` of type {@link Event} will be fired on each Geolocation API position update which returned as success but user position is out of map `maxBounds`.
- * `data` - The returned [Position](https://developer.mozilla.org/en-US/docs/Web/API/Position) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when a trackuserlocationend event occurs.
- * geolocate.on('trackuserlocationend', () => {
- *   console.log('A trackuserlocationend event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when a trackuserlocationstart event occurs.
- * geolocate.on('trackuserlocationstart', () => {
- *   console.log('A trackuserlocationstart event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when an userlocationlostfocus event occurs.
- * geolocate.on('userlocationlostfocus', function() {
- *   console.log('An userlocationlostfocus event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when an userlocationfocus event occurs.
- * geolocate.on('userlocationfocus', function() {
- *   console.log('An userlocationfocus event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when a geolocate event occurs.
- * geolocate.on('geolocate', () => {
- *   console.log('A geolocate event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when an error event occurs.
- * geolocate.on('error', () => {
- *   console.log('An error event has occurred.')
- * });
- * ```
- *
- * @example
- * ```ts
- * // Initialize the geolocate control.
- * let geolocate = new GeolocateControl({
- *   positionOptions: {
- *       enableHighAccuracy: true
- *   },
- *   trackUserLocation: true
- * });
- * // Add the control to the map.
- * map.addControl(geolocate);
- * // Set an event listener that fires
- * // when an outofmaxbounds event occurs.
- * geolocate.on('outofmaxbounds', () => {
- *   console.log('An outofmaxbounds event has occurred.')
- * });
- * ```
- */
-class GeolocateControl extends Evented {
-    /**
-     * @param options - the control's options
-     */
-    constructor(options) {
-        super();
-        /**
-         * When the Geolocation API returns a new location, update the `GeolocateControl`.
-         *
-         * @param position - the Geolocation API Position
-         */
-        this._onSuccess = (position) => {
-            if (!this._map) {
-                // control has since been removed
-                return;
-            }
-            if (this._isOutOfMapMaxBounds(position)) {
-                this._setErrorState();
-                this.fire(new Event('outofmaxbounds', position));
-                this._updateMarker();
-                this._finish();
-                return;
-            }
-            if (this.options.trackUserLocation) {
-                // keep a record of the position so that if the state is BACKGROUND and the user
-                // clicks the button, we can move to ACTIVE_LOCK immediately without waiting for
-                // watchPosition to trigger _onSuccess
-                this._lastKnownPosition = position;
-                switch (this._watchState) {
-                    case 'WAITING_ACTIVE':
-                    case 'ACTIVE_LOCK':
-                    case 'ACTIVE_ERROR':
-                        this._watchState = 'ACTIVE_LOCK';
-                        this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-waiting');
-                        this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active-error');
-                        this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-active');
-                        break;
-                    case 'BACKGROUND':
-                    case 'BACKGROUND_ERROR':
-                        this._watchState = 'BACKGROUND';
-                        this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-waiting');
-                        this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background-error');
-                        this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-background');
-                        break;
-                    default:
-                        throw new Error(`Unexpected watchState ${this._watchState}`);
-                }
-            }
-            // if showUserLocation and the watch state isn't off then update the marker location
-            if (this.options.showUserLocation && this._watchState !== 'OFF') {
-                this._updateMarker(position);
-            }
-            // if in normal mode (not watch mode), or if in watch mode and the state is active watch
-            // then update the camera
-            if (!this.options.trackUserLocation || this._watchState === 'ACTIVE_LOCK') {
-                this._updateCamera(position);
-            }
-            if (this.options.showUserLocation) {
-                this._dotElement.classList.remove('maplibregl-user-location-dot-stale');
-            }
-            this.fire(new Event('geolocate', position));
-            this._finish();
-        };
-        /**
-         * Update the camera location to center on the current position
-         *
-         * @param position - the Geolocation API Position
-         */
-        this._updateCamera = (position) => {
-            const center = new LngLat(position.coords.longitude, position.coords.latitude);
-            const radius = position.coords.accuracy;
-            const bearing = this._map.getBearing();
-            const options = extend({ bearing }, this.options.fitBoundsOptions);
-            const newBounds = LngLatBounds.fromLngLat(center, radius);
-            this._map.fitBounds(newBounds, options, {
-                geolocateSource: true // tag this camera change so it won't cause the control to change to background state
-            });
-        };
-        /**
-         * Update the user location dot Marker to the current position
-         *
-         * @param position - the Geolocation API Position
-         */
-        this._updateMarker = (position) => {
-            if (position) {
-                const center = new LngLat(position.coords.longitude, position.coords.latitude);
-                this._accuracyCircleMarker.setLngLat(center).addTo(this._map);
-                this._userLocationDotMarker.setLngLat(center).addTo(this._map);
-                this._accuracy = position.coords.accuracy;
-                if (this.options.showUserLocation && this.options.showAccuracyCircle) {
-                    this._updateCircleRadius();
-                }
-            }
-            else {
-                this._userLocationDotMarker.remove();
-                this._accuracyCircleMarker.remove();
-            }
-        };
-        this._onZoom = () => {
-            if (this.options.showUserLocation && this.options.showAccuracyCircle) {
-                this._updateCircleRadius();
-            }
-        };
-        this._onError = (error) => {
-            if (!this._map) {
-                // control has since been removed
-                return;
-            }
-            if (error.code === 1) {
-                // PERMISSION_DENIED
-                this._watchState = 'OFF';
-                this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-waiting');
-                this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active');
-                this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active-error');
-                this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background');
-                this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background-error');
-                this._geolocateButton.disabled = true;
-                const title = this._map._getUIString('GeolocateControl.LocationNotAvailable');
-                this._geolocateButton.title = title;
-                this._geolocateButton.setAttribute('aria-label', title);
-                if (this._geolocationWatchID !== undefined) {
-                    this._clearWatch();
-                }
-            }
-            else if (error.code === 3 && noTimeout) {
-                // this represents a forced error state
-                // this was triggered to force immediate geolocation when a watch is already present
-                // see https://github.com/mapbox/mapbox-gl-js/issues/8214
-                // and https://w3c.github.io/geolocation-api/#example-5-forcing-the-user-agent-to-return-a-fresh-cached-position
-                return;
-            }
-            else if (this.options.trackUserLocation) {
-                this._setErrorState();
-            }
-            if (this._watchState !== 'OFF' && this.options.showUserLocation) {
-                this._dotElement.classList.add('maplibregl-user-location-dot-stale');
-            }
-            this.fire(new Event('error', error));
-            this._finish();
-        };
-        this._finish = () => {
-            if (this._timeoutId) {
-                clearTimeout(this._timeoutId);
-            }
-            this._timeoutId = undefined;
-        };
-        this._setupUI = () => {
-            // the control could have been removed before reaching here
-            if (!this._map) {
-                return;
-            }
-            this._container.addEventListener('contextmenu', (e) => e.preventDefault());
-            this._geolocateButton = DOM.create('button', 'maplibregl-ctrl-geolocate', this._container);
-            DOM.create('span', 'maplibregl-ctrl-icon', this._geolocateButton).setAttribute('aria-hidden', 'true');
-            this._geolocateButton.type = 'button';
-            this._geolocateButton.disabled = true;
-        };
-        this._finishSetupUI = (supported) => {
-            // this method is called asynchronously during onAdd
-            if (!this._map) {
-                // control has since been removed
-                return;
-            }
-            if (supported === false) {
-                warnOnce('Geolocation support is not available so the GeolocateControl will be disabled.');
-                const title = this._map._getUIString('GeolocateControl.LocationNotAvailable');
-                this._geolocateButton.disabled = true;
-                this._geolocateButton.title = title;
-                this._geolocateButton.setAttribute('aria-label', title);
-            }
-            else {
-                const title = this._map._getUIString('GeolocateControl.FindMyLocation');
-                this._geolocateButton.disabled = false;
-                this._geolocateButton.title = title;
-                this._geolocateButton.setAttribute('aria-label', title);
-            }
-            if (this.options.trackUserLocation) {
-                this._geolocateButton.setAttribute('aria-pressed', 'false');
-                this._watchState = 'OFF';
-            }
-            // when showUserLocation is enabled, keep the Geolocate button disabled until the device location marker is setup on the map
-            if (this.options.showUserLocation) {
-                this._dotElement = DOM.create('div', 'maplibregl-user-location-dot');
-                this._userLocationDotMarker = new Marker({ element: this._dotElement });
-                this._circleElement = DOM.create('div', 'maplibregl-user-location-accuracy-circle');
-                this._accuracyCircleMarker = new Marker({ element: this._circleElement, pitchAlignment: 'map' });
-                if (this.options.trackUserLocation)
-                    this._watchState = 'OFF';
-                this._map.on('zoom', this._onZoom);
-            }
-            this._geolocateButton.addEventListener('click', () => this.trigger());
-            this._setup = true;
-            // when the camera is changed (and it's not as a result of the Geolocation Control) change
-            // the watch mode to background watch, so that the marker is updated but not the camera.
-            if (this.options.trackUserLocation) {
-                this._map.on('movestart', (event) => {
-                    const fromResize = event.originalEvent && event.originalEvent.type === 'resize';
-                    if (!event.geolocateSource && this._watchState === 'ACTIVE_LOCK' && !fromResize) {
-                        this._watchState = 'BACKGROUND';
-                        this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-background');
-                        this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active');
-                        this.fire(new Event('trackuserlocationend'));
-                        this.fire(new Event('userlocationlostfocus'));
-                    }
-                });
-            }
-        };
-        this.options = extend({}, defaultOptions$2, options);
-    }
-    /** {@inheritDoc IControl.onAdd} */
-    onAdd(map) {
-        this._map = map;
-        this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
-        this._setupUI();
-        checkGeolocationSupport().then((supported) => this._finishSetupUI(supported));
-        return this._container;
-    }
-    /** {@inheritDoc IControl.onRemove} */
-    onRemove() {
-        // clear the geolocation watch if exists
-        if (this._geolocationWatchID !== undefined) {
-            window.navigator.geolocation.clearWatch(this._geolocationWatchID);
-            this._geolocationWatchID = undefined;
-        }
-        // clear the markers from the map
-        if (this.options.showUserLocation && this._userLocationDotMarker) {
-            this._userLocationDotMarker.remove();
-        }
-        if (this.options.showAccuracyCircle && this._accuracyCircleMarker) {
-            this._accuracyCircleMarker.remove();
-        }
-        DOM.remove(this._container);
-        this._map.off('zoom', this._onZoom);
-        this._map = undefined;
-        numberOfWatches = 0;
-        noTimeout = false;
-    }
-    /**
-     * Check if the Geolocation API Position is outside the map's `maxBounds`.
-     *
-     * @param position - the Geolocation API Position
-     * @returns `true` if position is outside the map's `maxBounds`, otherwise returns `false`.
-     */
-    _isOutOfMapMaxBounds(position) {
-        const bounds = this._map.getMaxBounds();
-        const coordinates = position.coords;
-        return bounds && (coordinates.longitude < bounds.getWest() ||
-            coordinates.longitude > bounds.getEast() ||
-            coordinates.latitude < bounds.getSouth() ||
-            coordinates.latitude > bounds.getNorth());
-    }
-    _setErrorState() {
-        switch (this._watchState) {
-            case 'WAITING_ACTIVE':
-                this._watchState = 'ACTIVE_ERROR';
-                this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active');
-                this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-active-error');
-                break;
-            case 'ACTIVE_LOCK':
-                this._watchState = 'ACTIVE_ERROR';
-                this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active');
-                this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-active-error');
-                this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-waiting');
-                // turn marker grey
-                break;
-            case 'BACKGROUND':
-                this._watchState = 'BACKGROUND_ERROR';
-                this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background');
-                this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-background-error');
-                this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-waiting');
-                // turn marker grey
-                break;
-            case 'ACTIVE_ERROR':
-                break;
-            default:
-                throw new Error(`Unexpected watchState ${this._watchState}`);
-        }
-    }
-    _updateCircleRadius() {
-        const bounds = this._map.getBounds();
-        const southEastPoint = bounds.getSouthEast();
-        const northEastPoint = bounds.getNorthEast();
-        const mapHeightInMeters = southEastPoint.distanceTo(northEastPoint);
-        const mapHeightInPixels = this._map._container.clientHeight;
-        const circleDiameter = Math.ceil(2 * (this._accuracy / (mapHeightInMeters / mapHeightInPixels)));
-        this._circleElement.style.width = `${circleDiameter}px`;
-        this._circleElement.style.height = `${circleDiameter}px`;
-    }
-    /**
-     * Programmatically request and move the map to the user's location.
-     *
-     * @returns `false` if called before control was added to a map, otherwise returns `true`.
-     * @example
-     * ```ts
-     * // Initialize the geolocate control.
-     * let geolocate = new GeolocateControl({
-     *  positionOptions: {
-     *    enableHighAccuracy: true
-     *  },
-     *  trackUserLocation: true
-     * });
-     * // Add the control to the map.
-     * map.addControl(geolocate);
-     * map.on('load', () => {
-     *   geolocate.trigger();
-     * });
-     * ```
-     */
-    trigger() {
-        if (!this._setup) {
-            warnOnce('Geolocate control triggered before added to a map');
-            return false;
-        }
-        if (this.options.trackUserLocation) {
-            // update watchState and do any outgoing state cleanup
-            switch (this._watchState) {
-                case 'OFF':
-                    // turn on the Geolocate Control
-                    this._watchState = 'WAITING_ACTIVE';
-                    this.fire(new Event('trackuserlocationstart'));
-                    break;
-                case 'WAITING_ACTIVE':
-                case 'ACTIVE_LOCK':
-                case 'ACTIVE_ERROR':
-                case 'BACKGROUND_ERROR':
-                    // turn off the Geolocate Control
-                    numberOfWatches--;
-                    noTimeout = false;
-                    this._watchState = 'OFF';
-                    this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-waiting');
-                    this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active');
-                    this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active-error');
-                    this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background');
-                    this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background-error');
-                    this.fire(new Event('trackuserlocationend'));
-                    break;
-                case 'BACKGROUND':
-                    this._watchState = 'ACTIVE_LOCK';
-                    this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background');
-                    // set camera to last known location
-                    if (this._lastKnownPosition)
-                        this._updateCamera(this._lastKnownPosition);
-                    this.fire(new Event('trackuserlocationstart'));
-                    this.fire(new Event('userlocationfocus'));
-                    break;
-                default:
-                    throw new Error(`Unexpected watchState ${this._watchState}`);
-            }
-            // incoming state setup
-            switch (this._watchState) {
-                case 'WAITING_ACTIVE':
-                    this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-waiting');
-                    this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-active');
-                    break;
-                case 'ACTIVE_LOCK':
-                    this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-active');
-                    break;
-                case 'OFF':
-                    break;
-                default:
-                    throw new Error(`Unexpected watchState ${this._watchState}`);
-            }
-            // manage geolocation.watchPosition / geolocation.clearWatch
-            if (this._watchState === 'OFF' && this._geolocationWatchID !== undefined) {
-                // clear watchPosition as we've changed to an OFF state
-                this._clearWatch();
-            }
-            else if (this._geolocationWatchID === undefined) {
-                // enable watchPosition since watchState is not OFF and there is no watchPosition already running
-                this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-waiting');
-                this._geolocateButton.setAttribute('aria-pressed', 'true');
-                numberOfWatches++;
-                let positionOptions;
-                if (numberOfWatches > 1) {
-                    positionOptions = { maximumAge: 600000, timeout: 0 };
-                    noTimeout = true;
-                }
-                else {
-                    positionOptions = this.options.positionOptions;
-                    noTimeout = false;
-                }
-                this._geolocationWatchID = window.navigator.geolocation.watchPosition(this._onSuccess, this._onError, positionOptions);
-            }
-        }
-        else {
-            window.navigator.geolocation.getCurrentPosition(this._onSuccess, this._onError, this.options.positionOptions);
-            // This timeout ensures that we still call finish() even if
-            // the user declines to share their location in Firefox
-            this._timeoutId = setTimeout(this._finish, 10000 /* 10sec */);
-        }
-        return true;
-    }
-    _clearWatch() {
-        window.navigator.geolocation.clearWatch(this._geolocationWatchID);
-        this._geolocationWatchID = undefined;
-        this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-waiting');
-        this._geolocateButton.setAttribute('aria-pressed', 'false');
-        if (this.options.showUserLocation) {
-            this._updateMarker(null);
-        }
-    }
-}
-
-const defaultOptions$1 = {
-    maxWidth: 100,
-    unit: 'metric'
-};
-/**
- * A `ScaleControl` control displays the ratio of a distance on the map to the corresponding distance on the ground.
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * let scale = new ScaleControl({
- *     maxWidth: 80,
- *     unit: 'imperial'
- * });
- * map.addControl(scale);
- *
- * scale.setUnit('metric');
- * ```
- */
-class ScaleControl {
-    /**
-     * @param options - the control's options
-     */
-    constructor(options) {
-        this._onMove = () => {
-            updateScale(this._map, this._container, this.options);
-        };
-        /**
-         * Set the scale's unit of the distance
-         *
-         * @param unit - Unit of the distance (`'imperial'`, `'metric'` or `'nautical'`).
-         */
-        this.setUnit = (unit) => {
-            this.options.unit = unit;
-            updateScale(this._map, this._container, this.options);
-        };
-        this.options = Object.assign(Object.assign({}, defaultOptions$1), options);
-    }
-    getDefaultPosition() {
-        return 'bottom-left';
-    }
-    /** {@inheritDoc IControl.onAdd} */
-    onAdd(map) {
-        this._map = map;
-        this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-scale', map.getContainer());
-        this._map.on('move', this._onMove);
-        this._onMove();
-        return this._container;
-    }
-    /** {@inheritDoc IControl.onRemove} */
-    onRemove() {
-        DOM.remove(this._container);
-        this._map.off('move', this._onMove);
-        this._map = undefined;
-    }
-}
-function updateScale(map, container, options) {
-    // A horizontal scale is imagined to be present at center of the map
-    // container with maximum length (Default) as 100px.
-    // Using spherical law of cosines approximation, the real distance is
-    // found between the two coordinates.
-    // Minimum maxWidth is calculated for the scale box.
-    const optWidth = options && options.maxWidth || 100;
-    const y = map._container.clientHeight / 2;
-    const x = map._container.clientWidth / 2;
-    const left = map.unproject([x - optWidth / 2, y]);
-    const right = map.unproject([x + optWidth / 2, y]);
-    const globeWidth = Math.round(map.project(right).x - map.project(left).x);
-    const maxWidth = Math.min(optWidth, globeWidth, map._container.clientWidth);
-    const maxMeters = left.distanceTo(right);
-    // The real distance corresponding to 100px scale length is rounded off to
-    // near pretty number and the scale length for the same is found out.
-    // Default unit of the scale is based on User's locale.
-    if (options && options.unit === 'imperial') {
-        const maxFeet = 3.2808 * maxMeters;
-        if (maxFeet > 5280) {
-            const maxMiles = maxFeet / 5280;
-            setScale(container, maxWidth, maxMiles, map._getUIString('ScaleControl.Miles'));
-        }
-        else {
-            setScale(container, maxWidth, maxFeet, map._getUIString('ScaleControl.Feet'));
-        }
-    }
-    else if (options && options.unit === 'nautical') {
-        const maxNauticals = maxMeters / 1852;
-        setScale(container, maxWidth, maxNauticals, map._getUIString('ScaleControl.NauticalMiles'));
-    }
-    else if (maxMeters >= 1000) {
-        setScale(container, maxWidth, maxMeters / 1000, map._getUIString('ScaleControl.Kilometers'));
-    }
-    else {
-        setScale(container, maxWidth, maxMeters, map._getUIString('ScaleControl.Meters'));
-    }
-}
-function setScale(container, maxWidth, maxDistance, unit) {
-    const distance = getRoundNum(maxDistance);
-    const ratio = distance / maxDistance;
-    container.style.width = `${maxWidth * ratio}px`;
-    container.innerHTML = `${distance}&nbsp;${unit}`;
-}
-function getDecimalRoundNum(d) {
-    const multiplier = Math.pow(10, Math.ceil(-Math.log(d) / Math.LN10));
-    return Math.round(d * multiplier) / multiplier;
-}
-function getRoundNum(num) {
-    const pow10 = Math.pow(10, (`${Math.floor(num)}`).length - 1);
-    let d = num / pow10;
-    d = d >= 10 ? 10 :
-        d >= 5 ? 5 :
-            d >= 3 ? 3 :
-                d >= 2 ? 2 :
-                    d >= 1 ? 1 : getDecimalRoundNum(d);
-    return pow10 * d;
-}
-
-/**
- * A `FullscreenControl` control contains a button for toggling the map in and out of fullscreen mode.
- * When [requestFullscreen](https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen) is not supported, fullscreen is handled via CSS properties.
- * The map's `cooperativeGestures` option is temporarily disabled while the map
- * is in fullscreen mode, and is restored when the map exist fullscreen mode.
- *
- * @group Markers and Controls
- * @param options - the full screen control options
- *
- * @example
- * ```ts
- * map.addControl(new FullscreenControl({container: document.querySelector('body')}));
- * ```
- * @see [View a fullscreen map](https://maplibre.org/maplibre-gl-js/docs/examples/fullscreen/)
- *
- * ## Events
- *
- * **Event** `fullscreenstart` of type {@link Event} will be fired when fullscreen mode has started.
- *
- * **Event** `fullscreenend` of type {@link Event} will be fired when fullscreen mode has ended.
- */
-class FullscreenControl extends Evented {
-    /**
-     * @param options - the control's options
-     */
-    constructor(options = {}) {
-        super();
-        this._onFullscreenChange = () => {
-            var _a;
-            let fullscreenElement = window.document.fullscreenElement ||
-                window.document.mozFullScreenElement ||
-                window.document.webkitFullscreenElement ||
-                window.document.msFullscreenElement;
-            while ((_a = fullscreenElement === null || fullscreenElement === void 0 ? void 0 : fullscreenElement.shadowRoot) === null || _a === void 0 ? void 0 : _a.fullscreenElement) {
-                fullscreenElement = fullscreenElement.shadowRoot.fullscreenElement;
-            }
-            if ((fullscreenElement === this._container) !== this._fullscreen) {
-                this._handleFullscreenChange();
-            }
-        };
-        this._onClickFullscreen = () => {
-            if (this._isFullscreen()) {
-                this._exitFullscreen();
-            }
-            else {
-                this._requestFullscreen();
-            }
-        };
-        this._fullscreen = false;
-        if (options && options.container) {
-            if (options.container instanceof HTMLElement) {
-                this._container = options.container;
-            }
-            else {
-                warnOnce('Full screen control \'container\' must be a DOM element.');
-            }
-        }
-        if ('onfullscreenchange' in document) {
-            this._fullscreenchange = 'fullscreenchange';
-        }
-        else if ('onmozfullscreenchange' in document) {
-            this._fullscreenchange = 'mozfullscreenchange';
-        }
-        else if ('onwebkitfullscreenchange' in document) {
-            this._fullscreenchange = 'webkitfullscreenchange';
-        }
-        else if ('onmsfullscreenchange' in document) {
-            this._fullscreenchange = 'MSFullscreenChange';
-        }
-    }
-    /** {@inheritDoc IControl.onAdd} */
-    onAdd(map) {
-        this._map = map;
-        if (!this._container)
-            this._container = this._map.getContainer();
-        this._controlContainer = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
-        this._setupUI();
-        return this._controlContainer;
-    }
-    /** {@inheritDoc IControl.onRemove} */
-    onRemove() {
-        DOM.remove(this._controlContainer);
-        this._map = null;
-        window.document.removeEventListener(this._fullscreenchange, this._onFullscreenChange);
-    }
-    _setupUI() {
-        const button = this._fullscreenButton = DOM.create('button', (('maplibregl-ctrl-fullscreen')), this._controlContainer);
-        DOM.create('span', 'maplibregl-ctrl-icon', button).setAttribute('aria-hidden', 'true');
-        button.type = 'button';
-        this._updateTitle();
-        this._fullscreenButton.addEventListener('click', this._onClickFullscreen);
-        window.document.addEventListener(this._fullscreenchange, this._onFullscreenChange);
-    }
-    _updateTitle() {
-        const title = this._getTitle();
-        this._fullscreenButton.setAttribute('aria-label', title);
-        this._fullscreenButton.title = title;
-    }
-    _getTitle() {
-        return this._map._getUIString(this._isFullscreen() ? 'FullscreenControl.Exit' : 'FullscreenControl.Enter');
-    }
-    _isFullscreen() {
-        return this._fullscreen;
-    }
-    _handleFullscreenChange() {
-        this._fullscreen = !this._fullscreen;
-        this._fullscreenButton.classList.toggle('maplibregl-ctrl-shrink');
-        this._fullscreenButton.classList.toggle('maplibregl-ctrl-fullscreen');
-        this._updateTitle();
-        if (this._fullscreen) {
-            this.fire(new Event('fullscreenstart'));
-            this._prevCooperativeGesturesEnabled = this._map.cooperativeGestures.isEnabled();
-            this._map.cooperativeGestures.disable();
-        }
-        else {
-            this.fire(new Event('fullscreenend'));
-            if (this._prevCooperativeGesturesEnabled) {
-                this._map.cooperativeGestures.enable();
-            }
-        }
-    }
-    _exitFullscreen() {
-        if (window.document.exitFullscreen) {
-            window.document.exitFullscreen();
-        }
-        else if (window.document.mozCancelFullScreen) {
-            window.document.mozCancelFullScreen();
-        }
-        else if (window.document.msExitFullscreen) {
-            window.document.msExitFullscreen();
-        }
-        else if (window.document.webkitCancelFullScreen) {
-            window.document.webkitCancelFullScreen();
-        }
-        else {
-            this._togglePseudoFullScreen();
-        }
-    }
-    _requestFullscreen() {
-        if (this._container.requestFullscreen) {
-            this._container.requestFullscreen();
-        }
-        else if (this._container.mozRequestFullScreen) {
-            this._container.mozRequestFullScreen();
-        }
-        else if (this._container.msRequestFullscreen) {
-            this._container.msRequestFullscreen();
-        }
-        else if (this._container.webkitRequestFullscreen) {
-            this._container.webkitRequestFullscreen();
-        }
-        else {
-            this._togglePseudoFullScreen();
-        }
-    }
-    _togglePseudoFullScreen() {
-        this._container.classList.toggle('maplibregl-pseudo-fullscreen');
-        this._handleFullscreenChange();
-        this._map.resize();
-    }
-}
-
-/**
- * A `TerrainControl` control contains a button for turning the terrain on and off.
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * let map = new Map({TerrainControl: false})
- *     .addControl(new TerrainControl({
- *         source: "terrain"
- *     }));
- * ```
- */
-class TerrainControl {
-    /**
-     * @param options - the control's options
-     */
-    constructor(options) {
-        this._toggleTerrain = () => {
-            if (this._map.getTerrain()) {
-                this._map.setTerrain(null);
-            }
-            else {
-                this._map.setTerrain(this.options);
-            }
-            this._updateTerrainIcon();
-        };
-        this._updateTerrainIcon = () => {
-            this._terrainButton.classList.remove('maplibregl-ctrl-terrain');
-            this._terrainButton.classList.remove('maplibregl-ctrl-terrain-enabled');
-            if (this._map.terrain) {
-                this._terrainButton.classList.add('maplibregl-ctrl-terrain-enabled');
-                this._terrainButton.title = this._map._getUIString('TerrainControl.Disable');
-            }
-            else {
-                this._terrainButton.classList.add('maplibregl-ctrl-terrain');
-                this._terrainButton.title = this._map._getUIString('TerrainControl.Enable');
-            }
-        };
-        this.options = options;
-    }
-    /** {@inheritDoc IControl.onAdd} */
-    onAdd(map) {
-        this._map = map;
-        this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
-        this._terrainButton = DOM.create('button', 'maplibregl-ctrl-terrain', this._container);
-        DOM.create('span', 'maplibregl-ctrl-icon', this._terrainButton).setAttribute('aria-hidden', 'true');
-        this._terrainButton.type = 'button';
-        this._terrainButton.addEventListener('click', this._toggleTerrain);
-        this._updateTerrainIcon();
-        this._map.on('terrain', this._updateTerrainIcon);
-        return this._container;
-    }
-    /** {@inheritDoc IControl.onRemove} */
-    onRemove() {
-        DOM.remove(this._container);
-        this._map.off('terrain', this._updateTerrainIcon);
-        this._map = undefined;
-    }
-}
-
-/**
- * A `GlobeControl` control contains a button for toggling the map projection between "mercator" and "globe".
- *
- * @group Markers and Controls
- *
- * @example
- * ```ts
- * let map = new Map()
- *     .addControl(new GlobeControl());
- * ```
- *
- * @see [Display a globe with a fill extrusion layer](https://maplibre.org/maplibre-gl-js/docs/examples/globe-fill-extrusion/)
- */
-class GlobeControl {
-    constructor() {
-        this._toggleProjection = () => {
-            var _a;
-            const currentProjection = (_a = this._map.getProjection()) === null || _a === void 0 ? void 0 : _a.type;
-            if (currentProjection === 'mercator' || !currentProjection) {
-                this._map.setProjection({ type: 'globe' });
-            }
-            else {
-                this._map.setProjection({ type: 'mercator' });
-            }
-            this._updateGlobeIcon();
-        };
-        this._updateGlobeIcon = () => {
-            var _a;
-            this._globeButton.classList.remove('maplibregl-ctrl-globe');
-            this._globeButton.classList.remove('maplibregl-ctrl-globe-enabled');
-            if (((_a = this._map.getProjection()) === null || _a === void 0 ? void 0 : _a.type) === 'globe') {
-                this._globeButton.classList.add('maplibregl-ctrl-globe-enabled');
-                this._globeButton.title = this._map._getUIString('GlobeControl.Disable');
-            }
-            else {
-                this._globeButton.classList.add('maplibregl-ctrl-globe');
-                this._globeButton.title = this._map._getUIString('GlobeControl.Enable');
-            }
-        };
-    }
-    /** {@inheritDoc IControl.onAdd} */
-    onAdd(map) {
-        this._map = map;
-        this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
-        this._globeButton = DOM.create('button', 'maplibregl-ctrl-globe', this._container);
-        DOM.create('span', 'maplibregl-ctrl-icon', this._globeButton).setAttribute('aria-hidden', 'true');
-        this._globeButton.type = 'button';
-        this._globeButton.addEventListener('click', this._toggleProjection);
-        this._updateGlobeIcon();
-        this._map.on('styledata', this._updateGlobeIcon);
-        return this._container;
-    }
-    /** {@inheritDoc IControl.onRemove} */
-    onRemove() {
-        DOM.remove(this._container);
-        this._map.off('styledata', this._updateGlobeIcon);
-        this._globeButton.removeEventListener('click', this._toggleProjection);
-        this._map = undefined;
-    }
-}
-
-const defaultOptions = {
-    closeButton: true,
-    closeOnClick: true,
-    focusAfterOpen: true,
-    className: '',
-    maxWidth: '240px',
-    subpixelPositioning: false,
-    locationOccludedOpacity: undefined,
-};
-const focusQuerySelector = [
-    'a[href]',
-    '[tabindex]:not([tabindex=\'-1\'])',
-    '[contenteditable]:not([contenteditable=\'false\'])',
-    'button:not([disabled])',
-    'input:not([disabled])',
-    'select:not([disabled])',
-    'textarea:not([disabled])',
-].join(', ');
-/**
- * A popup component.
- *
- * @group Markers and Controls
- *
- *
- * @example
- * Create a popup
- * ```ts
- * let popup = new Popup();
- * // Set an event listener that will fire
- * // any time the popup is opened
- * popup.on('open', () => {
- *   console.log('popup was opened');
- * });
- * ```
- *
- * @example
- * Create a popup
- * ```ts
- * let popup = new Popup();
- * // Set an event listener that will fire
- * // any time the popup is closed
- * popup.on('close', () => {
- *   console.log('popup was closed');
- * });
- * ```
- *
- * @example
- * ```ts
- * let markerHeight = 50, markerRadius = 10, linearOffset = 25;
- * let popupOffsets = {
- *  'top': [0, 0],
- *  'top-left': [0,0],
- *  'top-right': [0,0],
- *  'bottom': [0, -markerHeight],
- *  'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
- *  'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
- *  'left': [markerRadius, (markerHeight - markerRadius) * -1],
- *  'right': [-markerRadius, (markerHeight - markerRadius) * -1]
- *  };
- * let popup = new Popup({offset: popupOffsets, className: 'my-class'})
- *   .setLngLat(e.lngLat)
- *   .setHTML("<h1>Hello World!</h1>")
- *   .setMaxWidth("300px")
- *   .addTo(map);
- * ```
- * @see [Display a popup](https://maplibre.org/maplibre-gl-js/docs/examples/popup/)
- * @see [Display a popup on hover](https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-hover/)
- * @see [Display a popup on click](https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-click/)
- * @see [Attach a popup to a marker instance](https://maplibre.org/maplibre-gl-js/docs/examples/set-popup/)
- *
- * ## Events
- *
- * **Event** `open` of type {@link Event} will be fired when the popup is opened manually or programmatically.
- *
- * **Event** `close` of type {@link Event} will be fired when the popup is closed manually or programmatically.
- */
-class Popup extends Evented {
-    /**
-     * @param options - the options
-     */
-    constructor(options) {
-        super();
-        /**
-         * Add opacity to popup if in globe projection and location is behind view
-         */
-        this._updateOpacity = () => {
-            if (this.options.locationOccludedOpacity === undefined) {
-                return;
-            }
-            if (this._map.transform.isLocationOccluded(this.getLngLat())) {
-                this._container.style.opacity = `${this.options.locationOccludedOpacity}`;
-            }
-            else {
-                this._container.style.opacity = undefined;
-            }
-        };
-        /**
-         * Removes the popup from the map it has been added to.
-         *
-         * @example
-         * ```ts
-         * let popup = new Popup().addTo(map);
-         * popup.remove();
-         * ```
-         */
-        this.remove = () => {
-            if (this._content) {
-                DOM.remove(this._content);
-            }
-            if (this._container) {
-                DOM.remove(this._container);
-                delete this._container;
-            }
-            if (this._map) {
-                this._map.off('move', this._update);
-                this._map.off('move', this._onClose);
-                this._map.off('click', this._onClose);
-                this._map.off('remove', this.remove);
-                this._map.off('mousemove', this._onMouseMove);
-                this._map.off('mouseup', this._onMouseUp);
-                this._map.off('drag', this._onDrag);
-                this._map._canvasContainer.classList.remove('maplibregl-track-pointer');
-                delete this._map;
-                this.fire(new Event('close'));
-            }
-            return this;
-        };
-        this._onMouseUp = (event) => {
-            this._update(event.point);
-        };
-        this._onMouseMove = (event) => {
-            this._update(event.point);
-        };
-        this._onDrag = (event) => {
-            this._update(event.point);
-        };
-        this._update = (cursor) => {
-            const hasPosition = this._lngLat || this._trackPointer;
-            if (!this._map || !hasPosition || !this._content) {
-                return;
-            }
-            if (!this._container) {
-                this._container = DOM.create('div', 'maplibregl-popup', this._map.getContainer());
-                this._tip = DOM.create('div', 'maplibregl-popup-tip', this._container);
-                this._container.appendChild(this._content);
-                if (this.options.className) {
-                    for (const name of this.options.className.split(' ')) {
-                        this._container.classList.add(name);
-                    }
-                }
-                if (this._closeButton) {
-                    this._closeButton.setAttribute('aria-label', this._map._getUIString('Popup.Close'));
-                }
-                if (this._trackPointer) {
-                    this._container.classList.add('maplibregl-popup-track-pointer');
-                }
-            }
-            if (this.options.maxWidth && this._container.style.maxWidth !== this.options.maxWidth) {
-                this._container.style.maxWidth = this.options.maxWidth;
-            }
-            this._lngLat = smartWrap(this._lngLat, this._flatPos, this._map.transform, this._trackPointer);
-            if (this._trackPointer && !cursor)
-                return;
-            const pos = this._flatPos = this._pos = this._trackPointer && cursor ? cursor : this._map.project(this._lngLat);
-            if (this._map.terrain) {
-                // flat position is saved because smartWrap needs non-elevated points
-                this._flatPos = this._trackPointer && cursor ? cursor : this._map.transform.locationToScreenPoint(this._lngLat);
-            }
-            let anchor = this.options.anchor;
-            const offset = normalizeOffset(this.options.offset);
-            if (!anchor) {
-                const width = this._container.offsetWidth;
-                const height = this._container.offsetHeight;
-                let anchorComponents;
-                if (pos.y + offset.bottom.y < height) {
-                    anchorComponents = ['top'];
-                }
-                else if (pos.y > this._map.transform.height - height) {
-                    anchorComponents = ['bottom'];
-                }
-                else {
-                    anchorComponents = [];
-                }
-                if (pos.x < width / 2) {
-                    anchorComponents.push('left');
-                }
-                else if (pos.x > this._map.transform.width - width / 2) {
-                    anchorComponents.push('right');
-                }
-                if (anchorComponents.length === 0) {
-                    anchor = 'bottom';
-                }
-                else {
-                    anchor = anchorComponents.join('-');
-                }
-            }
-            let offsetedPos = pos.add(offset[anchor]);
-            if (!this.options.subpixelPositioning) {
-                offsetedPos = offsetedPos.round();
-            }
-            DOM.setTransform(this._container, `${anchorTranslate[anchor]} translate(${offsetedPos.x}px,${offsetedPos.y}px)`);
-            applyAnchorClass(this._container, anchor, 'popup');
-            this._updateOpacity();
-        };
-        this._onClose = () => {
-            this.remove();
-        };
-        this.options = extend(Object.create(defaultOptions), options);
-    }
-    /**
-     * Adds the popup to a map.
-     *
-     * @param map - The MapLibre GL JS map to add the popup to.
-     * @example
-     * ```ts
-     * new Popup()
-     *   .setLngLat([0, 0])
-     *   .setHTML("<h1>Null Island</h1>")
-     *   .addTo(map);
-     * ```
-     * @see [Display a popup](https://maplibre.org/maplibre-gl-js/docs/examples/popup/)
-     * @see [Display a popup on hover](https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-hover/)
-     * @see [Display a popup on click](https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-click/)
-     * @see [Show polygon information on click](https://maplibre.org/maplibre-gl-js/docs/examples/polygon-popup-on-click/)
-     */
-    addTo(map) {
-        if (this._map)
-            this.remove();
-        this._map = map;
-        if (this.options.closeOnClick) {
-            this._map.on('click', this._onClose);
-        }
-        if (this.options.closeOnMove) {
-            this._map.on('move', this._onClose);
-        }
-        this._map.on('remove', this.remove);
-        this._update();
-        this._focusFirstElement();
-        if (this._trackPointer) {
-            this._map.on('mousemove', this._onMouseMove);
-            this._map.on('mouseup', this._onMouseUp);
-            if (this._container) {
-                this._container.classList.add('maplibregl-popup-track-pointer');
-            }
-            this._map._canvasContainer.classList.add('maplibregl-track-pointer');
-        }
-        else {
-            this._map.on('move', this._update);
-        }
-        this.fire(new Event('open'));
-        return this;
-    }
-    /**
-     * @returns `true` if the popup is open, `false` if it is closed.
-     */
-    isOpen() {
-        return !!this._map;
-    }
-    /**
-     * Returns the geographical location of the popup's anchor.
-     *
-     * The longitude of the result may differ by a multiple of 360 degrees from the longitude previously
-     * set by `setLngLat` because `Popup` wraps the anchor longitude across copies of the world to keep
-     * the popup on screen.
-     *
-     * @returns The geographical location of the popup's anchor.
-     */
-    getLngLat() {
-        return this._lngLat;
-    }
-    /**
-     * Sets the geographical location of the popup's anchor, and moves the popup to it. Replaces trackPointer() behavior.
-     *
-     * @param lnglat - The geographical location to set as the popup's anchor.
-     */
-    setLngLat(lnglat) {
-        this._lngLat = LngLat.convert(lnglat);
-        this._pos = null;
-        this._flatPos = null;
-        this._trackPointer = false;
-        this._update();
-        if (this._map) {
-            this._map.on('move', this._update);
-            this._map.off('mousemove', this._onMouseMove);
-            if (this._container) {
-                this._container.classList.remove('maplibregl-popup-track-pointer');
-            }
-            this._map._canvasContainer.classList.remove('maplibregl-track-pointer');
-        }
-        return this;
-    }
-    /**
-     * Tracks the popup anchor to the cursor position on screens with a pointer device (it will be hidden on touchscreens). Replaces the `setLngLat` behavior.
-     * For most use cases, set `closeOnClick` and `closeButton` to `false`.
-     * @example
-     * ```ts
-     * let popup = new Popup({ closeOnClick: false, closeButton: false })
-     *   .setHTML("<h1>Hello World!</h1>")
-     *   .trackPointer()
-     *   .addTo(map);
-     * ```
-     */
-    trackPointer() {
-        this._trackPointer = true;
-        this._pos = null;
-        this._flatPos = null;
-        this._update();
-        if (this._map) {
-            this._map.off('move', this._update);
-            this._map.on('mousemove', this._onMouseMove);
-            this._map.on('drag', this._onDrag);
-            if (this._container) {
-                this._container.classList.add('maplibregl-popup-track-pointer');
-            }
-            this._map._canvasContainer.classList.add('maplibregl-track-pointer');
-        }
-        return this;
-    }
-    /**
-     * Returns the `Popup`'s HTML element.
-     * @example
-     * Change the `Popup` element's font size
-     * ```ts
-     * let popup = new Popup()
-     *   .setLngLat([-96, 37.8])
-     *   .setHTML("<p>Hello World!</p>")
-     *   .addTo(map);
-     * let popupElem = popup.getElement();
-     * popupElem.style.fontSize = "25px";
-     * ```
-     * @returns element
-     */
-    getElement() {
-        return this._container;
-    }
-    /**
-     * Sets the popup's content to a string of text.
-     *
-     * This function creates a [Text](https://developer.mozilla.org/en-US/docs/Web/API/Text) node in the DOM,
-     * so it cannot insert raw HTML. Use this method for security against XSS
-     * if the popup content is user-provided.
-     *
-     * @param text - Textual content for the popup.
-     * @example
-     * ```ts
-     * let popup = new Popup()
-     *   .setLngLat(e.lngLat)
-     *   .setText('Hello, world!')
-     *   .addTo(map);
-     * ```
-     */
-    setText(text) {
-        return this.setDOMContent(document.createTextNode(text));
-    }
-    /**
-     * Sets the popup's content to the HTML provided as a string.
-     *
-     * This method does not perform HTML filtering or sanitization, and must be
-     * used only with trusted content. Consider {@link Popup#setText} if
-     * the content is an untrusted text string.
-     *
-     * @param html - A string representing HTML content for the popup.
-     * @example
-     * ```ts
-     * let popup = new Popup()
-     *   .setLngLat(e.lngLat)
-     *   .setHTML("<h1>Hello World!</h1>")
-     *   .addTo(map);
-     * ```
-     * @see [Display a popup](https://maplibre.org/maplibre-gl-js/docs/examples/popup/)
-     * @see [Display a popup on hover](https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-hover/)
-     * @see [Display a popup on click](https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-click/)
-     * @see [Attach a popup to a marker instance](https://maplibre.org/maplibre-gl-js/docs/examples/set-popup/)
-     */
-    setHTML(html) {
-        const frag = document.createDocumentFragment();
-        const temp = document.createElement('body');
-        let child;
-        temp.innerHTML = html;
-        while (true) {
-            child = temp.firstChild;
-            if (!child)
-                break;
-            frag.appendChild(child);
-        }
-        return this.setDOMContent(frag);
-    }
-    /**
-     * Returns the popup's maximum width.
-     *
-     * @returns The maximum width of the popup.
-     */
-    getMaxWidth() {
-        var _a;
-        return (_a = this._container) === null || _a === void 0 ? void 0 : _a.style.maxWidth;
-    }
-    /**
-     * Sets the popup's maximum width. This is setting the CSS property `max-width`.
-     * Available values can be found here: https://developer.mozilla.org/en-US/docs/Web/CSS/max-width
-     *
-     * @param maxWidth - A string representing the value for the maximum width.
-     */
-    setMaxWidth(maxWidth) {
-        this.options.maxWidth = maxWidth;
-        this._update();
-        return this;
-    }
-    /**
-     * Sets the popup's content to the element provided as a DOM node.
-     *
-     * @param htmlNode - A DOM node to be used as content for the popup.
-     * @example
-     * Create an element with the popup content
-     * ```ts
-     * let div = document.createElement('div');
-     * div.innerHTML = 'Hello, world!';
-     * let popup = new Popup()
-     *   .setLngLat(e.lngLat)
-     *   .setDOMContent(div)
-     *   .addTo(map);
-     * ```
-     */
-    setDOMContent(htmlNode) {
-        if (this._content) {
-            // Clear out children first.
-            while (this._content.hasChildNodes()) {
-                if (this._content.firstChild) {
-                    this._content.removeChild(this._content.firstChild);
-                }
-            }
-        }
-        else {
-            this._content = DOM.create('div', 'maplibregl-popup-content', this._container);
-        }
-        // The close button should be the last tabbable element inside the popup for a good keyboard UX.
-        this._content.appendChild(htmlNode);
-        this._createCloseButton();
-        this._update();
-        this._focusFirstElement();
-        return this;
-    }
-    /**
-     * Adds a CSS class to the popup container element.
-     *
-     * @param className - Non-empty string with CSS class name to add to popup container
-     *
-     * @example
-     * ```ts
-     * let popup = new Popup()
-     * popup.addClassName('some-class')
-     * ```
-     */
-    addClassName(className) {
-        if (this._container) {
-            this._container.classList.add(className);
-        }
-        return this;
-    }
-    /**
-     * Removes a CSS class from the popup container element.
-     *
-     * @param className - Non-empty string with CSS class name to remove from popup container
-     *
-     * @example
-     * ```ts
-     * let popup = new Popup()
-     * popup.removeClassName('some-class')
-     * ```
-     */
-    removeClassName(className) {
-        if (this._container) {
-            this._container.classList.remove(className);
-        }
-        return this;
-    }
-    /**
-     * Sets the popup's offset.
-     *
-     * @param offset - Sets the popup's offset.
-     */
-    setOffset(offset) {
-        this.options.offset = offset;
-        this._update();
-        return this;
-    }
-    /**
-     * Add or remove the given CSS class on the popup container, depending on whether the container currently has that class.
-     *
-     * @param className - Non-empty string with CSS class name to add/remove
-     *
-     * @returns if the class was removed return false, if class was added, then return true, undefined if there is no container
-     *
-     * @example
-     * ```ts
-     * let popup = new Popup()
-     * popup.toggleClassName('toggleClass')
-     * ```
-     */
-    toggleClassName(className) {
-        if (this._container) {
-            return this._container.classList.toggle(className);
-        }
-    }
-    /**
-     * Set the option to allow subpixel positioning of the popup by passing a boolean
-     *
-     * @param value - When boolean is true, subpixel positioning is enabled for the popup.
-     *
-     * @example
-     * ```ts
-     * let popup = new Popup()
-     * popup.setSubpixelPositioning(true);
-     * ```
-     */
-    setSubpixelPositioning(value) {
-        this.options.subpixelPositioning = value;
-    }
-    _createCloseButton() {
-        if (this.options.closeButton) {
-            this._closeButton = DOM.create('button', 'maplibregl-popup-close-button', this._content);
-            this._closeButton.type = 'button';
-            this._closeButton.innerHTML = '&#215;';
-            this._closeButton.addEventListener('click', this._onClose);
-        }
-    }
-    _focusFirstElement() {
-        if (!this.options.focusAfterOpen || !this._container)
-            return;
-        const firstFocusable = this._container.querySelector(focusQuerySelector);
-        if (firstFocusable)
-            firstFocusable.focus();
-    }
-}
-function normalizeOffset(offset) {
-    if (!offset) {
-        return normalizeOffset(new Point(0, 0));
-    }
-    else if (typeof offset === 'number') {
-        // input specifies a radius from which to calculate offsets at all positions
-        const cornerOffset = Math.round(Math.abs(offset) / Math.SQRT2);
-        return {
-            'center': new Point(0, 0),
-            'top': new Point(0, offset),
-            'top-left': new Point(cornerOffset, cornerOffset),
-            'top-right': new Point(-cornerOffset, cornerOffset),
-            'bottom': new Point(0, -offset),
-            'bottom-left': new Point(cornerOffset, -cornerOffset),
-            'bottom-right': new Point(-cornerOffset, -cornerOffset),
-            'left': new Point(offset, 0),
-            'right': new Point(-offset, 0)
-        };
-    }
-    else if (offset instanceof Point || Array.isArray(offset)) {
-        // input specifies a single offset to be applied to all positions
-        const convertedOffset = Point.convert(offset);
-        return {
-            'center': convertedOffset,
-            'top': convertedOffset,
-            'top-left': convertedOffset,
-            'top-right': convertedOffset,
-            'bottom': convertedOffset,
-            'bottom-left': convertedOffset,
-            'bottom-right': convertedOffset,
-            'left': convertedOffset,
-            'right': convertedOffset
-        };
-    }
-    else {
-        // input specifies an offset per position
-        return {
-            'center': Point.convert(offset['center'] || [0, 0]),
-            'top': Point.convert(offset['top'] || [0, 0]),
-            'top-left': Point.convert(offset['top-left'] || [0, 0]),
-            'top-right': Point.convert(offset['top-right'] || [0, 0]),
-            'bottom': Point.convert(offset['bottom'] || [0, 0]),
-            'bottom-left': Point.convert(offset['bottom-left'] || [0, 0]),
-            'bottom-right': Point.convert(offset['bottom-right'] || [0, 0]),
-            'left': Point.convert(offset['left'] || [0, 0]),
-            'right': Point.convert(offset['right'] || [0, 0])
-        };
-    }
-}
-
 const version = packageJSON.version;
 /**
  * Sets the map's [RTL text plugin](https://www.mapbox.com/mapbox-gl-js/plugins/#mapbox-gl-rtl-text).
@@ -66178,7 +64597,6 @@ function setWorkerUrl(value) { config.WORKER_URL = value; }
 function importScriptInWorkers(workerUrl) { return getGlobalDispatcher().broadcast("IS" /* MessageType.importScript */, workerUrl); }
 
 exports.AJAXError = AJAXError;
-exports.AttributionControl = AttributionControl;
 exports.BoxZoomHandler = BoxZoomHandler;
 exports.CanvasSource = CanvasSource;
 exports.CooperativeGesturesHandler = CooperativeGesturesHandler;
@@ -66190,14 +64608,12 @@ exports.Event = Event;
 exports.Evented = Evented;
 exports.FullscreenControl = FullscreenControl;
 exports.GeoJSONSource = GeoJSONSource;
-exports.GeolocateControl = GeolocateControl;
 exports.GlobeControl = GlobeControl;
 exports.Hash = Hash;
 exports.ImageSource = ImageSource;
 exports.KeyboardHandler = KeyboardHandler;
 exports.LngLat = LngLat;
 exports.LngLatBounds = LngLatBounds;
-exports.LogoControl = LogoControl;
 exports.Map = Map$1;
 exports.MapMouseEvent = MapMouseEvent;
 exports.MapTouchEvent = MapTouchEvent;
@@ -66207,7 +64623,6 @@ exports.MercatorCoordinate = MercatorCoordinate;
 exports.NavigationControl = NavigationControl;
 exports.OverscaledTileID = OverscaledTileID;
 exports.Point = Point;
-exports.Popup = Popup;
 exports.RasterDEMTileSource = RasterDEMTileSource;
 exports.RasterTileSource = RasterTileSource;
 exports.ScaleControl = ScaleControl;
@@ -66220,7 +64635,6 @@ exports.TwoFingersTouchRotateHandler = TwoFingersTouchRotateHandler;
 exports.TwoFingersTouchZoomHandler = TwoFingersTouchZoomHandler;
 exports.TwoFingersTouchZoomRotateHandler = TwoFingersTouchZoomRotateHandler;
 exports.VectorTileSource = VectorTileSource;
-exports.VideoSource = VideoSource;
 exports.addProtocol = addProtocol;
 exports.addSourceType = addSourceType;
 exports.clearPrewarmedResources = clearPrewarmedResources;

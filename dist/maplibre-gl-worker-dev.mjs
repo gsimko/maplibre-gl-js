@@ -2,9 +2,6 @@
  * MapLibre GL JS
  * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v5.5.0/LICENSE.txt
  */
-var maplibregl = (function () {
-'use strict';
-
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -38689,7 +38686,5 @@ if (isWorker(self)) {
     self.worker = new Worker(self);
 }
 
-return Worker;
-
-})();
-//# sourceMappingURL=maplibre-gl-csp-worker-dev.js.map
+export { Worker as default };
+//# sourceMappingURL=maplibre-gl-worker-dev.mjs.map

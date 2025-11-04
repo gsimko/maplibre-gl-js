@@ -14,8 +14,8 @@ import {Camera, type CameraOptions, type CameraUpdateTransformFunction, type Fit
 import {LngLat} from '../geo/lng_lat';
 import {LngLatBounds} from '../geo/lng_lat_bounds';
 import Point from '@mapbox/point-geometry';
-import {AttributionControl, type AttributionControlOptions, defaultAttributionControlOptions} from './control/attribution_control';
-import {LogoControl} from './control/logo_control';
+// import {AttributionControl, type AttributionControlOptions, defaultAttributionControlOptions} from './control/attribution_control';
+// import {LogoControl} from './control/logo_control';
 import {RGBAImage} from '../util/image';
 import {Event, ErrorEvent, type Listener} from '../util/evented';
 import {type MapEventType, type MapLayerEventType, MapMouseEvent, type MapSourceDataEvent, type MapStyleDataEvent} from './events';
@@ -109,11 +109,11 @@ export type MapOptions = {
      * Note: showing the logo of MapLibre is not required for using MapLibre.
      * @defaultValue compact: true, customAttribution: "MapLibre ...".
      */
-    attributionControl?: false | AttributionControlOptions;
+    attributionControl?: false; // | AttributionControlOptions;
     /**
      * If `true`, the MapLibre logo will be shown.
      */
-    maplibreLogo?: boolean;
+    maplibreLogo?: false; // boolean;
     /**
      * A string representing the position of the MapLibre wordmark on the map. Valid options are `top-left`,`top-right`, `bottom-left`, or `bottom-right`.
      * @defaultValue 'bottom-left'
@@ -387,7 +387,7 @@ const defaultOptions: Readonly<Partial<MapOptions>> = {
     hash: false,
     interactive: true,
     bearingSnap: 7,
-    attributionControl: defaultAttributionControlOptions,
+    // attributionControl: defaultAttributionControlOptions,
     maplibreLogo: false,
     refreshExpiredTiles: true,
 
@@ -740,11 +740,11 @@ export class Map extends Camera {
 
         if (resolvedOptions.style) this.setStyle(resolvedOptions.style, {localIdeographFontFamily: resolvedOptions.localIdeographFontFamily});
 
-        if (resolvedOptions.attributionControl)
-            this.addControl(new AttributionControl(typeof resolvedOptions.attributionControl === 'boolean' ? undefined : resolvedOptions.attributionControl));
+        // if (resolvedOptions.attributionControl)
+        //     this.addControl(new AttributionControl(typeof resolvedOptions.attributionControl === 'boolean' ? undefined : resolvedOptions.attributionControl));
 
-        if (resolvedOptions.maplibreLogo)
-            this.addControl(new LogoControl(), resolvedOptions.logoPosition);
+        // if (resolvedOptions.maplibreLogo)
+        //     this.addControl(new LogoControl(), resolvedOptions.logoPosition);
 
         this.on('style.load', () => {
             // If we didn't constrain the camera before, we do it now

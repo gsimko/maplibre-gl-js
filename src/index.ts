@@ -1,14 +1,14 @@
 import packageJSON from '../package.json' with {type: 'json'};
 import {Map} from './ui/map';
 import {NavigationControl} from './ui/control/navigation_control';
-import {GeolocateControl} from './ui/control/geolocate_control';
-import {AttributionControl} from './ui/control/attribution_control';
-import {LogoControl} from './ui/control/logo_control';
+// import {GeolocateControl} from './ui/control/geolocate_control';
+// import {AttributionControl} from './ui/control/attribution_control';
+// import {LogoControl} from './ui/control/logo_control';
 import {ScaleControl} from './ui/control/scale_control';
 import {FullscreenControl} from './ui/control/fullscreen_control';
 import {TerrainControl} from './ui/control/terrain_control';
 import {GlobeControl} from './ui/control/globe_control';
-import {Popup} from './ui/popup';
+// import {Popup} from './ui/popup';
 import {Marker} from './ui/marker';
 import {Style} from './style/style';
 import {LngLat, type LngLatLike} from './geo/lng_lat';
@@ -27,7 +27,7 @@ import {ImageSource} from './source/image_source';
 import {RasterDEMTileSource} from './source/raster_dem_tile_source';
 import {RasterTileSource} from './source/raster_tile_source';
 import {VectorTileSource} from './source/vector_tile_source';
-import {VideoSource} from './source/video_source';
+// import {VideoSource} from './source/video_source';
 import {type Source, addSourceType} from './source/source';
 import {addProtocol, removeProtocol} from './source/protocol_crud';
 import {getGlobalDispatcher} from './util/dispatcher';
@@ -49,11 +49,12 @@ import {TwoFingersTouchPitchHandler, TwoFingersTouchRotateHandler, TwoFingersTou
 import {MessageType} from './util/actor_messages';
 import {createTileMesh} from './util/create_tile_mesh';
 import type {GeoJSONFeature} from './util/vectortile_to_geojson';
-import { OverscaledTileID } from './source/tile_id';
-import { Tile } from './source/tile';
+import {OverscaledTileID} from './source/tile_id';
+import {Tile} from './source/tile';
 const version = packageJSON.version;
 
-export type * from '@maplibre/maplibre-gl-style-spec';
+// export type * from '@maplibre/maplibre-gl-style-spec';
+export {type StyleSpecification} from '@maplibre/maplibre-gl-style-spec';
 
 /**
  * Sets the map's [RTL text plugin](https://www.mapbox.com/mapbox-gl-js/plugins/#mapbox-gl-rtl-text).
@@ -178,15 +179,15 @@ function importScriptInWorkers(workerUrl: string) { return getGlobalDispatcher()
 export {
     Map,
     NavigationControl,
-    GeolocateControl,
-    AttributionControl,
-    LogoControl,
+    // GeolocateControl,
+    // AttributionControl,
+    // LogoControl,
     ScaleControl,
     FullscreenControl,
     TerrainControl,
     GlobeControl,
     Hash,
-    Popup,
+    // Popup,
     Marker,
     Style,
     LngLat,
@@ -203,7 +204,7 @@ export {
     RasterDEMTileSource,
     RasterTileSource,
     VectorTileSource,
-    VideoSource,
+    // VideoSource,
     EdgeInsets,
     BoxZoomHandler,
     DragRotateHandler,

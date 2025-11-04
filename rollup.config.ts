@@ -3,11 +3,14 @@ import sourcemaps from 'rollup-plugin-sourcemaps2';
 import {plugins, watchStagingPlugin} from './build/rollup_plugins';
 import banner from './build/banner';
 import {type RollupOptions} from 'rollup';
+import {config as cspConfig} from './rollup.config.csp';
+import {visualizer} from 'rollup-plugin-visualizer';
 
 const {BUILD} = process.env;
 
 const production = BUILD === 'production';
 const outputFile = production ? 'dist/maplibre-gl.js' : 'dist/maplibre-gl-dev.js';
+const outputPostfix: string = production ? '' : '-dev';
 
 const config: RollupOptions[] = [{
     // Rollup will use code splitting to bundle GL JS into three "chunks":
@@ -33,7 +36,10 @@ const config: RollupOptions[] = [{
         throw message;
     },
     treeshake: production,
-    plugins: plugins(production)
+    plugins: [
+        ...plugins(production),
+        visualizer({filename: `${outputFile}.stats.html`}),
+    ]
 }, {
     // Next, bundle together the three "chunks" produced in the previous pass
     // into a single, final bundle. See rollup/bundle_prelude.js and
@@ -60,7 +66,7 @@ const config: RollupOptions[] = [{
         // When running in development watch mode, tell rollup explicitly to watch
         // for changes to the staging chunks built by the previous step. Otherwise
         // only they get built, but not the merged dev build js
-        ...production ? [] : [watchStagingPlugin]
+        ...production ? [] : [watchStagingPlugin],
     ],
 }];
 

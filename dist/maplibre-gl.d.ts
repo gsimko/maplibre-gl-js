@@ -14070,13 +14070,53 @@ export declare function setWorkerUrl(value: string): void;
  * ```
  */
 export declare function importScriptInWorkers(workerUrl: string): Promise<void[]>;
+export type * from "@maplibre/maplibre-gl-style-spec";
 
 export {
+	Color,
+	ColorArray,
+	CompositeExpression,
+	DiffCommand,
+	DiffOperations,
 	ErrorEvent$1 as ErrorEvent,
 	Event$1 as Event,
+	Feature,
+	FeatureFilter,
+	FeatureState,
+	FilterSpecification,
+	Formatted,
+	FormattedSection,
+	GeoJSONSourceSpecification,
+	GlobalProperties,
+	ICanonicalTileID,
+	IMercatorCoordinate,
+	ImageSourceSpecification,
+	InterpolationType,
+	LayerSpecification,
+	LightSpecification,
 	Map$1 as Map,
+	NumberArray,
+	Padding,
 	Point,
+	ProjectionSpecification,
+	PromoteIdSpecification,
+	PropertyValueSpecification,
+	RasterDEMSourceSpecification,
+	RasterSourceSpecification,
+	ResolvedImage,
+	SkySpecification,
+	SourceExpression,
+	SourceSpecification,
+	SpriteSpecification,
+	StateSpecification,
+	StylePropertyExpression,
+	StylePropertySpecification,
 	StyleSpecification,
+	TerrainSpecification,
+	TransitionSpecification,
+	VariableAnchorOffsetCollection,
+	VectorSourceSpecification,
+	VideoSourceSpecification,
 };
 
 export as namespace maplibregl;

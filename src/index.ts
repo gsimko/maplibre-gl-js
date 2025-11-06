@@ -53,8 +53,7 @@ import {OverscaledTileID} from './source/tile_id';
 import {Tile} from './source/tile';
 const version = packageJSON.version;
 
-// export type * from '@maplibre/maplibre-gl-style-spec';
-export {type StyleSpecification} from '@maplibre/maplibre-gl-style-spec';
+export type * from '@maplibre/maplibre-gl-style-spec';
 
 /**
  * Sets the map's [RTL text plugin](https://www.mapbox.com/mapbox-gl-js/plugins/#mapbox-gl-rtl-text).
